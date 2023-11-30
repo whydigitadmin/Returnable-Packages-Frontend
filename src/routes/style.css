@@ -1,0 +1,44 @@
+.dashicon {
+  margin: 5px 0px 0px 5px;
+}
+
+.dashicon-sm {
+  margin: 10px 0px 0px 10px;
+}
+
+.select-border {
+  --tw-border-opacity: 1;
+  border-color: rgb(209 213 219 / var(--tw-border-opacity));
+}
+
+.text-form {
+  text-transform: none !important;
+}
+
+.label-font-size {
+  font-size: 0.9rem;
+}
+
+.disabled-input {
+  height: 40px;
+  font-size: 0.8rem;
+  width: 30px;
+  padding-left: 0px;
+  padding-right: 0px;
+  text-align: center;
+  font-weight: bold;
+  border-color: inherit !important;
+}
+
+.must {
+  font-size: 9px;
+  color: red;
+  margin-top: 6px;
+  margin-left: 4px;
+}
+
+.white-btn {
+  text-transform: none !important;
+  border-color: rgb(217, 217, 217) !important;
+  color: rgba(0, 0, 0, 0.88) !important;
+}
