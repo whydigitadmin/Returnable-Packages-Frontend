@@ -152,12 +152,12 @@ const routes = [
       {
         path: "/app/technicalproposals",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "TP",
+        name: "Technical Proposal",
       },
       {
         path: "/app/commercialproposal",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "CP",
+        name: "Commercial Proposal",
       },
     ],
   },
@@ -201,7 +201,7 @@ const routes = [
       {
         path: "/app/inventoryadjustments",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "InventoryAdjustments",
+        name: "Inventory Adjustments",
       },
     ],
   },
