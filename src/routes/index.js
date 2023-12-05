@@ -45,7 +45,7 @@ const Calendar = lazy(() => import("../pages/protected/Calendar"));
 const Team = lazy(() => import("../pages/protected/Team"));
 const Transactions = lazy(() => import("../pages/protected/Transactions"));
 const Bills = lazy(() => import("../pages/protected/Bills"));
-const Perfrences = lazy(() => import("../pages/protected/Perfrences"));
+const Preferences = lazy(() => import("../pages/protected/Preferences"));
 const ProfileSettings = lazy(() =>
   import("../pages/protected/ProfileSettings")
 );
@@ -192,7 +192,7 @@ const routes = [
   },
   {
     path: "/preferences",
-    component: Perfrences,
+    component: Preferences,
   },
   {
     path: "/getting-started",
