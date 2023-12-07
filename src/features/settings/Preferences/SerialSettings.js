@@ -74,8 +74,8 @@ function SerialSettings() {
 
   return (
     <>
-      <div className="row d-flex">
-        <div className="col-6">
+      <div className="row d-flex justify-content-center align-items-center">
+        <div className="col-12">
           <div className="row">
             <div className="col-lg-4 col-md-4">
               <label className="label mb-4">
@@ -102,7 +102,7 @@ function SerialSettings() {
           {isSwitchOn && (
             <div>
               <div className="row">
-                <div className="col-lg-6 col-md-6">
+                <div className="col-lg-12">
                   <label className="label mb-4">
                     <span
                       className={"label-text label-font-size text-base-content"}
@@ -151,7 +151,42 @@ function SerialSettings() {
                   />
                 </div>
               </div>
-              <div className="d-flex flex-row mt-4">
+            {/* </div>
+          )}
+        </div>
+        {isSwitchOn && (
+          <div className="col-6"> */}
+            <div className="row mt-3">
+              <div className="col-lg-12">
+                <label className="label">
+                  <span
+                    className={"label-text label-font-size text-base-content"}
+                  >
+                    <strong style={{ fontSize: "24px" }}>
+                      Barcode Details
+                    </strong>
+                  </span>
+                </label>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-lg-12">
+                <p style={{ fontSize: "12px" }}>Prefix:</p>
+                <p style={{ fontSize: "12px" }}>PO ID: 00001</p>
+                <p style={{ fontSize: "12px" }}>Month and Year: 11/23</p>
+                <p style={{ fontSize: "12px" }}>Product ID: 00001</p>
+                <p style={{ fontSize: "12px" }}>Count: 00001</p>
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-md-12">
+                <Barcode value="0000111230000100001" height={70} width={1.7} />
+                <p style={{ textAlign: "left", fontSize: "12px", marginLeft: "70px" }}>
+                  Sample Barcode
+                </p>
+              </div>
+            </div>
+            <div className="d-flex flex-row mt-4">
                 <button
                   type="button"
                   className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -165,44 +200,10 @@ function SerialSettings() {
                   Cancel
                 </button>
               </div>
-            </div>
-          )}
-        </div>
-        {isSwitchOn && (
-          <div className="col-6">
-            <div className="row">
-              <div className="col-lg-6 col-md-6">
-                <label className="label">
-                  <span
-                    className={"label-text label-font-size text-base-content"}
-                  >
-                    <strong style={{ fontSize: "24px" }}>
-                      Barcode Details
-                    </strong>
-                  </span>
-                </label>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 col-md-6">
-                <p style={{ fontSize: "12px" }}>Prefix:</p>
-                <p style={{ fontSize: "12px" }}>PO ID: 00001</p>
-                <p style={{ fontSize: "12px" }}>Month and Year: 11/23</p>
-                <p style={{ fontSize: "12px" }}>Product ID: 00001</p>
-                <p style={{ fontSize: "12px" }}>Count: 00001</p>
-              </div>
-            </div>
-            <div className="row">
-              <div className="col-lg-6 col-md-6">
-                <Barcode value="0000111230000100001" />
-                <p style={{ textAlign: "right", fontSize: "12px" }}>
-                  Sample Barcode
-                </p>
-              </div>
-            </div>
             {/* <p>{data}</p> */}
           </div>
         )}
+        </div>
       </div>
       <ToastContainer autoClose={3000} />
     </>

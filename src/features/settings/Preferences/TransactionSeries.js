@@ -3,7 +3,7 @@ import * as React from "react";
 function TransactionSeries() {
   return (
     <>
-      <div className="row d-flex justify-content-center">
+      <div className="row d-flex justify-content-center align-items-center">
         <div className="col-6">
           <strong>Inbound</strong>
           <div className="row mt-10">
@@ -12,7 +12,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"GRN"}
@@ -22,7 +22,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"1111"}
@@ -37,7 +37,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"ES"}
@@ -47,7 +47,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"1111"}
@@ -62,7 +62,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"RTN"}
@@ -72,7 +72,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"1111"}
@@ -87,7 +87,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"REL"}
@@ -97,7 +97,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"1111"}
@@ -112,7 +112,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"prefix"}
@@ -123,7 +123,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"suffix"}
@@ -142,7 +142,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"ALT"}
@@ -152,7 +152,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"1111"}
@@ -167,7 +167,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"MR"}
@@ -177,7 +177,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"1111"}
@@ -192,7 +192,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"0"}
@@ -202,7 +202,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"0"}
@@ -217,7 +217,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"0"}
@@ -227,7 +227,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"0"}
@@ -242,7 +242,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-3">
               <input
-                style={{ height: 40, width: 100, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"0"}
@@ -252,7 +252,7 @@ function TransactionSeries() {
             </div>
             <div className="col-md-5">
               <input
-                style={{ height: 40, fontSize: "0.800rem" }}
+                style={{ height: "80%", width: "100%", fontSize: "0.800rem" }}
                 type={"text"}
                 // value={value}
                 placeholder={"0"}
