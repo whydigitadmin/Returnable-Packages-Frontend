@@ -6,8 +6,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { IoMdClose } from "react-icons/io";
 import Button from "@mui/material/Button";
-function ItemConfig({ open }) {
-  const handleCloseItemConfig = () => {
+function WarehouseConfig({ open }) {
+  const handleCloseWarehouseConfig = () => {
     open(false);
   };
   return (
@@ -16,12 +16,12 @@ function ItemConfig({ open }) {
         fullWidth={true}
         maxWidth={"sm"}
         open={open}
-        onClose={handleCloseItemConfig}
+        onClose={handleCloseWarehouseConfig}
       >
         <div className="d-flex justify-content-between">
           <DialogTitle>Item Form Config</DialogTitle>
           <IoMdClose
-            onClick={handleCloseItemConfig}
+            onClick={handleCloseWarehouseConfig}
             className="cursor-pointer w-8 h-8 mt-3 me-3"
           />
         </div>
@@ -545,7 +545,7 @@ function ItemConfig({ open }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
-          <Button onClick={handleCloseItemConfig}>Cancel</Button>
+          <Button onClick={handleCloseWarehouseConfig}>Cancel</Button>
           <Button component="label" variant="contained">
             Submit
           </Button>
@@ -554,4 +554,4 @@ function ItemConfig({ open }) {
     </>
   );
 }
-export default ItemConfig;
+export default WarehouseConfig;

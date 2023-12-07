@@ -6,8 +6,8 @@ import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { IoMdClose } from "react-icons/io";
 import Button from "@mui/material/Button";
-function ItemConfig({ open }) {
-  const handleCloseItemConfig = () => {
+function ItemGroupConfig({ open }) {
+  const handleCloseItemGroupConfig = () => {
     open(false);
   };
   return (
@@ -16,12 +16,12 @@ function ItemConfig({ open }) {
         fullWidth={true}
         maxWidth={"sm"}
         open={open}
-        onClose={handleCloseItemConfig}
+        onClose={handleCloseItemGroupConfig}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Item Form Config</DialogTitle>
+          <DialogTitle>Item Group Form Config</DialogTitle>
           <IoMdClose
-            onClick={handleCloseItemConfig}
+            onClick={handleCloseItemGroupConfig}
             className="cursor-pointer w-8 h-8 mt-3 me-3"
           />
         </div>
@@ -123,6 +123,56 @@ function ItemConfig({ open }) {
                 />
               </div>
             </div>
+            <p className="text-lg font-bold my-3 ms-4">Associate Items</p>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Associate Item
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <p className="text-lg font-bold my-3 ms-4">Products to Pack</p>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Products to Pack
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
             <p className="text-lg font-bold my-3 ms-4">Item Details</p>
             <div className="row mb-3">
               <div className="col-lg-6 col-md-6 d-flex flex-row">
@@ -134,55 +184,7 @@ function ItemConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Dimensions
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  defaultChecked
-                  type="checkbox"
-                  id="flexCheckDefault"
-                />
-                <label className="label label-text label-font-size text-base-content">
-                  Length
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  defaultChecked
-                  type="checkbox"
-                  id="flexCheckDefault"
-                />
-                <label className="label label-text label-font-size text-base-content">
-                  Width
+                  Dimensions(l X b X h)
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -230,61 +232,7 @@ function ItemConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Manufacturer
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  EAN
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Brand
+                  UPC
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -545,7 +493,7 @@ function ItemConfig({ open }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
-          <Button onClick={handleCloseItemConfig}>Cancel</Button>
+          <Button onClick={handleCloseItemGroupConfig}>Cancel</Button>
           <Button component="label" variant="contained">
             Submit
           </Button>
@@ -554,4 +502,4 @@ function ItemConfig({ open }) {
     </>
   );
 }
-export default ItemConfig;
+export default ItemGroupConfig;
