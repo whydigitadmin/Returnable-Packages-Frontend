@@ -8,8 +8,14 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Typography from "@mui/material/Typography";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
+import { IoMdClose } from "react-icons/io";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -97,6 +103,8 @@ const IOSSwitch = styled((props) => (
 
 function AddVendor({ addVendors }) {
   const [value, setValue] = React.useState(0);
+  const [openBillingModal, setOpenBillingModal] = React.useState(false);
+  const [openShippingModal, setOpenShippingModal] = React.useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -108,6 +116,18 @@ function AddVendor({ addVendors }) {
 
   const handleFlows = () => {
     addVendors(false);
+  };
+  const handleBillingOpen = () => {
+    setOpenBillingModal(true);
+  };
+  const handleBillingClose = () => {
+    setOpenBillingModal(false);
+  };
+  const handleShippingClickOpen = () => {
+    setOpenShippingModal(true);
+  };
+  const handleShippingClickClose = () => {
+    setOpenShippingModal(false);
   };
 
   return (
@@ -305,6 +325,7 @@ function AddVendor({ addVendors }) {
               <div className="col-lg-6 col-md-6 d-flex flex-column">
                 <div>
                   <Button
+                    onClick={handleBillingOpen}
                     variant="outlined"
                     size="small"
                     className="white-btn label px-4 mb-4"
@@ -322,6 +343,7 @@ function AddVendor({ addVendors }) {
               <div className="col-lg-6 col-md-6 d-flex flex-column">
                 <div>
                   <Button
+                    onClick={handleShippingClickOpen}
                     variant="outlined"
                     size="small"
                     className="white-btn label px-4 mb-4"
@@ -339,6 +361,438 @@ function AddVendor({ addVendors }) {
             </div>
           </CustomTabPanel>
         </Box>
+        <Dialog
+          fullWidth={true}
+          maxWidth={"sm"}
+          open={openBillingModal}
+          onClose={handleBillingClose}
+        >
+          <div className="d-flex justify-content-between">
+            <DialogTitle>Add Billing Address 1</DialogTitle>
+            <IoMdClose
+              onClick={handleBillingClose}
+              className="cursor-pointer w-8 h-8 mt-3 me-3"
+            />
+          </div>
+          <DialogContent>
+            <DialogContentText className="d-flex flex-column">
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    GST Registration Status
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <select
+                    name="Select Item"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="input input-bordered ps-2"
+                  >
+                    <option value=""></option>
+                    <option value="">Registered</option>
+                    <option value="">Unregistered</option>
+                  </select>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    GST Number
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"number"}
+                    // value={value}
+                    placeholder={"GST Number"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Street 1
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <textarea
+                    style={{ fontSize: "0.800rem" }}
+                    className="form-control label label-text label-font-size text-base-content"
+                    placeholder="Street 1"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Street 2
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <textarea
+                    style={{ fontSize: "0.800rem" }}
+                    className="form-control label label-text label-font-size text-base-content"
+                    placeholder="Street 2"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    State
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <select
+                    name="Select Item"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="input input-bordered ps-2"
+                  >
+                    <option value=""></option>
+                    <option value="">Tamil Nadu</option>
+                    <option value="">Goa</option>
+                  </select>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    City
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"City"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Pin Code
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"number"}
+                    // value={value}
+                    placeholder={"Pin Code"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Contact Name
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Contact Name"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Phone
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"number"}
+                    // value={value}
+                    placeholder={"Phone"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <div className="d-flex flex-row">
+                    <input
+                      style={{ marginTop: 10 }}
+                      className="form-check-input me-1"
+                      type="checkbox"
+                      id="flexCheckDefault"
+                    />
+                    <label
+                      className="label label-text label-font-size text-base-content"
+                      for="flexCheckDefault"
+                    >
+                      Mark as Primary
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions className="mb-2 me-2">
+            <Button onClick={handleBillingClose}>Cancel</Button>
+            <Button component="label" variant="contained">
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog
+          fullWidth={true}
+          maxWidth={"sm"}
+          open={openShippingModal}
+          onClose={handleShippingClickClose}
+        >
+          <div className="d-flex justify-content-between">
+            <DialogTitle>Add Shipping Address 1</DialogTitle>
+            <IoMdClose
+              onClick={handleShippingClickClose}
+              className="cursor-pointer w-8 h-8 mt-3 me-3"
+            />
+          </div>
+          <DialogContent>
+            <DialogContentText className="d-flex flex-column">
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    GST Registration Status
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <select
+                    name="Select Item"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="input input-bordered ps-2"
+                  >
+                    <option value=""></option>
+                    <option value="">Registered</option>
+                    <option value="">Unregistered</option>
+                  </select>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    GST Number
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"number"}
+                    // value={value}
+                    placeholder={"GST Number"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Street 1
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <textarea
+                    style={{ fontSize: "0.800rem" }}
+                    className="form-control label label-text label-font-size text-base-content"
+                    placeholder="Street 1"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Street 2
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <textarea
+                    style={{ fontSize: "0.800rem" }}
+                    className="form-control label label-text label-font-size text-base-content"
+                    placeholder="Street 2"
+                  ></textarea>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    State
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <select
+                    name="Select Item"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="input input-bordered ps-2"
+                  >
+                    <option value=""></option>
+                    <option value="">Tamil Nadu</option>
+                    <option value="">Goa</option>
+                  </select>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    City
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"City"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Pin Code
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"number"}
+                    // value={value}
+                    placeholder={"Pin Code"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Contact Name
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Contact Name"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Phone
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"number"}
+                    // value={value}
+                    placeholder={"Phone"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <div className="d-flex flex-row">
+                    <input
+                      style={{ marginTop: 10 }}
+                      className="form-check-input me-1"
+                      type="checkbox"
+                      id="flexCheckDefault"
+                    />
+                    <label
+                      className="label label-text label-font-size text-base-content"
+                      for="flexCheckDefault"
+                    >
+                      Mark as Primary
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions className="mb-2 me-2">
+            <Button onClick={handleShippingClickClose}>Cancel</Button>
+            <Button component="label" variant="contained">
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
