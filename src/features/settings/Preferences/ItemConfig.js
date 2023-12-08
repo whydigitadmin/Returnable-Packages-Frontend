@@ -545,6 +545,7 @@ function ItemConfig({ open }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
+          <Button>Reset</Button>
           <Button onClick={handleCloseItemConfig}>Cancel</Button>
           <Button component="label" variant="contained">
             Submit
