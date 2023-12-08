@@ -19,7 +19,7 @@ function DcExpenseConfig({ open }) {
         onClose={handleCloseDcExpenseConfig}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>RTI Return Form Config</DialogTitle>
+          <DialogTitle>RTI Outward Form Config</DialogTitle>
           <IoMdClose
             onClick={handleCloseDcExpenseConfig}
             className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -37,7 +37,7 @@ function DcExpenseConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Origin Type
+                  Branch
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -61,7 +61,7 @@ function DcExpenseConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Origin Location
+                  Destination Type
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -85,7 +85,31 @@ function DcExpenseConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Branch (From)
+                  Destination Location
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Place of Supply
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -205,6 +229,30 @@ function DcExpenseConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
+                  Vehicle Type
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
                   Vehicle Number
                 </label>
               </div>
@@ -230,6 +278,30 @@ function DcExpenseConfig({ open }) {
                 />
                 <label className="label label-text label-font-size text-base-content">
                   Transport Vendor
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Invoice Number
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">

@@ -19,7 +19,7 @@ function FlowsConfig({ open }) {
         onClose={handleCloseFlowsConfig}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Item Form Config</DialogTitle>
+          <DialogTitle>Flows Form Config</DialogTitle>
           <IoMdClose
             onClick={handleCloseFlowsConfig}
             className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -37,7 +37,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Name
+                  Flow Name
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -61,7 +61,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  SKU
+                  Flow Info
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -85,7 +85,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Product Unit
+                  Flow Type
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -109,7 +109,103 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Active
+                  Flow Active
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Orgin Type
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Select Orgin
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Destination Type
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
+                  type={"text"}
+                  // value={value}
+                  placeholder={"Type for alias.."}
+                  // onChange={(e) => updateInputValue(e.target.value)}
+                  className="input input-bordered mt-1 p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6 d-flex flex-row">
+                <input
+                  style={{ marginTop: 10 }}
+                  className="form-check-input me-1"
+                  defaultChecked
+                  type="checkbox"
+                  id="flexCheckDefault"
+                />
+                <label className="label label-text label-font-size text-base-content">
+                  Select Destination
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -134,7 +230,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Dimensions
+                  Item Type
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -158,7 +254,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Length
+                  Select Item
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -182,7 +278,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Width
+                  Cycle Time
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -206,7 +302,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Weight
+                  Rental Terms
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -230,7 +326,7 @@ function FlowsConfig({ open }) {
                   id="flexCheckDefault"
                 />
                 <label className="label label-text label-font-size text-base-content">
-                  Manufacturer
+                  Fixed Rental Charge
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -257,7 +353,7 @@ function FlowsConfig({ open }) {
                   className="label label-text label-font-size text-base-content"
                   for="flexCheckDefault"
                 >
-                  EAN
+                  DHR
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -284,35 +380,7 @@ function FlowsConfig({ open }) {
                   className="label label-text label-font-size text-base-content"
                   for="flexCheckDefault"
                 >
-                  Brand
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <p className="text-lg font-bold my-3 ms-4">Inventory Information</p>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Asset Category
+                  Issue Charge
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -339,196 +407,7 @@ function FlowsConfig({ open }) {
                   className="label label-text label-font-size text-base-content"
                   for="flexCheckDefault"
                 >
-                  Maintenance Period
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Expected Life
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Expected Trips
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Scrap Value
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  HSN Code
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Tax Rate
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Cost Price
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{ height: 30, fontSize: "0.800rem", width: "100%" }}
-                  type={"text"}
-                  // value={value}
-                  placeholder={"Type for alias.."}
-                  // onChange={(e) => updateInputValue(e.target.value)}
-                  className="input input-bordered mt-1 p-2"
-                />
-              </div>
-            </div>
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6 d-flex flex-row">
-                <input
-                  style={{ marginTop: 10 }}
-                  className="form-check-input me-1"
-                  type="checkbox"
-                  defaultChecked
-                  id="flexCheckDefault"
-                />
-                <label
-                  className="label label-text label-font-size text-base-content"
-                  for="flexCheckDefault"
-                >
-                  Sell Price
+                  Return Charge
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -545,6 +424,7 @@ function FlowsConfig({ open }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
+          <Button>Reset</Button>
           <Button onClick={handleCloseFlowsConfig}>Cancel</Button>
           <Button component="label" variant="contained">
             Submit
