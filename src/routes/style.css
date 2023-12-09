@@ -42,3 +42,10 @@
   border-color: rgb(217, 217, 217) !important;
   color: rgba(0, 0, 0, 0.88) !important;
 }
+
+.error-text {
+  color: red;
+  font-size: 0.8rem;
+  margin-left: 3px;
+  margin-top: 3px;
+}
