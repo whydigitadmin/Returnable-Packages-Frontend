@@ -9,6 +9,7 @@ const Blank = lazy(() => import("../pages/protected/Blank"));
 const Charts = lazy(() => import("../pages/protected/Charts"));
 const Leads = lazy(() => import("../pages/protected/Leads"));
 const Warehouse = lazy(() => import("../pages/protected/warehouse"));
+const Partstudy = lazy(() => import("../pages/protected/PartStudy"));
 const Items = lazy(() => import("../pages/protected/Items"));
 const ItemGroups = lazy(() => import("../pages/protected/ItemsGroup"));
 const Customer = lazy(() => import("../pages/protected/Customer"));
@@ -89,6 +90,10 @@ const routes = [
   {
     path: "/users",
     component: Users,
+  },
+  {
+    path: "/partstudy",
+    component: Partstudy,
   },
   {
     path: "/purchaseorder",

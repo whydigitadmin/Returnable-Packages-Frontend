@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import Preferences from "../../features/settings/Preferences";
+import Partstudy from "../../features/partstudy/partstudy";
 
 function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Preferences" }));
+    dispatch(setPageTitle({ title: "Partstudy" }));
   }, []);
 
-  return <Preferences />;
+  return <Partstudy />;
 }
 
 export default InternalPage;

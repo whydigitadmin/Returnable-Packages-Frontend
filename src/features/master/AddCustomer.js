@@ -153,8 +153,6 @@ function AddCustomer({ addcustomer }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -176,8 +174,6 @@ function AddCustomer({ addcustomer }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -197,8 +193,6 @@ function AddCustomer({ addcustomer }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -218,8 +212,6 @@ function AddCustomer({ addcustomer }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -238,35 +230,38 @@ function AddCustomer({ addcustomer }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="d-flex flex-row mb-2">
-          <label className="label w-60">
-            <span
-              style={{ fontSize: 14 }}
-              className={"label-text text-base-content "}
-            >
-              Customer Activate Portal
-            </span>
-          </label>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Customer Activate Portal
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
             <FormControlLabel
               control={<IOSSwitch disabled sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-        </div>
-        <div className="d-flex flex-row mb-2">
-          <label className="label w-60">
-            <span
-              style={{ fontSize: 14 }}
-              className={"label-text text-base-content "}
-            >
-              Active
-            </span>
-          </label>
-          <FormControlLabel
-            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-            label=""
-          />
+          <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Active
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+            <FormControlLabel
+              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            />
+          </div>
         </div>
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
