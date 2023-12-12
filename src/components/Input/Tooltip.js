@@ -30,7 +30,7 @@ function ToolTip({
           value={value}
           placeholder={placeholder || ""}
           onChange={(e) => updateInputValue(e.target.value)}
-          className="input input-bordered"
+          className="input mb-2 input-bordered"
         />
         <div
           className="my-tooltip-element"

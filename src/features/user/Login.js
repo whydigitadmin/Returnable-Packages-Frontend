@@ -96,9 +96,6 @@ function Login() {
             <LandingIntro />
           </div>
           <div className="py-16 px-10">
-            <h1 className="text-2xl font-bold mt-0 mb-5 d-flex justify-content-center">
-              Welcome to Returnable Packages!👋🏻
-            </h1>
             <div className="mb-2 bg-body-secondary login-border d-flex flex-row">
               <div className="signin-btn">Sign In</div>
               <a href="/register" className="signup-btn signin-hide">

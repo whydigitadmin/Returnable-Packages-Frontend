@@ -76,26 +76,24 @@ function AddItem({ addItem }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4">Create Item</h1>
+        <h1 className="text-xl font-semibold mb-3">Create Item</h1>
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Name
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Item name"}
               content={"Enter a unique identifier or name for the item"}
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -106,7 +104,7 @@ function AddItem({ addItem }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"SKU"}
               content={
@@ -115,10 +113,8 @@ function AddItem({ addItem }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -129,7 +125,7 @@ function AddItem({ addItem }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Select or create Product Unit"}
               content={
@@ -138,22 +134,22 @@ function AddItem({ addItem }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Active
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 d-flex flex-row">
+          <div className="col-lg-3 col-md-6 mb-2 d-flex flex-row">
             <FormControlLabel
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
             <div
               className="my-tooltip-element mt-3"
-              data-tooltip-html={"Indicate whether this item is currently active and available for use"}
+              data-tooltip-html={
+                "Indicate whether this item is currently active and available for use"
+              }
             >
               <CiCircleInfo style={{ fontSize: "17px", marginTop: "4px" }} />
             </div>
@@ -166,16 +162,16 @@ function AddItem({ addItem }) {
             />
           </div>
         </div>
-        <h1 className="text-xl font-semibold my-4">Item Details</h1>
+        <h1 className="text-xl font-semibold my-2">Item Details</h1>
         <div className="row">
-          <div className="col-lg-3 col-md-6 col-sm-4">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Dimensions
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 col-sm-8">
+          <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
             <div className="d-flex flex-row">
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
@@ -183,13 +179,13 @@ function AddItem({ addItem }) {
                 value={value}
                 placeholder={"l"}
                 onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-4 input-bordered p-1"
+                className="input mb-2 input-bordered p-1"
               />
               <span>
                 <input
                   placeholder="X"
                   disabled
-                  className="input mb-4 input-bordered disabled-input mx-1"
+                  className="input mb-2 input-bordered disabled-input mx-1"
                 />
               </span>
               <input
@@ -198,13 +194,13 @@ function AddItem({ addItem }) {
                 value={value}
                 placeholder={"b"}
                 onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-4 p-1 input-bordered"
+                className="input mb-2 p-1 input-bordered"
               />
               <span>
                 <input
                   placeholder="X"
                   disabled
-                  className="input mb-4 input-bordered disabled-input mx-1"
+                  className="input mb-2 input-bordered disabled-input mx-1"
                 />
               </span>
               <input
@@ -213,12 +209,12 @@ function AddItem({ addItem }) {
                 value={value}
                 placeholder={"h"}
                 onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-4 p-1 input-bordered"
+                className="input mb-2 p-1 input-bordered"
               />
               <select
                 name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 56 }}
-                className="input mb-4 p-1 input-bordered ms-1"
+                className="input mb-2 p-1 input-bordered ms-1"
               >
                 <option value="inch">inch</option>
                 <option value="mm">mm</option>
@@ -229,28 +225,28 @@ function AddItem({ addItem }) {
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
                 Manufacturer
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Select or create Manufacturer"}
               content={"Name of the manufacturer or producer of this  item"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
                 Weight
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 166 }}
@@ -258,12 +254,12 @@ function AddItem({ addItem }) {
                 value={value}
                 placeholder={"Weight"}
                 onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-4 input-bordered"
+                className="input mb-2 input-bordered"
               />
               <select
                 name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
-                className="input mb-4 p-1 input-bordered ms-1"
+                className="input mb-2 p-1 input-bordered ms-1"
               >
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
@@ -271,26 +267,26 @@ function AddItem({ addItem }) {
               </select>
             </div>
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
                 Brand
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Select or create Brand"}
               content={"Specify the brand associated with this item"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label w-56 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text text-base-content "}>EAN/UPC</span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"EAN/UPC"}
               content={"Enter the UPC code if applicable for this item"}
@@ -298,16 +294,16 @@ function AddItem({ addItem }) {
             />
           </div>
         </div>
-        <h1 className="text-xl font-semibold my-4">Asset Information</h1>
+        <h1 className="text-xl font-semibold my-2">Asset Information</h1>
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Asset Category
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Select or create Asset Category"}
               content={
@@ -316,64 +312,64 @@ function AddItem({ addItem }) {
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Expected Life (Days)
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Expected Life"}
               content={"Item anticipated lifespan"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Maintenance Period (Days)
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Maintenance Period"}
               content={"Specifies the timeframe for planned maintenance"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Expected Trips
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Expected Trips"}
               content={"Anticipated number of item movements"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 HSN Code
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"HSN Code"}
               content={"Enter the HSN code if applicable for this item"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -384,49 +380,49 @@ function AddItem({ addItem }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Select or create Tax Rate"}
               content={"Set the applicable tax rate for this item"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Cost Price
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Cost Price"}
               content={"Enter the cost price or acquisition cost of this item"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Sell Price
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Sell Price"}
               content={"Specify the selling price of this item"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Scrap Value
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Scrap Value"}
               content={"Estimated end-of-life item worth"}

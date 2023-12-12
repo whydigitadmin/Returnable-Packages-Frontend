@@ -142,11 +142,152 @@ function AddWarehouse({ addWarehouse }) {
 
   return (
     <>
+      {/* <div className="card w-full p-6 bg-base-100 shadow-xl">
+        <h1 className="text-xl font-semibold mb-4 ms-4">Warehouse Details</h1>
+        <form className="row g-3 needs-validation" novalidate>
+          <div className="col-md-4">
+            <label for="validationCustom01" className="form-label">
+              Warehouse name
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="validationCustom01"
+              value=""
+              required
+            />
+            <div className="valid-feedback">Looks good!</div>
+          </div>
+          <div className="col-md-4">
+            <label for="validationCustom01" className="form-label">
+              Warehouse code
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="validationCustom01"
+              value=""
+              required
+            />
+            <div className="valid-feedback">Looks good!</div>
+          </div>
+          <div className="col-md-4">
+            <label for="validationCustom05" className="form-label">
+              GST
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="validationCustom05"
+              required
+            />
+            <div className="invalid-feedback">Please provide a valid GST.</div>
+          </div>
+          <div className="col-md-6">
+            <label for="validationCustom04" className="form-label">
+              Address
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="validationCustom03"
+              required
+            />
+            <div className="invalid-feedback">
+              Please select a valid country.
+            </div>
+          </div>
+          <div className="col-md-4">
+            <label for="validationCustom03" className="form-label">
+              City
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="validationCustom03"
+              required
+            />
+            <div className="invalid-feedback">Please provide a valid city.</div>
+          </div>
+          <div className="col-md-4">
+            <label for="validationCustom02" className="form-label">
+              State
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="validationCustom02"
+              value=""
+              required
+            />
+            <div className="valid-feedback">Looks good!</div>
+          </div>
+          <div className="col-md-4">
+            <label for="validationCustom04" className="form-label">
+              Country
+            </label>
+            <select className="form-select" id="validationCustom04" required>
+              <option selected disabled value="">
+                Choose...
+              </option>
+              <option>...</option>
+            </select>
+            <div className="invalid-feedback">
+              Please select a valid country.
+            </div>
+          </div>
+          <div className="col-md-4">
+            <label for="validationCustom05" className="form-label">
+              Pincode
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="validationCustom05"
+              required
+            />
+            <div className="invalid-feedback">
+              Please provide a valid pincode.
+            </div>
+          </div>
+          <div className="col-md-4">
+            <label for="formFile" className="form-label">
+              Document
+            </label>
+            <input className="form-control" type="file" id="formFile" />
+            <div className="invalid-feedback">Please provide a valid GST.</div>
+          </div>
+          <div className="col-md-4 d-flex flex-column">
+            <label for="formFile" className="form-label">
+              Active
+            </label>
+            <FormControlLabel
+              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            />
+          </div>
+        </form>
+        <div className="d-flex flex-row mt-4">
+          <button
+            type="button"
+            onClick={handleWarehouse}
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            onClick={handleCloseWarehouse}
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            Cancel
+          </button>
+        </div>
+      </div> */}
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <h1 className="text-xl font-semibold mb-4 ms-4">Warehouse Details</h1>
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -157,7 +298,7 @@ function AddWarehouse({ addWarehouse }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
               content={"The unique name or identifier for the warehouse"}
@@ -168,21 +309,19 @@ function AddWarehouse({ addWarehouse }) {
               <div className="error-text">{formErrors.warehouse_name}</div>
             )}
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Country
+                Warehouse code
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
               content={"Warehouse Country"}
@@ -193,60 +332,8 @@ function AddWarehouse({ addWarehouse }) {
               <div className="error-text">{formErrors.country}</div>
             )}
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                State
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-4">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"Warehouse State"}
-              updateFormValue={updateFormValue}
-              updateType="state"
-            />
-            {formErrors.state && (
-              <div className="error-text">{formErrors.state}</div>
-            )}
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                City
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-4">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"The city where the warehouse is located"}
-              updateFormValue={updateFormValue}
-              updateType="city"
-            />
-            {formErrors.city && (
-              <div className="error-text">{formErrors.city}</div>
-            )}
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -257,7 +344,7 @@ function AddWarehouse({ addWarehouse }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
               content={
@@ -270,10 +357,77 @@ function AddWarehouse({ addWarehouse }) {
               <div className="error-text">{formErrors.address}</div>
             )}
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                City
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={"The city where the warehouse is located"}
+              updateFormValue={updateFormValue}
+              updateType="city"
+            />
+            {formErrors.city && (
+              <div className="error-text">{formErrors.city}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                State
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={"Warehouse State"}
+              updateFormValue={updateFormValue}
+              updateType="state"
+            />
+            {formErrors.state && (
+              <div className="error-text">{formErrors.state}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Country
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={"Warehouse Country"}
+              updateFormValue={updateFormValue}
+              updateType="country"
+            />
+            {formErrors.country && (
+              <div className="error-text">{formErrors.country}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -284,7 +438,7 @@ function AddWarehouse({ addWarehouse }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
               content={"Pincode of warehouse"}
@@ -295,16 +449,14 @@ function AddWarehouse({ addWarehouse }) {
               <div className="error-text">{formErrors.pincode}</div>
             )}
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 GST
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
               content={"GST of warehouse"}
@@ -315,16 +467,14 @@ function AddWarehouse({ addWarehouse }) {
               <div className="error-text">{formErrors.gst}</div>
             )}
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Document
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <Button
               component="label"
               variant="contained"
@@ -335,16 +485,14 @@ function AddWarehouse({ addWarehouse }) {
               <VisuallyHiddenInput type="file" />
             </Button>
           </div>
-        </div>
-        <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Active
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <FormControlLabel
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
