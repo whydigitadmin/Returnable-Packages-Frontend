@@ -113,7 +113,7 @@ function PackageDesign() {
       },
       {
         accessorKey: "warehouse_name",
-        header: "Warehouse_Name",
+        header: "Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -214,11 +214,6 @@ function PackageDesign() {
         <AddPackage addPackage={handleBack} />
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div>
           <div className="">
             <h1 className="text-2xl font-semibold mt-4">Package Design</h1>
             <div className="flex justify-between mt-4">

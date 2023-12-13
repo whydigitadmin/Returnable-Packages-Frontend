@@ -165,46 +165,46 @@ function AddPackage({ addPackage }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
+                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
+                type={"number"}
                 value={value}
-                placeholder={"l"}
+                placeholder={"L"}
                 onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 input-bordered p-1"
               />
-              <span>
+              {/* <span>
                 <input
                   placeholder="X"
                   disabled
                   className="input mb-2 input-bordered disabled-input mx-1"
                 />
-              </span>
+              </span> */}
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
+                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
+                type={"number"}
                 value={value}
-                placeholder={"b"}
+                placeholder={"B"}
                 onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
+                className="input mb-2 p-1 mx-1 input-bordered"
               />
-              <span>
+              {/* <span>
                 <input
                   placeholder="X"
                   disabled
                   className="input mb-2 input-bordered disabled-input mx-1"
                 />
-              </span>
+              </span> */}
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
+                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
+                type={"number"}
                 value={value}
-                placeholder={"h"}
+                placeholder={"H"}
                 onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
+                className="input mb-2 p-1 mx-1 input-bordered"
               />
               <select
                 name="inch"
-                style={{ height: 40, fontSize: "0.800rem", width: 65 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
               >
                 <option value="inch">inch</option>
@@ -230,12 +230,13 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"Warehouse Country"}
-              updateFormValue={updateFormValue}
-              updateType="country"
-            />
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
             {formErrors.country && (
               <div className="error-text">{formErrors.country}</div>
             )}
@@ -247,7 +248,7 @@ function AddPackage({ addPackage }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Address
+                Current Packaging Study
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -255,9 +256,7 @@ function AddPackage({ addPackage }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
-              content={
-                "The physical location or street address of the warehouse"
-              }
+              content={""}
               updateFormValue={updateFormValue}
               updateType="address"
             />
@@ -272,7 +271,7 @@ function AddPackage({ addPackage }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                City
+                Current Packaging Challenges
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -280,7 +279,7 @@ function AddPackage({ addPackage }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
-              content={"The city where the warehouse is located"}
+              content={""}
               updateFormValue={updateFormValue}
               updateType="city"
             />
@@ -295,7 +294,7 @@ function AddPackage({ addPackage }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                State
+                No of Parts Per Current Packaging
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -303,7 +302,7 @@ function AddPackage({ addPackage }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
               placeholder={"Enter"}
-              content={"Warehouse State"}
+              content={""}
               updateFormValue={updateFormValue}
               updateType="state"
             />
@@ -318,18 +317,19 @@ function AddPackage({ addPackage }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Country
+                Part Sensitive
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"Warehouse Country"}
-              updateFormValue={updateFormValue}
-              updateType="country"
-            />
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
             {formErrors.country && (
               <div className="error-text">{formErrors.country}</div>
             )}
@@ -341,18 +341,19 @@ function AddPackage({ addPackage }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Pincode
+                Part Greasy
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"Pincode of warehouse"}
-              updateFormValue={updateFormValue}
-              updateType="pincode"
-            />
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
             {formErrors.pincode && (
               <div className="error-text">{formErrors.pincode}</div>
             )}
@@ -360,17 +361,19 @@ function AddPackage({ addPackage }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                GST
+                Part Orientation
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"GST of warehouse"}
-              updateFormValue={updateFormValue}
-              updateType="gst"
-            />
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="Horizontal">Horizontal</option>
+              <option value="Vertical">Vertical</option>
+              <option value="Diagonal">Diagonal</option>
+            </select>
             {formErrors.gst && (
               <div className="error-text">{formErrors.gst}</div>
             )}
@@ -378,7 +381,84 @@ function AddPackage({ addPackage }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Document
+                Multi Part In Single Pocket
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Stacking
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Nesting
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Remarks
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={""}
+              updateFormValue={updateFormValue}
+              updateType="address"
+            />
+            {formErrors.address && (
+              <div className="error-text">{formErrors.address}</div>
+            )}
+          </div>
+          <h1 className="text-xl font-semibold mb-4 ms-4">Attachments</h1>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Part Image
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -386,7 +466,7 @@ function AddPackage({ addPackage }) {
             <Button
               component="label"
               variant="contained"
-              className="text-form"
+              className="text-form mb-2"
               startIcon={<FaCloudUploadAlt />}
             >
               Upload file
@@ -395,14 +475,85 @@ function AddPackage({ addPackage }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Active
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Existing Packaging Image
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            <Button
+              component="label"
+              variant="contained"
+              className="text-form mb-2"
+              startIcon={<FaCloudUploadAlt />}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
+            {formErrors.address && (
+              <div className="error-text">{formErrors.address}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Part Drawing 2D 3D
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={""}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Approved Packaging Technical Drawing
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={""}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Approved Commercial Contract
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={""}
+              updateFormValue={updateFormValue}
             />
           </div>
         </div>
