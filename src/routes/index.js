@@ -10,6 +10,9 @@ const Charts = lazy(() => import("../pages/protected/Charts"));
 const Leads = lazy(() => import("../pages/protected/Leads"));
 const Warehouse = lazy(() => import("../pages/protected/warehouse"));
 const Partstudy = lazy(() => import("../pages/protected/PartStudy"));
+const PackageDesign = lazy(() => import("../pages/protected/PackageDesign"));
+const Logistics = lazy(() => import("../pages/protected/Logistics"));
+const Stock = lazy(() => import("../pages/protected/Stock"));
 const Items = lazy(() => import("../pages/protected/Items"));
 const ItemGroups = lazy(() => import("../pages/protected/ItemsGroup"));
 const Customer = lazy(() => import("../pages/protected/Customer"));
@@ -94,6 +97,18 @@ const routes = [
   {
     path: "/partstudy",
     component: Partstudy,
+  },
+  {
+    path: "/packagedesign",
+    component: PackageDesign,
+  },
+  {
+    path: "/logistics",
+    component: Logistics,
+  },
+  {
+    path: "/stock",
+    component: Stock,
   },
   {
     path: "/purchaseorder",

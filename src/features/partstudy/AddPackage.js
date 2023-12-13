@@ -59,7 +59,8 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddWarehouse({ addWarehouse }) {
+function AddPackage({ addPackage }) {
+  const [value, setValue] = useState("");
   const [formData, setFormData] = useState({
     warehouse_name: "",
     country: "",
@@ -101,49 +102,53 @@ function AddWarehouse({ addWarehouse }) {
     // console.log(updateType);
   };
 
-  const handleCloseWarehouse = () => {
-    addWarehouse(false);
+  const updateInputValue = (val) => {
+    setValue(val);
   };
 
-  const handleWarehouse = () => {
-    const errors = {};
-    if (!formData.warehouse_name.trim()) {
-      errors.warehouse_name = "Warehouse Name is required";
-    }
-    if (!formData.country.trim()) {
-      errors.country = "Country is required";
-    }
-    if (!formData.state.trim()) {
-      errors.state = "State is required";
-    }
-    if (!formData.city.trim()) {
-      errors.city = "City is required";
-    }
-    if (!formData.address.trim()) {
-      errors.address = "Address is required";
-    }
-    if (!formData.pincode.trim()) {
-      errors.pincode = "Pincode is required";
-    }
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-
-    Axios.post(`${process.env.REACT_APP_API_URL}/api/warehouse/view`, formData)
-      .then((response) => {
-        console.log("Response:", response.data);
-        addWarehouse(true);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  const handleClosePackage = () => {
+    addPackage(false);
   };
+
+  //   const handlePackage = () => {
+  //     const errors = {};
+  //     if (!formData.warehouse_name.trim()) {
+  //       errors.warehouse_name = "Warehouse Name is required";
+  //     }
+  //     if (!formData.country.trim()) {
+  //       errors.country = "Country is required";
+  //     }
+  //     if (!formData.state.trim()) {
+  //       errors.state = "State is required";
+  //     }
+  //     if (!formData.city.trim()) {
+  //       errors.city = "City is required";
+  //     }
+  //     if (!formData.address.trim()) {
+  //       errors.address = "Address is required";
+  //     }
+  //     if (!formData.pincode.trim()) {
+  //       errors.pincode = "Pincode is required";
+  //     }
+  //     if (Object.keys(errors).length > 0) {
+  //       setFormErrors(errors);
+  //       return;
+  //     }
+
+  //     Axios.post(`${process.env.REACT_APP_API_URL}/api/warehouse/view`, formData)
+  //       .then((response) => {
+  //         console.log("Response:", response.data);
+  //         addWarehouse(true);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //       });
+  //   };
 
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4 ms-4">Warehouse Details</h1>
+        <h1 className="text-xl font-semibold mb-4 ms-4">Package Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -152,18 +157,62 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Warehouse Name
+                Part Dimension
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"The unique name or identifier for the warehouse"}
-              updateFormValue={updateFormValue}
-              updateType="warehouse_name"
-            />
+            <div className="d-flex flex-row">
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                type={"text"}
+                value={value}
+                placeholder={"l"}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 input-bordered p-1"
+              />
+              <span>
+                <input
+                  placeholder="X"
+                  disabled
+                  className="input mb-2 input-bordered disabled-input mx-1"
+                />
+              </span>
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                type={"text"}
+                value={value}
+                placeholder={"b"}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 p-1 input-bordered"
+              />
+              <span>
+                <input
+                  placeholder="X"
+                  disabled
+                  className="input mb-2 input-bordered disabled-input mx-1"
+                />
+              </span>
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                type={"text"}
+                value={value}
+                placeholder={"h"}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 p-1 input-bordered"
+              />
+              <select
+                name="inch"
+                style={{ height: 40, fontSize: "0.800rem", width: 65 }}
+                className="input mb-2 p-1 input-bordered ms-1"
+              >
+                <option value="inch">inch</option>
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="feet">feet</option>
+              </select>
+            </div>
             {formErrors.warehouse_name && (
               <div className="error-text">{formErrors.warehouse_name}</div>
             )}
@@ -175,7 +224,7 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Warehouse code
+                Existing Part
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -360,14 +409,14 @@ function AddWarehouse({ addWarehouse }) {
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
-            onClick={handleWarehouse}
+            // onClick={handlePackage}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save
           </button>
           <button
             type="button"
-            onClick={handleCloseWarehouse}
+            onClick={handleClosePackage}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel
@@ -378,4 +427,4 @@ function AddWarehouse({ addWarehouse }) {
   );
 }
 
-export default AddWarehouse;
+export default AddPackage;
