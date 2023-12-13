@@ -1,12 +1,12 @@
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 import * as React from "react";
 import { useState } from "react";
-import { Tooltip } from "react-tooltip";
 import { CiCircleInfo } from "react-icons/ci";
-import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { styled } from "@mui/material/styles";
 import { FaStarOfLife } from "react-icons/fa";
+import { Tooltip } from "react-tooltip";
+import ToolTip from "../../components/Input/Tooltip";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -134,6 +134,28 @@ function AddItem({ addItem }) {
               updateFormValue={updateFormValue}
             />
           </div>
+
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Item Category
+              </span>
+            </label>
+          </div>
+		  <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+		  <select
+                name="inch"
+                style={{ height: 40, fontSize: "0.800rem"}}
+                className="input mb-2 p-1 w-full input-bordered"
+              >
+                <option value="Pallet">Pallet</option>
+                <option value="Lid">Lid</option>
+                <option value="Side Wall">Side Wall</option>
+                <option value="Grate">Grate</option>
+              </select>
+			  </div>
+
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
