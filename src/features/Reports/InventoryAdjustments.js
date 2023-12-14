@@ -1,33 +1,102 @@
-import * as React from "react";
-import { DataGrid } from "@mui/x-data-grid";
-import { CiSettings } from "react-icons/ci";
+import React, { useEffect, useMemo } from "react";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
 import AddInventoryAdjustments from "./AddInventoryAdjustment";
-
-const columns = [
-  { field: "id", headerName: "Sr. No", width: 130 },
-  { field: "ReferenceNo", headerName: "Reference No", width: 130 },
-  { field: "Date", headerName: "Date", width: 130 },
-  { field: "Warehouse", headerName: "Warehouse", width: 130 },
-  { field: "NoofEntries", headerName: "No of Entries", width: 130 },
-  { field: "PipelineStatus", headerName: "Pipeline Status", width: 130 },
-  { field: "QuantityAdjusted", headerName: "Quantity Adjusted", width: 130 },
-];
-
-const rows = [
-  {
-    id: 1,
-    ReferenceNo: "1",
-    Date: "11-11-11",
-    Warehouse: "texas",
-    NoofEntries: "123",
-    PipelineStatus: "yes",
-    QuantityAdjusted: "Active",
-  },
-];
 
 function InventoryAdjustment() {
   const [addInventoryAdjustments, setAddInventoryAdjustments] =
     React.useState(false);
+  const [data, setData] = React.useState([]);
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "id",
+        header: "Sr. No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "first",
+        },
+        muiTableBodyCellProps: {
+          align: "first",
+        },
+      },
+      {
+        accessorKey: "referenceNo",
+        header: "Reference No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "date",
+        header: "Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "warehouse",
+        header: "Warehouse",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "noofEntries",
+        header: "No of Entries",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "pipelineStatus",
+        header: "Pipeline Status",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "quantityAdjusted",
+        header: "Quantity Adjusted",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+    ],
+    []
+  );
+
+  const table = useMaterialReactTable({
+    data,
+    columns,
+  });
 
   const handleAddAdjustments = () => {
     setAddInventoryAdjustments(true);
@@ -51,10 +120,9 @@ function InventoryAdjustment() {
             >
               Add Inventory Adjustments
             </button>
-            <CiSettings className="cursor-pointer flex mt-0.5 h-[32px] w-[32px] justify-center rounded-lg bg-white text-center shadow shadow-black/10 dark:shadow-black/40" />
           </div>
-          <div style={{ height: 400, width: "100%", marginTop: 30 }}>
-            <DataGrid rows={rows} columns={columns} />
+          <div className="mt-4">
+            <MaterialReactTable table={table} />
           </div>
         </div>
       )}
