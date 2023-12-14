@@ -1,18 +1,18 @@
 import { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { setPageTitle } from '../../features/common/headerSlice'
-import ItemsGroup from '../../features/master/ItemsGroup'
+import ItemGroup from '../../features/master/ItemGroup'
 
 function InternalPage(){
     const dispatch = useDispatch()
 
     useEffect(() => {
-        dispatch(setPageTitle({ title : "Item Groups"}))
+        dispatch(setPageTitle({ title : "Item Group"}))
       }, [])
 
 
     return(
-        <ItemsGroup />
+        <ItemGroup />
     )
 }
 
