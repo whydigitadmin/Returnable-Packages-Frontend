@@ -4,23 +4,6 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import AddLogistics from "./AddLogistics";
-const columns = [
-  { field: "id", headerName: "Sr. No", width: 90 },
-  { field: "AvgLotSize", headerName: "Avg Lot Size", width: 160 },
-  { field: "DispatchFrequency", headerName: "Dispatch Frequency", width: 120 },
-  { field: "DispatchTo", headerName: "Dispatch To", width: 180 },
-  { field: "TransportationTo", headerName: " Transportation To", width: 120 },
-];
-
-const data = [
-  {
-    id: 1,
-    AvgLotSize: "EMP001",
-    DispatchFrequency: "John",
-    DispatchTo: "John@gmail.com",
-    TransportationTo: "9087654321",
-  },
-];
 
 function Logistics() {
   const [add, setAdd] = React.useState(false);
@@ -91,7 +74,7 @@ function Logistics() {
       {add ? (
         <AddLogistics addlogistics={handleBack} />
       ) : (
-        <div className="">
+        <div className="card w-full p-6 bg-base-100 shadow-xl">
           <h1 className="text-2xl font-semibold mt-4">Logistics</h1>
           <div className="flex justify-end mt-4">
             <button

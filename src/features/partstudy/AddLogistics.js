@@ -4,56 +4,6 @@ import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import { FaStarOfLife } from "react-icons/fa";
 import { styled } from "@mui/material/styles";
-const IOSSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-  width: 42,
-  height: 26,
-  padding: 0,
-  "& .MuiSwitch-switchBase": {
-    padding: 0,
-    margin: 2,
-    transitionDuration: "300ms",
-    "&.Mui-checked": {
-      transform: "translateX(16px)",
-      color: "#fff",
-      "& + .MuiSwitch-track": {
-        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#0d6ef",
-        opacity: 1,
-        border: 0,
-      },
-      "&.Mui-disabled + .MuiSwitch-track": {
-        opacity: 0.5,
-      },
-    },
-    "&.Mui-focusVisible .MuiSwitch-thumb": {
-      color: "#33cf4d",
-      border: "6px solid #fff",
-    },
-    "&.Mui-disabled .MuiSwitch-thumb": {
-      color:
-        theme.palette.mode === "light"
-          ? theme.palette.grey[100]
-          : theme.palette.grey[600],
-    },
-    "&.Mui-disabled + .MuiSwitch-track": {
-      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    boxSizing: "border-box",
-    width: 22,
-    height: 22,
-  },
-  "& .MuiSwitch-track": {
-    borderRadius: 26 / 2,
-    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
-    opacity: 1,
-    transition: theme.transitions.create(["background-color"], {
-      duration: 500,
-    }),
-  },
-}));
 
 function AddLogistics({ addlogistics }) {
   const updateFormValue = ({ updateType, value }) => {
@@ -84,9 +34,7 @@ function AddLogistics({ addlogistics }) {
           <div className="col-lg-3 col-md-6 mt-1">
             <ToolTip
               placeholder={"Enter"}
-              content={
-                "The classification or category that defines the type of employee"
-              }
+              content={""}
               updateFormValue={updateFormValue}
             />
           </div>
@@ -105,9 +53,7 @@ function AddLogistics({ addlogistics }) {
           <div className="col-lg-3 col-md-6 mt-1">
             <ToolTip
               placeholder={"Enter"}
-              content={
-                "The unique identification number or code assigned to an employee"
-              }
+              content={""}
               updateFormValue={updateFormValue}
             />
           </div>
@@ -124,13 +70,15 @@ function AddLogistics({ addlogistics }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={
-                "The individual's full name, typically including both the first name and the last name"
-              }
-              updateFormValue={updateFormValue}
-            />
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-4 w-full input-bordered ps-2"
+            >
+              <option value="">Direct</option>
+              <option value="">End-user Warehouse</option>
+              <option value="">Emitter Interim Warehouse</option>
+            </select>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -144,11 +92,14 @@ function AddLogistics({ addlogistics }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"check"}
-              updateFormValue={updateFormValue}
-            />
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-4 w-full input-bordered ps-2"
+            >
+              <option value="">Part Load</option>
+              <option value="">Full Truck Load</option>
+            </select>
           </div>
         </div>
         <div className="d-flex flex-row mt-1">
