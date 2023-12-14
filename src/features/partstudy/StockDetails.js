@@ -15,7 +15,6 @@ import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import DashBoardComponent from "../master/DashBoardComponent";
 import AddStockKeeping from "./AddStockKeeping";
 
 const statsData = [
@@ -146,7 +145,7 @@ function StockDetails() {
       {
         accessorKey: "endUserLineStorageDays",
         header: "EndUser Line Storage Days",
-        size: 50,
+        size: 250,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -157,7 +156,7 @@ function StockDetails() {
       {
         accessorKey: "endUserManufLineDays",
         header: "EndUser Manufacture LineDays",
-        size: 50,
+        size: 300,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -190,7 +189,7 @@ function StockDetails() {
       {
         accessorKey: "ePakRevDay",
         header: "Empty Packaging Reverse LogisticsDays",
-        size: 50,
+        size: 300,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -224,11 +223,11 @@ function StockDetails() {
         <AddStockKeeping addStockKeeping={handleBack} />
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+          {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
             {statsData.map((d, k) => {
               return <DashBoardComponent key={k} {...d} colorIndex={k} />;
             })}
-          </div>
+          </div> */}
           <div className="">
             <h1 className="text-2xl font-semibold mt-4">Parts</h1>
             <div className="flex justify-between mt-4">
@@ -244,7 +243,7 @@ function StockDetails() {
                 onClick={handleAddOpen}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add PartStudy
+                Add Stock Details
               </button>
             </div>
           </div>

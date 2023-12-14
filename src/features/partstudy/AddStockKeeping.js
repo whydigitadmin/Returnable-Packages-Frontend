@@ -118,39 +118,37 @@ function AddStockKeeping({ addStockKeeping }) {
     if (!formData.receiverID.trim()) {
       errors.receiverID = "receiverID is required";
     }
-	if (!formData.partStudyID.trim()) {
+    if (!formData.partStudyID.trim()) {
       errors.partStudyID = "partStudyID is required";
     }
-	if (!formData.partName.trim()) {
+    if (!formData.partName.trim()) {
       errors.partName = "partName is required";
     }
-	if (!formData.partNo.trim()) {
+    if (!formData.partNo.trim()) {
       errors.partNo = "partNo is required";
     }
-	if (!formData.weight.trim()) {
+    if (!formData.weight.trim()) {
       errors.weight = "weight is required";
     }
-	if (!formData.partVol.trim()) {
+    if (!formData.partVol.trim()) {
       errors.partVol = "partVol is required";
     }
-	if (!formData.highvol.trim()) {
+    if (!formData.highvol.trim()) {
       errors.highvol = "highvol is required";
     }
-	if (!formData.lowVol.trim()) {
+    if (!formData.lowVol.trim()) {
       errors.lowVol = "lowVol is required";
     }
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-	}
+  };
 
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-3">
-        Stock Keeping Days
-        </h1>
+        <h1 className="text-xl font-semibold mb-3">Stock Keeping Days</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -159,7 +157,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                EmitterStoreDays
+                Emitter Store Days
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -179,7 +177,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                EmitterLineDays
+                Emitter Line Days
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -246,7 +244,7 @@ function AddStockKeeping({ addStockKeeping }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"EndUser Manufacturing Line Days"}
+              placeholder={"Manufacturing Line Days"}
               content={"Enter the EndUser Manufacturing Line Days"}
               updateFormValue={updateFormValue}
               updateType="endUserManufLineDays"
@@ -259,7 +257,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                OtherStorageDays
+                Other Storage Days
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -398,13 +396,12 @@ function AddStockKeeping({ addStockKeeping }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Empty Packaging Reverse Logistics Days"}
+              placeholder={"Reverse Logistics Days"}
               content={"Specify the Empty Packaging Reverse Logistics Days"}
               updateFormValue={updateFormValue}
               updateType="ePakRevDay"
             />
           </div>
-          
         </div>
         {/* <h1 className="text-xl font-semibold my-2">Asset Information</h1>
          <div className="row">
