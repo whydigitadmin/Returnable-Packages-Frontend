@@ -95,8 +95,7 @@ function AddPurchaseOrder({ addPurchase }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -118,8 +117,7 @@ function AddPurchaseOrder({ addPurchase }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -142,8 +140,7 @@ function AddPurchaseOrder({ addPurchase }) {
               <option value="Transit">PO1111</option>
             </select>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -172,8 +169,7 @@ function AddPurchaseOrder({ addPurchase }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -190,8 +186,7 @@ function AddPurchaseOrder({ addPurchase }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -208,8 +203,7 @@ function AddPurchaseOrder({ addPurchase }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -226,8 +220,7 @@ function AddPurchaseOrder({ addPurchase }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -235,9 +228,9 @@ function AddPurchaseOrder({ addPurchase }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
-            <FormControlLabel control={<IOSSwitch sx={{ m: 1 }} />} />
-          </div>
+        </div>
+        <div className="col-lg-3 col-md-6">
+          <FormControlLabel control={<IOSSwitch sx={{ m: 1 }} />} />
         </div>
         <h1 className="text-xl font-semibold mb-4">Item Details</h1>
         <div className="row">

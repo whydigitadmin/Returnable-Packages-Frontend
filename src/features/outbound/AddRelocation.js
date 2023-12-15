@@ -95,8 +95,7 @@ function AddRelocation({ addRelocation }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -116,8 +115,7 @@ function AddRelocation({ addRelocation }) {
               //   updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -137,8 +135,7 @@ function AddRelocation({ addRelocation }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -158,8 +155,7 @@ function AddRelocation({ addRelocation }) {
               //   updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -188,8 +184,7 @@ function AddRelocation({ addRelocation }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -218,37 +213,7 @@ function AddRelocation({ addRelocation }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
-          {/* <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Date of Arrival
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div> */}
-          {/* <div className="col-lg-3 col-md-6">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Select Date"
-                slotProps={{
-                  textField: {
-                    size: "small",
-                    clearable: true,
-                    fontSize: "0.800rem",
-                  },
-                }}
-                value={docDate}
-                onChange={(newValue) => setDocDate(newValue)}
-              />
-            </LocalizationProvider>
-          </div>
-        </div> */}
+
           <h1 className="text-xl font-semibold my-4 ms-5">Item Details</h1>
           <div className="row">
             <div className="col-lg-4 col-md-8">

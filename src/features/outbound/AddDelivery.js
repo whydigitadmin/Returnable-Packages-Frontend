@@ -43,8 +43,7 @@ function AddDelivery({ addDelivery }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -66,8 +65,7 @@ function AddDelivery({ addDelivery }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -90,8 +88,7 @@ function AddDelivery({ addDelivery }) {
               <option value="Transit">00</option>
             </select>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -111,8 +108,7 @@ function AddDelivery({ addDelivery }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -129,8 +125,7 @@ function AddDelivery({ addDelivery }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -160,8 +155,7 @@ function AddDelivery({ addDelivery }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -185,8 +179,7 @@ function AddDelivery({ addDelivery }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span

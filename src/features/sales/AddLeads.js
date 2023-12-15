@@ -226,8 +226,7 @@ function AddLeads({ addLeads }) {
               className="input mb-2 p-2 input-bordered"
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -249,8 +248,7 @@ function AddLeads({ addLeads }) {
               className="input mb-2 p-2 input-bordered"
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -276,8 +274,7 @@ function AddLeads({ addLeads }) {
               <option value="">Central</option>
             </select>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span

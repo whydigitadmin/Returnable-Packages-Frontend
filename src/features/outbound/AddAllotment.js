@@ -95,8 +95,7 @@ function AddAllotment({ addAllotment }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -116,8 +115,7 @@ function AddAllotment({ addAllotment }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -137,9 +135,7 @@ function AddAllotment({ addAllotment }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
 
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -168,8 +164,7 @@ function AddAllotment({ addAllotment }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -197,8 +192,7 @@ function AddAllotment({ addAllotment }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -226,8 +220,7 @@ function AddAllotment({ addAllotment }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
