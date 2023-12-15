@@ -1,9 +1,3 @@
-import React, { useMemo } from "react";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import DashBoardComponent from "./DashBoardComponent";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -11,13 +5,19 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
-import { FaCloudUploadAlt } from "react-icons/fa";
+import axios from "axios";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import React, { useEffect, useMemo } from "react";
+import { FaBox, FaCloudUploadAlt } from "react-icons/fa";
+import { FaRegObjectGroup } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
-import { FaBox } from "react-icons/fa";
-import { FaRegObjectGroup } from "react-icons/fa6";
 import { LuTimerReset } from "react-icons/lu";
 import AddItem from "./AddItems";
+import DashBoardComponent from "./DashBoardComponent";
 const statsData = [
   {
     title: "Total Items",
@@ -63,6 +63,26 @@ function Items() {
 
   const handleBack = () => {
     setAdd(false);
+  };
+
+
+  
+  useEffect(() => {
+    getAssetData();
+  }, []);
+
+  const getAssetData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/asset`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.assetVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -112,7 +132,7 @@ function Items() {
         },
       },
       {
-        accessorKey: "category",
+        accessorKey: "assetCategory",
         header: "Category",
         size: 50,
         muiTableHeadCellProps: {
@@ -123,7 +143,7 @@ function Items() {
         },
       },
       {
-        accessorKey: "purchaseprice",
+        accessorKey: "purchasePrice",
         header: "Purchase Price",
         size: 50,
         muiTableHeadCellProps: {
@@ -134,7 +154,7 @@ function Items() {
         },
       },
       {
-        accessorKey: "salesprice",
+        accessorKey: "salesPrice",
         header: "Sales Price",
         size: 50,
         muiTableHeadCellProps: {
@@ -145,7 +165,7 @@ function Items() {
         },
       },
       {
-        accessorKey: "hsn",
+        accessorKey: "hsnCode",
         header: "HSN",
         size: 50,
         muiTableHeadCellProps: {
