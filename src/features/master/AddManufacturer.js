@@ -110,7 +110,6 @@ function AddManufacturer({ addManufacturer }) {
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [data, setData] = React.useState([]);
 
-
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
@@ -134,7 +133,7 @@ function AddManufacturer({ addManufacturer }) {
 
   const handleCloseAddManufacturer = () => {
     addManufacturer(false);
-  }
+  };
   const columns = useMemo(
     () => [
       {
@@ -233,11 +232,12 @@ function AddManufacturer({ addManufacturer }) {
     columns,
   });
 
-
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4">Manufacturer Basic Details</h1>
+        <h1 className="text-xl font-semibold mb-4">
+          Manufacturer Basic Details
+        </h1>
         <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -268,9 +268,7 @@ function AddManufacturer({ addManufacturer }) {
           <div className="col-lg-3 col-md-6 mt-1">
             <ToolTip
               placeholder={"Manufacturer Branch"}
-              content={
-                "Manufacturer Branch Name"
-              }
+              content={"Manufacturer Branch Name"}
               updateFormValue={updateFormValue}
             />
           </div>
@@ -305,7 +303,7 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-          
+
           <div className="col-lg-3 col-md-6 mt-1">
             <ToolTip
               placeholder={"Company E-Mail"}
@@ -325,7 +323,7 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-          
+
           <div className="col-lg-3 col-md-6 mt-1">
             <ToolTip
               placeholder={"Contact Person"}
@@ -368,68 +366,25 @@ function AddManufacturer({ addManufacturer }) {
             />
           </div>
         </div>
-         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            {/* <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              <Tab className="text-form" label="Address" {...a11yProps(0)} />
-            </Tabs> */}
-          </Box> 
+        <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
         <h1 className="text-xl font-semibold mt-3">Product Details</h1>
         <Box sx={{ width: "100%" }}>
-          {/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              <Tab className="text-form" label="Address" {...a11yProps(0)} />
-            </Tabs>
-          </Box> */}
           <CustomTabPanel value={value} index={0}>
             <div className="row">
               <div className="col-lg-6 col-md-6 d-flex flex-column mt-2">
                 <div>
-                  <Button
+                  <button
+                    type="button"
                     onClick={handleBillingOpen}
-                    variant="outlined"
-                    size="small"
-                    className="white-btn label px-4 mb-4"
+                    className="bg-blue me-5 mb-4 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                   >
                     Add Product
-                  </Button>
+                  </button>
                 </div>
-                {/* <button
-                  type="button"
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                >
-                  + Add Billing Address
-                </button> */}
               </div>
-              {/* <div className="col-lg-6 col-md-6 d-flex flex-column">
-                <div>
-                  <Button
-                    onClick={handleShippingOpen}
-                    variant="outlined"
-                    size="small"
-                    className="white-btn label px-4 mb-4"
-                  >
-                    Add Shipping Address 1
-                  </Button>
-                </div>
-                <button
-                  type="button"
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                >
-                  + Add Shipping Address
-                </button>
-              </div> */}
             </div>
-            
+
             <MaterialReactTable table={table} />
-            
           </CustomTabPanel>
         </Box>
         <Dialog
@@ -492,7 +447,7 @@ function AddManufacturer({ addManufacturer }) {
                 <div className="col-lg-6 col-md-6">
                   <span
                     className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
+                      "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
                     Weight
@@ -500,7 +455,7 @@ function AddManufacturer({ addManufacturer }) {
                   </span>
                 </div>
                 <div className="col-lg-6 col-md-6">
-                <input
+                  <input
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     type={"text"}
                     // value={value}
@@ -517,7 +472,7 @@ function AddManufacturer({ addManufacturer }) {
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
-                <input
+                  <input
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     type={"text"}
                     // value={value}
@@ -527,29 +482,6 @@ function AddManufacturer({ addManufacturer }) {
                   />
                 </div>
               </div>
-              {/* <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    State
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Tamil Nadu</option>
-                    <option value="">Goa</option>
-                  </select>
-                </div>
-              </div> */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <span
@@ -586,66 +518,14 @@ function AddManufacturer({ addManufacturer }) {
                 <div className="col-lg-6 col-md-6">
                   <input
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
+                    //type={"number"}
                     // value={value}
-                    placeholder={"Pin Code"}
+                    placeholder={"Service Duration"}
                     // onChange={(e) => updateInputValue(e.target.value)}
                     className="input input-bordered p-2"
                   />
                 </div>
               </div>
-              {/* <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Contact Name
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Contact Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Phone
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"Phone"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <div className="d-flex flex-row">
-                    <input
-                      style={{ marginTop: 10 }}
-                      className="form-check-input me-1"
-                      type="checkbox"
-                      id="flexCheckDefault"
-                    />
-                    <label
-                      className="label label-text label-font-size text-base-content"
-                      for="flexCheckDefault"
-                    >
-                      Mark as Primary
-                    </label>
-                  </div>
-                </div>
-              </div> */}
             </DialogContentText>
           </DialogContent>
           <DialogActions className="mb-2 me-2">
