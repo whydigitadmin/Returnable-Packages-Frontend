@@ -80,12 +80,18 @@ function AddItemSpecification({ addItemSpecification }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-3">Create Item Specification</h1>
+        <h1 className="text-xl font-semibold mb-3">
+          Create Asset Specification
+        </h1>
         <div className="row">
-        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content d-flex"}>
-                Item Category
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex"
+                }
+              >
+                Asset Category
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -98,25 +104,30 @@ function AddItemSpecification({ addItemSpecification }) {
             >
               <option value="Standard">Standard</option>
               <option value="Variable">Variable</option>
-              <option value="Variable1">Variable1</option>
+              <option value="Semi Standard">Semi Standard</option>
+              <option value="Semi Variable">Semi Variable</option>
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content d-flex"}>
-                Name
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex"
+                }
+              >
+                Asset Name
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Item name"}
-              content={"Enter a unique identifier or name for the item"}
+              placeholder={"Asset name"}
+              content={"Enter a unique identifier or name for the asset"}
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -136,7 +147,7 @@ function AddItemSpecification({ addItemSpecification }) {
               }
               updateFormValue={updateFormValue}
             />
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -158,8 +169,6 @@ function AddItemSpecification({ addItemSpecification }) {
               updateFormValue={updateFormValue}
             />
           </div>
-
-          
 
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -204,7 +213,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
                 type={"text"}
                 value={value}
-                placeholder={"l"}
+                placeholder={"L"}
                 onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 input-bordered p-1"
               />
@@ -219,7 +228,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
                 type={"text"}
                 value={value}
-                placeholder={"b"}
+                placeholder={"B"}
                 onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 p-1 input-bordered"
               />
@@ -234,7 +243,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
                 type={"text"}
                 value={value}
-                placeholder={"h"}
+                placeholder={"H"}
                 onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 p-1 input-bordered"
               />
@@ -260,11 +269,16 @@ function AddItemSpecification({ addItemSpecification }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Manufacturer"}
-              content={"Name of the manufacturer or producer of this  item"}
-              updateFormValue={updateFormValue}
-            />
+            <select
+              name="inch"
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 w-full input-bordered"
+            >
+              <option value="Manufacturer">Manufacturer 1</option>
+              <option value="Manufacturer">Manufacturer 2</option>
+              <option value="Manufacturer">Manufacturer 3</option>
+              <option value="Manufacturer">Manufacturer 4</option>
+            </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

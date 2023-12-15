@@ -59,6 +59,15 @@ const IOSSwitch = styled((props) => (
 
 function AddItemGroups({ addItem }) {
   const [value, setValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState("Select Required Asset");
+  const [showAdditionalDropdown, setShowAdditionalDropdown] = useState(false);
+
+  const handleSelectChange = (e) => {
+    setSelectedValue(e.target.value);
+    // Check if the selected value should show the additional dropdown
+    setShowAdditionalDropdown(e.target.value == "Standard");
+  };
+
   const updateFormValue = ({ updateType, value }) => {
     console.log(updateType);
   };
@@ -74,19 +83,24 @@ function AddItemGroups({ addItem }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4">Create Item Group</h1>
+        <h1 className="text-xl font-semibold mb-4">Create Asset kit</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Name
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Kit Name
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Item name"}
-              content={"Enter a unique identifier or name for the item"}
+              placeholder={"Kit name"}
+              content={"Enter a unique identifier or name for the Kit name"}
               updateFormValue={updateFormValue}
             />
           </div>
@@ -97,14 +111,14 @@ function AddItemGroups({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                SKU
+                Kit No
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"SKU"}
+              placeholder={"Kit No"}
               content={
                 "The unique identifier or code for this item in your system"
               }
@@ -118,21 +132,72 @@ function AddItemGroups({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Product Unit
+                Required Quantity
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Select or create Product Unit"}
-              content={
-                "Specify the unit of measurement for this product (e.g., pieces, kilograms)"
-              }
+              placeholder={"Enter Required Quantity"}
+              content={""}
               updateFormValue={updateFormValue}
             />
           </div>
+          <div className="col-lg-6 col-md-12 mb-2"></div>
           <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Required Asset
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+              onChange={handleSelectChange}
+              value={selectedValue}
+            >
+              <option value="Select Required Asset">
+                Select Required Asset
+              </option>
+              <option value="Standard">Standard</option>
+              <option value="Variable">Variable</option>
+              <option value="Semi Standard">Semi Standard</option>
+              <option value="Semi Variable">Semi Variable</option>
+            </select>
+          </div>
+          {showAdditionalDropdown && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2 ">
+                <select
+                  name="Select Item"
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="input mb-4 input-bordered ps-2"
+                >
+                  <option value="Pallet">Pallet</option>
+                  <option value="lid">Lid</option>
+                  <option value="Side Wall">Side Wall</option>
+                </select>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2 ">
+                <button
+                  type="button"
+                  style={{ marginTop: 2 }}
+                  className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Check Available Quantity
+                </button>
+              </div>
+            </>
+          )}
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 EAN/UPC
@@ -158,9 +223,9 @@ function AddItemGroups({ addItem }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
               label=""
             />
-          </div>
+          </div> */}
         </div>
-        <h1 className="text-xl font-semibold my-4">Associate Items</h1>
+        <h1 className="text-xl font-semibold my-4">Associate Assets</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -169,7 +234,7 @@ function AddItemGroups({ addItem }) {
                   "d-flex flex-row label-text label-font-size text-base-content"
                 }
               >
-                Select Item
+                Select Asset
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -190,13 +255,13 @@ function AddItemGroups({ addItem }) {
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <select
-              name="Select Item"
+              name="Select Asset"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
             >
-              <option value="">Select Item</option>
-              <option value="">Select Item</option>
-              <option value="">Select Item</option>
+              <option value="">Select Asset</option>
+              <option value="">Select Asset</option>
+              <option value="">Select Asset</option>
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -215,10 +280,10 @@ function AddItemGroups({ addItem }) {
             type="button"
             class="inline-block w-full px-2 pb-2 pt-2.5 text-xs font-medium leading-normal hover:text-primary-600 focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700"
           >
-            + Add Item
+            + Add Asset
           </button>
         </div>
-        <h1 className="text-xl font-semibold my-4">Item Details</h1>
+        <h1 className="text-xl font-semibold my-4">Asset Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4 mb-2">
             <label className="label">

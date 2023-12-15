@@ -110,7 +110,7 @@ function ItemGroup() {
       },
       {
         accessorKey: "warehouse_name",
-        header: "Warehouse_Name",
+        header: "Asset Group name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -212,21 +212,21 @@ function ItemGroup() {
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="">
-            <h1 className="text-2xl font-semibold mt-4">Item Group Details</h1>
+            <h1 className="text-2xl font-semibold">Asset Group Details</h1>
             <div className="flex justify-between mt-4">
               <button
                 type="button"
                 onClick={handleClickOpen}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add New Group
+                Add New Asset Group
               </button>
               <button
                 type="button"
                 onClick={handleAddOpen}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add New Item Specification
+                Add New Asset Category
               </button>
             </div>
           </div>
@@ -240,7 +240,7 @@ function ItemGroup() {
             onClose={handleClose}
           >
             <div className="d-flex justify-content-between">
-              <DialogTitle>Add New Item Group</DialogTitle>
+              <DialogTitle>Add New Asset Group</DialogTitle>
               <IoMdClose
                 onClick={handleClose}
                 className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -256,7 +256,7 @@ function ItemGroup() {
                           "label-text label-font-size text-base-content"
                         }
                       >
-                        Item Group Name
+                        Asset Group Name
                       </span>
                     </label>
                   </div>
@@ -268,7 +268,7 @@ function ItemGroup() {
                       }}
                       type={"text"}
                       // value={value}
-                      placeholder={"Item Group Name"}
+                      placeholder={"Asset Group Name"}
                       // onChange={(e) => updateInputValue(e.target.value)}
                       className="input mb-2 p-1 w-full input-bordered"
                     />

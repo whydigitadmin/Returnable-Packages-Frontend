@@ -68,7 +68,14 @@ function AddItem({ addItem }) {
   const [heightValue, setHeightValue] = useState("");
   const [selectedWeight, setSelectedWeight] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
-  
+  const [selectedValue, setSelectedValue] = useState("Select Asset Group");
+  const [showStandardDropdown, setShowStandardDropdown] = useState(false);
+
+  const handleSelectChange = (e) => {
+    setSelectedValue(e.target.value);
+    // Check if the selected value should show the additional dropdown
+    setShowStandardDropdown(e.target.value == "Standard");
+  };
 
   const [formData, setFormData] = useState({
     active: true,
@@ -94,7 +101,7 @@ function AddItem({ addItem }) {
     uanUpc: "",
     weight: 0,
     weightUnit: "",
-    itemCategory:""
+    itemCategory: "",
     // Add more fields as needed...
   });
 
@@ -106,10 +113,10 @@ function AddItem({ addItem }) {
     } else if (updateType === "weightUnit") {
       setSelectedWeight(value); // Update the selected weight state
       setFormData({ ...formData, weightUnit: value }); // Update the weightUnit field in formData
-    }else if (updateType === "itemCategory") {
+    } else if (updateType === "itemCategory") {
       setSelectedCategory(value); // Update the selected weight state
       setFormData({ ...formData, itemCategory: value });
-    }else {
+    } else {
       setFormData({ ...formData, [updateType]: value });
     }
     // console.log(updateType);
@@ -131,11 +138,11 @@ function AddItem({ addItem }) {
     setValue(val);
   };
 
-  const handleItem = () => {
+  const handleAssetClose = () => {
     addItem(false);
   };
 
-  const handleWarehouse = () => {
+  const handleAsset = () => {
     const additionalData = {
       // Add your additional fields here
       // For example:
@@ -165,23 +172,8 @@ function AddItem({ addItem }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-3">Create Item</h1>
+        <h1 className="text-xl font-semibold mb-3">Create Asset</h1>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Name
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Item name"}
-              content={"Enter a unique identifier or name for the item"}
-              updateFormValue={updateFormValue}
-              updateType="name"
-            />
-          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -189,14 +181,56 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                SKU
+                Create Asset Group
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-12 mb-2">
+            <select
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-2 input-bordered ps-2"
+              onChange={handleSelectChange}
+              value={selectedValue}
+            >
+              <option value="Select Asset Group">Select Asset Group</option>
+              <option value="Standard">Standard</option>
+              <option value="Variable">Variable</option>
+              <option value="Semi Standard">Semi Standard</option>
+              <option value="Semi Variable">Semi Variable</option>
+            </select>
+            {showStandardDropdown && (
+              <div>
+                <select
+                  name="Select Item"
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="input mb-2 input-bordered ps-2"
+                >
+                  <option value="Pallet">Pallet</option>
+                  <option value="lid">Lid</option>
+                  <option value="Side Wall">Side Wall</option>
+                </select>
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="row">
+          {/* <div className="col-lg-3 col-md-6 mb-2"></div> */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                SKU No
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"SKU"}
+              placeholder={"SKU No"}
               content={
                 "The unique identifier or code for this item in your system"
               }
@@ -204,81 +238,8 @@ function AddItem({ addItem }) {
               updateType="sku"
             />
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Product Unit
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Product Unit"}
-              content={
-                "Specify the unit of measurement for this product (e.g., pieces, kilograms)"
-              }
-              updateFormValue={updateFormValue}
-              updateType="productUnit"
-            />
-          </div>
-
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Item Category
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <select
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 p-1 w-full input-bordered"
-              name="itemCategory"
-              updateType="itemCategory"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)} // Update selected item category
-            >
-              <option value="Pallet">Pallet</option>
-              <option value="Lid">Lid</option>
-              <option value="Side Wall">Side Wall</option>
-              <option value="Grate">Grate</option>
-            </select>
-          </div>
-
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Active
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2 d-flex flex-row">
-            <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-            />
-            <div
-              className="my-tooltip-element mt-3"
-              data-tooltip-html={
-                "Indicate whether this item is currently active and available for use"
-              }
-            >
-              <CiCircleInfo style={{ fontSize: "17px", marginTop: "4px" }} />
-            </div>
-            <Tooltip
-              anchorSelect=".my-tooltip-element"
-              className="tooltip-element"
-              delayHide={true}
-              delayShow={true}
-              style={{ wordBreak: "break-all" }}
-            />
-          </div>
         </div>
-        <h1 className="text-xl font-semibold my-2">Item Details</h1>
+        <h1 className="text-xl font-semibold my-2">Asset Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -580,14 +541,14 @@ function AddItem({ addItem }) {
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
-            onClick={handleWarehouse}
+            onClick={handleAsset}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save
           </button>
           <button
             type="button"
-            // onClick={handleWarehouse}
+            onClick={handleAssetClose}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel

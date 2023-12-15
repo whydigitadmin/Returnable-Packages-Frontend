@@ -19,19 +19,19 @@ import AddItemGroups from "./AddItemGroups";
 import DashBoardComponent from "./DashBoardComponent";
 const statsData = [
   {
-    title: "Total Item Groups",
+    title: "Total Asset Groups",
     value: "0",
     icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
     description: "",
   },
   {
-    title: "Active Item Groups",
+    title: "Active Asset Groups",
     value: "0",
     icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
     description: "",
   },
   {
-    title: "Item Groups Categories",
+    title: "Asset Groups Categories",
     value: "0",
     icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
     description: "",
@@ -208,7 +208,7 @@ function CreateKit() {
             })}
           </div>
           <div className="">
-            <h1 className="text-2xl font-semibold mt-4">Item Groups</h1>
+            <h1 className="text-2xl font-semibold mt-4">Asset Groups</h1>
             <div className="flex justify-between mt-4">
               <button
                 type="button"
@@ -222,7 +222,7 @@ function CreateKit() {
                 onClick={handleAddItem}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add Item Group
+                Add Asset Group
               </button>
             </div>
           </div>
