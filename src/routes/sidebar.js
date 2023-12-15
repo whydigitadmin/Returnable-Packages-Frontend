@@ -45,7 +45,7 @@ const routes = [
       {
         path: "/app/manufacturerDetails",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "ManufacturerDetails",
+        name: "Manufacturer Details",
       },
       {
         path: "/app/flows",
