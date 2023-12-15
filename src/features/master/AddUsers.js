@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState } from "react";
+import Axios from "axios";
 import ToolTip from "../../components/Input/Tooltip";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -56,12 +57,78 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddUsers({ addusers }) {
+  const [userData, setUserData] = useState({
+    employee_type: "",
+    emploee_id: "",
+    employee_name: "",
+    username: "",
+    password: "",
+    conatct_no: "",
+    email_id: "",
+    location_assigned: "",
+    active: true,
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    employee_type: "",
+    emploee_id: "",
+    employee_name: "",
+    username: "",
+    password: "",
+    conatct_no: "",
+    email_id: "",
+    location_assigned: "",
+    active: true,
+  });
+
   const updateFormValue = ({ updateType, value }) => {
-    console.log(updateType);
+    setUserData({ ...userData, [updateType]: value });
+    // console.log(updateType);
   };
 
   const handleUsers = () => {
     addusers(false);
+  };
+
+  const handleUser = () => {
+    // const errors = {};
+    // if (!userData.employee_type.trim()) {
+    //   errors.employee_type = "Employee Type is required";
+    // }
+    // if (!userData.employee_name.trim()) {
+    //   errors.employee_name = "Employee Name is required";
+    // }
+    // if (!userData.lastName.trim()) {
+    //   errors.lastName = "Last Name is required";
+    // }
+    // if (!userData.customerOrgName.trim()) {
+    //   errors.customerOrgName = "Organisation Name is required";
+    // }
+    // if (!userData.displayName.trim()) {
+    //   errors.displayName = "Display Name is required";
+    // }
+    // if (!userData.email.trim()) {
+    //   errors.email = "Email is required";
+    // }
+    // if (!userData.phone.trim()) {
+    //   errors.phone = "phone is required";
+    // }
+    // if (Object.keys(errors).length > 0) {
+    //   setFormErrors(errors);
+    //   return;
+    // }
+
+    Axios.post(
+      `${process.env.REACT_APP_API_URL}/api/usersdetails/view`,
+      userData
+    )
+      .then((response) => {
+        console.log("Response:", response.data);
+        addusers(true);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -88,6 +155,7 @@ function AddUsers({ addusers }) {
                 "The classification or category that defines the type of employee"
               }
               updateFormValue={updateFormValue}
+              updateType="employee_type"
             />
           </div>
         </div>
@@ -111,6 +179,7 @@ function AddUsers({ addusers }) {
                 "The unique identification number or code assigned to an employee"
               }
               updateFormValue={updateFormValue}
+              updateType="emploee_id"
             />
           </div>
         </div>
@@ -134,6 +203,7 @@ function AddUsers({ addusers }) {
                 "The individual's full name, typically including both the first name and the last name"
               }
               updateFormValue={updateFormValue}
+              updateType="employee_name"
             />
           </div>
         </div>
@@ -154,6 +224,7 @@ function AddUsers({ addusers }) {
               placeholder={"Enter"}
               content={"check"}
               updateFormValue={updateFormValue}
+              updateType="username"
             />
           </div>
         </div>
@@ -175,6 +246,7 @@ function AddUsers({ addusers }) {
               placeholder={"Enter"}
               content={"Use a strong mix of characters, numbers, and symbols"}
               updateFormValue={updateFormValue}
+              updateType="password"
             />
           </div>
         </div>
@@ -196,6 +268,7 @@ function AddUsers({ addusers }) {
               placeholder={"Enter"}
               content={"Contact phone"}
               updateFormValue={updateFormValue}
+              updateType="conatct_no"
             />
           </div>
         </div>
@@ -217,6 +290,7 @@ function AddUsers({ addusers }) {
               placeholder={"Enter"}
               content={"The email address associated with the contact"}
               updateFormValue={updateFormValue}
+              updateType="email_id"
             />
           </div>
         </div>
@@ -285,6 +359,7 @@ function AddUsers({ addusers }) {
         <div className="d-flex flex-row mt-1">
           <button
             type="button"
+            onClick={handleUser}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save

@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -36,11 +37,12 @@ function Users() {
 
   const handleBack = () => {
     setAdd(false);
+    getAllUsersData();
   };
   const columns = useMemo(
     () => [
       {
-        accessorKey: "id",
+        accessorKey: "userdetails_id",
         header: "Sr No",
         size: 50,
         muiTableHeadCellProps: {
@@ -51,7 +53,18 @@ function Users() {
         },
       },
       {
-        accessorKey: "employeeid",
+        accessorKey: "employee_type",
+        header: "Employee Type",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "emploee_id",
         header: "Employee ID",
         size: 50,
         muiTableHeadCellProps: {
@@ -62,8 +75,8 @@ function Users() {
         },
       },
       {
-        accessorKey: "name",
-        header: "Name",
+        accessorKey: "employee_name",
+        header: "Employee Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -73,7 +86,7 @@ function Users() {
         },
       },
       {
-        accessorKey: "email",
+        accessorKey: "email_id",
         header: "Email",
         size: 50,
         muiTableHeadCellProps: {
@@ -84,7 +97,7 @@ function Users() {
         },
       },
       {
-        accessorKey: "phone",
+        accessorKey: "conatct_no",
         header: "Phone",
         size: 50,
         muiTableHeadCellProps: {
@@ -95,25 +108,14 @@ function Users() {
         },
       },
       {
-        accessorKey: "role",
-        header: "Role",
+        accessorKey: "Active",
+        header: "active",
         size: 50,
         muiTableHeadCellProps: {
-          align: "center",
+          align: "end",
         },
         muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "Action",
-        header: "action",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
+          align: "end",
         },
       },
     ],
@@ -123,12 +125,31 @@ function Users() {
     data,
     columns,
   });
+
+  useEffect(() => {
+    getAllUsersData();
+  }, []);
+
+  const getAllUsersData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/usersdetails/view`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.UsersDetails);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <>
       {add ? (
         <AddUsers addusers={handleBack} />
       ) : (
-        <div className="">
+        <div className="card w-full p-6 bg-base-100 shadow-xl">
           <h1 className="text-2xl font-semibold mt-4">Users</h1>
           <div className="flex justify-end mt-4">
             <button
