@@ -1,60 +1,7 @@
-import Switch from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
 import * as React from "react";
 import { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import ToolTip from "../../components/Input/Tooltip";
-
-const IOSSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-  width: 42,
-  height: 26,
-  padding: 0,
-  "& .MuiSwitch-switchBase": {
-    padding: 0,
-    margin: 2,
-    transitionDuration: "300ms",
-    "&.Mui-checked": {
-      transform: "translateX(16px)",
-      color: "#fff",
-      "& + .MuiSwitch-track": {
-        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#0d6ef",
-        opacity: 1,
-        border: 0,
-      },
-      "&.Mui-disabled + .MuiSwitch-track": {
-        opacity: 0.5,
-      },
-    },
-    "&.Mui-focusVisible .MuiSwitch-thumb": {
-      color: "#33cf4d",
-      border: "6px solid #fff",
-    },
-    "&.Mui-disabled .MuiSwitch-thumb": {
-      color:
-        theme.palette.mode === "light"
-          ? theme.palette.grey[100]
-          : theme.palette.grey[600],
-    },
-    "&.Mui-disabled + .MuiSwitch-track": {
-      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    boxSizing: "border-box",
-    width: 22,
-    height: 22,
-  },
-  "& .MuiSwitch-track": {
-    borderRadius: 26 / 2,
-    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
-    opacity: 1,
-    transition: theme.transitions.create(["background-color"], {
-      duration: 500,
-    }),
-  },
-}));
 
 function AddPartStudy({ addPartStudy }) {
   const [formData, setFormData] = useState({
@@ -126,32 +73,32 @@ function AddPartStudy({ addPartStudy }) {
     if (!formData.receiverID.trim()) {
       errors.receiverID = "receiverID is required";
     }
-	if (!formData.partStudyID.trim()) {
+    if (!formData.partStudyID.trim()) {
       errors.partStudyID = "partStudyID is required";
     }
-	if (!formData.partName.trim()) {
+    if (!formData.partName.trim()) {
       errors.partName = "partName is required";
     }
-	if (!formData.partNo.trim()) {
+    if (!formData.partNo.trim()) {
       errors.partNo = "partNo is required";
     }
-	if (!formData.weight.trim()) {
+    if (!formData.weight.trim()) {
       errors.weight = "weight is required";
     }
-	if (!formData.partVol.trim()) {
+    if (!formData.partVol.trim()) {
       errors.partVol = "partVol is required";
     }
-	if (!formData.highvol.trim()) {
+    if (!formData.highvol.trim()) {
       errors.highvol = "highvol is required";
     }
-	if (!formData.lowVol.trim()) {
+    if (!formData.lowVol.trim()) {
       errors.lowVol = "lowVol is required";
     }
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-	}
+  };
 
   return (
     <>
@@ -240,97 +187,8 @@ function AddPartStudy({ addPartStudy }) {
               updateType="receiverID"
             />
           </div>
-
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Active
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2 d-flex flex-row">
-            <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-            />
-            <div
-              className="my-tooltip-element mt-3"
-              data-tooltip-html={
-                "Indicate whether this item is currently active and available for use"
-              }
-            >
-              <CiCircleInfo style={{ fontSize: "17px", marginTop: "4px" }} />
-            </div>
-            <Tooltip
-              anchorSelect=".my-tooltip-element"
-              className="tooltip-element"
-              delayHide={true}
-              delayShow={true}
-              style={{ wordBreak: "break-all" }}
-            />
-          </div> */}
         </div>
         <h1 className="text-xl font-semibold my-2">Part Basic Details</h1>
-        {/* <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Dimensions
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
-            <div className="d-flex flex-row">
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
-                placeholder={"l"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 input-bordered p-1"
-              />
-              <span>
-                <input
-                  placeholder="X"
-                  disabled
-                  className="input mb-2 input-bordered disabled-input mx-1"
-                />
-              </span>
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
-                placeholder={"b"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
-              />
-              <span>
-                <input
-                  placeholder="X"
-                  disabled
-                  className="input mb-2 input-bordered disabled-input mx-1"
-                />
-              </span>
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
-                placeholder={"h"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
-              />
-              <select
-                name="inch"
-                style={{ height: 40, fontSize: "0.800rem", width: 56 }}
-                className="input mb-2 p-1 input-bordered ms-1"
-              >
-                <option value="inch">inch</option>
-                <option value="mm">mm</option>
-                <option value="cm">cm</option>
-                <option value="feet">feet</option>
-              </select>
-            </div>
-          </div>
-        </div> */}
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -387,7 +245,7 @@ function AddPartStudy({ addPartStudy }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 145 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 166 }}
                 type={"text"}
                 value={value}
                 placeholder={"Weight"}
@@ -401,7 +259,7 @@ function AddPartStudy({ addPartStudy }) {
               >
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
-                <option value="g">g</option>
+                <option value="g">gm</option>
               </select>
             </div>
           </div>
@@ -458,142 +316,6 @@ function AddPartStudy({ addPartStudy }) {
             />
           </div>
         </div>
-        {/* <h1 className="text-xl font-semibold my-2">Asset Information</h1>
-         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Asset Category
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Asset Category"}
-              content={
-                "Assign this  item to a specific category or group for organizational purposes"
-              }
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Expected Life (Days)
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Expected Life"}
-              content={"Item anticipated lifespan"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Maintenance Period (Days)
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Maintenance Period"}
-              content={"Specifies the timeframe for planned maintenance"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Expected Trips
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Expected Trips"}
-              content={"Anticipated number of item movements"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                HSN Code
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"HSN Code"}
-              content={"Enter the HSN code if applicable for this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Tax Rate
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Tax Rate"}
-              content={"Set the applicable tax rate for this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Cost Price
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Cost Price"}
-              content={"Enter the cost price or acquisition cost of this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Sell Price
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Sell Price"}
-              content={"Specify the selling price of this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Scrap Value
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Scrap Value"}
-              content={"Estimated end-of-life item worth"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-        </div> */}
         <div className="d-flex flex-row mt-3">
           <button
             type="button"

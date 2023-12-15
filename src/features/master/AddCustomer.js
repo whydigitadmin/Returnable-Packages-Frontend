@@ -1,4 +1,5 @@
-import * as React from "react";
+import React, { useState } from "react";
+import Axios from "axios";
 import ToolTip from "../../components/Input/Tooltip";
 import Switch from "@mui/material/Switch";
 import { FaStarOfLife } from "react-icons/fa";
@@ -101,6 +102,27 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddCustomer({ addcustomer }) {
+  const [customerData, setCustomerData] = useState({
+    firstName: "",
+    lastName: "",
+    customerOrgName: "",
+    displayName: "",
+    email: "",
+    phone: 0,
+    customerActivatePortal: true,
+    active: true,
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    firstName: "",
+    lastName: "",
+    customerOrgName: "",
+    displayName: "",
+    email: "",
+    phone: "",
+    customerActivatePortal: true,
+    active: true,
+  });
   const [value, setValue] = React.useState(0);
   const [openBillingModal, setOpenBillingModal] = React.useState(false);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
@@ -110,10 +132,11 @@ function AddCustomer({ addcustomer }) {
   };
 
   const updateFormValue = ({ updateType, value }) => {
-    console.log(updateType);
+    setCustomerData({ ...customerData, [updateType]: value });
+    // console.log(updateType);
   };
 
-  const handleFlows = () => {
+  const handleCustomerClose = () => {
     addcustomer(false);
   };
   const handleBillingOpen = () => {
@@ -127,6 +150,44 @@ function AddCustomer({ addcustomer }) {
   };
   const handleShippingClose = () => {
     setOpenShippingModal(false);
+  };
+
+  const handleCustomer = () => {
+    const errors = {};
+    // if (!customerData.firstName.trim()) {
+    //   errors.firstName = "First Name is required";
+    // }
+    // if (!customerData.lastName.trim()) {
+    //   errors.lastName = "Last Name is required";
+    // }
+    if (!customerData.customerOrgName.trim()) {
+      errors.customerOrgName = "Organisation Name is required";
+    }
+    if (!customerData.displayName.trim()) {
+      errors.displayName = "Display Name is required";
+    }
+    // if (!customerData.email.trim()) {
+    //   errors.email = "Email is required";
+    // }
+    // if (!customerData.phone.trim()) {
+    //   errors.phone = "phone is required";
+    // }
+    if (Object.keys(errors).length > 0) {
+      setFormErrors(errors);
+      return;
+    }
+
+    Axios.post(
+      `${process.env.REACT_APP_API_URL}/api/master/customers`,
+      customerData
+    )
+      .then((response) => {
+        console.log("Response:", response.data);
+        addcustomer(true);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -146,11 +207,13 @@ function AddCustomer({ addcustomer }) {
               placeholder={"First Name"}
               content={"The individual's given or personal name"}
               updateFormValue={updateFormValue}
+              updateType="firstName"
             />
             <ToolTip
               placeholder={"Last Name"}
               content={"The individual's family or surname"}
               updateFormValue={updateFormValue}
+              updateType="lastName"
             />
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
@@ -172,7 +235,11 @@ function AddCustomer({ addcustomer }) {
                 "The official name or title of the customer's organization"
               }
               updateFormValue={updateFormValue}
+              updateType="customerOrgName"
             />
+            {formErrors.customerOrgName && (
+              <div className="error-text">{formErrors.customerOrgName}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -191,7 +258,11 @@ function AddCustomer({ addcustomer }) {
               placeholder={"Enter"}
               content={"The name or label used for displaying"}
               updateFormValue={updateFormValue}
+              updateType="displayName"
             />
+            {formErrors.displayName && (
+              <div className="error-text">{formErrors.displayName}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -210,6 +281,7 @@ function AddCustomer({ addcustomer }) {
               placeholder={"Enter"}
               content={"The email address associated with the contact"}
               updateFormValue={updateFormValue}
+              updateType="email"
             />
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
@@ -227,7 +299,8 @@ function AddCustomer({ addcustomer }) {
             <ToolTip
               placeholder={"Enter"}
               content={"The contact's telephone number"}
-              updateFormValue={updateFormValue}
+              // updateFormValue={updateFormValue}
+              // updateType="phone"
             />
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
@@ -409,7 +482,7 @@ function AddCustomer({ addcustomer }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    State
+                    customerOrgName
                     <FaStarOfLife className="must" />
                   </span>
                 </div>
@@ -749,13 +822,14 @@ function AddCustomer({ addcustomer }) {
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
+            onClick={handleCustomer}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save
           </button>
           <button
             type="button"
-            onClick={handleFlows}
+            onClick={handleCustomerClose}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel

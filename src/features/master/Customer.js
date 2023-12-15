@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -44,27 +45,27 @@ const statsData = [
     description: "",
   },
 ];
-const columns = [
-  { field: "id", headerName: "Sr. No", width: 90 },
-  { field: "CustomerName", headerName: "Customer Name", width: 180 },
-  { field: "Email", headerName: "Email", width: 120 },
-  { field: "GST", headerName: "GST", width: 120 },
-  { field: "City", headerName: "City", width: 120 },
-  { field: "State", headerName: "State", width: 150 },
-  { field: "Status", headerName: "Status", width: 120 },
-];
+// const columns = [
+//   { field: "id", headerName: "Sr. No", width: 90 },
+//   { field: "CustomerName", headerName: "Customer Name", width: 180 },
+//   { field: "Email", headerName: "Email", width: 120 },
+//   { field: "GST", headerName: "GST", width: 120 },
+//   { field: "City", headerName: "City", width: 120 },
+//   { field: "State", headerName: "State", width: 150 },
+//   { field: "Status", headerName: "Status", width: 120 },
+// ];
 
-const data = [
-  {
-    id: 1,
-    CustomerName: "John",
-    Email: "John@gmail.com",
-    GST: "12354687",
-    City: "Bengaluru",
-    State: "Karnataka",
-    Status: "Active",
-  },
-];
+// const data = [
+//   {
+//     id: 1,
+//     CustomerName: "John",
+//     Email: "John@gmail.com",
+//     GST: "12354687",
+//     City: "Bengaluru",
+//     State: "Karnataka",
+//     Status: "Active",
+//   },
+// ];
 
 function Customer() {
   const [open, setOpen] = React.useState(false);
@@ -84,6 +85,7 @@ function Customer() {
 
   const handleBack = () => {
     setAdd(false);
+    getCustomerData();
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -111,8 +113,8 @@ function Customer() {
         },
       },
       {
-        accessorKey: "name",
-        header: "Name",
+        accessorKey: "firstName",
+        header: "First Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -122,8 +124,8 @@ function Customer() {
         },
       },
       {
-        accessorKey: "sku",
-        header: "SKU",
+        accessorKey: "lastName",
+        header: "Last Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -133,8 +135,8 @@ function Customer() {
         },
       },
       {
-        accessorKey: "category",
-        header: "Category",
+        accessorKey: "customerOrgName",
+        header: "Customer Org Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -144,8 +146,8 @@ function Customer() {
         },
       },
       {
-        accessorKey: "purchaseprice",
-        header: "Purchase Price",
+        accessorKey: "displayName",
+        header: "Display Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -155,8 +157,8 @@ function Customer() {
         },
       },
       {
-        accessorKey: "salesprice",
-        header: "Sales Price",
+        accessorKey: "email",
+        header: "Email",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -166,8 +168,8 @@ function Customer() {
         },
       },
       {
-        accessorKey: "hsn",
-        header: "HSN",
+        accessorKey: "phone",
+        header: "Phone",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -177,8 +179,19 @@ function Customer() {
         },
       },
       {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "customerActivatePortal",
+        header: "Customer Activate Portal",
+        size: 250,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "active",
+        header: "Active",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -194,6 +207,24 @@ function Customer() {
     data,
     columns,
   });
+
+  useEffect(() => {
+    getCustomerData();
+  }, []);
+
+  const getCustomerData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/customers`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.customersVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   return (
     <>
