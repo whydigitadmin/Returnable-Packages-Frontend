@@ -105,8 +105,7 @@ function AddTickets({ addTickets }) {
               <option value="Transit">Select</option>
             </select>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -133,8 +132,7 @@ function AddTickets({ addTickets }) {
               <option value="Transit">General</option>
             </select>
           </div>
-        </div>{" "}
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -155,8 +153,7 @@ function AddTickets({ addTickets }) {
               <option value="Transit">Select</option>
             </select>
           </div>
-        </div>{" "}
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -181,8 +178,7 @@ function AddTickets({ addTickets }) {
               <option value="Static">Rejected</option>
             </select>
           </div>
-        </div>{" "}
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -205,8 +201,7 @@ function AddTickets({ addTickets }) {
               <option value="Static">Critical</option>
             </select>
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span

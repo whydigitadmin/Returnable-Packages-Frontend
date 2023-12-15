@@ -179,8 +179,6 @@ function AddVendor({ addVendors }) {
               </div>
             </div>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -200,8 +198,6 @@ function AddVendor({ addVendors }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -223,8 +219,6 @@ function AddVendor({ addVendors }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -244,8 +238,6 @@ function AddVendor({ addVendors }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -265,8 +257,6 @@ function AddVendor({ addVendors }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -281,8 +271,6 @@ function AddVendor({ addVendors }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -295,8 +283,6 @@ function AddVendor({ addVendors }) {
               control={<IOSSwitch disabled sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>

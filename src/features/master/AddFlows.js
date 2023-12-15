@@ -89,8 +89,6 @@ function AddFlows({ addFlows }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -136,8 +134,6 @@ function AddFlows({ addFlows }) {
               <option value="Static">Static</option>
             </select>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -155,8 +151,6 @@ function AddFlows({ addFlows }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -178,8 +172,6 @@ function AddFlows({ addFlows }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span

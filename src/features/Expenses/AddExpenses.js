@@ -111,8 +111,6 @@ function AddExpenses({ addExpenses }) {
               />
             </LocalizationProvider>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -132,8 +130,6 @@ function AddExpenses({ addExpenses }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -155,8 +151,6 @@ function AddExpenses({ addExpenses }) {
               <option value="">Select</option>
             </select>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -179,8 +173,6 @@ function AddExpenses({ addExpenses }) {
               <option value=""></option>
             </select>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -195,8 +187,6 @@ function AddExpenses({ addExpenses }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -217,8 +207,6 @@ function AddExpenses({ addExpenses }) {
               <option value="">28%</option>
             </select>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -233,8 +221,6 @@ function AddExpenses({ addExpenses }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
@@ -253,8 +239,6 @@ function AddExpenses({ addExpenses }) {
               <option value="">Rejected</option>
             </select>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>

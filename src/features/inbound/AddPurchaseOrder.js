@@ -228,9 +228,10 @@ function AddPurchaseOrder({ addPurchase }) {
               </span>
             </label>
           </div>
-        </div>
-        <div className="col-lg-3 col-md-6">
-          <FormControlLabel control={<IOSSwitch sx={{ m: 1 }} />} />
+
+          <div className="col-lg-3 col-md-6">
+            <FormControlLabel control={<IOSSwitch sx={{ m: 1 }} />} />
+          </div>
         </div>
         <h1 className="text-xl font-semibold mb-4">Item Details</h1>
         <div className="row">
