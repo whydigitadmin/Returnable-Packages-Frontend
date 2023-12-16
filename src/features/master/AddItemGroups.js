@@ -1,10 +1,16 @@
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 import * as React from "react";
 import { useState } from "react";
+import { FaBox, FaCube, FaCubes, FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { styled } from "@mui/material/styles";
-import { FaStarOfLife } from "react-icons/fa";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -61,11 +67,32 @@ function AddItemGroups({ addItem }) {
   const [value, setValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("Select Required Asset");
   const [showAdditionalDropdown, setShowAdditionalDropdown] = useState(false);
+  const [open, setOpen] = React.useState(false);
 
   const handleSelectChange = (e) => {
     setSelectedValue(e.target.value);
     // Check if the selected value should show the additional dropdown
     setShowAdditionalDropdown(e.target.value == "Standard");
+  };
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
   };
 
   const updateFormValue = ({ updateType, value }) => {
@@ -190,6 +217,7 @@ function AddItemGroups({ addItem }) {
                 <button
                   type="button"
                   style={{ marginTop: 2 }}
+                  onClick={handleClickOpen}
                   className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 >
                   Check Available Quantity
@@ -525,6 +553,77 @@ function AddItemGroups({ addItem }) {
           </button>
         </div>
       </div>
+      <Dialog
+        fullWidth={true}
+        maxWidth={"sm"}
+        open={open}
+        onClose={handleClose}
+      >
+        <div className="d-flex justify-content-between">
+          <DialogTitle>Check Avalilability</DialogTitle>
+          <IoMdClose
+            onClick={handleClose}
+            className="cursor-pointer w-8 h-8 mt-3 me-3"
+          />
+        </div>
+        <DialogContent>
+          <DialogContentText style={{ color: "#333", textAlign: "center" }}>
+            <div
+              style={{
+                marginTop: "20px",
+                fontSize: "18px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <FaCube style={{ marginRight: "10px", color: "#4caf50" }} />{" "}
+              Available Pallet Count:{" "}
+              <span className="ml-2" style={{ color: "green" }}>
+                232
+              </span>
+            </div>
+            <div
+              style={{
+                marginTop: "20px",
+                fontSize: "18px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <FaBox style={{ marginRight: "10px", color: "#ff9800" }} />{" "}
+              Available Lid Count:{" "}
+              <span className="ml-2" style={{ color: "green" }}>
+                324
+              </span>
+            </div>
+            <div
+              style={{
+                marginTop: "20px",
+                fontSize: "18px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <FaCubes style={{ marginRight: "10px", color: "#2196f3" }} />{" "}
+              Available Sidewall Count:{" "}
+              <span className="ml-2" style={{ color: "green" }}>
+                321
+              </span>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions
+          style={{ justifyContent: "center", padding: "10px", width: "100%" }}
+        >
+          <Button
+            onClick={handleClose}
+            variant="contained"
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
