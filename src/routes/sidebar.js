@@ -33,9 +33,9 @@ const routes = [
         name: "Items",
       },
       {
-        path: "/app/kit",
+        path: "/app/createkit",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Kit",
+        name: "Create Kit",
       },
       {
         path: "/app/warehouse",
