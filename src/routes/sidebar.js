@@ -18,14 +18,14 @@ const routes = [
     name: "Masters", // name that appear in Sidebar
     submenu: [
       {
-        path: "/app/warehouse",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Warehouse",
-      },
-      {
         path: "/app/itemGroup",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Item Group",
+      },
+      {
+        path: "/app/manufacturerDetails",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Manufacturer Details",
       },
       {
         path: "/app/items",
@@ -33,20 +33,21 @@ const routes = [
         name: "Items",
       },
       {
-        path: "/app/createkit",
+        path: "/app/kit",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Create Kit",
-      },      
+        name: "Kit",
+      },
+      {
+        path: "/app/warehouse",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Warehouse",
+      },    
       {
         path: "/app/customer",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Customer",
       },
-      {
-        path: "/app/manufacturerDetails",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Manufacturer Details",
-      },
+      
       {
         path: "/app/flows",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
