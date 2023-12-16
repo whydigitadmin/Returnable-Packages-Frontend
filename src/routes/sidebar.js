@@ -20,7 +20,7 @@ const routes = [
       {
         path: "/app/itemGroup",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Item Group",
+        name: "Asset Group",
       },
       {
         path: "/app/manufacturerDetails",
@@ -30,7 +30,7 @@ const routes = [
       {
         path: "/app/items",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Items",
+        name: "Assets",
       },
       {
         path: "/app/createkit",
@@ -41,13 +41,13 @@ const routes = [
         path: "/app/warehouse",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Warehouse",
-      },    
+      },
       {
         path: "/app/customer",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Customer",
       },
-      
+
       {
         path: "/app/flows",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
@@ -90,7 +90,7 @@ const routes = [
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Stock Details",
       },
-    ]
+    ],
   },
   {
     path: "", //no url needed as this has submenu

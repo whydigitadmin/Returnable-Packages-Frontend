@@ -70,11 +70,13 @@ function AddItem({ addItem }) {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedValue, setSelectedValue] = useState("Select Asset Group");
   const [showStandardDropdown, setShowStandardDropdown] = useState(false);
+  const [showVariableDropdown, setShowVariableDropdown] = useState(false);
 
   const handleSelectChange = (e) => {
     setSelectedValue(e.target.value);
     // Check if the selected value should show the additional dropdown
     setShowStandardDropdown(e.target.value == "Standard");
+    setShowVariableDropdown(e.target.value == "Variable");
   };
 
   const [formData, setFormData] = useState({
@@ -181,26 +183,28 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Create Asset Group
+                Asset Group
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-12 mb-2">
+          <div className="col-lg-3 col-md-6 mb-2">
             <select
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-2 input-bordered ps-2"
               onChange={handleSelectChange}
               value={selectedValue}
             >
-              <option value="Select Asset Group">Select Asset Group</option>
+              <option value="">Select Asset Group</option>
               <option value="Standard">Standard</option>
               <option value="Variable">Variable</option>
               <option value="Semi Standard">Semi Standard</option>
               <option value="Semi Variable">Semi Variable</option>
             </select>
-            {showStandardDropdown && (
-              <div>
+          </div>
+          {showStandardDropdown && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
                 <select
                   name="Select Item"
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
@@ -211,8 +215,23 @@ function AddItem({ addItem }) {
                   <option value="Side Wall">Side Wall</option>
                 </select>
               </div>
-            )}
-          </div>
+            </>
+          )}
+          {showVariableDropdown && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <select
+                  name="Select Item"
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="input mb-2 input-bordered ps-2"
+                >
+                  <option value="Insert">Insert</option>
+                  <option value="PP Box">PP Box</option>
+                  <option value="Seperate Sheets">Seperate Sheets</option>
+                </select>
+              </div>
+            </>
+          )}
         </div>
         <div className="row">
           {/* <div className="col-lg-3 col-md-6 mb-2"></div> */}

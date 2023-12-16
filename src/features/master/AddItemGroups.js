@@ -67,12 +67,14 @@ function AddItemGroups({ addItem }) {
   const [value, setValue] = useState("");
   const [selectedValue, setSelectedValue] = useState("Select Required Asset");
   const [showAdditionalDropdown, setShowAdditionalDropdown] = useState(false);
+  const [showVariableDropdown, setShowVariableDropdown] = useState(false);
   const [open, setOpen] = React.useState(false);
 
   const handleSelectChange = (e) => {
     setSelectedValue(e.target.value);
     // Check if the selected value should show the additional dropdown
     setShowAdditionalDropdown(e.target.value == "Standard");
+    setShowVariableDropdown(e.target.value == "Variable");
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -211,6 +213,31 @@ function AddItemGroups({ addItem }) {
                   <option value="Pallet">Pallet</option>
                   <option value="lid">Lid</option>
                   <option value="Side Wall">Side Wall</option>
+                </select>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2 ">
+                <button
+                  type="button"
+                  style={{ marginTop: 2 }}
+                  onClick={handleClickOpen}
+                  className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Check Available Quantity
+                </button>
+              </div>
+            </>
+          )}
+          {showVariableDropdown && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <select
+                  name="Select Item"
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="input mb-2 input-bordered ps-2"
+                >
+                  <option value="Insert">Insert</option>
+                  <option value="PP Box">PP Box</option>
+                  <option value="Seperate Sheets">Seperate Sheets</option>
                 </select>
               </div>
               <div className="col-lg-3 col-md-6 mb-2 ">
@@ -579,7 +606,7 @@ function AddItemGroups({ addItem }) {
               <FaCube style={{ marginRight: "10px", color: "#4caf50" }} />{" "}
               Available Pallet Count:{" "}
               <span className="ml-2" style={{ color: "green" }}>
-                232
+                50
               </span>
             </div>
             <div
@@ -592,8 +619,8 @@ function AddItemGroups({ addItem }) {
             >
               <FaBox style={{ marginRight: "10px", color: "#ff9800" }} />{" "}
               Available Lid Count:{" "}
-              <span className="ml-2" style={{ color: "green" }}>
-                324
+              <span className="ml-2" style={{ color: "orange" }}>
+                10
               </span>
             </div>
             <div
@@ -606,8 +633,8 @@ function AddItemGroups({ addItem }) {
             >
               <FaCubes style={{ marginRight: "10px", color: "#2196f3" }} />{" "}
               Available Sidewall Count:{" "}
-              <span className="ml-2" style={{ color: "green" }}>
-                321
+              <span className="ml-2" style={{ color: "red" }}>
+                0
               </span>
             </div>
           </DialogContentText>
