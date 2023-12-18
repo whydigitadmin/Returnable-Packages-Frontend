@@ -409,13 +409,13 @@ function AddManufacturer({ addManufacturer }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Item Group
+                    Asset Group
                     <FaStarOfLife className="must" />
                   </span>
                 </div>
                 <div className="col-lg-6 col-md-6">
                   <select
-                    name="Select Item"
+                    name="Select Asset"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     className="input input-bordered ps-2"
                   >
@@ -429,21 +429,23 @@ function AddManufacturer({ addManufacturer }) {
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <label className="label-text label-font-size text-base-content d-flex flex-row">
-                    Item Name
+                    Asset Name
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
-                  <input
+                  <select
+                    name="Select Asset"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    //type={"number"}
-                    // value={value}
-                    placeholder={"Item Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
+                    className="input input-bordered ps-2"
+                  >
+                    <option value=""></option>
+                    <option value="">Pallet</option>
+                    <option value="">Lid</option>
+                    <option value="">Side Wall</option>
+                  </select>
                 </div>
               </div>
-              <div className="row mb-3">
+              {/* <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <span
                     className={
@@ -464,7 +466,7 @@ function AddManufacturer({ addManufacturer }) {
                     className="input input-bordered p-2"
                   />
                 </div>
-              </div>
+              </div> */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <label className="label-text label-font-size text-base-content d-flex flex-row">

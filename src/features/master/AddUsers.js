@@ -158,8 +158,7 @@ function AddUsers({ addusers }) {
               updateType="employee_type"
             />
           </div>
-        </div>
-        <div className="row">
+
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -182,8 +181,6 @@ function AddUsers({ addusers }) {
               updateType="emploee_id"
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -206,8 +203,6 @@ function AddUsers({ addusers }) {
               updateType="employee_name"
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -227,8 +222,6 @@ function AddUsers({ addusers }) {
               updateType="username"
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -249,8 +242,6 @@ function AddUsers({ addusers }) {
               updateType="password"
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -271,8 +262,6 @@ function AddUsers({ addusers }) {
               updateType="conatct_no"
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -293,8 +282,6 @@ function AddUsers({ addusers }) {
               updateType="email_id"
             />
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -311,14 +298,12 @@ function AddUsers({ addusers }) {
             <select
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
+              className="input mb-2 input-bordered ps-2"
             >
               <option value="">Select</option>
               <option value="">One</option>
             </select>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -335,14 +320,12 @@ function AddUsers({ addusers }) {
             <select
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
+              className="input mb-2 input-bordered ps-2"
             >
               <option value="">Select</option>
               <option value="">One</option>
             </select>
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>

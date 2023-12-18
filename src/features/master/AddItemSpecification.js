@@ -91,7 +91,7 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Category
+                Asset Group
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -115,14 +115,14 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Name
+                Asset Category Name
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Asset name"}
+              placeholder={"Asset Category Name"}
               content={"Enter a unique identifier or name for the asset"}
               updateFormValue={updateFormValue}
             />
@@ -261,7 +261,7 @@ function AddItemSpecification({ addItemSpecification }) {
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
                 Manufacturer
@@ -279,7 +279,7 @@ function AddItemSpecification({ addItemSpecification }) {
               <option value="Manufacturer">Manufacturer 3</option>
               <option value="Manufacturer">Manufacturer 4</option>
             </select>
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
@@ -308,7 +308,7 @@ function AddItemSpecification({ addItemSpecification }) {
               </select>
             </div>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
                 Brand
@@ -321,7 +321,7 @@ function AddItemSpecification({ addItemSpecification }) {
               content={"Specify the brand associated with this item"}
               updateFormValue={updateFormValue}
             />
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text text-base-content "}>EAN/UPC</span>
@@ -337,7 +337,7 @@ function AddItemSpecification({ addItemSpecification }) {
         </div>
         <h1 className="text-xl font-semibold my-2">Asset Information</h1>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Asset Category
@@ -352,7 +352,7 @@ function AddItemSpecification({ addItemSpecification }) {
               }
               updateFormValue={updateFormValue}
             />
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -409,7 +409,7 @@ function AddItemSpecification({ addItemSpecification }) {
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -455,7 +455,7 @@ function AddItemSpecification({ addItemSpecification }) {
               content={"Specify the selling price of this item"}
               updateFormValue={updateFormValue}
             />
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
