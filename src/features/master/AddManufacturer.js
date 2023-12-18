@@ -338,6 +338,26 @@ function AddManufacturer({ addManufacturer }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
+                Designation
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+
+          <div className="col-lg-3 col-md-6 mt-1">
+            <ToolTip
+              placeholder={"Designation"}
+              content={"Contact Person's Designation"}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Phone Number
               </span>
             </label>
@@ -356,6 +376,44 @@ function AddManufacturer({ addManufacturer }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
+                Production Capacity
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+            <ToolTip
+              placeholder={"Production Capacity"}
+              content={"Daily Bases Production Capacity of this product "}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Notes
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+          <textarea
+              style={{ fontSize: "0.800rem" }}
+              className="form-control w-full label"
+              placeholder="Hints about the manufacturer"
+            ></textarea>
+          </div>
+
+          <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Active
               </span>
             </label>
@@ -366,7 +424,7 @@ function AddManufacturer({ addManufacturer }) {
             />
           </div>
         </div>
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box>
+        {/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box> */}
         <h1 className="text-xl font-semibold mt-3">Product Details</h1>
         <Box sx={{ width: "100%" }}>
           <CustomTabPanel value={value} index={0}>
@@ -421,8 +479,8 @@ function AddManufacturer({ addManufacturer }) {
                   >
                     <option value=""></option>
                     <option value="">Standard</option>
-                    <option value="">Variable</option>
-                    <option value="">Variable1</option>
+                    <option value="">Customized</option>
+                    <option value="">Customized1</option>
                   </select>
                 </div>
               </div>
@@ -528,6 +586,47 @@ function AddManufacturer({ addManufacturer }) {
                   />
                 </div>
               </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Maintenance Duration(Days)
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    //type={"number"}
+                    // value={value}
+                    placeholder={"Maintenance Duration"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Notes
+              </span>
+            
+          </div>
+          <div className="col-lg-6 col-md-6">
+          <textarea
+              style={{ fontSize: "0.800rem", width: "100%" }}
+              className="input input-bordered p-2"
+              placeholder="Hints about this Asset"
+            ></textarea>
+          </div>
+          </div>
             </DialogContentText>
           </DialogContent>
           <DialogActions className="mb-2 me-2">
