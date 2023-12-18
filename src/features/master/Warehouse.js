@@ -1,10 +1,6 @@
-import React, { useEffect, useMemo } from "react";
-import axios from "axios";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import DashBoardComponent from "./DashBoardComponent";
+import { Edit } from "@mui/icons-material";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Box, IconButton, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -12,13 +8,19 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
-import { FaCloudUploadAlt } from "react-icons/fa";
+import axios from "axios";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import { FaBoxOpen } from "react-icons/fa";
 import AddWarehouse from "./AddWarehouse";
+import DashBoardComponent from "./DashBoardComponent";
 
 const statsData = [
   {
@@ -51,6 +53,7 @@ function Warehouse() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [tableData, setTableData] = useState([]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -80,6 +83,7 @@ function Warehouse() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.WarehouseVO);
+        setTableData(response.data.paramObjectsMap.WarehouseVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -208,6 +212,16 @@ function Warehouse() {
     columns,
   });
 
+  const handleEdit = (rowData) => {
+    // Implement your logic to handle the edit action for the specific row
+    console.log("Edit clicked for row:", rowData);
+  };
+
+  const handleDelete = (rowData) => {
+    // Implement your logic to handle the delete action for the specific row
+    console.log("Delete clicked for row:", rowData);
+  };
+
   return (
     <>
       {add ? (
@@ -239,7 +253,47 @@ function Warehouse() {
             </div>
           </div>
           <div className="mt-4">
-            <MaterialReactTable table={table} />
+            <MaterialReactTable
+              displayColumnDefOptions={{
+                "mrt-row-actions": {
+                  muiTableHeadCellProps: {
+                    align: "center",
+                  },
+                  size: 120,
+                },
+              }}
+              columns={columns}
+              data={tableData}
+              editingMode="modal"
+              enableColumnOrdering
+              enableEditing
+              // onEditingRowSave={handleSaveRowEdits}
+              // onEditingRowCancel={handleCancelRowEdits}
+              renderRowActions={({ row, table }) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "1rem",
+                    justifyContent: "flex-end",
+                  }}
+                >
+                  <Tooltip arrow placement="right" title="Edit">
+                    <IconButton style={{ color: "blue" }}>
+                      <Edit />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip arrow placement="right" title="View">
+                    <IconButton
+                      color="primary"
+                      // onClick={() => handleView(row.original)}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </Tooltip>
+                </Box>
+              )}
+            />
           </div>
           <Dialog
             fullWidth={true}
