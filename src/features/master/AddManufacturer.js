@@ -470,7 +470,7 @@ function AddManufacturer({ addManufacturer }) {
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <label className="label-text label-font-size text-base-content d-flex flex-row">
-                    Warrenty
+                    Warranty
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
@@ -478,7 +478,7 @@ function AddManufacturer({ addManufacturer }) {
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     type={"text"}
                     // value={value}
-                    placeholder={"Warrenty"}
+                    placeholder={"Warranty"}
                     // onChange={(e) => updateInputValue(e.target.value)}
                     className="input input-bordered p-2"
                   />
@@ -513,7 +513,7 @@ function AddManufacturer({ addManufacturer }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Service Duration(Days)
+                    Del. Lead Time(Days)
                     <FaStarOfLife className="must" />
                   </span>
                 </div>
@@ -522,7 +522,7 @@ function AddManufacturer({ addManufacturer }) {
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     //type={"number"}
                     // value={value}
-                    placeholder={"Service Duration"}
+                    placeholder={"Del. Lead Time"}
                     // onChange={(e) => updateInputValue(e.target.value)}
                     className="input input-bordered p-2"
                   />

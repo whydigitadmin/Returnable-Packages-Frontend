@@ -91,7 +91,7 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Group
+                Asset Category
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -115,7 +115,7 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Category Name
+                Asset Name
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -155,14 +155,14 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Product Unit
+                UoM
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Select or create Product Unit"}
+              placeholder={"UoM"}
               content={
                 "Specify the unit of measurement for this product (e.g., pieces, kilograms)"
               }
@@ -256,6 +256,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 <option value="mm">mm</option>
                 <option value="cm">cm</option>
                 <option value="feet">feet</option>
+                <option value="meter">meter</option>
               </select>
             </div>
           </div>
@@ -283,7 +284,7 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
-                Weight
+                G.Weight
               </span>
             </label>
           </div>
@@ -304,7 +305,7 @@ function AddItemSpecification({ addItemSpecification }) {
               >
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
-                <option value="g">g</option>
+                <option value="grams">grams</option>
               </select>
             </div>
           </div>
@@ -370,7 +371,7 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Maintenance Period (Days)
+                Maintenance Interval (Days)
               </span>
             </label>
           </div>
@@ -384,7 +385,7 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Expected Trips
+                Expected Transactions
               </span>
             </label>
           </div>
@@ -459,7 +460,7 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Scrap Value
+                Scrap Value (%)
               </span>
             </label>
           </div>
