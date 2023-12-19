@@ -63,6 +63,16 @@ const routes = [
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Users",
       },
+      {
+        path: "/app/unit",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Unit",
+      },
+      {
+        path: "/app/warehouseLocation",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "WarehouseLocation",
+      },
     ],
   },
   {

@@ -25,6 +25,8 @@ const PurchaseOrder = lazy(() => import("../pages/protected/PurchaseOrder"));
 const Asn = lazy(() => import("../pages/protected/Asn"));
 const GRN = lazy(() => import("../pages/protected/GRN"));
 const Return = lazy(() => import("../pages/protected/Return"));
+const Unit = lazy(() => import("../pages/protected/Unit"));
+const WarehouseLocation = lazy(() => import("../pages/protected/WarehouseLocation"));
 const DeliveryChalleonVendors = lazy(() =>
   import("../pages/protected/DeliveryChalleonVendors")
 );
@@ -251,6 +253,14 @@ const routes = [
   {
     path: "/blank",
     component: Blank,
+  },
+  {
+    path: "/unit",
+    component: Unit,
+  },
+  {
+    path: "/warehouseLocation",
+    component: WarehouseLocation,
   },
 ];
 
