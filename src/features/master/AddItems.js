@@ -1,12 +1,9 @@
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import * as React from "react";
 import { useState } from "react";
-import { CiCircleInfo } from "react-icons/ci";
 import { FaStarOfLife } from "react-icons/fa";
-import { Tooltip } from "react-tooltip";
 import ToolTip from "../../components/Input/Tooltip";
 
 const IOSSwitch = styled((props) => (
@@ -242,14 +239,14 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                SKU No
+               Asset/SKU No
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"SKU No"}
+              placeholder={"Asset/SKU No"}
               content={
                 "The unique identifier or code for this item in your system"
               }

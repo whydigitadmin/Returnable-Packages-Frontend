@@ -1,0 +1,63 @@
+#app {
+    /* Styles for the element with the ID 'app' (You can add styles here if needed) */
+  }
+  
+  h1 {
+    text-align: center;
+    /* Center-align the text within 'h1' elements */
+  }
+  
+  .container {
+    width: 820px;
+    margin: auto;
+    /* Center-align the container with a fixed width of 600px */
+  }
+  
+  .grid td {
+    width: 64px;
+    height: 50px;
+    padding: 13px 4px;
+    border: 2px solid green;
+    text-align: center;
+    float: left;
+    margin: 5px;
+    /* Styles for table cells within the grid */
+  }
+  
+  .grid td:hover {
+    opacity: .7;
+    cursor: pointer;
+    /* Styles for table cells when hovered over */
+  }
+  
+  .reserved {
+    background: green;
+    color: #fff;
+    display: inline-block;
+    /* Styles for reserved seats, making them orange with white text */
+  }
+
+  .grey{
+    background-color: grey;
+    color: #fff;
+    display: inline-block;
+  }
+  
+  /* .reserved::after {
+    content: 'RESERVED';
+  }
+  
+  .available::after {
+    content: 'AVAILABLE';
+  } */
+  
+  .available {
+    color: #333;
+    /* Styles for available seats, setting the text color to a dark gray */
+  }
+  
+  li {
+    list-style: none;
+    /* Remove list-style from 'li' elements (likely used in the lists) */
+  }
+  
