@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
 import { IoMdClose } from "react-icons/io";
+import { FaCloudUploadAlt } from "react-icons/fa";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -136,6 +137,18 @@ function AddCustomer({ addcustomer }) {
     // console.log(updateType);
   };
 
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
   const handleCustomerClose = () => {
     addcustomer(false);
   };
@@ -196,9 +209,9 @@ function AddCustomer({ addcustomer }) {
         <h1 className="text-xl font-semibold mb-4 ms-5">New Customer</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+            <label className="label mb-2">
               <span className={"label-text label-font-size text-base-content"}>
-                Primary Contact
+                First Name
               </span>
             </label>
           </div>
@@ -209,12 +222,51 @@ function AddCustomer({ addcustomer }) {
               updateFormValue={updateFormValue}
               updateType="firstName"
             />
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Last Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
             <ToolTip
               placeholder={"Last Name"}
               content={"The individual's family or surname"}
               updateFormValue={updateFormValue}
               updateType="lastName"
             />
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Customer Code
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+            <ToolTip
+              placeholder={"Enter"}
+              content={
+                "The official code or title of the customer's organization"
+              }
+              updateFormValue={updateFormValue}
+              updateType="customerOrgName"
+            />
+            {formErrors.customerOrgName && (
+              <div className="error-text">{formErrors.customerOrgName}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -334,6 +386,24 @@ function AddCustomer({ addcustomer }) {
             <FormControlLabel
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Document
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <Button
+              component="label"
+              variant="contained"
+              className="text-form mt-1"
+              startIcon={<FaCloudUploadAlt />}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
           </div>
         </div>
         <Box sx={{ width: "100%" }}>
@@ -482,7 +552,7 @@ function AddCustomer({ addcustomer }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    customerOrgName
+                    State
                     <FaStarOfLife className="must" />
                   </span>
                 </div>

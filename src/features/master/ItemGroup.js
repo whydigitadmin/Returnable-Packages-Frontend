@@ -15,6 +15,7 @@ import { FaBoxOpen } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
+import { MdAddCircleOutline } from "react-icons/md";
 import AddItemSpecification from "./AddItemSpecification";
 
 const statsData = [
@@ -212,22 +213,36 @@ function ItemGroup() {
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="">
-            <h1 className="text-2xl font-semibold">Asset Group Details</h1>
+            <h1 className="text-2xl font-semibold">Asset Category Details</h1>
             <div className="flex justify-between mt-4">
               <button
+                className="btn btn-ghost btn-sm normal-case col-xs-1"
+                onClick={handleClickOpen}
+              >
+                <MdAddCircleOutline style={{ fontSize: 20 }} />
+                <span className="ml-1">Asset Category</span>
+              </button>
+              <button
+                className="btn btn-ghost btn-sm normal-case col-xs-1"
+                onClick={handleAddOpen}
+              >
+                <MdAddCircleOutline style={{ fontSize: 20 }} />
+                <span className="ml-1">Asset Group</span>
+              </button>
+              {/* <button
                 type="button"
                 onClick={handleClickOpen}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add New Asset Group
+                Asset Category
               </button>
               <button
                 type="button"
                 onClick={handleAddOpen}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add New Asset Category
-              </button>
+                Asset Group
+              </button> */}
             </div>
           </div>
           <div className="mt-4">
@@ -240,7 +255,7 @@ function ItemGroup() {
             onClose={handleClose}
           >
             <div className="d-flex justify-content-between">
-              <DialogTitle>Add New Asset Group</DialogTitle>
+              <DialogTitle>New Asset Category</DialogTitle>
               <IoMdClose
                 onClick={handleClose}
                 className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -256,7 +271,7 @@ function ItemGroup() {
                           "label-text label-font-size text-base-content"
                         }
                       >
-                        Asset Group Name
+                        Asset Category Name
                       </span>
                     </label>
                   </div>
@@ -268,9 +283,9 @@ function ItemGroup() {
                       }}
                       type={"text"}
                       // value={value}
-                      placeholder={"Asset Group Name"}
+                      placeholder={"Asset Category Name"}
                       // onChange={(e) => updateInputValue(e.target.value)}
-                      className="input mb-2 p-1 w-full input-bordered"
+                      className="form-control mb-2"
                     />
                   </div>
                 </div>

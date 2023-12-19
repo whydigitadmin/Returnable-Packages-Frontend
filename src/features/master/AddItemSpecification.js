@@ -103,9 +103,7 @@ function AddItemSpecification({ addItemSpecification }) {
               className="input mb-2 p-1 w-full input-bordered"
             >
               <option value="Standard">Standard</option>
-              <option value="Variable">Variable</option>
-              <option value="Semi Standard">Semi Standard</option>
-              <option value="Semi Variable">Semi Variable</option>
+              <option value="Customized">Customized</option>
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -122,7 +120,7 @@ function AddItemSpecification({ addItemSpecification }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Asset Category Name"}
+              placeholder={"Asset Name"}
               content={"Enter a unique identifier or name for the asset"}
               updateFormValue={updateFormValue}
             />
@@ -260,8 +258,6 @@ function AddItemSpecification({ addItemSpecification }) {
               </select>
             </div>
           </div>
-        </div>
-        <div className="row">
           {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
@@ -309,6 +305,34 @@ function AddItemSpecification({ addItemSpecification }) {
               </select>
             </div>
           </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content "}>
+                Chargable Weight
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <div className="d-flex flex-row">
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 166 }}
+                type={"text"}
+                value={value}
+                placeholder={"Weight"}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 input-bordered"
+              />
+              <select
+                name="inch"
+                style={{ height: 40, fontSize: "0.800rem", width: 60 }}
+                className="input mb-2 p-1 input-bordered ms-1"
+              >
+                <option value="kg">kg</option>
+                <option value="tonne">tonne</option>
+                <option value="grams">grams</option>
+              </select>
+            </div>
+          </div>
           {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
@@ -323,18 +347,6 @@ function AddItemSpecification({ addItemSpecification }) {
               updateFormValue={updateFormValue}
             />
           </div> */}
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text text-base-content "}>EAN/UPC</span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"EAN/UPC"}
-              content={"Enter the UPC code if applicable for this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
         </div>
         <h1 className="text-xl font-semibold my-2">Asset Information</h1>
         <div className="row">
@@ -357,7 +369,7 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Expected Life (Days)
+                Expected Life (Months)
               </span>
             </label>
           </div>
@@ -393,6 +405,18 @@ function AddItemSpecification({ addItemSpecification }) {
             <ToolTip
               placeholder={"Expected Trips"}
               content={"Anticipated number of item movements"}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text text-base-content "}>EAN/UPC</span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"EAN/UPC"}
+              content={"Enter the UPC code if applicable for this item"}
               updateFormValue={updateFormValue}
             />
           </div>

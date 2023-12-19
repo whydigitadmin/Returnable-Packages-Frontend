@@ -23,7 +23,14 @@ function ToolTip({
 
   return (
     <div className={`${containerStyle}`}>
-      <div style={{ position: "relative" }}>
+      <input
+        style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+        className="form-control mb-2"
+        type={type || "text"}
+        value={value}
+        placeholder={placeholder || ""}
+      />
+      {/* <div style={{ position: "relative" }}>
         <input
           style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
           type={type || "text"}
@@ -46,7 +53,7 @@ function ToolTip({
           delayShow={true}
           style={{ wordBreak: "break-all" }}
         />
-      </div>
+      </div> */}
     </div>
   );
 }

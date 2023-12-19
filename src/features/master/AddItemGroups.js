@@ -20,14 +20,12 @@ import { FaBox, FaCube, FaCubes, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import ToolTip from "../../components/Input/Tooltip";
 
-
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 5;
 const MenuProps = {
   PaperProps: {
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
     },
   },
 };
@@ -39,7 +37,6 @@ const names = [
   "Temperature Warehouse",
   "Others",
 ];
-
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -101,6 +98,7 @@ function AddItemGroups({ addItem }) {
   const [openCheck, setOpenCheck] = React.useState(false);
   // const [selectedValues, setSelectedValues] = useState([]);
   const [addKit, setAddKit] = React.useState(false);
+  const [standardName, setStandardName] = React.useState([]);
   const [personName, setPersonName] = React.useState([]);
   const [bound, setBound] = React.useState(false);
   const [rack, setRack] = React.useState(false);
@@ -178,6 +176,16 @@ function AddItemGroups({ addItem }) {
   const handleItem = () => {
     addItem(false);
   };
+  const handleStandardChangeChip = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setStandardName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
   const handleChangeChip = (event) => {
     const {
       target: { value },
@@ -298,22 +306,21 @@ function AddItemGroups({ addItem }) {
               // updateFormValue={updateFormValue}
             />
           </div>
-         
-          <div className="col-lg-6 col-md-12 mb-2"></div>
-          <div className="row">
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
+        </div>
+        <div className="row mb-2">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Standard Asset
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            {/* <div className="col-lg-3 col-md-6 mb-2">
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          {/* <div className="col-lg-3 col-md-6 mb-2">
               <select
                 style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                 className="input mb-4 input-bordered ps-2"
@@ -326,21 +333,52 @@ function AddItemGroups({ addItem }) {
                 <option value="Standard">Standard</option>
               </select>
             </div> */}
-            
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Quantity"}
-              content={""}
-              value={formValues.requiredQuantity}
-              onChange={handleFormChange}
-              // updateFormValue={updateFormValue}
-              updateType="firstName"
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="form-control"
+              type="text"
+              value="Pallet, Lid Side, Wall"
+              readonly
             />
+            {/* <FormControl fullWidth size="small">
+              <InputLabel id="demo-multiple-chip-label">
+                Standard Asset
+              </InputLabel>
+              <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip-label"
+                multiple
+                value={standardName}
+                onChange={handleStandardChangeChip}
+                input={
+                  <OutlinedInput
+                    id="select-multiple-chip"
+                    label="Standard Asset"
+                  />
+                }
+                renderValue={(selected) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 0.5,
+                    }}
+                  >
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                <MenuItem value={"Pallet"}>Pallet</MenuItem>
+                <MenuItem value={"Lid"}>Lid</MenuItem>
+                <MenuItem value={"Side Wall"}>Side Wall</MenuItem>
+              </Select>
+            </FormControl> */}
           </div>
-         
-              <>
-                <div className="col-lg-3 col-md-6 mb-2 ">
-                  {/* <FormControl fullWidth>
+          {/* <FormControl fullWidth>
                     <InputLabel id="select-item-label">Select Item</InputLabel>
                     <Select
                       labelId="select-item-label"
@@ -360,25 +398,16 @@ function AddItemGroups({ addItem }) {
                     >
                       {/* ... */}
 
-                      {/* <MenuItem value="">
+          {/* <MenuItem value="">
                         <em>Select an item</em>
                       </MenuItem>
                       <MenuItem value="Pallet">Pallet</MenuItem>
                       <MenuItem value="Lid">Lid</MenuItem>
                       <MenuItem value="Side Wall">Side Wall</MenuItem>
                     </Select>
-                  </FormControl> */} 
-                    <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input mb-2 input-bordered ps-2"
-                  >
-                    <option value="Insert">Pallet</option>
-                    <option value="PP Box">Lid</option>
-                    <option value="Seperate Sheets">Sidewall</option>
-                  </select>
-                </div>
-                {/* <div className="col-lg-3 col-md-6 mb-2 ">
+                  </FormControl> */}
+
+          {/* <div className="col-lg-3 col-md-6 mb-2 ">
                   <button
                     type="button"
                     style={{ marginTop: 2 }}
@@ -388,23 +417,21 @@ function AddItemGroups({ addItem }) {
                     Check Available Quantity
                   </button>
                 </div> */}
-              </>
-          
+        </div>
+        <div className="row">
+          <div className="col-lg-3 col-md-4">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Customize Asset
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
           </div>
-          <div className="row">
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Customize Asset
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            {/* <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
               <select
                 style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                 className="input mb-4 input-bordered ps-2"
@@ -417,8 +444,7 @@ function AddItemGroups({ addItem }) {
                 <option value="Variable">Variable</option>
               </select>
             </div> */}
-           
-              {/* <>
+          {/* <>
                 <div className="col-lg-3 col-md-6 mb-2">
                   <select
                     name="Select Item"
@@ -440,158 +466,113 @@ function AddItemGroups({ addItem }) {
                     Check Available Quantity
                   </button>
                 </div> */}
-                     <div className="row">
-                    <div className="col-6">
-                      <FormControl sx={{ m: 1, width: 300 }} size="small">
-                        <InputLabel id="demo-multiple-chip-label">
-                          Location Type
-                        </InputLabel>
-                        <Select
-                          labelId="demo-multiple-chip-label"
-                          id="demo-multiple-chip-label"
-                          multiple
-                          value={personName}
-                          onChange={handleChangeChip}
-                          input={
-                            <OutlinedInput
-                              id="select-multiple-chip"
-                              label="Location Type"
-                            />
-                          }
-                          renderValue={(selected) => (
-                            <Box
-                              sx={{
-                                display: "flex",
-                                flexWrap: "wrap",
-                                gap: 0.5,
-                              }}
-                            >
-                              {selected.map((value) => (
-                                <Chip key={value} label={value} />
-                              ))}
-                            </Box>
-                          )}
-                          MenuProps={MenuProps}
-                        >
-                          {/* {names.map((name) => (
-                        <MenuItem
-                          key={name}
-                          value={name}
-                          style={getStyles(name, personName, theme)}
-                        >
-                          {name}
-                        </MenuItem>
-                      ))} */}
-                          <MenuItem
-                            value={"Open WareHouse"}
-                            onClick={handleOpen}
-                          >
-                            Open WareHouse
-                          </MenuItem>
-                          <MenuItem
-                            value={"Bounded WareHouse"}
-                            onClick={handleBound}
-                          >
-                            Bounded WareHouse
-                          </MenuItem>
-                          <MenuItem
-                            value={"Racked WareHouse"}
-                            onClick={handleRack}
-                          >
-                            Racked WareHouse
-                          </MenuItem>
-                          <MenuItem
-                            value={"Temperature WareHouse"}
-                            onClick={handleTemperature}
-                          >
-                            Temperature WareHouse
-                          </MenuItem>
-                        </Select>
-                      </FormControl>
-                    </div>
-
-                    <div className="col-6">
-                      <div className="d-flex flex-wrap">
-                        {open && (
-                          <div>
-                            <FormControl
-                              sx={{ m: 1 }}
-                              variant="filled"
-                              size="small"
-                            >
-                              <TextField
-                                id="Open"
-                                label="Open Warehouse Qty"
-                                size="small"
-                                value={openQty}
-                                onChange={handleOpenChange}
-                                // error={Boolean(errors.openQty)}
-                                required
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                        {bound && (
-                          <div>
-                            <FormControl
-                              sx={{ m: 1 }}
-                              variant="filled"
-                              size="small"
-                            >
-                              <TextField
-                                id="Bound"
-                                label="Bound Warehouse Qty"
-                                size="small"
-                                value={boundQty}
-                                onChange={handleBoundChange}
-                                // error={Boolean(errors.boundQty)}
-                                required
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                        {rack && (
-                          <div>
-                            <FormControl
-                              sx={{ m: 1 }}
-                              variant="filled"
-                              size="small"
-                            >
-                              <TextField
-                                id="Rack"
-                                label="Rack Warehouse Qty"
-                                size="small"
-                                value={rackQty}
-                                onChange={handleRackChange}
-                                // error={Boolean(errors.rackQty)}
-                                required
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                        {temperature && (
-                          <div>
-                            <FormControl
-                              sx={{ m: 1 }}
-                              variant="filled"
-                              size="small"
-                            >
-                              <TextField
-                                id="Temperature"
-                                label="Temperature Warehouse Qty"
-                                size="small"
-                                value={temperatureQty}
-                                onChange={handleTemperatureChange}
-                                // error={Boolean(errors.temperatureQty)}
-                                required
-                              />
-                            </FormControl>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-           
+          <div className="col-lg-3 col-md-4">
+            <FormControl fullWidth size="small">
+              <InputLabel
+                id="demo-multiple-chip-label"
+                style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              >
+                Customized Asset
+              </InputLabel>
+              <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip-label"
+                multiple
+                value={personName}
+                onChange={handleChangeChip}
+                input={
+                  <OutlinedInput
+                    id="select-multiple-chip"
+                    label="Customized Asset"
+                  />
+                }
+                renderValue={(selected) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 0.5,
+                    }}
+                  >
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                <MenuItem
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  value={"Insert"}
+                  onClick={handleOpen}
+                >
+                  Insert
+                </MenuItem>
+                <MenuItem
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  value={"PP Box"}
+                  onClick={handleBound}
+                >
+                  PP Box
+                </MenuItem>
+                <MenuItem
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  value={"Sperated Sheets"}
+                  onClick={handleRack}
+                >
+                  Sperated Sheets
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <div className="col-lg-3 col-md-4">
+            <div className="d-flex flex-wrap">
+              {open && (
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  className="form-control mb-2"
+                  type={"number"}
+                  value={openQty}
+                  onChange={handleOpenChange}
+                  placeholder={"Insert Qty"}
+                  required
+                />
+              )}
+              {bound && (
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  className="form-control mb-2"
+                  type={"number"}
+                  value={boundQty}
+                  onChange={handleBoundChange}
+                  placeholder={"PP Box Qty"}
+                  required
+                />
+              )}
+              {rack && (
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  className="form-control mb-2"
+                  type={"number"}
+                  value={rackQty}
+                  onChange={handleRackChange}
+                  placeholder={"Sperated Sheets Qty"}
+                  required
+                />
+              )}
+            </div>
           </div>
         </div>
         <div className="d-flex flex-row mt-3">
@@ -611,7 +592,7 @@ function AddItemGroups({ addItem }) {
           </button>
         </div>
         <br></br>
-{/* 
+        {/* 
         {addKit && <KitSelection />} */}
       </div>
       <Dialog

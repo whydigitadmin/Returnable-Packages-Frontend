@@ -148,41 +148,16 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <div className="flex justify-start mb-4">
-              <div className="me-3">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="flexRadioDefault"
-                  id="flexRadioDefault1"
-                />
-                <label
-                  className="label-text label-font-size text-base-content ms-2"
-                  for="flexRadioDefault1"
-                >
-                  Material
-                </label>
-              </div>
-              <div className="">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  name="flexRadioDefault"
-                  id="flexRadioDefault1"
-                />
-                <label
-                  className="label-text label-font-size text-base-content ms-2"
-                  for="flexRadioDefault1"
-                >
-                  Transport
-                </label>
-              </div>
-            </div>
+            <ToolTip
+              placeholder={"Vendor Type"}
+              content={""}
+              updateFormValue={updateFormValue}
+            />
           </div>
           <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+            <label className="label mb-2">
               <span className={"label-text label-font-size text-base-content"}>
-                Primary Contact
+                First Name
               </span>
             </label>
           </div>
@@ -191,11 +166,27 @@ function AddVendor({ addVendors }) {
               placeholder={"First Name"}
               content={"The individual's given or personal name"}
               updateFormValue={updateFormValue}
+              updateType="firstName"
             />
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Last Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
             <ToolTip
               placeholder={"Last Name"}
               content={"The individual's family or surname"}
               updateFormValue={updateFormValue}
+              updateType="lastName"
             />
           </div>
           <div className="col-lg-3 col-md-6">
