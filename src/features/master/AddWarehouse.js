@@ -1,12 +1,29 @@
-import React, { useState } from "react";
-import Axios from "axios";
+import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
+import Chip from "@mui/material/Chip";
+import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import OutlinedInput from "@mui/material/OutlinedInput";
+import Select from "@mui/material/Select";
+import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import { FaStarOfLife } from "react-icons/fa";
+import Axios from "axios";
+import React, { useState } from "react";
+import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
+import ToolTip from "../../components/Input/Tooltip";
+
+const ITEM_HEIGHT = 35;
+  const ITEM_PADDING_TOP = 5;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -60,6 +77,8 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddWarehouse({ addWarehouse }) {
+  const [personName, setPersonName] = React.useState([]);
+  
   const [formData, setFormData] = useState({
     warehouse_name: "",
     country: "",
@@ -99,6 +118,16 @@ function AddWarehouse({ addWarehouse }) {
   const updateFormValue = ({ updateType, value }) => {
     setFormData({ ...formData, [updateType]: value });
     // console.log(updateType);
+  };
+
+  const handleChangeChip = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setPersonName(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
   };
 
   const handleCloseWarehouse = () => {
@@ -378,6 +407,71 @@ function AddWarehouse({ addWarehouse }) {
             <FormControlLabel
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content d-flex"}>
+                Location Type
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <FormControl sx={{ m: 1, width: '100%' }} size="small">
+              <InputLabel id="demo-multiple-chip-label">
+                Location Type
+              </InputLabel>
+              <Select
+                labelId="demo-multiple-chip-label"
+                id="demo-multiple-chip-label"
+                multiple
+                value={personName}
+                onChange={handleChangeChip}
+                input={
+                  <OutlinedInput
+                    id="select-multiple-chip"
+                    label="Location Type"
+                  />
+                }
+                renderValue={(selected) => (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: 0.5,
+                    }}
+                  >
+                    {selected.map((value) => (
+                      <Chip key={value} label={value} />
+                    ))}
+                  </Box>
+                )}
+                MenuProps={MenuProps}
+              >
+                {/* {names.map((name) => (
+                        <MenuItem
+                          key={name}
+                          value={name}
+                          style={getStyles(name, personName, theme)}
+                        >
+                          {name}
+                        </MenuItem>
+                      ))} */}
+                <MenuItem value={"Open WareHouse"}>
+                  Open WareHouse
+                </MenuItem>
+                <MenuItem value={"Bounded WareHouse"}>
+                  Bounded WareHouse
+                </MenuItem>
+                <MenuItem value={"Racked WareHouse"}>
+                  Racked WareHouse
+                </MenuItem>
+                <MenuItem
+                  value={"Temperature WareHouse"}>
+                  Temperature WareHouse
+                </MenuItem>
+              </Select>
+            </FormControl>
           </div>
         </div>
         <div className="d-flex flex-row mt-3">

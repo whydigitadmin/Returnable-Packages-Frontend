@@ -1,9 +1,9 @@
-import * as React from "react";
-import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
+import * as React from "react";
 import { FaStarOfLife } from "react-icons/fa";
+import ToolTip from "../../components/Input/Tooltip";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -68,7 +68,7 @@ function AddFlows({ addFlows }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4">Flow Details</h1>
+        <h1 className="text-xl font-semibold mb-4">Master Flow Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -89,7 +89,7 @@ function AddFlows({ addFlows }) {
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
+          {/* <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
                 className={
@@ -109,9 +109,10 @@ function AddFlows({ addFlows }) {
               }
               updateFormValue={updateFormValue}
             />
-          </div>
-        </div>
-        <div className="row">
+          </div> */}
+
+          {/* </div>
+        <div className="row"> */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -134,6 +135,92 @@ function AddFlows({ addFlows }) {
               <option value="Static">Static</option>
             </select>
           </div>
+
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Emitter
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Branch1">Branch1</option>
+              <option value="Branch2">Branch2</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Receiver
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Customer Place1">Customer Place1</option>
+              <option value="Customer Place2">Customer Place2</option>
+            </select>
+          </div>
+
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Orgin
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <ToolTip
+              placeholder={"Flow Start Place"}
+              content={"Flow Start place"}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Destination
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <ToolTip
+              placeholder={"Flow End Place"}
+              content={"Flow End Place"}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -151,61 +238,36 @@ function AddFlows({ addFlows }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Select Origin
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Enter"}
-              content={
-                "The choice of the origin point or source for a particular action or process"
-              }
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Select Destination
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Enter"}
-              content={
-                "The choice of the destination or target point for a particular action or process."
-              }
-              updateFormValue={updateFormValue}
-            />
-          </div>
         </div>
-        <h1 className="text-xl text-center font-semibold mb-4">Item Details</h1>
-        <div className="row">
+        <h1 className="text-xl font-semibold mb-4">Sub Flow Details</h1>
+        {/* <div className="row">
           <div className="col-lg-2 col-md-4">
             <label className="label label-text label-font-size text-base-content mb-2">
-              Select Item Group
+              Kit Name
             </label>
             <select
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
             >
-              <option value="">Select</option>
+              <option value="Kit1">Kit1</option>
+              <option value="Kit2">Kit2</option>
+              <option value="Kit3">Kit3</option>
+            </select>
+          </div>
+          <div className="col-lg-2 col-md-4">
+            <label className="label label-text label-font-size text-base-content mb-2">
+              Asset Category
+            </label>
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Standard">Standard</option>
+              <option value="Customized">Customized</option>
+              <option value="Customized1">Customized1</option>
+
             </select>
           </div>
           <div className="col-lg-3 col-md-6">
@@ -312,7 +374,124 @@ function AddFlows({ addFlows }) {
               className="input mb-2 p-2 input-bordered"
             />
           </div>
+        </div> */}
+
+        <div className="row">
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Kit Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+          <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Kit1">Kit1</option>
+              <option value="Kit2">Kit2</option>
+              <option value="Kit3">Kit3</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Part Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+          <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Part1">Part1</option>
+              <option value="Part2">Part2</option>
+              <option value="Part3">Part3</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Flow Type
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Transit">Transit</option>
+              <option value="Static">Static</option>
+            </select>
+          </div>
+
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Emitter
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Branch1">Branch1</option>
+              <option value="Branch2">Branch2</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Receiver
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              name="Select Item"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input mb-4 input-bordered ps-2"
+            >
+              <option value="Customer Place1">Customer Place1</option>
+              <option value="Customer Place2">Customer Place2</option>
+            </select>
+          </div>
         </div>
+
         <div className="col-lg-6 col-md-6 border-dotted border-2 border-black-600 text-center rounded my-4">
           <button
             type="button"

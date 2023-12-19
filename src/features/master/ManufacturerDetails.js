@@ -1,19 +1,11 @@
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useMemo } from "react";
-import { FaBox, FaCloudUploadAlt } from "react-icons/fa";
+import { FaBox } from "react-icons/fa";
 import { FaRegObjectGroup } from "react-icons/fa6";
-import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
 import { LuTimerReset } from "react-icons/lu";
 import AddManufacturer from "./AddManufacturer";
 
@@ -186,14 +178,15 @@ function ManufacturerDetails() {
           </div> */}
           <div className="">
             <h1 className="text-2xl font-semibold mt-4">Manufacturer</h1>
-            <div className="flex justify-between mt-4">
-              <button
+            <div className="flex justify-end mt-4">
+              {/* <button
                 type="button"
                 onClick={handleClickOpen}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
                 Upload
-              </button>
+              </button> */}
+              
               <button
                 type="button"
                 onClick={handleAddOpen}
@@ -206,7 +199,7 @@ function ManufacturerDetails() {
           <div className="mt-4">
             <MaterialReactTable table={table} />
           </div>
-          <Dialog
+          {/* <Dialog
             fullWidth={true}
             maxWidth={"sm"}
             open={open}
@@ -253,7 +246,7 @@ function ManufacturerDetails() {
                 Submit
               </Button>
             </DialogActions>
-          </Dialog>
+          </Dialog> */}
         </div>
         // </div>
       )}

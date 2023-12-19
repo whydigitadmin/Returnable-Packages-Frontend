@@ -71,7 +71,7 @@ const routes = [
       {
         path: "/app/warehouseLocation",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "WarehouseLocation",
+        name: "Warehouse Location",
       },
     ],
   },

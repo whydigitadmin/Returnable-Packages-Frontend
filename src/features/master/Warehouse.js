@@ -212,6 +212,14 @@ function Warehouse() {
     columns,
   });
 
+  const handleSaveRowEdits = () => {
+
+  }
+
+  const handleCancelRowEdits = () => {
+
+  }
+
   const handleEdit = (rowData) => {
     // Implement your logic to handle the edit action for the specific row
     console.log("Edit clicked for row:", rowData);
@@ -267,8 +275,8 @@ function Warehouse() {
               editingMode="modal"
               enableColumnOrdering
               enableEditing
-              // onEditingRowSave={handleSaveRowEdits}
-              // onEditingRowCancel={handleCancelRowEdits}
+              onEditingRowSave={handleSaveRowEdits}
+              onEditingRowCancel={handleCancelRowEdits}
               renderRowActions={({ row, table }) => (
                 <Box
                   sx={{

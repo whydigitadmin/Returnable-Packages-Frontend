@@ -168,6 +168,7 @@ function WarehouseLocation() {
               return <DashBoardComponent key={k} {...d} colorIndex={k} />;
             })}
           </div> */}
+        <div className="row">
         
         <div className="col-lg-3 col-md-6 mb-2">
           <label className="label">
@@ -207,6 +208,7 @@ function WarehouseLocation() {
           >
             Cancel
           </button>
+        </div>
         </div>
 
         <div className="mt-4">
