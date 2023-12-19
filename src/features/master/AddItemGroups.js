@@ -161,7 +161,7 @@ function AddItemGroups({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Kit Quantity
+                Required Quantity
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -181,7 +181,7 @@ function AddItemGroups({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Standard Asset
+                Required Asset
                 <FaStarOfLife className="must" />
               </span>
             </label>

@@ -242,14 +242,14 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Asset/SKU No
+                SKU No
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Asset/SKU No"}
+              placeholder={"SKU No"}
               content={
                 "The unique identifier or code for this item in your system"
               }
