@@ -198,6 +198,29 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
+                Storage Mapping
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"Enter"}
+              content={"Warehouse Country"}
+              updateFormValue={updateFormValue}
+              updateType="country"
+            />
+            {formErrors.country && (
+              <div className="error-text">{formErrors.country}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Address
                 <FaStarOfLife className="must" />
               </span>
