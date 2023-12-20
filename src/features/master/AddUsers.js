@@ -1,10 +1,12 @@
-import React, { useState } from "react";
-import Axios from "axios";
-import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import { FaStarOfLife } from "react-icons/fa";
+import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
+import Axios from "axios";
+import React, { useState } from "react";
+import { FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import ToolTip from "../../components/Input/Tooltip";
+
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -134,7 +136,18 @@ function AddUsers({ addusers }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4 ms-5">User Details</h1>
+        {/* <h1 className="text-xl font-semibold mb-4">User Details</h1> */}
+
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">
+           Users Details
+          </h1>
+          <IoMdClose
+            onClick={handleUsers}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
+
         <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">

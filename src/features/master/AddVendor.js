@@ -1,21 +1,21 @@
-import * as React from "react";
-import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import { styled } from "@mui/material/styles";
-import { FaStarOfLife } from "react-icons/fa";
-import PropTypes from "prop-types";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
+import PropTypes from "prop-types";
+import * as React from "react";
+import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import ToolTip from "../../components/Input/Tooltip";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -114,7 +114,7 @@ function AddVendor({ addVendors }) {
     console.log(updateType);
   };
 
-  const handleFlows = () => {
+  const handleCloseAddVendor = () => {
     addVendors(false);
   };
   const handleBillingOpen = () => {
@@ -133,7 +133,18 @@ function AddVendor({ addVendors }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4">Vendor Details</h1>
+        {/* <h1 className="text-xl font-semibold mb-4">Vendor Details</h1> */}
+
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">
+            Vendor Details
+          </h1>
+          <IoMdClose
+            onClick={handleCloseAddVendor}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
+
         <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -779,7 +790,7 @@ function AddVendor({ addVendors }) {
           </button>
           <button
             type="button"
-            onClick={handleFlows}
+            onClick={handleCloseAddVendor}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel
