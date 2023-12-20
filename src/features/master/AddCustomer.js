@@ -208,9 +208,7 @@ function AddCustomer({ addcustomer }) {
         {/* <h1 className="text-xl font-semibold mb-4">New Customer</h1> */}
 
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
-            New Customer Details
-          </h1>
+          <h1 className="text-xl font-semibold mb-3">New Customer Details</h1>
           <IoMdClose
             onClick={handleCustomerClose}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -366,6 +364,25 @@ function AddCustomer({ addcustomer }) {
             />
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                SOP
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+            <ToolTip
+              placeholder={"Enter"}
+              content={"The contact's telephone number"}
+              // updateFormValue={updateFormValue}
+              // updateType="phone"
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1 mb-2">
             <label className="label mb-1">
               <span
                 className={

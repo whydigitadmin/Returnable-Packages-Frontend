@@ -297,7 +297,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 166 }}
                 type={"text"}
                 value={value}
-                placeholder={"Weight"}
+                placeholder={"G.Weight"}
                 onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 input-bordered"
               />
@@ -325,7 +325,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 166 }}
                 type={"text"}
                 value={value}
-                placeholder={"Weight"}
+                placeholder={"Chargable Weight"}
                 onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 input-bordered"
               />
@@ -396,7 +396,7 @@ function AddItemSpecification({ addItemSpecification }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Maintenance Period"}
+              placeholder={"Maintenance Interval"}
               content={"Specifies the timeframe for planned maintenance"}
               updateFormValue={updateFormValue}
             />
@@ -410,7 +410,7 @@ function AddItemSpecification({ addItemSpecification }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Expected Trips"}
+              placeholder={"Expected Transactions"}
               content={"Anticipated number of item movements"}
               updateFormValue={updateFormValue}
             />
