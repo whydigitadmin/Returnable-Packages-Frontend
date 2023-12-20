@@ -5,6 +5,7 @@ import * as React from "react";
 import { useState } from "react";
 import { CiCircleInfo } from "react-icons/ci";
 import { FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { Tooltip } from "react-tooltip";
 import ToolTip from "../../components/Input/Tooltip";
 
@@ -80,9 +81,15 @@ function AddItemSpecification({ addItemSpecification }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-3">
-          Create Asset Specification
-        </h1>
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">
+            Create Asset Specification
+          </h1>
+          <IoMdClose
+            onClick={handleCloseAddItemSpecification}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">

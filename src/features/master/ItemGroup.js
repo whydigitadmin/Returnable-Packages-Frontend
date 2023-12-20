@@ -15,8 +15,9 @@ import { FaBoxOpen } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import { MdAddCircleOutline } from "react-icons/md";
+import { IoIosAdd } from "react-icons/io";
 import AddItemSpecification from "./AddItemSpecification";
+import { blue } from "@mui/material/colors";
 
 const statsData = [
   {
@@ -216,18 +217,20 @@ function ItemGroup() {
             <h1 className="text-2xl font-semibold">Asset Category Details</h1>
             <div className="flex justify-between mt-4">
               <button
-                className="btn btn-ghost btn-sm normal-case col-xs-1"
+                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                style={{ color: "blue" }}
                 onClick={handleClickOpen}
               >
-                <MdAddCircleOutline style={{ fontSize: 20 }} />
-                <span className="ml-1">Asset Category</span>
+                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
+                <span className="">Asset Category</span>
               </button>
               <button
-                className="btn btn-ghost btn-sm normal-case col-xs-1"
+                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                style={{ color: "blue" }}
                 onClick={handleAddOpen}
               >
-                <MdAddCircleOutline style={{ fontSize: 20 }} />
-                <span className="ml-1">Asset Group</span>
+                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
+                <span className="">Asset Group</span>
               </button>
               {/* <button
                 type="button"
