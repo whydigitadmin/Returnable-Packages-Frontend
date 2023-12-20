@@ -235,7 +235,7 @@ function AddManufacturer({ addManufacturer }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-      <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-3">
             Manufacturer Basic Details
           </h1>
@@ -406,7 +406,7 @@ function AddManufacturer({ addManufacturer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-          <textarea
+            <textarea
               style={{ fontSize: "0.800rem" }}
               className="form-control w-full label"
               placeholder="Hints about the manufacturer"
@@ -445,21 +445,19 @@ function AddManufacturer({ addManufacturer }) {
                     Add Product
                   </button> */}
 
-<button
-                className="btn btn-ghost btn-sm text-sm col-xs-1 mb-3"
-                style={{ color: "blue" }}
-                onClick={handleBillingOpen}
-              >
-                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                <span className="">Product</span>
-              </button>
-
+                  <button
+                    className="btn btn-ghost btn-sm text-sm col-xs-1 mb-3"
+                    style={{ color: "blue" }}
+                    onClick={handleBillingOpen}
+                  >
+                    <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
+                    <span className="">Product</span>
+                  </button>
                 </div>
               </div>
             </div>
 
-            <MaterialReactTable table={table} 
-           />
+            <MaterialReactTable table={table} />
           </CustomTabPanel>
         </Box>
         <Dialog
@@ -627,23 +625,22 @@ function AddManufacturer({ addManufacturer }) {
               </div>
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Notes
-              </span>
-            
-          </div>
-          <div className="col-lg-6 col-md-6">
-          <textarea
-              style={{ fontSize: "0.800rem", width: "100%" }}
-              className="input input-bordered p-2"
-              placeholder="Hints about this Asset"
-            ></textarea>
-          </div>
-          </div>
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Notes
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <textarea
+                    style={{ fontSize: "0.800rem", width: "100%" }}
+                    className="input input-bordered p-2"
+                    placeholder="Hints about this Asset"
+                  ></textarea>
+                </div>
+              </div>
             </DialogContentText>
           </DialogContent>
           <DialogActions className="mb-2 me-2">
