@@ -17,7 +17,7 @@ import PropTypes from "prop-types";
 import * as React from "react";
 import { useMemo } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
+import { IoIosAdd, IoMdClose } from "react-icons/io";
 import ToolTip from "../../components/Input/Tooltip";
 
 function CustomTabPanel(props) {
@@ -235,9 +235,15 @@ function AddManufacturer({ addManufacturer }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4">
-          Manufacturer Basic Details
-        </h1>
+      <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">
+            Manufacturer Basic Details
+          </h1>
+          <IoMdClose
+            onClick={handleCloseAddManufacturer}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
         <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -431,18 +437,29 @@ function AddManufacturer({ addManufacturer }) {
             <div className="row">
               <div className="col-lg-6 col-md-6 d-flex flex-column mt-2">
                 <div>
-                  <button
+                  {/* <button
                     type="button"
                     onClick={handleBillingOpen}
                     className="bg-blue me-5 mb-4 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                   >
                     Add Product
-                  </button>
+                  </button> */}
+
+<button
+                className="btn btn-ghost btn-sm text-sm col-xs-1 mb-3"
+                style={{ color: "blue" }}
+                onClick={handleBillingOpen}
+              >
+                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
+                <span className="">Product</span>
+              </button>
+
                 </div>
               </div>
             </div>
 
-            <MaterialReactTable table={table} />
+            <MaterialReactTable table={table} 
+           />
           </CustomTabPanel>
         </Box>
         <Dialog

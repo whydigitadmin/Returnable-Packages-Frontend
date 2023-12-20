@@ -4,6 +4,7 @@ import axios from "axios";
 import * as React from "react";
 import { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import ToolTip from "../../components/Input/Tooltip";
 
 const IOSSwitch = styled((props) => (
@@ -171,7 +172,17 @@ function AddItem({ addItem }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-3">Create Asset</h1>
+
+      <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">
+            Create Asset
+          </h1>
+          <IoMdClose
+            onClick={handleAssetClose}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
+        
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

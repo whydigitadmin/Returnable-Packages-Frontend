@@ -1,23 +1,22 @@
-import React, { useState } from "react";
-import Axios from "axios";
-import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
-import { FaStarOfLife } from "react-icons/fa";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
+import Axios from "axios";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
+import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { FaCloudUploadAlt } from "react-icons/fa";
+import ToolTip from "../../components/Input/Tooltip";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -206,7 +205,18 @@ function AddCustomer({ addcustomer }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4 ms-5">New Customer</h1>
+        {/* <h1 className="text-xl font-semibold mb-4">New Customer</h1> */}
+
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">
+            New Customer Details
+          </h1>
+          <IoMdClose
+            onClick={handleCustomerClose}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
+
         <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-2">

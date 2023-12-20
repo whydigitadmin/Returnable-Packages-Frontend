@@ -12,12 +12,10 @@ import {
 } from "material-react-table";
 import React, { useEffect, useMemo } from "react";
 import { FaBoxOpen } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
+import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import { IoIosAdd } from "react-icons/io";
 import AddItemSpecification from "./AddItemSpecification";
-import { blue } from "@mui/material/colors";
 
 const statsData = [
   {

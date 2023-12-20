@@ -12,7 +12,6 @@ import MenuItem from "@mui/material/MenuItem";
 import OutlinedInput from "@mui/material/OutlinedInput";
 import Select from "@mui/material/Select";
 import Switch from "@mui/material/Switch";
-import TextField from "@mui/material/TextField";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
 import { useState } from "react";
@@ -263,7 +262,17 @@ function AddItemGroups({ addItem }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4">Create kit</h1>
+        {/* <h1 className="text-xl font-semibold mb-4">Create kit</h1> */}
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">
+            Create Kit
+          </h1>
+          <IoMdClose
+            onClick={handleItem}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
+        
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

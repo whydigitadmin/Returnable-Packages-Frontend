@@ -1,10 +1,3 @@
-import React, { useEffect, useMemo } from "react";
-import axios from "axios";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import DashBoardComponent from "./DashBoardComponent";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -12,13 +5,20 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
-import { FaCloudUploadAlt } from "react-icons/fa";
-import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
-import { MdGroups } from "react-icons/md";
-import { FaUser } from "react-icons/fa";
+import axios from "axios";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import React, { useEffect, useMemo } from "react";
+import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
+import { FiDownload } from "react-icons/fi";
+import { IoIosAdd, IoMdClose } from "react-icons/io";
+import { MdGroups } from "react-icons/md";
 import AddCustomer from "./AddCustomer";
+import DashBoardComponent from "./DashBoardComponent";
+
 const statsData = [
   {
     title: "All Customers",
@@ -240,19 +240,21 @@ function Customer() {
           <div className="">
             <h1 className="text-2xl font-semibold mt-4">Customer</h1>
             <div className="flex justify-between mt-4">
-              <button
-                type="button"
+            <button
+                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                style={{ color: "blue" }}
                 onClick={handleClickOpen}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Upload
+                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
+                <span className="">Bulk Upload</span>
               </button>
               <button
-                type="button"
+                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                style={{ color: "blue" }}
                 onClick={handleAdd}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add Customer
+                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
+                <span className="">Customer</span>
               </button>
             </div>
           </div>
