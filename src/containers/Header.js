@@ -58,7 +58,12 @@ function Header() {
           >
             <Bars3Icon className="h-5 inline-block w-5" />
           </label>
-          <h1 className="text-2xl font-semibold ml-2">{pageTitle}</h1>
+          <h1
+            className="text-2xl font-semibold ml-2"
+            style={{ color: "rgb(51, 156, 109)" }}
+          >
+            {pageTitle}
+          </h1>
         </div>
 
         <div className="order-last">

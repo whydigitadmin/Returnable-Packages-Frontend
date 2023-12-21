@@ -13,18 +13,17 @@ import Axios from "axios";
 import React, { useState } from "react";
 import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import ToolTip from "../../components/Input/Tooltip";
 
 const ITEM_HEIGHT = 35;
-  const ITEM_PADDING_TOP = 5;
-  const MenuProps = {
-    PaperProps: {
-      style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-      },
+const ITEM_PADDING_TOP = 5;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
     },
-  };
+  },
+};
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -79,30 +78,19 @@ const IOSSwitch = styled((props) => (
 
 function AddWarehouse({ addWarehouse }) {
   const [personName, setPersonName] = React.useState([]);
-  
-  const [formData, setFormData] = useState({
-    warehouse_name: "",
-    country: "",
-    state: "",
-    city: "",
-    address: "",
-    pincode: "",
-    gst: "",
-    document: null,
-    active: true,
-  });
-
-  const [formErrors, setFormErrors] = useState({
-    warehouse_name: "",
-    country: "",
-    state: "",
-    city: "",
-    address: "",
-    pincode: "",
-    gst: "",
-    document: null,
-    active: true,
-  });
+  const [warehouseCode, setWarehouseCode] = useState();
+  const [warehouseName, setWarehouseName] = useState("");
+  const [storageMapping, setStorageMapping] = useState(null);
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [country, setCountry] = useState("");
+  const [pincode, setPincode] = useState("");
+  const [gst, setGst] = useState("");
+  const [document, setDocument] = useState(null);
+  const [locationType, setlocationType] = useState(null);
+  const [active, setActive] = useState(true);
+  const [errors, setErrors] = useState({});
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -115,11 +103,6 @@ function AddWarehouse({ addWarehouse }) {
     whiteSpace: "nowrap",
     width: 1,
   });
-
-  const updateFormValue = ({ updateType, value }) => {
-    setFormData({ ...formData, [updateType]: value });
-    // console.log(updateType);
-  };
 
   const handleChangeChip = (event) => {
     const {
@@ -134,57 +117,103 @@ function AddWarehouse({ addWarehouse }) {
   const handleCloseWarehouse = () => {
     addWarehouse(false);
   };
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "warehouseCode":
+        setWarehouseCode(value);
+        break;
+      case "warehouseName":
+        setWarehouseName(value);
+        break;
+      case "storageMapping":
+        setStorageMapping(value);
+        break;
+      case "address":
+        setAddress(value);
+        break;
+      case "city":
+        setCity(value);
+        break;
+      case "state":
+        setState(value);
+        break;
+      case "country":
+        setCountry(value);
+        break;
+      case "pincode":
+        setPincode(value);
+        break;
+      case "gst":
+        setGst(value);
+        break;
+      // default:
+      //   break;
+    }
+  };
 
   const handleWarehouse = () => {
     const errors = {};
-    if (!formData.warehouse_name.trim()) {
-      errors.warehouse_name = "Warehouse Name is required";
+    if (!warehouseName) {
+      errors.warehouseName = "Warehouse Name is required";
     }
-    if (!formData.country.trim()) {
+    if (!country) {
       errors.country = "Country is required";
     }
-    if (!formData.state.trim()) {
+    if (!state) {
       errors.state = "State is required";
     }
-    if (!formData.city.trim()) {
+    if (!city) {
       errors.city = "City is required";
     }
-    if (!formData.address.trim()) {
+    if (!address) {
       errors.address = "Address is required";
     }
-    if (!formData.pincode.trim()) {
+    if (!pincode) {
       errors.pincode = "Pincode is required";
     }
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        warehouseCode,
+        warehouseName,
+        country,
+        state,
+        city,
+        address,
+        pincode,
+        gst,
+        document,
+        locationType,
+        storageMapping,
+        active,
+      };
+      Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/warehouse/view`,
+        formData
+      )
+        .then((response) => {
+          console.log("Response:", response.data);
+          addWarehouse(true);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
     }
-
-    Axios.post(`${process.env.REACT_APP_API_URL}/api/warehouse/view`, formData)
-      .then((response) => {
-        console.log("Response:", response.data);
-        addWarehouse(true);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
   };
 
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <h1 className="text-xl font-semibold mb-4 ms-4">Warehouse Details</h1> */}
-
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
-          Warehouse Details
-          </h1>
+          <h1 className="text-xl font-semibold mb-3">Warehouse Details</h1>
           <IoMdClose
             onClick={handleCloseWarehouse}
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
-
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -199,14 +228,16 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={"The unique name or identifier for the warehouse"}
-              updateFormValue={updateFormValue}
-              updateType="warehouse_name"
+              name="warehouseName"
+              value={warehouseName}
+              onChange={handleInputChange}
             />
-            {formErrors.warehouse_name && (
-              <div className="error-text">{formErrors.warehouse_name}</div>
+            {errors.warehouseName && (
+              <span className="error-text">{errors.warehouseName}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -222,14 +253,16 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"number"}
               placeholder={"Enter"}
-              content={"Warehouse Country"}
-              updateFormValue={updateFormValue}
-              updateType="country"
+              name="warehouseCode"
+              value={warehouseCode}
+              onChange={handleInputChange}
             />
-            {formErrors.country && (
-              <div className="error-text">{formErrors.country}</div>
+            {errors.warehouseCode && (
+              <span className="error-text">{errors.warehouseCode}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -245,14 +278,16 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={"Warehouse Country"}
-              updateFormValue={updateFormValue}
-              updateType="country"
+              name="storageMapping"
+              value={storageMapping}
+              onChange={handleInputChange}
             />
-            {formErrors.country && (
-              <div className="error-text">{formErrors.country}</div>
+            {errors.storageMapping && (
+              <span className="error-text">{errors.storageMapping}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -268,16 +303,16 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={
-                "The physical location or street address of the warehouse"
-              }
-              updateFormValue={updateFormValue}
-              updateType="address"
+              name="address"
+              value={address}
+              onChange={handleInputChange}
             />
-            {formErrors.address && (
-              <div className="error-text">{formErrors.address}</div>
+            {errors.address && (
+              <span className="error-text">{errors.address}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -293,15 +328,15 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={"The city where the warehouse is located"}
-              updateFormValue={updateFormValue}
-              updateType="city"
+              name="city"
+              value={city}
+              onChange={handleInputChange}
             />
-            {formErrors.city && (
-              <div className="error-text">{formErrors.city}</div>
-            )}
+            {errors.city && <span className="error-text">{errors.city}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -316,15 +351,15 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={"Warehouse State"}
-              updateFormValue={updateFormValue}
-              updateType="state"
+              name="state"
+              value={state}
+              onChange={handleInputChange}
             />
-            {formErrors.state && (
-              <div className="error-text">{formErrors.state}</div>
-            )}
+            {errors.state && <span className="error-text">{errors.state}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -339,14 +374,16 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={"Warehouse Country"}
-              updateFormValue={updateFormValue}
-              updateType="country"
+              name="country"
+              value={country}
+              onChange={handleInputChange}
             />
-            {formErrors.country && (
-              <div className="error-text">{formErrors.country}</div>
+            {errors.country && (
+              <span className="error-text">{errors.country}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -362,14 +399,16 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={"Pincode of warehouse"}
-              updateFormValue={updateFormValue}
-              updateType="pincode"
+              name="pincode"
+              value={pincode}
+              onChange={handleInputChange}
             />
-            {formErrors.pincode && (
-              <div className="error-text">{formErrors.pincode}</div>
+            {errors.pincode && (
+              <span className="error-text">{errors.pincode}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -380,15 +419,15 @@ function AddWarehouse({ addWarehouse }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-input-size mb-2"
+              type={"text"}
               placeholder={"Enter"}
-              content={"GST of warehouse"}
-              updateFormValue={updateFormValue}
-              updateType="gst"
+              name="gst"
+              value={gst}
+              onChange={handleInputChange}
             />
-            {formErrors.gst && (
-              <div className="error-text">{formErrors.gst}</div>
-            )}
+            {errors.gst && <span className="error-text">{errors.gst}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -422,14 +461,18 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content d-flex"}>
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex"
+                }
+              >
                 Location Type
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <FormControl sx={{ m: 1, width: '100%' }} size="small">
+            <FormControl sx={{ m: 1, width: "100%" }} size="small">
               <InputLabel id="demo-multiple-chip-label">
                 Location Type
               </InputLabel>
@@ -460,26 +503,12 @@ function AddWarehouse({ addWarehouse }) {
                 )}
                 MenuProps={MenuProps}
               >
-                {/* {names.map((name) => (
-                        <MenuItem
-                          key={name}
-                          value={name}
-                          style={getStyles(name, personName, theme)}
-                        >
-                          {name}
-                        </MenuItem>
-                      ))} */}
-                <MenuItem value={"Open WareHouse"}>
-                  Open WareHouse
-                </MenuItem>
+                <MenuItem value={"Open WareHouse"}>Open WareHouse</MenuItem>
                 <MenuItem value={"Bounded WareHouse"}>
                   Bounded WareHouse
                 </MenuItem>
-                <MenuItem value={"Racked WareHouse"}>
-                  Racked WareHouse
-                </MenuItem>
-                <MenuItem
-                  value={"Temperature WareHouse"}>
+                <MenuItem value={"Racked WareHouse"}>Racked WareHouse</MenuItem>
+                <MenuItem value={"Temperature WareHouse"}>
                   Temperature WareHouse
                 </MenuItem>
               </Select>

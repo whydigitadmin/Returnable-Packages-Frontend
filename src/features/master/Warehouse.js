@@ -1,5 +1,5 @@
 import { Edit } from "@mui/icons-material";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, IconButton, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -116,8 +116,8 @@ function Warehouse() {
         },
       },
       {
-        accessorKey: "warehouse_name",
-        header: "Warehouse_Name",
+        accessorKey: "warehouseName",
+        header: "Warehouse Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -212,13 +212,9 @@ function Warehouse() {
     columns,
   });
 
-  const handleSaveRowEdits = () => {
+  const handleSaveRowEdits = () => {};
 
-  }
-
-  const handleCancelRowEdits = () => {
-
-  }
+  const handleCancelRowEdits = () => {};
 
   const handleEdit = (rowData) => {
     // Implement your logic to handle the edit action for the specific row
@@ -244,7 +240,7 @@ function Warehouse() {
           <div className="">
             <h1 className="text-2xl font-semibold mt-4">Warehouses</h1>
             <div className="flex justify-between mt-4">
-            <button
+              <button
                 className="btn btn-ghost btn-sm text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}
