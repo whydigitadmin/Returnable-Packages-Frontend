@@ -482,7 +482,7 @@ function AddManufacturer({ addManufacturer }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Asset Group
+                    Asset Category
                     <FaStarOfLife className="must" />
                   </span>
                 </div>
@@ -608,7 +608,7 @@ function AddManufacturer({ addManufacturer }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Maintenance Duration(Days)
+                    Maintenance Frequency(Days)
                     <FaStarOfLife className="must" />
                   </span>
                 </div>
@@ -617,7 +617,7 @@ function AddManufacturer({ addManufacturer }) {
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     //type={"number"}
                     // value={value}
-                    placeholder={"Maintenance Duration"}
+                    placeholder={"Maintenance Frequency"}
                     // onChange={(e) => updateInputValue(e.target.value)}
                     className="input input-bordered p-2"
                   />

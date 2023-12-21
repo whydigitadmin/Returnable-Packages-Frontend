@@ -203,7 +203,7 @@ function AddItemSpecification({ addItemSpecification }) {
             />
           </div>
         </div>
-        <h1 className="text-xl font-semibold my-2">Item Details</h1>
+        <h1 className="text-xl font-semibold my-2">Asset Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">

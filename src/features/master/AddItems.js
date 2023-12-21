@@ -74,7 +74,7 @@ function AddItem({ addItem }) {
     setSelectedValue(e.target.value);
     // Check if the selected value should show the additional dropdown
     setShowStandardDropdown(e.target.value == "Standard");
-    setShowVariableDropdown(e.target.value == "Variable");
+    setShowVariableDropdown(e.target.value == "Customized");
   };
 
   const [formData, setFormData] = useState({
@@ -172,17 +172,14 @@ function AddItem({ addItem }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-
-      <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
-            Create Asset
-          </h1>
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-3">Create Asset</h1>
           <IoMdClose
             onClick={handleAssetClose}
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
-        
+
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -205,9 +202,7 @@ function AddItem({ addItem }) {
             >
               <option value="">Select Asset Group</option>
               <option value="Standard">Standard</option>
-              <option value="Variable">Variable</option>
-              <option value="Semi Standard">Semi Standard</option>
-              <option value="Semi Variable">Semi Variable</option>
+              <option value="Customized">Customized</option>
             </select>
           </div>
           {showStandardDropdown && (
@@ -250,7 +245,7 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-               Asset/SKU No
+                Asset/SKU No
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -345,7 +340,7 @@ function AddItem({ addItem }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Select or create Manufacturer"}
+              placeholder={"Manufacturer"}
               content={"Name of the manufacturer or producer of this  item"}
               updateFormValue={updateFormValue}
               updateType="manufacturer"
@@ -422,7 +417,7 @@ function AddItem({ addItem }) {
         </div>
         <h1 className="text-xl font-semibold my-2">Asset Information</h1>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Asset Category
@@ -438,7 +433,7 @@ function AddItem({ addItem }) {
               updateFormValue={updateFormValue}
               updateType="assetCategory"
             />
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>

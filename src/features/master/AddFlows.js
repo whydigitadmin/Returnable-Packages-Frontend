@@ -72,9 +72,7 @@ function AddFlows({ addFlows }) {
         {/* <h1 className="text-xl font-semibold mb-4">Master Flow Details</h1> */}
 
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
-          Master Flow Details
-          </h1>
+          <h1 className="text-xl font-semibold mb-3">Master Flow Details</h1>
           <IoMdClose
             onClick={handleFlows}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -125,29 +123,6 @@ function AddFlows({ addFlows }) {
 
           {/* </div>
         <div className="row"> */}
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Flow Type
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
-            >
-              <option value="Transit">Transit</option>
-              <option value="Static">Static</option>
-            </select>
-          </div>
-
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -402,7 +377,7 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-          <select
+            <select
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
@@ -425,7 +400,7 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-          <select
+            <select
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
@@ -442,22 +417,39 @@ function AddFlows({ addFlows }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Flow Type
+                Part Number
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <select
-              name="Select Item"
+            <input
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
-            >
-              <option value="Transit">Transit</option>
-              <option value="Static">Static</option>
-            </select>
+              className="form-control mb-2"
+              type={"number"}
+              placeholder={"Part Number"}
+            />
           </div>
-
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Cycle Time
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="form-control mb-2"
+              type={"number"}
+              placeholder={"Cycle Time"}
+            />
+          </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -509,7 +501,7 @@ function AddFlows({ addFlows }) {
             type="button"
             class="inline-block w-full px-2 pb-2 pt-2.5 text-xs font-medium leading-normal hover:text-primary-600 focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700"
           >
-            + Add Items
+            + Add Flows
           </button>
         </div>
         <div className="d-flex flex-row mt-3">
