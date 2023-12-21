@@ -105,6 +105,7 @@ function AddVendor({ addVendors }) {
   const [value, setValue] = React.useState(0);
   const [openBillingModal, setOpenBillingModal] = React.useState(false);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
+  const [openBankModal, setOpenBankModal] = React.useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -129,6 +130,12 @@ function AddVendor({ addVendors }) {
   const handleShippingClickClose = () => {
     setOpenShippingModal(false);
   };
+  const handleBankClickOpen = () => {
+    setOpenBankModal(true);
+  };
+  const handleBankClickClose = () => {
+    setOpenBankModal(false);
+  };
 
   return (
     <>
@@ -136,9 +143,7 @@ function AddVendor({ addVendors }) {
         {/* <h1 className="text-xl font-semibold mb-4">Vendor Details</h1> */}
 
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
-            Vendor Details
-          </h1>
+          <h1 className="text-xl font-semibold mb-3">Vendor Details</h1>
           <IoMdClose
             onClick={handleCloseAddVendor}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -276,6 +281,22 @@ function AddVendor({ addVendors }) {
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className={"label-text label-font-size text-base-content"}>
+                Bank
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <button
+              className="btn btn-ghost btn-sm text-sm col-xs-1 mb-3"
+              style={{ color: "#1976d2" }}
+              onClick={handleBankClickOpen}
+            >
+              <span className="">Add Bank Details</span>
+            </button>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span className={"label-text label-font-size text-base-content"}>
                 Vendor Activate Portal
               </span>
             </label>
@@ -349,6 +370,8 @@ function AddVendor({ addVendors }) {
             </div>
           </CustomTabPanel>
         </Box>
+
+        {/* Billing Address Modal Define */}
         <Dialog
           fullWidth={true}
           maxWidth={"sm"}
@@ -565,6 +588,8 @@ function AddVendor({ addVendors }) {
             </Button>
           </DialogActions>
         </Dialog>
+
+        {/* Shipping Address Modal Define */}
         <Dialog
           fullWidth={true}
           maxWidth={"sm"}
@@ -781,6 +806,133 @@ function AddVendor({ addVendors }) {
             </Button>
           </DialogActions>
         </Dialog>
+
+        {/* Bank Details Modal Define */}
+        <Dialog
+          fullWidth={true}
+          maxWidth={"sm"}
+          open={openBankModal}
+          onClose={handleBankClickClose}
+        >
+          <div className="d-flex justify-content-between">
+            <DialogTitle>Bank Detils</DialogTitle>
+            <IoMdClose
+              onClick={handleBankClickClose}
+              className="cursor-pointer w-8 h-8 mt-3 me-3"
+            />
+          </div>
+          <DialogContent>
+            <DialogContentText className="d-flex flex-column">
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Bank
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Bank Name"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Acc No
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Account No"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Acc Name
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Account Name"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label-text label-font-size text-base-content d-flex flex-row">
+                    Branch
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Branch Name"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label-text label-font-size text-base-content d-flex flex-row">
+                    IFSC Code
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Branch IFSC"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions className="mb-2 me-2">
+            <Button onClick={handleBankClickClose}>Cancel</Button>
+            <Button component="label" variant="contained">
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
