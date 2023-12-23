@@ -99,9 +99,15 @@ function AddItemGroups({ addItem }) {
   const [addKit, setAddKit] = React.useState(false);
   const [standardName, setStandardName] = React.useState([]);
   const [personName, setPersonName] = React.useState([]);
+  const [pallet, setPallet] = React.useState(false);
+  const [lid, setLid] = React.useState(false);
+  const [sw, setSw] = React.useState(false);
   const [bound, setBound] = React.useState(false);
   const [rack, setRack] = React.useState(false);
   const [temperature, setTemperature] = React.useState(false);
+  const [palletQty, setPalletQty] = React.useState("");
+  const [lidQty, setLidQty] = React.useState("");
+  const [swQty, setSwQty] = React.useState("");
   const [openQty, setOpenQty] = React.useState("");
   const [boundQty, setBoundQty] = React.useState("");
   const [rackQty, setRackQty] = React.useState("");
@@ -175,7 +181,7 @@ function AddItemGroups({ addItem }) {
   const handleItem = () => {
     addItem(false);
   };
-  const handleStandardChangeChip = (event) => {
+  const handleStandardChip = (event) => {
     const {
       target: { value },
     } = event;
@@ -193,6 +199,25 @@ function AddItemGroups({ addItem }) {
       // On autofill we get a stringified value.
       typeof value === "string" ? value.split(",") : value
     );
+  };
+
+  const handlePallet = () => {
+    setPallet(!pallet);
+    if (pallet === false) {
+      setPalletQty("");
+    }
+  };
+  const handleLid = () => {
+    setLid(!lid);
+    if (lid === false) {
+      setLidQty("");
+    }
+  };
+  const handleSw = () => {
+    setSw(!sw);
+    if (sw === false) {
+      setSwQty("");
+    }
   };
 
   const handleOpen = () => {
@@ -213,10 +238,22 @@ function AddItemGroups({ addItem }) {
       setRackQty("");
     }
   };
-  const handleTemperature = () => {
-    setTemperature(!temperature);
-    if (temperature === false) {
-      setTemperatureQty("");
+  const handlePalletChange = (event) => {
+    setPalletQty(event.target.value);
+    if (pallet === false) {
+      setPalletQty("");
+    }
+  };
+  const handleLidChange = (event) => {
+    setLidQty(event.target.value);
+    if (lid === false) {
+      setLidQty("");
+    }
+  };
+  const handleSideChange = (event) => {
+    setSwQty(event.target.value);
+    if (sw === false) {
+      setSwQty("");
     }
   };
   const handleOpenChange = (event) => {
@@ -263,18 +300,38 @@ function AddItemGroups({ addItem }) {
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         {/* <h1 className="text-xl font-semibold mb-4">Create kit</h1> */}
-        <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
+        <div className="d-flex justify-content-end">
+          {/* <h1 className="text-xl font-semibold mb-3">
             Create Kit
-          </h1>
+          </h1> */}
           <IoMdClose
             onClick={handleItem}
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
-        
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Kit Id
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <ToolTip
+              placeholder={"AAA/AA/000"}
+              content={
+                "The unique identifier or code for this item in your system"
+              }
+              // updateFormValue={updateFormValue}
+            />
+          </div>
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -293,31 +350,10 @@ function AddItemGroups({ addItem }) {
               value={formValues.kitName}
               onChange={handleFormChange}
             />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Kit No
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Kit No"}
-              content={
-                "The unique identifier or code for this item in your system"
-              }
-              // updateFormValue={updateFormValue}
-            />
-          </div>
+          </div> */}
         </div>
-        <div className="row mb-2">
-          <div className="col-lg-3 col-md-6 mb-2">
+        <div className="row">
+          <div className="col-lg-3 col-md-4 mb-4">
             <label className="label">
               <span
                 className={
@@ -329,29 +365,12 @@ function AddItemGroups({ addItem }) {
               </span>
             </label>
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-              <select
+          <div className="col-lg-3 col-md-4">
+            <FormControl fullWidth size="small">
+              <InputLabel
+                id="demo-multiple-chip-label"
                 style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                className="input mb-4 input-bordered ps-2"
-                // value={formValues.selectedValue}
-                onChange={handleStandardChange}
               >
-                <option value="Select Required Asset">
-                  Select Required Asset
-                </option>
-                <option value="Standard">Standard</option>
-              </select>
-            </div> */}
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="form-control"
-              type="text"
-              value="Pallet, Lid Side, Wall"
-              readonly
-            />
-            {/* <FormControl fullWidth size="small">
-              <InputLabel id="demo-multiple-chip-label">
                 Standard Asset
               </InputLabel>
               <Select
@@ -359,7 +378,7 @@ function AddItemGroups({ addItem }) {
                 id="demo-multiple-chip-label"
                 multiple
                 value={standardName}
-                onChange={handleStandardChangeChip}
+                onChange={handleStandardChip}
                 input={
                   <OutlinedInput
                     id="select-multiple-chip"
@@ -381,51 +400,60 @@ function AddItemGroups({ addItem }) {
                 )}
                 MenuProps={MenuProps}
               >
-                <MenuItem value={"Pallet"}>Pallet</MenuItem>
-                <MenuItem value={"Lid"}>Lid</MenuItem>
-                <MenuItem value={"Side Wall"}>Side Wall</MenuItem>
+                <MenuItem
+                  className="form-sz"
+                  value={"Pallet"}
+                  onClick={handlePallet}
+                >
+                  Pallet
+                </MenuItem>
+                <MenuItem className="form-sz" value={"Lid"} onClick={handleLid}>
+                  Lid
+                </MenuItem>
+                <MenuItem
+                  className="form-sz"
+                  value={"Side Wall"}
+                  onClick={handleSw}
+                >
+                  Side Wall
+                </MenuItem>
               </Select>
-            </FormControl> */}
+            </FormControl>
           </div>
-          {/* <FormControl fullWidth>
-                    <InputLabel id="select-item-label">Select Item</InputLabel>
-                    <Select
-                      labelId="select-item-label"
-                      id="select-item-label"
-                      multiple
-                      value={formValues.selectedValues} // Ensure selectedValues is an array of selected values
-                      onChange={handleChange}
-                      style={{ height: 40, fontSize: "0.800rem" }}
-                      renderValue={(selected) => {
-                        if (selected.length === 0) {
-                          return <em>Select an item</em>;
-                        }
-                        return Array.isArray(selected)
-                          ? selected.join(", ")
-                          : ""; // Ensure selected is an array before using join()
-                      }}
-                    >
-                      {/* ... */}
-
-          {/* <MenuItem value="">
-                        <em>Select an item</em>
-                      </MenuItem>
-                      <MenuItem value="Pallet">Pallet</MenuItem>
-                      <MenuItem value="Lid">Lid</MenuItem>
-                      <MenuItem value="Side Wall">Side Wall</MenuItem>
-                    </Select>
-                  </FormControl> */}
-
-          {/* <div className="col-lg-3 col-md-6 mb-2 ">
-                  <button
-                    type="button"
-                    style={{ marginTop: 2 }}
-                    onClick={handleClickOpen}
-                    className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                  >
-                    Check Available Quantity
-                  </button>
-                </div> */}
+          <div className="col-lg-3 col-md-4">
+            <div className="d-flex flex-wrap">
+              {pallet && (
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"number"}
+                  value={palletQty}
+                  onChange={handlePalletChange}
+                  placeholder={"Pallet Qty"}
+                  required
+                />
+              )}
+              {lid && (
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"number"}
+                  value={lidQty}
+                  onChange={handleLidChange}
+                  placeholder={"Lid Qty"}
+                  required
+                />
+              )}
+              {sw && (
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"number"}
+                  value={swQty}
+                  onChange={handleSideChange}
+                  placeholder={"Side Wall Qty"}
+                  required
+                />
+              )}
+            </div>
+          </div>
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-4">
@@ -440,41 +468,6 @@ function AddItemGroups({ addItem }) {
               </span>
             </label>
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-              <select
-                style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                className="input mb-4 input-bordered ps-2"
-                // value={formValues.selectedValue}
-                onChange={handleCustomChange}
-              >
-                <option value="Select Required Asset">
-                  Select Required Asset
-                </option>
-                <option value="Variable">Variable</option>
-              </select>
-            </div> */}
-          {/* <>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input mb-2 input-bordered ps-2"
-                  >
-                    <option value="Insert">Insert</option>
-                    <option value="PP Box">PP Box</option>
-                    <option value="Seperate Sheets">Seperate Sheets</option>
-                  </select>
-                </div>
-                {/* <div className="col-lg-3 col-md-6 mb-2 ">
-                  <button
-                    type="button"
-                    style={{ marginTop: 2 }}
-                    onClick={handleClickOpen}
-                    className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                  >
-                    Check Available Quantity
-                  </button>
-                </div> */}
           <div className="col-lg-3 col-md-4">
             <FormControl fullWidth size="small">
               <InputLabel
@@ -588,14 +581,14 @@ function AddItemGroups({ addItem }) {
           <button
             type="button"
             onClick={handleSubmit}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save
           </button>
           <button
             type="button"
             onClick={handleItem}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel
           </button>

@@ -430,36 +430,18 @@ function AddManufacturer({ addManufacturer }) {
             />
           </div>
         </div>
-        {/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}></Box> */}
         <h1 className="text-xl font-semibold mt-3">Product Details</h1>
-        <Box sx={{ width: "100%" }}>
-          <CustomTabPanel value={value} index={0}>
-            <div className="row">
-              <div className="col-lg-6 col-md-6 d-flex flex-column mt-2">
-                <div>
-                  {/* <button
-                    type="button"
-                    onClick={handleBillingOpen}
-                    className="bg-blue me-5 mb-4 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                  >
-                    Add Product
-                  </button> */}
-
-                  <button
-                    className="btn btn-ghost btn-sm text-sm col-xs-1 mb-3"
-                    style={{ color: "blue" }}
-                    onClick={handleBillingOpen}
-                  >
-                    <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                    <span className="">Product</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <MaterialReactTable table={table} />
-          </CustomTabPanel>
-        </Box>
+        <div className="d-flex justify-content-start">
+          <button
+            className="btn btn-ghost btn-lg text-sm col-xs-1 my-2"
+            style={{ color: "blue" }}
+            onClick={handleBillingOpen}
+          >
+            <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+            <span className="text-form text-base">Product</span>
+          </button>
+        </div>
+        <MaterialReactTable table={table} />
         <Dialog
           fullWidth={true}
           maxWidth={"sm"}
@@ -540,6 +522,28 @@ function AddManufacturer({ addManufacturer }) {
                   />
                 </div>
               </div> */}
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Brand
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    type={"text"}
+                    // value={value}
+                    placeholder={"Brand"}
+                    // onChange={(e) => updateInputValue(e.target.value)}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <label className="label-text label-font-size text-base-content d-flex flex-row">

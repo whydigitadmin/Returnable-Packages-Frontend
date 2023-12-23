@@ -209,23 +209,23 @@ function CreateKit() {
             })}
           </div>
           <div className="">
-            <h1 className="text-2xl font-semibold mt-4">Asset Kit</h1>
+            {/* <h1 className="text-2xl font-semibold mt-4">Asset Kit</h1> */}
             <div className="flex justify-between mt-4">
-            <button
-                className="btn btn-ghost btn-sm text-sm col-xs-1"
+              <button
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}
               >
-                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                <span className="">Bulk Upload</span>
+                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                <span className="text-form text-base">Bulk Upload</span>
               </button>
               <button
-                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleAddItem}
               >
-                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                <span className="">Kit</span>
+                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                <span className="text-form text-base">Kit</span>
               </button>
             </div>
           </div>

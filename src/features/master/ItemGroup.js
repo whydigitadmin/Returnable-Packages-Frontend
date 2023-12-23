@@ -212,38 +212,24 @@ function ItemGroup() {
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="">
-            <h1 className="text-2xl font-semibold">Asset Category Details</h1>
-            <div className="flex justify-between mt-4">
+            {/* <h1 className="text-2xl font-semibold">Asset Category Details</h1> */}
+            <div className="flex justify-between">
               <button
-                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}
               >
-                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                <span className="">Asset Category</span>
+                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                <span className="text-form text-base">Asset Category</span>
               </button>
               <button
-                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleAddOpen}
               >
-                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                <span className="">Asset Group</span>
+                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                <span className="text-form text-base">Asset Group</span>
               </button>
-              {/* <button
-                type="button"
-                onClick={handleClickOpen}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              >
-                Asset Category
-              </button>
-              <button
-                type="button"
-                onClick={handleAddOpen}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              >
-                Asset Group
-              </button> */}
             </div>
           </div>
           <div className="mt-4">
@@ -272,31 +258,50 @@ function ItemGroup() {
                           "label-text label-font-size text-base-content"
                         }
                       >
-                        Asset Category Name
+                        Category Name
                       </span>
                     </label>
                   </div>
                   <div className="col-lg-6 col-md-6 mb-2">
                     <input
-                      style={{
-                        height: 40,
-                        fontSize: "0.800rem",
-                      }}
                       type={"text"}
                       // value={value}
-                      placeholder={"Asset Category Name"}
-                      // onChange={(e) => updateInputValue(e.target.value)}
-                      className="form-control mb-2"
+                      placeholder={""}
+                      className="form-control form-sz mb-2"
+                    />
+                  </div>
+                  <div className="col-lg-4 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content"
+                        }
+                      >
+                        Category Code
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-6 col-md-6 mb-2">
+                    <input
+                      type={"text"}
+                      // value={value}
+                      placeholder={""}
+                      className="form-control form-sz mb-2"
                     />
                   </div>
                 </div>
               </DialogContentText>
             </DialogContent>
             <DialogActions className="mb-2 me-2">
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button component="label" variant="contained">
-                Submit
+              <Button onClick={handleClose} className="text-sm">
+                Cancel
               </Button>
+              <button
+                type="button"
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Submit
+              </button>
             </DialogActions>
           </Dialog>
         </div>

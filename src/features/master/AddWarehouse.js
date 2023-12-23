@@ -229,7 +229,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="warehouseName"
@@ -254,7 +254,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"number"}
               placeholder={"Enter"}
               name="warehouseCode"
@@ -279,7 +279,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="storageMapping"
@@ -304,7 +304,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="address"
@@ -329,7 +329,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="city"
@@ -352,7 +352,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="state"
@@ -375,7 +375,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="country"
@@ -400,7 +400,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="pincode"
@@ -420,7 +420,7 @@ function AddWarehouse({ addWarehouse }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-input-size mb-2"
+              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
               name="gst"

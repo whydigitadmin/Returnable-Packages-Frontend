@@ -25,12 +25,12 @@ const routes = [
       {
         path: "/app/manufacturerDetails",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Manufacturer Details",
+        name: "Manufacture",
       },
       {
         path: "/app/items",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Assets",
+        name: "Create Assets",
       },
       {
         path: "/app/createkit",

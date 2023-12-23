@@ -218,6 +218,16 @@ function AddItem({ addItem }) {
                   <option value="Side Wall">Side Wall</option>
                 </select>
               </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <ToolTip
+                  placeholder={"Quantity"}
+                  content={
+                    "The unique identifier or code for this item in your system"
+                  }
+                  updateFormValue={updateFormValue}
+                  updateType="sku"
+                />
+              </div>
             </>
           )}
           {showVariableDropdown && (
@@ -233,6 +243,16 @@ function AddItem({ addItem }) {
                   <option value="Seperate Sheets">Seperate Sheets</option>
                 </select>
               </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <ToolTip
+                  placeholder={"Quantity"}
+                  content={
+                    "The unique identifier or code for this item in your system"
+                  }
+                  updateFormValue={updateFormValue}
+                  updateType="sku"
+                />
+              </div>
             </>
           )}
         </div>
@@ -245,19 +265,43 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Asset/SKU No
+                Asset/SKU No FROM
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Asset/SKU No"}
-              content={
-                "The unique identifier or code for this item in your system"
-              }
-              updateFormValue={updateFormValue}
-              updateType="sku"
+            <input
+              className="form-control form-sz mb-2"
+              disabled
+              type={"number"}
+              placeholder={"100"}
+              // name="warehouseCode"
+              // value={warehouseCode}
+              // onChange={handleInputChange}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Asset/SKU No TO
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              disabled
+              type={"number"}
+              placeholder={"200"}
+              // name="warehouseCode"
+              // value={warehouseCode}
+              // onChange={handleInputChange}
             />
           </div>
         </div>
@@ -276,7 +320,7 @@ function AddItem({ addItem }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
                 type={"text"}
                 value={lengthValue}
-                placeholder={"l"}
+                placeholder={"L"}
                 onChange={(e) => updateLengthValue(e.target.value)}
                 className="input mb-2 input-bordered p-1"
               />
@@ -291,7 +335,7 @@ function AddItem({ addItem }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
                 type={"text"}
                 value={breadthValue}
-                placeholder={"b"}
+                placeholder={"B"}
                 onChange={(e) => updateBreadthValue(e.target.value)}
                 className="input mb-2 p-1 input-bordered"
               />
@@ -306,7 +350,7 @@ function AddItem({ addItem }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
                 type={"text"}
                 value={heightValue}
-                placeholder={"h"}
+                placeholder={"H"}
                 onChange={(e) => updateHeightValue(e.target.value)}
                 className="input mb-2 p-1 input-bordered"
               />
@@ -339,17 +383,52 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Manufacturer"}
-              content={"Name of the manufacturer or producer of this  item"}
-              updateFormValue={updateFormValue}
-              updateType="manufacturer"
-            />
+            <select
+              name="weightUnit"
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 input-bordered ms-1 w-full"
+              // value={selectedWeight} // Set the selected value to the state value
+              // onChange={(e) =>
+              //   updateFormValue({
+              //     updateType: "weightUnit",
+              //     value: e.target.value,
+              //   })
+              // }
+            >
+              <option value="kg">Manufacturer 1</option>
+              <option value="tonne">Manufacturer 2</option>
+              <option value="g">Manufacturer 3</option>
+            </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
-                Weight
+                Brand
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              name="weightUnit"
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 p-1 input-bordered ms-1 w-full"
+              // value={selectedWeight} // Set the selected value to the state value
+              // onChange={(e) =>
+              //   updateFormValue({
+              //     updateType: "weightUnit",
+              //     value: e.target.value,
+              //   })
+              // }
+            >
+              <option value="kg">Brand 1</option>
+              <option value="tonne">Brand 2</option>
+              <option value="g">Brand 3</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content "}>
+                G. Weight
               </span>
             </label>
           </div>
@@ -358,27 +437,27 @@ function AddItem({ addItem }) {
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 166 }}
                 type="text"
-                value={formData.weight} // Assuming weight value is stored in formData.weight
-                placeholder="Weight"
-                onChange={(e) =>
-                  updateFormValue({
-                    updateType: "weight",
-                    value: e.target.value,
-                  })
-                }
+                //value={formData.weight}  Assuming weight value is stored in formData.weight
+                placeholder=""
+                // onChange={(e) =>
+                //   updateFormValue({
+                //     updateType: "weight",
+                //     value: e.target.value,
+                //   })
+                // }
                 className="input mb-2 input-bordered"
               />
               <select
                 name="weightUnit"
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
-                value={selectedWeight} // Set the selected value to the state value
-                onChange={(e) =>
-                  updateFormValue({
-                    updateType: "weightUnit",
-                    value: e.target.value,
-                  })
-                }
+                // value={selectedWeight} // Set the selected value to the state value
+                // onChange={(e) =>
+                //   updateFormValue({
+                //     updateType: "weightUnit",
+                //     value: e.target.value,
+                //   })
+                // }
               >
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
@@ -389,18 +468,32 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
-                Brand
+                Chargable Weight
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Brand"}
-              content={"Specify the brand associated with this item"}
-              updateFormValue={updateFormValue}
-              updateType="brand"
-            />
+            <div className="d-flex flex-row">
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 166 }}
+                type={"text"}
+                value={value}
+                placeholder={""}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 input-bordered"
+              />
+              <select
+                name="inch"
+                style={{ height: 40, fontSize: "0.800rem", width: 60 }}
+                className="input mb-2 p-1 input-bordered ms-1"
+              >
+                <option value="kg">kg</option>
+                <option value="tonne">tonne</option>
+                <option value="grams">grams</option>
+              </select>
+            </div>
           </div>
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text text-base-content "}>EAN/UPC</span>
@@ -564,14 +657,14 @@ function AddItem({ addItem }) {
           <button
             type="button"
             onClick={handleAsset}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save
           </button>
           <button
             type="button"
             onClick={handleAssetClose}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel
           </button>

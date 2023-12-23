@@ -104,14 +104,34 @@ function AddItemSpecification({ addItemSpecification }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <select
-              name="inch"
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 p-1 w-full input-bordered"
-            >
-              <option value="Standard">Standard</option>
-              <option value="Customized">Customized</option>
+            <select className="form-select form-sz w-full mb-2">
+              {/* <option selected>Open this select menu</option> */}
+              <option value="">Standard</option>
+              <option value="">Customized</option>
             </select>
+          </div>
+          <div className="col-lg-6 col-md-12 mb-2"></div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex"
+                }
+              >
+                Asset Code
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={""}
+              // name="warehouseName"
+              // value={warehouseName}
+              // onChange={handleInputChange}
+            />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -126,85 +146,15 @@ function AddItemSpecification({ addItemSpecification }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Asset Name"}
-              content={"Enter a unique identifier or name for the asset"}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={""}
+              // name=""
+              // value={}
+              // onChange={handleInputChange}
             />
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                SKU No
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"SKU No"}
-              content={
-                "The unique identifier or code for this item in your system"
-              }
-              updateFormValue={updateFormValue}
-            />
-          </div> */}
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                UoM
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"UoM"}
-              content={
-                "Specify the unit of measurement for this product (e.g., pieces, kilograms)"
-              }
-              updateFormValue={updateFormValue}
-            />
-          </div>
-
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Active
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2 d-flex flex-row">
-            <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-            />
-            <div
-              className="my-tooltip-element mt-3"
-              data-tooltip-html={
-                "Indicate whether this item is currently active and available for use"
-              }
-            >
-              <CiCircleInfo style={{ fontSize: "17px", marginTop: "4px" }} />
-            </div>
-            <Tooltip
-              anchorSelect=".my-tooltip-element"
-              className="tooltip-element"
-              delayHide={true}
-              delayShow={true}
-              style={{ wordBreak: "break-all" }}
-            />
-          </div>
-        </div>
-        <h1 className="text-xl font-semibold my-2">Asset Details</h1>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -267,6 +217,106 @@ function AddItemSpecification({ addItemSpecification }) {
           </div>
           {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                UoM
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              name="inch"
+              style={{ height: 40, fontSize: "0.800rem", width: 56 }}
+              className="input mb-2 p-1 input-bordered ms-1"
+            >
+              <option value="inch">inch</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+              <option value="feet">feet</option>
+              <option value="meter">meter</option>
+            </select>
+          </div> */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Active
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <FormControlLabel
+              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            />
+          </div>
+        </div>
+        {/* <h1 className="text-xl font-semibold my-2">Asset Details</h1>
+        <div className="row">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Dimensions
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
+            <div className="d-flex flex-row">
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                type={"text"}
+                value={value}
+                placeholder={"L"}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 input-bordered p-1"
+              />
+              <span>
+                <input
+                  placeholder="X"
+                  disabled
+                  className="input mb-2 input-bordered disabled-input mx-1"
+                />
+              </span>
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                type={"text"}
+                value={value}
+                placeholder={"B"}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 p-1 input-bordered"
+              />
+              <span>
+                <input
+                  placeholder="X"
+                  disabled
+                  className="input mb-2 input-bordered disabled-input mx-1"
+                />
+              </span>
+              <input
+                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                type={"text"}
+                value={value}
+                placeholder={"H"}
+                onChange={(e) => updateInputValue(e.target.value)}
+                className="input mb-2 p-1 input-bordered"
+              />
+              <select
+                name="inch"
+                style={{ height: 40, fontSize: "0.800rem", width: 56 }}
+                className="input mb-2 p-1 input-bordered ms-1"
+              >
+                <option value="inch">inch</option>
+                <option value="mm">mm</option>
+                <option value="cm">cm</option>
+                <option value="feet">feet</option>
+                <option value="meter">meter</option>
+              </select>
+            </div>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
                 Manufacturer
               </span>
@@ -283,7 +333,7 @@ function AddItemSpecification({ addItemSpecification }) {
               <option value="Manufacturer">Manufacturer 3</option>
               <option value="Manufacturer">Manufacturer 4</option>
             </select>
-          </div> */}
+          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
@@ -353,7 +403,7 @@ function AddItemSpecification({ addItemSpecification }) {
               content={"Specify the brand associated with this item"}
               updateFormValue={updateFormValue}
             />
-          </div> */}
+          </div>
         </div>
         <h1 className="text-xl font-semibold my-2">Asset Information</h1>
         <div className="row">
@@ -372,7 +422,7 @@ function AddItemSpecification({ addItemSpecification }) {
               }
               updateFormValue={updateFormValue}
             />
-          </div> */}
+          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -487,7 +537,7 @@ function AddItemSpecification({ addItemSpecification }) {
               content={"Specify the selling price of this item"}
               updateFormValue={updateFormValue}
             />
-          </div> */}
+          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -502,18 +552,18 @@ function AddItemSpecification({ addItemSpecification }) {
               updateFormValue={updateFormValue}
             />
           </div>
-        </div>
+        </div> */}
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save
           </button>
           <button
             type="button"
             onClick={handleCloseAddItemSpecification}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel
           </button>
