@@ -421,38 +421,73 @@ function AddItemGroups({ addItem }) {
             </FormControl>
           </div>
           <div className="col-lg-3 col-md-4">
-            <div className="d-flex flex-wrap">
-              {pallet && (
+            {pallet && (
+              <>
+                <label className="label">
+                  <span
+                    className={"label-text label-font-size text-base-content"}
+                  >
+                    Pallet Quantity
+                  </span>
+                </label>
+              </>
+            )}
+            {lid && (
+              <label className="label">
+                <span
+                  className={"label-text label-font-size text-base-content"}
+                >
+                  Lid Quantity
+                </span>
+              </label>
+            )}
+            {sw && (
+              <label className="label">
+                <span
+                  className={"label-text label-font-size text-base-content"}
+                >
+                  Side Wall Quantity
+                </span>
+              </label>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-4">
+            {pallet && (
+              <>
                 <input
                   className="form-control form-sz mb-2"
                   type={"number"}
                   value={palletQty}
                   onChange={handlePalletChange}
-                  placeholder={"Pallet Qty"}
+                  placeholder={""}
                   required
                 />
-              )}
-              {lid && (
+              </>
+            )}
+            {lid && (
+              <>
                 <input
                   className="form-control form-sz mb-2"
                   type={"number"}
                   value={lidQty}
                   onChange={handleLidChange}
-                  placeholder={"Lid Qty"}
+                  placeholder={""}
                   required
                 />
-              )}
-              {sw && (
+              </>
+            )}
+            {sw && (
+              <>
                 <input
                   className="form-control form-sz mb-2"
                   type={"number"}
                   value={swQty}
                   onChange={handleSideChange}
-                  placeholder={"Side Wall Qty"}
+                  placeholder={""}
                   required
                 />
-              )}
-            </div>
+              </>
+            )}
           </div>
         </div>
         <div className="row">
@@ -528,53 +563,86 @@ function AddItemGroups({ addItem }) {
             </FormControl>
           </div>
           <div className="col-lg-3 col-md-4">
-            <div className="d-flex flex-wrap">
-              {open && (
-                <input
-                  style={{
-                    height: 40,
-                    fontSize: "0.800rem",
-                    width: "100%",
-                  }}
-                  className="form-control mb-2"
-                  type={"number"}
-                  value={openQty}
-                  onChange={handleOpenChange}
-                  placeholder={"Insert Qty"}
-                  required
-                />
-              )}
-              {bound && (
-                <input
-                  style={{
-                    height: 40,
-                    fontSize: "0.800rem",
-                    width: "100%",
-                  }}
-                  className="form-control mb-2"
-                  type={"number"}
-                  value={boundQty}
-                  onChange={handleBoundChange}
-                  placeholder={"PP Box Qty"}
-                  required
-                />
-              )}
-              {rack && (
-                <input
-                  style={{
-                    height: 40,
-                    fontSize: "0.800rem",
-                    width: "100%",
-                  }}
-                  className="form-control mb-2"
-                  type={"number"}
-                  value={rackQty}
-                  onChange={handleRackChange}
-                  placeholder={"Sperated Sheets Qty"}
-                  required
-                />
-              )}
-            </div>
+            {open && (
+              <>
+                <label className="label">
+                  <span
+                    className={"label-text label-font-size text-base-content"}
+                  >
+                    Insert Quantity
+                  </span>
+                </label>
+              </>
+            )}
+            {bound && (
+              <>
+                <label className="label">
+                  <span
+                    className={"label-text label-font-size text-base-content"}
+                  >
+                    PP Box Quantity
+                  </span>
+                </label>
+              </>
+            )}
+            {rack && (
+              <>
+                <label className="label">
+                  <span
+                    className={"label-text label-font-size text-base-content"}
+                  >
+                    Sperated Sheets Quantity
+                  </span>
+                </label>
+              </>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-4">
+            {open && (
+              <input
+                style={{
+                  height: 40,
+                  fontSize: "0.800rem",
+                  width: "100%",
+                }}
+                className="form-control mb-2"
+                type={"number"}
+                value={openQty}
+                onChange={handleOpenChange}
+                placeholder={""}
+                required
+              />
+            )}
+            {bound && (
+              <input
+                style={{
+                  height: 40,
+                  fontSize: "0.800rem",
+                  width: "100%",
+                }}
+                className="form-control mb-2"
+                type={"number"}
+                value={boundQty}
+                onChange={handleBoundChange}
+                placeholder={""}
+                required
+              />
+            )}
+            {rack && (
+              <input
+                style={{
+                  height: 40,
+                  fontSize: "0.800rem",
+                  width: "100%",
+                }}
+                className="form-control mb-2"
+                type={"number"}
+                value={rackQty}
+                onChange={handleRackChange}
+                placeholder={""}
+                required
+              />
+            )}
           </div>
         </div>
         <div className="d-flex flex-row mt-3">

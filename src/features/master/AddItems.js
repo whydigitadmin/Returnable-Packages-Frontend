@@ -213,9 +213,14 @@ function AddItem({ addItem }) {
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="input mb-2 input-bordered ps-2"
                 >
-                  <option value="Pallet">Pallet</option>
-                  <option value="lid">Lid</option>
-                  <option value="Side Wall">Side Wall</option>
+                  <option value="">STD-PL-1268</option>
+                  <option value="">STD-LD-1025</option>
+                  <option value="">STD-SW-1450</option>
+                  <option value="">STD-SW-1390</option>
+                  <option value="">STD-PL-1150</option>
+                  <option value="">STD-LD-1110</option>
+                  <option value="">STD-PL-1280</option>
+                  <option value="">STD-SW-1370</option>
                 </select>
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
@@ -238,9 +243,13 @@ function AddItem({ addItem }) {
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="input mb-2 input-bordered ps-2"
                 >
-                  <option value="Insert">Insert</option>
-                  <option value="PP Box">PP Box</option>
-                  <option value="Seperate Sheets">Seperate Sheets</option>
+                  <option value="">CMZ-IN-2535</option>
+                  <option value="">CMZ-PP-2050</option>
+                  <option value="">CMZ-IN-2140</option>
+                  <option value="">CMZ-SS-2000</option>
+                  <option value="">CMZ-PP-2160</option>
+                  <option value="">CMZ-SS-2100</option>
+                  <option value="">CMZ-PP-2400</option>
                 </select>
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
@@ -386,7 +395,7 @@ function AddItem({ addItem }) {
             <select
               name="weightUnit"
               style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 p-1 input-bordered ms-1 w-full"
+              className="input mb-2 p-1 input-bordered w-full"
               // value={selectedWeight} // Set the selected value to the state value
               // onChange={(e) =>
               //   updateFormValue({

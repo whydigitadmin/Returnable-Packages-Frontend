@@ -62,8 +62,18 @@ const IOSSwitch = styled((props) => (
 
 function AddItemSpecification({ addItemSpecification }) {
   const [value, setValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState("Select Asset Category");
+  const [showStandardDropdown, setShowStandardDropdown] = useState(false);
+  const [showVariableDropdown, setShowVariableDropdown] = useState(false);
   const updateFormValue = ({ updateType, value }) => {
     console.log(updateType);
+  };
+
+  const handleSelectChange = (e) => {
+    setSelectedValue(e.target.value);
+    // Check if the selected value should show the additional dropdown
+    setShowStandardDropdown(e.target.value == "Standard");
+    setShowVariableDropdown(e.target.value == "Customized");
   };
 
   const updateInputValue = (val) => {
@@ -104,10 +114,17 @@ function AddItemSpecification({ addItemSpecification }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <select className="form-select form-sz w-full mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleSelectChange}
+              value={selectedValue}
+            >
               {/* <option selected>Open this select menu</option> */}
-              <option value="">Standard</option>
-              <option value="">Customized</option>
+              <option value="Select Asset Category">
+                Select Asset Category
+              </option>
+              <option value="Standard">Standard</option>
+              <option value="Customized">Customized</option>
             </select>
           </div>
           <div className="col-lg-6 col-md-12 mb-2"></div>
@@ -127,7 +144,10 @@ function AddItemSpecification({ addItemSpecification }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={""}
+              placeholder={
+                (showStandardDropdown && "STD-") ||
+                (showVariableDropdown && "CMZ-")
+              }
               // name="warehouseName"
               // value={warehouseName}
               // onChange={handleInputChange}
