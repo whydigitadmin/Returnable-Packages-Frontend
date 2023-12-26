@@ -353,7 +353,7 @@ function AddItemGroups({ addItem }) {
           </div> */}
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-4 mb-4">
+          <div className="col-lg-3 col-md-3 mb-4">
             <label className="label">
               <span
                 className={
@@ -365,7 +365,7 @@ function AddItemGroups({ addItem }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-4">
+          <div className="col-lg-3 col-md-3">
             <FormControl fullWidth size="small">
               <InputLabel
                 id="demo-multiple-chip-label"
@@ -420,7 +420,7 @@ function AddItemGroups({ addItem }) {
               </Select>
             </FormControl>
           </div>
-          <div className="col-lg-3 col-md-4">
+          <div className="col-lg-3 col-md-3">
             {pallet && (
               <>
                 <label className="label">
@@ -451,7 +451,7 @@ function AddItemGroups({ addItem }) {
               </label>
             )}
           </div>
-          <div className="col-lg-3 col-md-4">
+          <div className="col-lg-3 col-md-3">
             {pallet && (
               <>
                 <input
@@ -491,7 +491,7 @@ function AddItemGroups({ addItem }) {
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-4">
+          <div className="col-lg-3 col-md-3">
             <label className="label">
               <span
                 className={
@@ -503,7 +503,7 @@ function AddItemGroups({ addItem }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-4">
+          <div className="col-lg-3 col-md-3">
             <FormControl fullWidth size="small">
               <InputLabel
                 id="demo-multiple-chip-label"
@@ -562,7 +562,7 @@ function AddItemGroups({ addItem }) {
               </Select>
             </FormControl>
           </div>
-          <div className="col-lg-3 col-md-4">
+          <div className="col-lg-3 col-md-3">
             {open && (
               <>
                 <label className="label">
@@ -597,7 +597,7 @@ function AddItemGroups({ addItem }) {
               </>
             )}
           </div>
-          <div className="col-lg-3 col-md-4">
+          <div className="col-lg-3 col-md-3">
             {open && (
               <input
                 style={{

@@ -238,9 +238,8 @@ function Customer() {
             })}
           </div>
           <div className="">
-            <h1 className="text-2xl font-semibold mt-4">Customer</h1>
             <div className="flex justify-between mt-4">
-            <button
+              <button
                 className="btn btn-ghost btn-sm text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}

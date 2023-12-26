@@ -166,12 +166,6 @@ function AddCustomer({ addcustomer }) {
   const handleShippingClose = () => {
     setOpenShippingModal(false);
   };
-  const handleBankOpen = () => {
-    setOpenBankModal(true);
-  };
-  const handleBankClose = () => {
-    setOpenBankModal(false);
-  };
 
   const handleCustomer = () => {
     const errors = {};
@@ -391,32 +385,6 @@ function AddCustomer({ addcustomer }) {
               // updateType="phone"
             />
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Bank Details
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            {/* <ToolTip
-              placeholder={"Enter"}
-              content={"The contact's telephone number"}
-              // updateFormValue={updateFormValue}
-              // updateType="phone"
-            /> */}
-            <button
-              className="btn btn-ghost btn-sm text-sm col-xs-1 mb-3"
-              style={{ color: "#1976d2" }}
-              onClick={handleBankOpen}
-            >
-              <span className="">Add Bank Details</span>
-            </button>
-          </div>
 
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -469,7 +437,6 @@ function AddCustomer({ addcustomer }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-          
         </div>
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -479,6 +446,11 @@ function AddCustomer({ addcustomer }) {
               aria-label="basic tabs example"
             >
               <Tab className="text-form" label="Address" {...a11yProps(0)} />
+              <Tab
+                className="text-form"
+                label="Bank Details"
+                {...a11yProps(1)}
+              />
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
@@ -518,6 +490,120 @@ function AddCustomer({ addcustomer }) {
                 >
                   + Add Shipping Address
                 </button>
+              </div>
+            </div>
+          </CustomTabPanel>
+          <CustomTabPanel value={value} index={1}>
+            <div className="row">
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Bank
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"text"}
+                  placeholder={""}
+                  // name=""
+                  // value={}
+                  // onChange={}
+                />
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Account No
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"text"}
+                  placeholder={""}
+                  // name=""
+                  // value={}
+                  // onChange={}
+                />
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Account Name
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"text"}
+                  placeholder={""}
+                  // name=""
+                  // value={}
+                  // onChange={}
+                />
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Branch
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"text"}
+                  placeholder={""}
+                  // name=""
+                  // value={}
+                  // onChange={}
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    IFSC Code
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"text"}
+                  placeholder={""}
+                  // name=""
+                  // value={}
+                  // onChange={}
+                />
               </div>
             </div>
           </CustomTabPanel>
@@ -740,7 +826,7 @@ function AddCustomer({ addcustomer }) {
             </Button>
           </DialogActions>
         </Dialog>
-        
+
         {/* Shipping Address Modal Define */}
         <Dialog
           fullWidth={true}
@@ -958,134 +1044,6 @@ function AddCustomer({ addcustomer }) {
             </Button>
           </DialogActions>
         </Dialog>
-
-        {/* Bank Details Modal Define here */}
-       <Dialog
-          fullWidth={true}
-          maxWidth={"sm"}
-          open={openBankModal}
-          onClose={handleBankClose}
-        >
-          <div className="d-flex justify-content-between">
-            <DialogTitle>Bank Detils</DialogTitle>
-            <IoMdClose
-              onClick={handleBankClose}
-              className="cursor-pointer w-8 h-8 mt-3 me-3"
-            />
-          </div>
-          <DialogContent>
-            <DialogContentText className="d-flex flex-column">
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Bank
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Bank Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Acc No
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Account No"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Acc Name
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Account Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label-text label-font-size text-base-content d-flex flex-row">
-                    Branch
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Branch Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label-text label-font-size text-base-content d-flex flex-row">
-                    IFSC Code
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Branch IFSC"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="mb-2 me-2">
-            <Button onClick={handleBankClose}>Cancel</Button>
-            <Button component="label" variant="contained">
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
-
 
         <div className="d-flex flex-row mt-3">
           <button

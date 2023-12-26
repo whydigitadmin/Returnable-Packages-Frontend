@@ -229,8 +229,7 @@ function StockDetails() {
             })}
           </div> */}
           <div className="">
-            <h1 className="text-2xl font-semibold mt-4">Parts</h1>
-            <div className="flex justify-between mt-4">
+            <div className="flex justify-between mt-2">
               <button
                 type="button"
                 onClick={handleClickOpen}

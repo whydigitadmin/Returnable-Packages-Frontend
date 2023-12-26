@@ -106,8 +106,7 @@ function Logistics() {
         <AddLogistics addlogistics={handleBack} />
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <h1 className="text-2xl font-semibold mt-4">Logistics</h1>
-          <div className="flex justify-between mt-4">
+          <div className="flex justify-between mt-2">
             <button
               type="button"
               onClick={handleClickOpen}

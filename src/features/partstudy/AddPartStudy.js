@@ -114,14 +114,14 @@ function AddPartStudy({ addPartStudy }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Part Study No
+                Part Study ID
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <ToolTip
-              placeholder={"Part Study No"}
+              placeholder={"Part Study ID"}
               content={"Enter the Part Study No"}
               updateFormValue={updateFormValue}
               updateType="partStudyNo"

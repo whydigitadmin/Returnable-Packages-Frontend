@@ -182,7 +182,6 @@ function Flows() {
             })}
           </div>
           <div className="">
-            <h1 className="text-2xl font-semibold mt-4">Flows</h1>
             <div className="flex justify-between mt-4">
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
