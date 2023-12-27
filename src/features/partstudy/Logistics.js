@@ -105,8 +105,8 @@ function Logistics() {
       {add ? (
         <AddLogistics addlogistics={handleBack} />
       ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="flex justify-between mt-2">
+        <>
+          <div className="flex justify-between">
             <button
               type="button"
               onClick={handleClickOpen}
@@ -173,7 +173,7 @@ function Logistics() {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </>
       )}
     </>
   );

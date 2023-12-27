@@ -5,6 +5,7 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import ToolTip from "../../components/Input/Tooltip";
 import Switch from "@mui/material/Switch";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { IoMdClose } from "react-icons/io";
 import { styled } from "@mui/material/styles";
 import { FaStarOfLife } from "react-icons/fa";
 
@@ -147,8 +148,14 @@ function AddPackage({ addPackage }) {
 
   return (
     <>
-      <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <h1 className="text-xl font-semibold mb-4 ms-4">Package Details</h1>
+      <div>
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-4 ms-4">Package Details</h1>
+          <IoMdClose
+            onClick={handleClosePackage}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

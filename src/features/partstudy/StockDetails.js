@@ -222,14 +222,14 @@ function StockDetails() {
       {add ? (
         <AddStockKeeping addStockKeeping={handleBack} />
       ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
+        <>
           {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
             {statsData.map((d, k) => {
               return <DashBoardComponent key={k} {...d} colorIndex={k} />;
             })}
           </div> */}
           <div className="">
-            <div className="flex justify-between mt-2">
+            <div className="flex justify-between">
               <button
                 type="button"
                 onClick={handleClickOpen}
@@ -297,7 +297,7 @@ function StockDetails() {
               </Button>
             </DialogActions>
           </Dialog>
-        </div>
+        </>
       )}
     </>
   );
