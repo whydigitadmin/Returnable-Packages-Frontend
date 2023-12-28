@@ -4,6 +4,7 @@ import { lazy } from "react";
 import "./style.css";
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
+const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
 const Charts = lazy(() => import("../pages/protected/Charts"));
@@ -73,6 +74,10 @@ const routes = [
   {
     path: "/welcome", // the url
     component: Welcome, // view rendered
+  },
+  {
+    path: "/EmitterLanding", // the url
+    component: EmitterLanding , // view rendered
   },
   {
     path: "/warehouse",

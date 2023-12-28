@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
 import Axios from "axios";
-import { encryptPassword } from "./components/utils";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import LandingIntro from "./LandingIntro";
-import ErrorText from "../../components/Typography/ErrorText";
 import InputText from "../../components/Input/InputText";
+import ErrorText from "../../components/Typography/ErrorText";
+import LandingIntro from "./LandingIntro";
+import { encryptPassword } from "./components/utils";
 
 function Login() {
   const INITIAL_LOGIN_OBJ = {

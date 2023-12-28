@@ -1,12 +1,12 @@
-import PageContent from "./PageContent"
-import LeftSidebar from "./LeftSidebar"
-import { useSelector, useDispatch } from 'react-redux'
-import RightSidebar from './RightSidebar'
 import { useEffect } from "react"
-import  {  removeNotificationMessage } from "../features/common/headerSlice"
-import {NotificationContainer, NotificationManager} from 'react-notifications';
-import 'react-notifications/lib/notifications.css';
+import { NotificationContainer, NotificationManager } from 'react-notifications'
+import 'react-notifications/lib/notifications.css'
+import { useDispatch, useSelector } from 'react-redux'
+import { removeNotificationMessage } from "../features/common/headerSlice"
+import LeftSidebar from "./LeftSidebar"
 import ModalLayout from "./ModalLayout"
+import PageContent from "./PageContent"
+import RightSidebar from './RightSidebar'
 
 function Layout(){
   const dispatch = useDispatch()
@@ -27,7 +27,7 @@ function Layout(){
         <div className="drawer drawer-mobile">
             <input id="left-sidebar-drawer" type="checkbox" className="drawer-toggle" />
             <PageContent/>
-            <LeftSidebar />
+           {localStorage.getItem("userDetails")=== 'ROLE_ADMIN' ? "":  <LeftSidebar />}
         </div>
 
         { /* Right drawer - containing secondary content like notifications list etc.. */ }
