@@ -141,8 +141,8 @@ function Logistics() {
             <DialogContent>
               <DialogContentText className="d-flex flex-column">
                 Choose a file to upload
-                <div className="d-flex justify-content-center my-3">
-                  <div className="col-4 ms-5">
+                <div className="d-flex justify-content-center">
+                  <div className="col-lg-4 text-center my-3">
                     <Button
                       component="label"
                       variant="contained"
@@ -153,7 +153,7 @@ function Logistics() {
                     </Button>
                   </div>
                 </div>
-                <div className="col-6 my-3">
+                <div className="col-lg-4 mt-3">
                   <Button
                     size="small"
                     component="label"

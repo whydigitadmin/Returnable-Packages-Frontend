@@ -163,7 +163,7 @@ function Outward() {
               className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Upload
-            </button>              
+            </button>
           </div>
         </div>
         <div className="mt-4">
@@ -185,8 +185,8 @@ function Outward() {
           <DialogContent>
             <DialogContentText className="d-flex flex-column">
               Choose a file to upload
-              <div className="d-flex justify-content-center my-3">
-                <div className="col-4 ms-5">
+              <div className="d-flex justify-content-center">
+                <div className="col-lg-4 text-center my-3">
                   <Button
                     component="label"
                     variant="contained"
@@ -197,7 +197,7 @@ function Outward() {
                   </Button>
                 </div>
               </div>
-              <div className="col-6 my-3">
+              <div className="col-lg-4 mt-3">
                 <Button
                   size="small"
                   component="label"
