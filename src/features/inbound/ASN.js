@@ -34,7 +34,6 @@ const statsData = [
 ];
 
 function ASN() {
-
   const [data, setData] = React.useState([]);
 
   const columns = useMemo(
@@ -141,17 +140,15 @@ function ASN() {
     ],
     []
   );
-  
+
   const table = useMaterialReactTable({
     data,
     columns,
   });
 
-
-
   return (
     <>
-      <div className="card w-full p-6 bg-base-100 shadow-xl">
+      <div>
         <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
           {statsData.map((d, k) => {
             return <DashBoardComponent key={k} {...d} colorIndex={k} />;
@@ -228,9 +225,9 @@ function ASN() {
               role="tabpanel"
               aria-labelledby="ex1-tab-1"
             ></div>
-          <div className="mt-4">
-            <MaterialReactTable table={table} />
-          </div>
+            <div className="">
+              <MaterialReactTable table={table} />
+            </div>
           </div>
         </div>
       </div>

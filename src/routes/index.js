@@ -17,7 +17,9 @@ const Items = lazy(() => import("../pages/protected/Items"));
 const ItemGroup = lazy(() => import("../pages/protected/ItemGroup"));
 const CreateKit = lazy(() => import("../pages/protected/CreateKit"));
 const Customer = lazy(() => import("../pages/protected/Customer"));
-const ManufacturerDetails = lazy(() => import("../pages/protected/ManufacturerDetails"));
+const ManufacturerDetails = lazy(() =>
+  import("../pages/protected/ManufacturerDetails")
+);
 const Flows = lazy(() => import("../pages/protected/Flows"));
 const Vendors = lazy(() => import("../pages/protected/Vendors"));
 const Users = lazy(() => import("../pages/protected/Users"));
@@ -26,7 +28,9 @@ const Asn = lazy(() => import("../pages/protected/Asn"));
 const GRN = lazy(() => import("../pages/protected/GRN"));
 const Return = lazy(() => import("../pages/protected/Return"));
 const Unit = lazy(() => import("../pages/protected/Unit"));
-const WarehouseLocation = lazy(() => import("../pages/protected/WarehouseLocation"));
+const WarehouseLocation = lazy(() =>
+  import("../pages/protected/WarehouseLocation")
+);
 const DeliveryChalleonVendors = lazy(() =>
   import("../pages/protected/DeliveryChalleonVendors")
 );
@@ -123,7 +127,7 @@ const routes = [
     component: Stock,
   },
   {
-    path: "/purchaseorder",
+    path: "/inbound",
     component: PurchaseOrder,
   },
   {

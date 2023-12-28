@@ -76,58 +76,14 @@ const routes = [
     ],
   },
   {
-    path: "", //no url needed as this has submenu
+    path: "/app/partstudy", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
     name: "Part Study", // name that appear in Sidebar
-    submenu: [
-      {
-        path: "/app/partstudy",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Basic Details",
-      },
-      {
-        path: "/app/packagedesign",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Packaging Design",
-      },
-      {
-        path: "/app/logistics",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Logistics Details",
-      },
-      {
-        path: "/app/stock",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Stock Details",
-      },
-    ],
   },
   {
-    path: "", //no url needed as this has submenu
+    path: "/app/inbound", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
     name: "Inbound", // name that appear in Sidebar
-    submenu: [
-      {
-        path: "/app/purchaseorder",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Purchase Order",
-      },
-      {
-        path: "/app/asn",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "ASN",
-      },
-      {
-        path: "/app/grn",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "GRN",
-      },
-      {
-        path: "/app/return",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Return",
-      },
-    ],
   },
   {
     path: "", //no url needed as this has submenu

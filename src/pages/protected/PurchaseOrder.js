@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Purchase Order" }));
+    dispatch(setPageTitle({ title: "Inbound" }));
   }, []);
 
   return <PurchaseOrder />;

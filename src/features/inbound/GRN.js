@@ -148,7 +148,7 @@ function GRN() {
 
   return (
     <>
-      <div className="card w-full p-6 bg-base-100 shadow-xl">
+      <div>
         <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
           {statsData.map((d, k) => {
             return <DashBoardComponent key={k} {...d} colorIndex={k} />;
