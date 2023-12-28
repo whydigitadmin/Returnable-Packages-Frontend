@@ -8,9 +8,9 @@ const userSourceData = [
     {source : "7454566566", count : "CLEAN", conversionPercent : "25/07/2023", conversionPercents: "12/02/2023"},
 ]
 
-function UserChannels(){
+function UserChannels1(){
     return(
-        <TitleCard title={"Recent Transaction In"}>
+        <TitleCard title={"Recent Transaction Out"}>
              {/** Table Data */}
              <div className="overflow-x-auto">
                 <table className="table w-full">
@@ -44,4 +44,4 @@ function UserChannels(){
     )
 }
 
-export default UserChannels
+export default UserChannels1

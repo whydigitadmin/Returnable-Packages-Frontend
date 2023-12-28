@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import  ChevronLeftIcon from "@heroicons/react/24/solid/ChevronLeftIcon";
-import  ChevronRightIcon  from "@heroicons/react/24/solid/ChevronRightIcon";
+import ChevronLeftIcon from "@heroicons/react/24/solid/ChevronLeftIcon";
+import ChevronRightIcon from "@heroicons/react/24/solid/ChevronRightIcon";
 import moment from "moment";
+import { useEffect, useState } from "react";
 import { CALENDAR_EVENT_STYLE } from "./util";
 
 const THEME_BG = CALENDAR_EVENT_STYLE
@@ -85,7 +85,7 @@ function CalendarView({calendarEvents, addNewEvent, openDayDetail}){
  
     return(
         <>
-      <div className="w-full  bg-base-100 p-4 rounded-lg">
+      <div className="bg-base-100 p-4 rounded-lg" style={{width:'50%'}}>
         <div className="flex items-center justify-between">
           <div className="flex  justify-normal gap-2 sm:gap-4">
           <p className="font-semibold text-xl w-48">

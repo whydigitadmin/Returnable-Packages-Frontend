@@ -28,6 +28,7 @@ function Layout(){
             <input id="left-sidebar-drawer" type="checkbox" className="drawer-toggle" />
             <PageContent/>
            {localStorage.getItem("userDetails")=== 'ROLE_ADMIN' ? "":  <LeftSidebar />}
+           {/* <LeftSidebar /> */}
         </div>
 
         { /* Right drawer - containing secondary content like notifications list etc.. */ }

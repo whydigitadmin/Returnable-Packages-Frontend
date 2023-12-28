@@ -1,14 +1,12 @@
 import {
+  ArcElement,
   Chart as ChartJS,
   Filler,
-  ArcElement,
-  Title,
-  Tooltip,
   Legend,
+  Tooltip
 } from 'chart.js';
 import { Doughnut } from 'react-chartjs-2';
 import TitleCard from '../../../components/Cards/TitleCard';
-import Subtitle from '../../../components/Typography/Subtitle';
 
 ChartJS.register(ArcElement, Tooltip, Legend,
     Tooltip,
@@ -26,7 +24,7 @@ function DoughnutChart(){
         },
       };
       
-      const labels = ['Electronics', 'Home Applicances', 'Beauty', 'Furniture', 'Watches', 'Apparel'];
+      const labels = ['Pallet', 'Lid', 'Side wall', 'Insert', 'seperator sheet', 'Kit'];
       
       const data = {
         labels,

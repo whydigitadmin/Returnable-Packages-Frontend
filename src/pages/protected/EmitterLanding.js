@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux'
 import { setPageTitle } from '../../features/common/headerSlice'
 import { EmitterLanding } from '../../features/emitter/EmitterLanding'
 
+
 function InternalPage(){
     const dispatch = useDispatch()
 

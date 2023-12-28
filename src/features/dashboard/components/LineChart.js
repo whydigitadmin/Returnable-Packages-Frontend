@@ -1,13 +1,13 @@
 import {
-  Chart as ChartJS,
   CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
+  Chart as ChartJS,
   Filler,
   Legend,
+  LineElement,
+  LinearScale,
+  PointElement,
+  Title,
+  Tooltip,
 } from 'chart.js';
 import { Line } from 'react-chartjs-2';
 import TitleCard from '../../../components/Cards/TitleCard';
@@ -52,7 +52,7 @@ function LineChart(){
   
 
     return(
-      <TitleCard title={"Montly Active Users (in K)"}>
+      <TitleCard title={"Montly Active Transactions (in K)"}>
           <Line data={data} options={options}/>
       </TitleCard>
     )
