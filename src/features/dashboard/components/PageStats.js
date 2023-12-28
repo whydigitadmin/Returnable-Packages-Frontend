@@ -1,5 +1,5 @@
-import HeartIcon  from '@heroicons/react/24/outline/HeartIcon'
-import BoltIcon  from '@heroicons/react/24/outline/BoltIcon'
+import BoltIcon from '@heroicons/react/24/outline/BoltIcon'
+import HeartIcon from '@heroicons/react/24/outline/HeartIcon'
 
 
 function PageStats({}){
@@ -10,8 +10,8 @@ function PageStats({}){
     <div className="stat-figure invisible md:visible">
         <HeartIcon className='w-8 h-8'/>
     </div>
-    <div className="stat-title">Total Likes</div>
-    <div className="stat-value">25.6K</div>
+    <div className="stat-title">Latest Order</div>
+    <div className="stat-value">567</div>
     <div className="stat-desc">21% more than last month</div>
   </div>
   
@@ -19,8 +19,8 @@ function PageStats({}){
     <div className="stat-figure invisible md:visible">
         <BoltIcon className='w-8 h-8'/>
     </div>
-    <div className="stat-title">Page Views</div>
-    <div className="stat-value">2.6M</div>
+    <div className="stat-title">Last Receive Order</div>
+    <div className="stat-value">234</div>
     <div className="stat-desc">14% more than last month</div>
   </div>
 </div>
