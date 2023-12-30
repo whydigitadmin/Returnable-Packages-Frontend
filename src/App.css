@@ -95,3 +95,51 @@
   font-weight: 300;
   text-align: center;
 }
+
+.notification-border {
+  background-color: #f2f2f2;
+  border-radius: 10px !important;
+  height: 50px;
+}
+
+.notification-btn {
+  background-color: white;
+  padding: 7px;
+  margin: 5px 0px 5px 5px;
+  width: 50%;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.notification-btn:hover {
+  cursor: pointer;
+}
+
+.notification-dis-btn {
+  background-color: white;
+  padding: 7px;
+  margin: 5px 5px 5px 0px;
+  width: 50%;
+  height: 40px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 17px;
+  font-weight: 500;
+}
+
+.notification-dis-btn:hover {
+  cursor: pointer;
+}
+
+.notification-hide {
+  background-color: #f2f2f2;
+  font-weight: normal !important;
+}
+
+.notification-card {
+  background-color: #f2f2f2;
+  border-radius: 10px !important;
+}

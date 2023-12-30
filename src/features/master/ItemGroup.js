@@ -242,7 +242,7 @@ function ItemGroup() {
             onClose={handleClose}
           >
             <div className="d-flex justify-content-between">
-              <DialogTitle>New Asset Category</DialogTitle>
+              <DialogTitle>Asset Category</DialogTitle>
               <IoMdClose
                 onClick={handleClose}
                 className="cursor-pointer w-8 h-8 mt-3 me-3"

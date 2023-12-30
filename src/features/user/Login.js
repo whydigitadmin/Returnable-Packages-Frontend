@@ -71,7 +71,11 @@ function Login() {
           );
           // Redirect the user to the welcome page
           console.log("token", response.data);
-          window.location.href = "/app/welcome";
+          if (localStorage.getItem("userDetails") === "ROLE_ADMIN") {
+            window.location.href = "/app/EmitterLanding";
+          } else {
+            window.location.href = "/app/welcome";
+          }
         }
 
         setLoading(false);
