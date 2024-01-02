@@ -12,10 +12,10 @@ function Notification() {
         <div className="notification-border m-2">
           <div className="d-flex flex-row">
             <div className="notification-btn">ALL</div>
-            <a href="/" className="notification-dis-btn notification-hide">
+            <a className="notification-dis-btn notification-hide">
               MESSAGE
             </a>
-            <a href="/" className="notification-dis-btn notification-hide">
+            <a className="notification-dis-btn notification-hide">
               ALERTS
             </a>
           </div>
