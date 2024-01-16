@@ -66,6 +66,15 @@ const GettingStarted = lazy(() => import("../pages/GettingStarted"));
 const DocFeatures = lazy(() => import("../pages/DocFeatures"));
 const DocComponents = lazy(() => import("../pages/DocComponents"));
 
+const UserCreation = lazy(() => import("../pages/protected/UserCreation"));
+const Roles = lazy(() => import("../pages/protected/Roles"));
+const Responsibilities = lazy(() => import("../pages/protected/Responsibilites"));
+const Branch = lazy(() => import("../pages/protected/Branch"));
+const AccessRights = lazy(() => import("../pages/protected/AccessRights"));
+
+
+
+
 const routes = [
   {
     path: "/dashboard", // the url
@@ -270,6 +279,27 @@ const routes = [
   {
     path: "/warehouseLocation",
     component: WarehouseLocation,
+  },
+  {
+    path: "/userCreation",
+    component: UserCreation,
+  },
+  {
+    path: "/roles",
+    component: Roles,
+  },
+  {
+    path: "/responsibilities",
+    component: Responsibilities,
+  },
+   {
+    path: "/branch",
+    component: Branch,
+  },
+  
+  {
+    path: "/AccessRights",
+    component: AccessRights,
   },
 ];
 

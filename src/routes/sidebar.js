@@ -15,6 +15,38 @@ const routes = [
   {
     path: "", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+    name: "Admin", // name that appear in Sidebar
+    submenu: [
+      {
+        path: "/app/UserCreation",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "User Creation",
+      },
+      {
+        path: "/app/Responsibilities",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Responsibilities",
+      },
+      {
+        path: "/app/Roles",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Roles",
+      },
+      {
+        path: "/app/AccessRights",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Access Rights",
+      },
+      {
+        path: "/app/Branch",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Branch",
+      },
+    ],
+  },
+  {
+    path: "", //no url needed as this has submenu
+    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
     name: "Masters", // name that appear in Sidebar
     submenu: [
       {
@@ -75,6 +107,7 @@ const routes = [
       },
     ],
   },
+ 
   {
     path: "/app/partstudy", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component

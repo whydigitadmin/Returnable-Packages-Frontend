@@ -1,22 +1,94 @@
-import * as React from "react";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
+import React from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import ToolTip from "../../components/Input/Tooltip";
+import Screens from "./Screens";
 
-function AddLogistics({ addlogistics }) {
-  const updateFormValue = ({ updateType, value }) => {
-    console.log(updateType);
+
+const IOSSwitch = styled((props) => (
+    <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+  ))(({ theme }) => ({
+    width: 42,
+    height: 26,
+    padding: 0,
+    "& .MuiSwitch-switchBase": {
+      padding: 0,
+      margin: 2,
+      transitionDuration: "300ms",
+      "&.Mui-checked": {
+        transform: "translateX(16px)",
+        color: "#fff",
+        "& + .MuiSwitch-track": {
+          backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#0d6ef",
+          opacity: 1,
+          border: 0,
+        },
+        "&.Mui-disabled + .MuiSwitch-track": {
+          opacity: 0.5,
+        },
+      },
+      "&.Mui-focusVisible .MuiSwitch-thumb": {
+        color: "#33cf4d",
+        border: "6px solid #fff",
+      },
+      "&.Mui-disabled .MuiSwitch-thumb": {
+        color:
+          theme.palette.mode === "light"
+            ? theme.palette.grey[100]
+            : theme.palette.grey[600],
+      },
+      "&.Mui-disabled + .MuiSwitch-track": {
+        opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+      },
+    },
+    "& .MuiSwitch-thumb": {
+      boxSizing: "border-box",
+      width: 22,
+      height: 22,
+    },
+    "& .MuiSwitch-track": {
+      borderRadius: 26 / 2,
+      backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
+      opacity: 1,
+      transition: theme.transitions.create(["background-color"], {
+        duration: 500,
+      }),
+    },
+  }));
+
+function Responsibilities(addlogistics){
+
+
+    const updateFormValue = ({ updateType, value }) => {
+        console.log(updateType);
+      };
+    
+      const handleLogistics = () => {
+        addlogistics(false);
+      };
+
+      const [checked, setChecked] = React.useState([0]);
+
+  const handleToggle = (value) => () => {
+    const currentIndex = checked.indexOf(value);
+    const newChecked = [...checked];
+
+    if (currentIndex === -1) {
+      newChecked.push(value);
+    } else {
+      newChecked.splice(currentIndex, 1);
+    }
+
+    setChecked(newChecked);
   };
 
-  const handleLogistics = () => {
-    addlogistics(false);
-  };
 
-  return (
-    <>
-      <div>
+    return(
+        <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-4 ms-4">Logistics</h1>
+          <h1 className="text-xl font-semibold mb-4 ms-4"></h1>
           <IoMdClose
             onClick={handleLogistics}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -30,7 +102,7 @@ function AddLogistics({ addlogistics }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Avg Lot Size:
+             Responsibilities
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -42,70 +114,13 @@ function AddLogistics({ addlogistics }) {
               updateFormValue={updateFormValue}
             />
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Dispatch Frequency:
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Dispatch To:
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-4 w-full input-bordered ps-2"
-            >
-              <option value="">Direct</option>
-              <option value="">End-user Warehouse</option>
-              <option value="">Emitter Interim Warehouse</option>
-            </select>
-          </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Transportation To:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-4 w-full input-bordered ps-2"
-            >
-              <option value="">Part Load</option>
-              <option value="">Full Truck Load</option>
-            </select>
-          </div>
+         
         </div>
+<br></br>
+  <span>Screen Access</span>
+
+  <Screens/>
+
         <div className="d-flex flex-row mt-1">
           <button
             type="button"
@@ -122,8 +137,7 @@ function AddLogistics({ addlogistics }) {
           </button>
         </div>
       </div>
-    </>
-  );
+    )
 }
 
-export default AddLogistics;
+export default Responsibilities
