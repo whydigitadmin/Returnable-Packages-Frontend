@@ -129,6 +129,27 @@ function UserCreation(addlogistics){
               </span>
             </label>
           </div>
+          
+          <div className="col-lg-3 col-md-6 mt-1">
+            <ToolTip
+              placeholder={"Enter"}
+              content={""}
+              updateFormValue={updateFormValue}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mt-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Phone No:
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          
           <div className="col-lg-3 col-md-6 mt-1">
             <ToolTip
               placeholder={"Enter"}
