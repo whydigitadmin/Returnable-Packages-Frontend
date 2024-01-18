@@ -14,9 +14,15 @@ import React from "react";
 import { FaLocationDot, FaPallet } from "react-icons/fa6";
 import { MdDoubleArrow, MdPallet } from "react-icons/md";
 
+import kit3 from "../../assets/gearbox.jpg";
+import kit1 from "../../assets/images.jpg";
+import kit2 from "../../assets/motor.png";
+import kit4 from "../../assets/wire.jpeg";
+
 function IssueReq() {
   const [value, setValue] = React.useState(0);
   const [kitFields, setKitFields] = React.useState([{ kitNo: "", qty: "" }]);
+  const [selectedKitNumber, setSelectedKitNumber] = React.useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -42,6 +48,21 @@ function IssueReq() {
     const newFields = [...kitFields];
     newFields[index].qty = e.target.value;
     setKitFields(newFields);
+  };
+
+  const getKitImageByNumber = (kitNo) => {
+    switch (kitNo) {
+      case "KIT012":
+        return kit1;
+      case "KIT017":
+        return kit2;
+      case "KIT004":
+        return kit3;
+      case "KIT015":
+        return kit4;
+      default:
+        return ""; // You can provide a default image or handle it as per your requirement
+    }
   };
 
   function CustomTabPanel(props) {
@@ -127,8 +148,9 @@ function IssueReq() {
                 </p>
               </div>
             </div>
-            <div className="col-lg-2"></div>
-            <div className="col-lg-4 card bg-base-100 shadow-xl m-5">
+          </div>
+          <div className="row">
+            <div className="col-lg-4 card bg-base-100 shadow-xl m-4">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={["StaticDatePicker"]}>
                   <StaticDatePicker
@@ -138,7 +160,7 @@ function IssueReq() {
                 </DemoContainer>
               </LocalizationProvider>
             </div>
-            <div className="col-lg-5 m-5">
+            <div className="col-lg-7 mt-4">
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                   value={value}
@@ -162,7 +184,7 @@ function IssueReq() {
               <CustomTabPanel value={value} index={0}>
                 {kitFields.map((field, index) => (
                   <div className="row" key={index}>
-                    <div className="col-lg-5 col-md-6 mb-2">
+                    <div className="col-lg-4 col-md-6 mb-2">
                       <label className="label">
                         <span className="label-text label-font-size text-base-content">
                           KIT No :
@@ -171,8 +193,12 @@ function IssueReq() {
                       <select
                         className="form-select form-sz w-full mb-2"
                         value={field.kitNo}
-                        onChange={(e) => handleKitNoChange(e, index)}
+                        onChange={(e) => {
+                          handleKitNoChange(e, index);
+                          setSelectedKitNumber(e.target.value);
+                        }}
                       >
+                        <option value="">Select a Kit</option>
                         <option value="KIT012">KIT012</option>
                         <option value="KIT017">KIT017</option>
                         <option value="KIT004">KIT004</option>
@@ -180,7 +206,7 @@ function IssueReq() {
                       </select>
                     </div>
 
-                    <div className="col-lg-5 col-md-6 mb-2">
+                    <div className="col-lg-4 col-md-6 mb-2">
                       <label className="label">
                         <span className="label-text label-font-size text-base-content">
                           QTY :
@@ -211,6 +237,17 @@ function IssueReq() {
                         </div>
                       )}
                     </div>
+
+                    {/* Display the static kit image */}
+                    {selectedKitNumber && (
+                      <div className="col-lg-3 col-md-2 mb-2">
+                        <img
+                          src={getKitImageByNumber(selectedKitNumber)}
+                          alt={`Kit ${selectedKitNumber} Image`}
+                          style={{ width: "100px", height: "100px" }}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </CustomTabPanel>
