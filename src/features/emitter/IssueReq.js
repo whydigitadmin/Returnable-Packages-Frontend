@@ -22,32 +22,41 @@ import kit4 from "../../assets/wire.jpeg";
 function IssueReq() {
   const [value, setValue] = React.useState(0);
   const [kitFields, setKitFields] = React.useState([{ kitNo: "", qty: "" }]);
-  const [selectedKitNumber, setSelectedKitNumber] = React.useState("");
+  const [selectedKitNumbers, setSelectedKitNumbers] = React.useState([""]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-  };
-
-  const handleAddField = () => {
-    setKitFields([...kitFields, { kitNo: "", qty: "" }]);
-  };
-
-  const handleRemoveField = (index) => {
-    const newFields = [...kitFields];
-    newFields.splice(index, 1);
-    setKitFields(newFields);
-  };
-
-  const handleKitNoChange = (e, index) => {
-    const newFields = [...kitFields];
-    newFields[index].kitNo = e.target.value;
-    setKitFields(newFields);
   };
 
   const handleQtyChange = (e, index) => {
     const newFields = [...kitFields];
     newFields[index].qty = e.target.value;
     setKitFields(newFields);
+  };
+
+  const handleAddField = () => {
+    setKitFields([...kitFields, { kitNo: "", qty: "" }]);
+    setSelectedKitNumbers([...selectedKitNumbers, ""]);
+  };
+
+  const handleRemoveField = (index) => {
+    const newFields = [...kitFields];
+    newFields.splice(index, 1);
+    setKitFields(newFields);
+
+    const newSelectedKitNumbers = [...selectedKitNumbers];
+    newSelectedKitNumbers.splice(index, 1);
+    setSelectedKitNumbers(newSelectedKitNumbers);
+  };
+
+  const handleKitNoChange = (e, index) => {
+    const newFields = [...kitFields];
+    newFields[index].kitNo = e.target.value;
+    setKitFields(newFields);
+
+    const newSelectedKitNumbers = [...selectedKitNumbers];
+    newSelectedKitNumbers[index] = e.target.value;
+    setSelectedKitNumbers(newSelectedKitNumbers);
   };
 
   const getKitImageByNumber = (kitNo) => {
@@ -195,7 +204,6 @@ function IssueReq() {
                         value={field.kitNo}
                         onChange={(e) => {
                           handleKitNoChange(e, index);
-                          setSelectedKitNumber(e.target.value);
                         }}
                       >
                         <option value="">Select a Kit</option>
@@ -239,11 +247,11 @@ function IssueReq() {
                     </div>
 
                     {/* Display the static kit image */}
-                    {selectedKitNumber && (
+                    {selectedKitNumbers[index] && (
                       <div className="col-lg-3 col-md-2 mb-2">
                         <img
-                          src={getKitImageByNumber(selectedKitNumber)}
-                          alt={`Kit ${selectedKitNumber} Image`}
+                          src={getKitImageByNumber(selectedKitNumbers[index])}
+                          alt={`Kit ${selectedKitNumbers[index]} Image`}
                           style={{ width: "100px", height: "100px" }}
                         />
                       </div>
