@@ -1,28 +1,51 @@
-import React from "react";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
-import { MdPallet } from "react-icons/md";
-import { FaPallet } from "react-icons/fa6";
-import dayjs from "dayjs";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
-import { FaLocationDot } from "react-icons/fa6";
-import { MdDoubleArrow } from "react-icons/md";
+import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import dayjs from "dayjs";
+import PropTypes from "prop-types";
+import React from "react";
+import { FaLocationDot, FaPallet } from "react-icons/fa6";
+import { MdDoubleArrow, MdPallet } from "react-icons/md";
+
 function IssueReq() {
   const [value, setValue] = React.useState(0);
+  const [kitFields, setKitFields] = React.useState([{ kitNo: "", qty: "" }]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
+  const handleAddField = () => {
+    setKitFields([...kitFields, { kitNo: "", qty: "" }]);
+  };
+
+  const handleRemoveField = (index) => {
+    const newFields = [...kitFields];
+    newFields.splice(index, 1);
+    setKitFields(newFields);
+  };
+
+  const handleKitNoChange = (e, index) => {
+    const newFields = [...kitFields];
+    newFields[index].kitNo = e.target.value;
+    setKitFields(newFields);
+  };
+
+  const handleQtyChange = (e, index) => {
+    const newFields = [...kitFields];
+    newFields[index].qty = e.target.value;
+    setKitFields(newFields);
+  };
+
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
-
     return (
       <div
         role="tabpanel"
@@ -108,7 +131,10 @@ function IssueReq() {
             <div className="col-lg-4 card bg-base-100 shadow-xl m-5">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={["StaticDatePicker"]}>
-                  <StaticDatePicker defaultValue={dayjs("2022-04-17")} />
+                  <StaticDatePicker
+                    disablePast
+                    minDate={dayjs().add(2, "day")}
+                  />
                 </DemoContainer>
               </LocalizationProvider>
             </div>
@@ -134,54 +160,61 @@ function IssueReq() {
                 </Tabs>
               </Box>
               <CustomTabPanel value={value} index={0}>
-                <div className="row">
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content"
-                        }
+                {kitFields.map((field, index) => (
+                  <div className="row" key={index}>
+                    <div className="col-lg-5 col-md-6 mb-2">
+                      <label className="label">
+                        <span className="label-text label-font-size text-base-content">
+                          KIT No :
+                        </span>
+                      </label>
+                      <select
+                        className="form-select form-sz w-full mb-2"
+                        value={field.kitNo}
+                        onChange={(e) => handleKitNoChange(e, index)}
                       >
-                        KIT No :
-                      </span>
-                    </label>
+                        <option value="KIT012">KIT012</option>
+                        <option value="KIT017">KIT017</option>
+                        <option value="KIT004">KIT004</option>
+                        <option value="KIT015">KIT015</option>
+                      </select>
+                    </div>
+
+                    <div className="col-lg-5 col-md-6 mb-2">
+                      <label className="label">
+                        <span className="label-text label-font-size text-base-content">
+                          QTY :
+                        </span>
+                      </label>
+                      <input
+                        className="form-control form-sz mb-2"
+                        type="text"
+                        value={field.qty}
+                        onChange={(e) => handleQtyChange(e, index)}
+                      />
+                    </div>
+
+                    <div className="col-lg-1 col-md-2 mb-2">
+                      {index === 0 ? (
+                        <div
+                          onClick={handleAddField}
+                          style={{ marginTop: "42px" }}
+                        >
+                          <AddCircleOutlineIcon />
+                        </div>
+                      ) : (
+                        <div
+                          onClick={() => handleRemoveField(index)}
+                          style={{ marginTop: "42px" }}
+                        >
+                          <HighlightOffIcon />
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="col-lg-6 col-md-6 mb-2">
-                    <select
-                      className="form-select form-sz w-full mb-2"
-                      //   onChange={handleSelectChange}
-                      //   value={selectedValue}
-                    >
-                      <option value="">KIT012</option>
-                      <option value="">KIT017</option>
-                      <option value="">KIT004</option>
-                      <option value="">KIT015</option>
-                    </select>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2"></div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content"
-                        }
-                      >
-                        QTY :
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-6 col-md-6 mb-2">
-                    <input
-                      className="form-control form-sz mb-2"
-                      type={"number"}
-                      placeholder={""}
-                      // name="warehouseCode"
-                      // value={warehouseCode}
-                      // onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
+                ))}
               </CustomTabPanel>
+
               <CustomTabPanel value={value} index={1}>
                 <div className="row">
                   <div className="col-lg-3 col-md-6 mb-2">
