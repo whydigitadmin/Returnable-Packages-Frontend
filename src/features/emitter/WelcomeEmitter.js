@@ -5,23 +5,23 @@ function WelcomeEmitter() {
   return (
     <>
       <div className="row">
-        <div className="col-lg-3 card bg-base-100 shadow-xl mb-4 me-4">
+        <div className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2">
           <div className="">
             <h4 className="text-2xl font-semibold mt-4 ms-2 mb-4">
               WELCOME TO
             </h4>
-            <img src="/binbee.jpg" className="mb-3" />
+            <img src="/binbee.png" className="mb-3" />
             <h4 className="text-xl dark:text-slate-300 font-semibold ms-2 mb-1">
               Senthil
             </h4>
-            <p className="ms-2 mb-2">Last login 24-01-2024 09:43</p>
+            <p className="ms-2 mb-2">Last login 12-01-2024 09:43</p>
             <p className="text-2xl ms-2">Tue</p>
             <p className="text-5xl ms-5">Jan</p>
-            <p className="text-9xl text-right me-2 mb-3">16</p>
+            <p className="text-9xl text-right me-2 mb-3">17</p>
           </div>
         </div>
-        <div className="col-lg-8 card bg-base-100 shadow-xl mb-4"></div>
-        <div className="col-lg-3 card bg-base-100 shadow-xl mb-4 me-4">
+        <div className="col-lg-9 card bg-base-100 shadow-xl mb-4"></div>
+        <div className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2">
           <div className="">
             <div className="d-flex flex-row">
               <FaLocationDot
@@ -41,7 +41,7 @@ function WelcomeEmitter() {
             </p>
           </div>
         </div>
-        <div className="col-lg-8 card bg-base-100 shadow-xl mb-4">
+        <div className="col-lg-9 card bg-base-100 shadow-xl mb-4">
           <h4 className="text-xl dark:text-slate-300 font-semibold mt-3 ms-3">
             Recent transfer IN
           </h4>

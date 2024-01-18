@@ -13,6 +13,7 @@ import UserChannels1 from "../dashboard/components/UserChannels1";
 import Notification from "./Notification";
 import Calendar from "../calendar";
 import WelcomeEmitter from "./WelcomeEmitter";
+import EmitterTab from "./EmitterTab";
 
 const statsData = [
   {
@@ -43,7 +44,7 @@ const statsData = [
 
 export const EmitterLanding = () => {
   return (
-    <div style={{ padding: "0% 10% 0% 10%" }}>
+    <div style={{ padding: "0% 8% 0% 8%" }}>
       {/* <div>EmitterLanding</div> */}
 
       {/* <Calendar /> */}
@@ -51,7 +52,7 @@ export const EmitterLanding = () => {
       <div className="">
         <WelcomeEmitter />
       </div>
-      <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+      <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6 mb-4">
         {statsData.map((d, k) => {
           return <DashboardStats key={k} {...d} colorIndex={k} />;
         })}
@@ -61,20 +62,20 @@ export const EmitterLanding = () => {
         <AmountStats />
         <PageStats />
       </div> */}
+      <EmitterTab />
       <div className="grid lg:grid-cols-1 mt-10 grid-cols-1 gap-6">
         <Notification />
         {/* <Calendar /> */}
       </div>
-      {/* <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
+      <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
         <UserChannels />
         <UserChannels1 />
-        <DoughnutChart />
       </div>
 
       <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
         <LineChart />
         <DoughnutChart />
-      </div>*/}
+      </div>
     </div>
   );
 };
