@@ -5,6 +5,7 @@ import "./style.css";
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
+const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
 const Charts = lazy(() => import("../pages/protected/Charts"));
@@ -68,12 +69,11 @@ const DocComponents = lazy(() => import("../pages/DocComponents"));
 
 const UserCreation = lazy(() => import("../pages/protected/UserCreation"));
 const Roles = lazy(() => import("../pages/protected/Roles"));
-const Responsibilities = lazy(() => import("../pages/protected/Responsibilites"));
+const Responsibilities = lazy(() =>
+  import("../pages/protected/Responsibilites")
+);
 const Branch = lazy(() => import("../pages/protected/Branch"));
 const AccessRights = lazy(() => import("../pages/protected/AccessRights"));
-
-
-
 
 const routes = [
   {
@@ -86,7 +86,11 @@ const routes = [
   },
   {
     path: "/EmitterLanding", // the url
-    component: EmitterLanding , // view rendered
+    component: EmitterLanding, // view rendered
+  },
+  {
+    path: "/IssueReq", // the url
+    component: IssueReq, // view rendered
   },
   {
     path: "/warehouse",
@@ -292,11 +296,11 @@ const routes = [
     path: "/responsibilities",
     component: Responsibilities,
   },
-   {
+  {
     path: "/branch",
     component: Branch,
   },
-  
+
   {
     path: "/AccessRights",
     component: AccessRights,
