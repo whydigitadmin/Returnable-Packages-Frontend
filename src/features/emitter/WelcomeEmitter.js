@@ -27,8 +27,8 @@ function WelcomeEmitter() {
           <div className="">
             <div className="d-flex flex-row">
               <FaLocationDot
-                className="text-xl font-semibold ms-2"
-                style={{ marginTop: 32 }}
+                className="text-xl font-semibold ms-2 w-7 h-7"
+                style={{ marginTop: 30 }}
               />
               <h4 className="text-2xl font-semibold mt-4 pt-1 ms-1 mb-4">
                 Location
