@@ -44,19 +44,21 @@ function WelcomeEmitter() {
           </div>
         </div>
         <div className="col-lg-9 card bg-base-100 shadow-xl mb-4">
-          <Link to="/app/IssueReq">
-            <div className="w-56 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-              <div className="">
-                <div className="d-flex flex-row">
-                  <FaArrowCircleUp
-                    className="text-xl font-semibold me-2 w-7 h-7"
-                    style={{ marginTop: 4 }}
-                  />
-                  <h4 className="text-2xl font-semibold">Issue Request</h4>
+          <div className="col-lg-3">
+            <Link to="/app/IssueReq">
+              <div className="w-56 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+                <div className="">
+                  <div className="d-flex flex-row">
+                    <FaArrowCircleUp
+                      className="text-xl font-semibold me-2 w-7 h-7"
+                      style={{ marginTop: 4 }}
+                    />
+                    <h4 className="text-2xl font-semibold">Issue Request</h4>
+                  </div>
                 </div>
               </div>
-            </div>
-          </Link>
+            </Link>
+          </div>
           {/* <h4 className="text-xl dark:text-slate-300 font-semibold mt-3 ms-3">
             Recent transfer IN
           </h4>

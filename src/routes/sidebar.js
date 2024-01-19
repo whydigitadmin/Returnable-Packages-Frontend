@@ -107,7 +107,7 @@ const routes = [
       },
     ],
   },
- 
+
   {
     path: "/app/partstudy", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
@@ -117,6 +117,11 @@ const routes = [
     path: "/app/inbound", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
     name: "Inbound", // name that appear in Sidebar
+  },
+  {
+    path: "/app/issuemanifest", //no url needed as this has submenu
+    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+    name: "IssueManifest", // name that appear in Sidebar
   },
   {
     path: "", //no url needed as this has submenu
