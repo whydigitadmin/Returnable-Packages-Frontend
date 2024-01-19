@@ -13,7 +13,6 @@ import PropTypes from "prop-types";
 import React from "react";
 import { FaLocationDot, FaPallet } from "react-icons/fa6";
 import { MdDoubleArrow, MdPallet } from "react-icons/md";
-
 import kit3 from "../../assets/gearbox.jpg";
 import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
@@ -138,7 +137,7 @@ function IssueReq() {
     return (
       <>
         <div className="col-lg-4 col-md-8 text-xs ms-1 mb-2">
-          KIT NO: <span className="font-bold">{info.kitNo}(25)</span>
+          KIT : <span className="font-bold">{info.kitNo}(25)</span>
         </div>
         <div className="col-lg-4 col-md-8 text-xs ms-1 mb-2">
           PARTS PER KIT: <span className="font-bold">{info.qty}</span>
@@ -277,7 +276,7 @@ function IssueReq() {
                       <div className="col-lg-4 col-md-6 mb-2">
                         <label className="label">
                           <span className="label-text label-font-size text-base-content">
-                            KIT No :
+                            KIT :
                           </span>
                         </label>
                         <select
@@ -365,7 +364,7 @@ function IssueReq() {
                             "label-text label-font-size text-base-content"
                           }
                         >
-                          Part No :
+                          Part :
                         </span>
                       </label>
                       <select
@@ -427,6 +426,12 @@ function IssueReq() {
                             alt={`Kit ${selectedPartNumbers[index]} Image`}
                             style={{ width: "90px", height: "90px" }}
                           />
+                          <span
+                            className="pt-1 ms-4"
+                            style={{ fontSize: "12px" }}
+                          >
+                            PA00341
+                          </span>
                         </div>
                         <DisplaySelectedPartInfo
                           selectedPartNo={selectedPartNumbers[index]}
