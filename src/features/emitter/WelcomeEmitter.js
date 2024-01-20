@@ -1,7 +1,7 @@
 import React from "react";
+import { FaArrowCircleDown, FaArrowCircleUp } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { FaArrowCircleUp } from "react-icons/fa";
 
 function WelcomeEmitter() {
   return (
@@ -43,10 +43,10 @@ function WelcomeEmitter() {
             </p>
           </div>
         </div>
-        <div className="col-lg-9 card bg-base-100 shadow-xl mb-4">
-          <div className="col-lg-3">
+        <div className="col-lg-9 flex-row d-flex card bg-base-100 shadow-xl mb-4">
+          <div className="col-lg-4">
             <Link to="/app/IssueReq">
-              <div className="w-56 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+              <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
                 <div className="">
                   <div className="d-flex flex-row">
                     <FaArrowCircleUp
@@ -54,6 +54,22 @@ function WelcomeEmitter() {
                       style={{ marginTop: 4 }}
                     />
                     <h4 className="text-2xl font-semibold">Issue Request</h4>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+
+          <div className="col-lg-4">
+            <Link to="/app/EmitterInward">
+              <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+                <div className="">
+                  <div className="d-flex flex-row">
+                    <FaArrowCircleDown
+                      className="text-xl font-semibold me-2 w-7 h-7"
+                      style={{ marginTop: 4 }}
+                    />
+                    <h4 className="text-2xl font-semibold">Emitter Inward</h4>
                   </div>
                 </div>
               </div>
