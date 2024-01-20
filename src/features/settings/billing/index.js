@@ -152,7 +152,19 @@ function Billing() {
               {bills.map((l, k) => {
                 return (
                   <tr key={k}>
-                    <td>{l.rmno}</td>
+                    <td>
+                      {l.status === "Issued" ? (
+                        <>
+                          <div className="badge bg-success text-white cursor-pointer">
+                            {l.rmno}
+                          </div>
+                        </>
+                      ) : (
+                        <div className="badge bg-danger text-white cursor-pointer">
+                          {l.rmno}
+                        </div>
+                      )}
+                    </td>
                     <td>{l.rmdate}</td>
                     <td>{l.ddate}</td>
                     <td>{l.kitno}</td>
@@ -196,8 +208,16 @@ function Billing() {
             {/* <div className="d-flex justify-content-center">
               <div className="col-lg-4 text-center my-3"></div>
             </div> */}
-            <div className="col-lg-4 text-dark"> No: 1704</div>
-            <div className="col-lg-4 text-dark">Date : 19/01/2022</div>
+            <div className="d-flex justify-content-between">
+              <div>
+                <div className="text-dark"> No: 1704</div>
+                <div className="text-dark">Date : 19/01/2022</div>
+              </div>
+              <div>
+                <div className="text-dark">Request.Manifest No: 1704</div>
+                <div className="text-dark">Manifest Date : 19/01/2022</div>
+              </div>
+            </div>
             <div className="col-lg-6  text-dark mt-3">
               Part Name/No : PISTON/PS01
             </div>
@@ -264,8 +284,16 @@ function Billing() {
             {/* <div className="d-flex justify-content-center">
               <div className="col-lg-4 text-center my-3"></div>
             </div> */}
-            <div className="col-lg-4 text-dark"> No: 1704</div>
-            <div className="col-lg-4 text-dark">Date : 19/01/2022</div>
+            <div className="d-flex justify-content-between">
+              <div>
+                <div className="text-dark"> No: 1704</div>
+                <div className="text-dark">Date : 19/01/2022</div>
+              </div>
+              <div>
+                <div className="text-dark">Request.Manifest No: 1704</div>
+                <div className="text-dark">Manifest Date : 19/01/2022</div>
+              </div>
+            </div>
             <div className="col-lg-6  text-dark mt-3">
               Part Name/No : PISTON/PS01
             </div>
