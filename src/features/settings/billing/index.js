@@ -88,11 +88,15 @@ function Billing() {
 
   const getPaymentStatus = (status, bill) => {
     if (status === "Issued")
-      return <div className="badge badge-success">{status}</div>;
+      return (
+        <div className="badge bg-success text-white cursor-pointer">
+          {status}
+        </div>
+      );
     if (status === "Pending")
       return (
         <div
-          className="badge badge-primary cursor-pointer"
+          className="badge bg-danger text-white cursor-pointer"
           onClick={() => handlePendingStatusClick(bill)}
         >
           {status}
@@ -170,29 +174,35 @@ function Billing() {
             {/* <div className="d-flex justify-content-center">
               <div className="col-lg-4 text-center my-3"></div>
             </div> */}
-            <div className="col-lg-4 .text-dark"> No: 1704</div>
-            <div className="col-lg-4 .text-dark">Date : 19/01/2022</div>
-            <div className="col-lg-6 mt-3">Part Name/No : PISTON/PS01</div>
-            <div className="col-lg-6">Demand Qty : 10</div>
+            <div className="col-lg-4 text-dark"> No: 1704</div>
+            <div className="col-lg-4 text-dark">Date : 19/01/2022</div>
+            <div className="col-lg-6  text-dark mt-3">
+              Part Name/No : PISTON/PS01
+            </div>
+            <div className="col-lg-6 text-dark ">Demand Qty : 10</div>
             <div className="col-lg-6 mt-3 font-bold text-xl">Kit No : 1072</div>
-            <div className="col-lg-6 mt-3">Available Qty: 15</div>
-            <div className="col-lg-6">Issued Qty : 10</div>
-            <div className="col-lg-6">balance Qty : 5</div>
-            <div className="col-lg-4 mt-3"></div>
+            <div className="col-lg-6  text-dark mt-3">Available Qty: 15</div>
+            <div className="col-lg-6 text-dark ">Issued Qty : 10</div>
+            <div className="col-lg-6 text-dark ">balance Qty : 5</div>
+            <div className="col-lg-4 text-dark  mt-3"></div>
           </DialogContentText>
         </DialogContent>
-        <DialogActions className="mb-2 me-2">
-          {/* <Button onClick={closePendingPopup}>Cancel</Button> */}
-          <Button
-            component="label"
-            variant="contained"
-            onClick={closePendingPopup}
-          >
-            Submit
-          </Button>
-        </DialogActions>
+        <div className="d-flex justify-content-center">
+          <DialogActions className="mb-2 me-2">
+            {/* <Button onClick={closePendingPopup}>Cancel</Button> */}
+            <Button
+              component="label"
+              variant="contained"
+              onClick={closePendingPopup}
+            >
+              Submit
+            </Button>
+          </DialogActions>
+        </div>
         <DialogContentText>
-          <center>Issued by AIPACKS - karthi-19/01/2024-10:00AM</center>
+          <center className="text-dark">
+            Issued by AIPACKS - Karthi-19/01/2024-10:00AM
+          </center>
         </DialogContentText>
       </Dialog>
     </>
