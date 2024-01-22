@@ -9,50 +9,52 @@ function EmitterInward() {
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-            <div className="col-lg-3 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
+            <div className="col-lg-1"></div>
+            <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
-                    className="text-xl font-semibold w-7 h-7"
-                    style={{ marginTop: 17 }}
+                    className="text-xl font-semibold w-5 h-5"
+                    style={{ marginTop: 14 }}
                   />
-                  <h4 className="text-2xl font-semibold mt-3 ms-1 mb-3">
-                    Location
+                  <h4 className="text-xl font-semibold pt-1 mt-2 ms-1 mb-2">
+                    Location -
                   </h4>
+                  <h4 className="text-2xl font-semibold ms-1 mt-2">Gabriel</h4>
                 </div>
-                <h4 className="text-xl dark:text-slate-300 font-semibold mb-3">
-                  Gabriel
-                </h4>
-                <p className="mb-3">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p>
               </div>
+              <p className="mb-3">
+                29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
+                Pune, Maharashtra, 410501 India
+              </p>
             </div>
             <div className="col-lg-1">
               <MdDoubleArrow
                 className="text-xl font-semibold w-16  h-16 "
-                style={{ marginTop: 100 }}
+                style={{ marginTop: 70 }}
               />
             </div>
-            <div className="col-lg-3 card bg-base-100 shadow-xl ms-2 mt-3">
+            <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
-                    className="text-xl font-semibold w-7 h-7"
-                    style={{ marginTop: 17 }}
+                    className="text-xl font-semibold w-5 h-5"
+                    style={{ marginTop: 11 }}
                   />
-                  <h4 className="text-2xl font-semibold mt-3 ms-1 mb-3">
-                    Flow To
+                  <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
+                    Flow To -
                   </h4>
+                  <select className="form-select w-56 h-10 mt-1 mb-2">
+                    <option value="Tata Motors-Pune">Tata Motors-Pune</option>
+                    <option value="Tata Motors-Chennai">
+                      Tata Motors-Chennai
+                    </option>
+                    <option value="Tata Motors-Mumbai">
+                      Tata Motors-Mumbai
+                    </option>
+                  </select>
                 </div>
-                <select className="form-select w-10/12 mb-2">
-                  <option value="Tata Motors-Pune">Tata Motors-Pune</option>
-                  <option value="Tata Motors-Chennai">
-                    Tata Motors-Chennai
-                  </option>
-                  <option value="Tata Motors-Mumbai">Tata Motors-Mumbai</option>
-                </select>
+
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   Tata Motors- Pune
                 </h4>
