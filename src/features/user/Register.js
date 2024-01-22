@@ -1,12 +1,11 @@
-import { useState, useRef } from "react";
-import { Link } from "react-router-dom";
 import Axios from "axios";
-import { encryptPassword } from "./components/utils";
-import { useDispatch, useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import InputText from "../../components/Input/InputText";
+import ErrorText from "../../components/Typography/ErrorText";
 import { showNotification } from "../common/headerSlice";
 import LandingIntro from "./LandingIntro";
-import ErrorText from "../../components/Typography/ErrorText";
-import InputText from "../../components/Input/InputText";
+import { encryptPassword } from "./components/utils";
 
 function Register() {
   const INITIAL_REGISTER_OBJ = {
@@ -68,10 +67,14 @@ function Register() {
         email: trimmedEmail,
         password: encryptPassword(trimmedPassword),
         userName: trimmedEmail,
+        organizationDTO: {
+          orgName: "BinBee",
+        },
+        userAddressDTO: {},
       };
       try {
         const response = await Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/user/signup`,
+          `${process.env.REACT_APP_API_URL}/api/auth/signup`,
           userData,
           {
             headers: {
@@ -89,7 +92,7 @@ function Register() {
           setLoading(false);
           handleNotification();
           registerSuccessful();
-          window.location.href = "/login";
+          // window.location.href = "/login";
           localStorage.setItem("AccountCreated", true);
         }
       } catch (error) {

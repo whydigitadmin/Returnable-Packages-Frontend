@@ -46,7 +46,7 @@ function Login() {
 
       try {
         const response = await Axios.post(
-          `${process.env.REACT_APP_API_URL}/api/user/login`,
+          `${process.env.REACT_APP_API_URL}/api/auth/login`,
           requestBody,
           {
             headers: {
