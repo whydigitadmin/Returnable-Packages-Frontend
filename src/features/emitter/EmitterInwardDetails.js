@@ -1,6 +1,9 @@
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
-import DialogContentText from "@mui/material/DialogContentText";
 import React, { useState } from "react";
+import { Button } from "@mui/material";
+import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
+import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import TitleCard from "../../components/Cards/TitleCard";
 
@@ -22,12 +25,12 @@ const BILLS = [
     status: "Issued",
   },
   {
-    rmno: "1072",
-    rmdate: "16-02-2024",
-    ddate: "18-02-2024",
+    rmno: "1073",
+    rmdate: "17-02-2024",
+    ddate: "20-02-2024",
     issueno: "1002",
     issuedate: "18-02-2024",
-    kitno: "KIT1702",
+    kitno: "KIT1703",
     fname: "GB PUNE TO TATA PUNE",
     rqty: "10",
     iqty: "10",
@@ -38,12 +41,12 @@ const BILLS = [
     status: "Issued",
   },
   {
-    rmno: "1072",
-    rmdate: "16-02-2024",
-    ddate: "18-02-2024",
-    issueno: "1001",
+    rmno: "1074",
+    rmdate: "18-02-2024",
+    ddate: "21-02-2024",
+    issueno: "1003",
     issuedate: "18-02-2024",
-    kitno: "KIT1702",
+    kitno: "KIT1704",
     fname: "GB PUNE TO TATA PUNE",
     rqty: "10",
     iqty: "10",
@@ -147,16 +150,16 @@ function EmitterInwardDetails() {
                 <th>RM No.</th>
                 <th>RM Date</th>
                 <th>Demand Date</th>
-                <th>Issue Manifest No</th>
-                <th>Issue Manifest Date</th>
+                <th>IM No</th>
+                <th>IM Date</th>
                 <th>Kit No</th>
-                <th>Flow Name</th>
+                <th>Flow</th>
                 <th>Req Qty</th>
                 <th>Issued Qty</th>
                 <th>Net Rec Qty</th>
                 <th>Return</th>
                 <th>TAT (Hrs)</th>
-                <th>Part Name/No</th>
+                <th>Part</th>
                 <th>Status</th>
               </tr>
             </thead>
@@ -265,38 +268,101 @@ function EmitterInwardDetails() {
         onClose={closePendingPopupIssued}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Issue Manifest</DialogTitle>
+          <DialogTitle>Inward Manifest</DialogTitle>
           <IoMdClose
             className="cursor-pointer w-8 h-8 mt-3 me-3"
             onClick={closePendingPopupIssued}
           />
         </div>
         <DialogContent>
-          {/* <DialogContentText className="d-flex flex-column">
-            <div className="col-lg-4 text-dark"> No: 1704</div>
-            <div className="col-lg-4 text-dark">Date : 19/01/2022</div>
-            <div className="col-lg-6  text-dark mt-3">
-              Part Name/No : PISTON/PS01
+          <div className="row">
+            <div className="col-lg-6 col-md-6 mb-2">
+              <label className="label">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  Net Quantity Received
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
             </div>
-            <div className="col-lg-6 text-dark ">Demand Qty : 10</div>
-            <div className="col-lg-6 mt-3 font-bold text-xl">Kit No : 1072</div>
-            <div className="your-form-container d-flex flex-wrap">
-              <div className="col-lg-4 text-dark mt-3">Available Qty: 15</div>
-              <div className="col-lg-4 text-dark mt-3">Issued Qty: 10</div>
-              <div className="col-lg-4 text-dark mt-3">balance Qty: 5</div>
+            <div className="col-lg-6 col-md-6 mb-2">
+              <input
+                className="form-control form-sz mb-2"
+                type={"text"}
+                placeholder={""}
+                // name="storageMapping"
+                // value={storageMapping}
+                // onChange={handleInputChange}
+              />
+              {/* {errors.storageMapping && (
+              <span className="error-text">{errors.storageMapping}</span>
+            )} */}
             </div>
-          </DialogContentText> */}
+            <div className="col-lg-6 col-md-6 mb-2">
+              <label className="label">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  Return
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-6 col-md-6 mb-2">
+              <input
+                className="form-control form-sz mb-2"
+                type={"text"}
+                placeholder={""}
+                // name="storageMapping"
+                // value={storageMapping}
+                // onChange={handleInputChange}
+              />
+              {/* {errors.storageMapping && (
+              <span className="error-text">{errors.storageMapping}</span>
+            )} */}
+            </div>
+            <div className="col-lg-6 col-md-6">
+              <label className="label">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  Reason for Return
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-6 col-md-6">
+              <input
+                className="form-control form-sz mb-2"
+                type={"text"}
+                placeholder={""}
+                // name="storageMapping"
+                // value={storageMapping}
+                // onChange={handleInputChange}
+              />
+              {/* {errors.storageMapping && (
+              <span className="error-text">{errors.storageMapping}</span>
+            )} */}
+            </div>
+          </div>
         </DialogContent>
         <div className="d-flex justify-content-center">
-          {/* <DialogActions className="mb-2 me-2">
+          <DialogActions className="mb-2 me-2">
             <Button
               component="label"
               variant="contained"
               onClick={closePendingPopupIssued}
             >
-              Download
+              Proceed
             </Button>
-          </DialogActions> */}
+          </DialogActions>
         </div>
         <DialogContentText>
           <center className="text-dark mb-2">

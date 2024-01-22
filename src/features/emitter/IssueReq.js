@@ -182,22 +182,21 @@ function IssueReq() {
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-            <div className="col-lg-2"></div>
-            <div className="col-lg-3 card bg-base-100 shadow-xl m-3">
-              <div className="">
+            <div className="col-lg-3 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
+              <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
-                    className="text-xl font-semibold ms-2 w-7 h-7"
-                    style={{ marginTop: 30 }}
+                    className="text-xl font-semibold w-7 h-7"
+                    style={{ marginTop: 17 }}
                   />
-                  <h4 className="text-2xl font-semibold mt-4 pt-1 ms-1 mb-4">
+                  <h4 className="text-2xl font-semibold mt-3 ms-1 mb-3">
                     Location
                   </h4>
                 </div>
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-2 mb-3">
+                <h4 className="text-xl dark:text-slate-300 font-semibold mb-2">
                   Gabriel
                 </h4>
-                <p className="ms-2 mb-3">
+                <p className="mb-3">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                   Pune, Maharashtra, 410501 India
                 </p>
@@ -209,28 +208,28 @@ function IssueReq() {
                 style={{ marginTop: 100 }}
               />
             </div>
-            <div className="col-lg-3 card bg-base-100 shadow-xl m-3">
-              <div className="">
+            <div className="col-lg-3 card bg-base-100 shadow-xl ms-2 mt-3">
+              <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
-                    className="text-xl font-semibold ms-2 w-7 h-7"
-                    style={{ marginTop: 30 }}
+                    className="text-xl font-semibold w-7 h-7"
+                    style={{ marginTop: 17 }}
                   />
-                  <h4 className="text-2xl font-semibold mt-4 pt-1 ms-1 mb-4">
+                  <h4 className="text-2xl font-semibold mt-3 ms-1 mb-3">
                     Flow To
                   </h4>
                 </div>
-                <select className="form-select w-10/12 ms-1 mb-2">
+                <select className="form-select w-10/12 mb-2">
                   <option value="Tata Motors-Pune">Tata Motors-Pune</option>
                   <option value="Tata Motors-Chennai">
                     Tata Motors-Chennai
                   </option>
                   <option value="Tata Motors-Mumbai">Tata Motors-Mumbai</option>
                 </select>
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-2 mb-3">
+                <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   Tata Motors- Pune
                 </h4>
-                <p className="ms-2 mb-3">
+                <p className="mb-2 ms-1">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                   Pune, Maharashtra, 410501 India
                 </p>
