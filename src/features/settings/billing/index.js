@@ -1,11 +1,18 @@
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import Box from "@mui/material/Box";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
+import Step from "@mui/material/Step";
+import StepLabel from "@mui/material/StepLabel";
+import Stepper from "@mui/material/Stepper";
+import Typography from "@mui/material/Typography";
 import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import TitleCard from "../../../components/Cards/TitleCard";
 import ToolTip from "../../../components/Input/Tooltip";
+
+const steps = ["Issue manifest", "Mode of Transport "];
 
 const BILLS = [
   {
@@ -28,7 +35,7 @@ const BILLS = [
     kitno: "KIT1072",
     fname: "GB PUNE TO TATA PUNE",
     rqty: "10",
-    iqty: "10",
+    iqty: "0",
     bqty: "0",
     tat: "48",
     pname: "PISTON/PS01",
@@ -41,11 +48,11 @@ const BILLS = [
     kitno: "KIT1072",
     fname: "GB PUNE TO TATA PUNE",
     rqty: "10",
-    iqty: "10",
-    bqty: "0",
+    iqty: "5",
+    bqty: "5",
     tat: "48",
     pname: "PISTON/PS01",
-    status: "Pending",
+    status: "Inprogress",
   },
 
   // {
@@ -124,7 +131,61 @@ function Billing() {
           {status}
         </div>
       );
+    if (status === "Inprogress")
+      return (
+        <div
+          className="badge bg-warning text-white cursor-pointer"
+          onClick={() => handlePendingStatusClick(bill)}
+        >
+          {status}
+        </div>
+      );
     else return <div className="badge badge-ghost">{status}</div>;
+  };
+
+  const [activeStep, setActiveStep] = React.useState(0);
+  const [skipped, setSkipped] = React.useState(new Set());
+
+  const isStepOptional = (step) => {
+    return step === 1;
+  };
+
+  const isStepSkipped = (step) => {
+    return skipped.has(step);
+  };
+
+  const handleNext = () => {
+    let newSkipped = skipped;
+    if (isStepSkipped(activeStep)) {
+      newSkipped = new Set(newSkipped.values());
+      newSkipped.delete(activeStep);
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped(newSkipped);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+  };
+
+  const handleSkip = () => {
+    if (!isStepOptional(activeStep)) {
+      // You probably want to guard against something like this,
+      // it should never occur unless someone's actively trying to break something.
+      throw new Error("You can't skip a step that isn't optional.");
+    }
+
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setSkipped((prevSkipped) => {
+      const newSkipped = new Set(prevSkipped.values());
+      newSkipped.add(activeStep);
+      return newSkipped;
+    });
+  };
+
+  const handleReset = () => {
+    setActiveStep(0);
   };
 
   return (
@@ -153,17 +214,22 @@ function Billing() {
                 return (
                   <tr key={k}>
                     <td>
-                      {l.status === "Issued" ? (
+                      {l.rmno}
+                      {/* {l.status === "Issued" ? (
                         <>
+                          {l.rmno} &nbsp;
                           <div className="badge bg-success text-white cursor-pointer">
-                            {l.rmno}
+                            <span style={{ color: "green" }}>.</span>
                           </div>
                         </>
                       ) : (
-                        <div className="badge bg-danger text-white cursor-pointer">
-                          {l.rmno}
-                        </div>
-                      )}
+                        <>
+                          {l.rmno} &nbsp;
+                          <div className="badge bg-danger text-white cursor-pointer">
+                            <span style={{ color: "red" }}>.</span>
+                          </div>
+                        </>
+                      )} */}
                     </td>
                     <td>{l.rmdate}</td>
                     <td>{l.ddate}</td>
@@ -284,7 +350,113 @@ function Billing() {
             {/* <div className="d-flex justify-content-center">
               <div className="col-lg-4 text-center my-3"></div>
             </div> */}
-            <div className="d-flex justify-content-between">
+            <Box sx={{ width: "100%" }}>
+              <Stepper activeStep={activeStep}>
+                {steps.map((label, index) => {
+                  const stepProps = {};
+                  const labelProps = {};
+                  if (isStepOptional(index)) {
+                    labelProps.optional = (
+                      <Typography variant="caption">Optional</Typography>
+                    );
+                  }
+                  if (isStepSkipped(index)) {
+                    stepProps.completed = false;
+                  }
+                  return (
+                    <Step key={label} {...stepProps}>
+                      <StepLabel {...labelProps}>{label}</StepLabel>
+                    </Step>
+                  );
+                })}
+              </Stepper>
+              {activeStep === steps.length ? (
+                <React.Fragment>
+                  <Typography sx={{ mt: 2, mb: 1 }}>
+                    All steps completed - you&apos;re finished
+                  </Typography>
+                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                    <Box sx={{ flex: "1 1 auto" }} />
+                    <Button onClick={handleReset}>Reset</Button>
+                  </Box>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <Typography sx={{ mt: 2, mb: 1 }}>
+                    <div className="d-flex justify-content-between">
+                      <div>
+                        <div className="text-dark"> No: 1704</div>
+                        <div className="text-dark">Date : 19/01/2022</div>
+                      </div>
+                      <div>
+                        <div className="text-dark">
+                          Request.Manifest No: 1704
+                        </div>
+                        <div className="text-dark">
+                          Manifest Date : 19/01/2022
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-lg-6  text-dark mt-3">
+                      Part Name/No : PISTON/PS01
+                    </div>
+                    <div className="col-lg-6 text-dark ">Demand Qty : 10</div>
+                    <div className="col-lg-6 mt-3 font-bold text-xl">
+                      Kit No : 1072
+                    </div>
+                    <div className="your-form-container d-flex flex-wrap">
+                      <div className="col-lg-4 text-dark mt-3">
+                        Available Qty: 15
+                      </div>
+                      <div className="col-lg-4 text-dark mt-3">
+                        Issued Qty: 10
+                      </div>
+                      <div className="col-lg-4 text-dark mt-3">
+                        balance Qty: 5
+                      </div>
+                    </div>
+                    <div className="d-flex justify-content-center">
+                      <DialogActions className="mb-2 me-2">
+                        {/* <Button onClick={closePendingPopup}>Cancel</Button> */}
+                        <Button
+                          component="label"
+                          variant="contained"
+                          onClick={closePendingPopupIssued}
+                        >
+                          Download
+                        </Button>
+                      </DialogActions>
+                    </div>
+                  </Typography>
+                  <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
+                    <Button
+                      color="inherit"
+                      disabled={activeStep === 0}
+                      onClick={handleBack}
+                      sx={{ mr: 1 }}
+                    >
+                      Back
+                    </Button>
+                    <Box sx={{ flex: "1 1 auto" }} />
+                    {isStepOptional(activeStep) && (
+                      <Button
+                        color="inherit"
+                        onClick={handleSkip}
+                        sx={{ mr: 1 }}
+                      >
+                        Skip
+                      </Button>
+                    )}
+
+                    <Button onClick={handleNext}>
+                      {activeStep === steps.length - 1 ? "Finish" : "Next"}
+                    </Button>
+                  </Box>
+                </React.Fragment>
+              )}
+            </Box>
+
+            {/* <div className="d-flex justify-content-between">
               <div>
                 <div className="text-dark"> No: 1704</div>
                 <div className="text-dark">Date : 19/01/2022</div>
@@ -303,12 +475,12 @@ function Billing() {
               <div className="col-lg-4 text-dark mt-3">Available Qty: 15</div>
               <div className="col-lg-4 text-dark mt-3">Issued Qty: 10</div>
               <div className="col-lg-4 text-dark mt-3">balance Qty: 5</div>
-            </div>
+            </div> */}
           </DialogContentText>
         </DialogContent>
-        <div className="d-flex justify-content-center">
+        {/* <div className="d-flex justify-content-center">
           <DialogActions className="mb-2 me-2">
-            {/* <Button onClick={closePendingPopup}>Cancel</Button> */}
+        
             <Button
               component="label"
               variant="contained"
@@ -318,6 +490,11 @@ function Billing() {
             </Button>
           </DialogActions>
         </div>
+        <DialogContentText>
+          <center className="text-dark mb-2">
+            Issued by AIPACKS - Karthi-19/01/2024-10:00AM
+          </center>
+        </DialogContentText> */}
         <DialogContentText>
           <center className="text-dark mb-2">
             Issued by AIPACKS - Karthi-19/01/2024-10:00AM

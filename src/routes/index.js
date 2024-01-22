@@ -7,6 +7,7 @@ const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
 const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const EmitterInward = lazy(() => import("../pages/protected/EmitterInward"));
+const EmitterOutward = lazy(() => import("../pages/protected/EmitterOutward"));
 const IssueManifest = lazy(() => import("../pages/protected/IssueManifest"));
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
@@ -314,6 +315,10 @@ const routes = [
   {
     path: "/EmitterInward",
     component: EmitterInward,
+  },
+  {
+    path: "/EmitterOutward",
+    component: EmitterOutward,
   },
 ];
 

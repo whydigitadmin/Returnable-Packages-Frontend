@@ -53,7 +53,7 @@ function WelcomeEmitter() {
                       className="text-xl font-semibold me-2 w-7 h-7"
                       style={{ marginTop: 4 }}
                     />
-                    <h4 className="text-2xl font-semibold">Issue Request</h4>
+                    <h4 className="text-xl font-semibold">Issue Request</h4>
                   </div>
                 </div>
               </div>
@@ -69,12 +69,29 @@ function WelcomeEmitter() {
                       className="text-xl font-semibold me-2 w-7 h-7"
                       style={{ marginTop: 4 }}
                     />
-                    <h4 className="text-2xl font-semibold">Emitter Inward</h4>
+                    <h4 className="text-xl font-semibold">Emitter Inward</h4>
                   </div>
                 </div>
               </div>
             </Link>
           </div>
+
+          <div className="col-lg-4">
+            <Link to="/app/EmitterOutward">
+              <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+                <div className="">
+                  <div className="d-flex flex-row">
+                    <FaArrowCircleDown
+                      className="text-xl font-semibold me-2 w-7 h-7"
+                      style={{ marginTop: 4 }}
+                    />
+                    <h4 className="text-xl font-semibold">Emitter Outward</h4>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+
           {/* <h4 className="text-xl dark:text-slate-300 font-semibold mt-3 ms-3">
             Recent transfer IN
           </h4>
