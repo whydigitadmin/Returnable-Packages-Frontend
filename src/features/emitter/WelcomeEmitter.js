@@ -1,5 +1,7 @@
 import React from "react";
 import { FaArrowCircleDown, FaArrowCircleUp } from "react-icons/fa";
+import { MdOutbound } from "react-icons/md";
+import { TbChartInfographic } from "react-icons/tb";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 
@@ -43,55 +45,72 @@ function WelcomeEmitter() {
             </p>
           </div>
         </div>
-        <div className="col-lg-9 flex-row d-flex card bg-base-100 shadow-xl mb-4">
-          <div className="col-lg-4">
-            <Link to="/app/IssueReq">
-              <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-                <div className="">
-                  <div className="d-flex flex-row">
-                    <FaArrowCircleUp
-                      className="text-xl font-semibold me-2 w-7 h-7"
-                      style={{ marginTop: 4 }}
-                    />
-                    <h4 className="text-xl font-semibold">Issue Request</h4>
+        <div className="col-lg-9 card bg-base-100 shadow-xl mb-4">
+          <div className="row">
+            <div className="col-lg-4">
+              <Link to="/app/IssueReq">
+                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+                  <div className="">
+                    <div className="d-flex flex-row">
+                      <FaArrowCircleUp
+                        className="text-xl font-semibold me-2 w-7 h-7"
+                        style={{ marginTop: 2 }}
+                      />
+                      <h4 className="text-xl font-semibold">Issue Request</h4>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          </div>
+              </Link>
+            </div>
 
-          <div className="col-lg-4">
-            <Link to="/app/EmitterInward">
-              <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-                <div className="">
-                  <div className="d-flex flex-row">
-                    <FaArrowCircleDown
-                      className="text-xl font-semibold me-2 w-7 h-7"
-                      style={{ marginTop: 4 }}
-                    />
-                    <h4 className="text-xl font-semibold">Emitter Inward</h4>
+            <div className="col-lg-4">
+              <Link to="/app/EmitterInward">
+                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+                  <div className="">
+                    <div className="d-flex flex-row">
+                      <FaArrowCircleDown
+                        className="text-xl font-semibold me-2 w-7 h-7"
+                        style={{ marginTop: 2 }}
+                      />
+                      <h4 className="text-xl font-semibold">Inward</h4>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          </div>
+              </Link>
+            </div>
 
-          <div className="col-lg-4">
-            <Link to="/app/EmitterOutward">
-              <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-                <div className="">
-                  <div className="d-flex flex-row">
-                    <FaArrowCircleDown
-                      className="text-xl font-semibold me-2 w-7 h-7"
-                      style={{ marginTop: 4 }}
-                    />
-                    <h4 className="text-xl font-semibold">Emitter Outward</h4>
+            <div className="col-lg-4">
+              <Link to="/app/EmitterOutward">
+                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+                  <div className="">
+                    <div className="d-flex flex-row">
+                      <MdOutbound
+                        className="text-xl font-semibold me-2 w-7 h-7"
+                        style={{ marginTop: 2 }}
+                      />
+                      <h4 className="text-xl font-semibold">Outward</h4>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </Link>
-          </div>
+              </Link>
+            </div>
 
+            <div className="col-lg-4">
+              <Link to="/app/StockAdjustment">
+                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
+                  <div className="">
+                    <div className="d-flex flex-row">
+                      <TbChartInfographic
+                        className="text-xl font-semibold me-2 w-8 h-8"
+                        style={{ marginTop: -6 }}
+                      />
+                      <h4 className="text-xl font-semibold">Stock Report</h4>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
           {/* <h4 className="text-xl dark:text-slate-300 font-semibold mt-3 ms-3">
             Recent transfer IN
           </h4>

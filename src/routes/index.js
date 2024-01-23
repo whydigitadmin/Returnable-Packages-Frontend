@@ -9,6 +9,9 @@ const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
 const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const EmitterInward = lazy(() => import("../pages/protected/EmitterInward"));
 const EmitterOutward = lazy(() => import("../pages/protected/EmitterOutward"));
+const StockAdjustment = lazy(() =>
+  import("../pages/protected/StockAdjustment")
+);
 const IssueManifest = lazy(() => import("../pages/protected/IssueManifest"));
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
@@ -321,6 +324,10 @@ const routes = [
   {
     path: "/EmitterOutward",
     component: EmitterOutward,
+  },
+  {
+    path: "/StockAdjustment",
+    component: StockAdjustment,
   },
   {
     path: "/EmptyCount",
