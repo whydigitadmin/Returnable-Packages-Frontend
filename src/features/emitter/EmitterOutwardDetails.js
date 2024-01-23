@@ -8,52 +8,13 @@ import TitleCard from "../../components/Cards/TitleCard";
 
 const BILLS = [
   {
-    rmno: "1072",
-    rmdate: "16-02-2024",
-    ddate: "18-02-2024",
-    issueno: "1001",
-    issuedate: "18-02-2024",
-    kitno: "KIT1702",
-    fname: "GB PUNE TO TATA PUNE",
-    rqty: "10",
-    iqty: "10",
-    nqty: "0",
-    returnqty: "0",
-    tat: "48",
-    pname: "PISTON/PS01",
-    status: "Issued",
-  },
-  {
-    rmno: "1073",
-    rmdate: "17-02-2024",
-    ddate: "20-02-2024",
-    issueno: "1002",
-    issuedate: "18-02-2024",
-    kitno: "KIT1703",
-    fname: "GB PUNE TO TATA PUNE",
-    rqty: "10",
-    iqty: "10",
-    nqty: "0",
-    returnqty: "0",
-    tat: "48",
-    pname: "PISTON/PS01",
-    status: "Issued",
-  },
-  {
-    rmno: "1074",
-    rmdate: "18-02-2024",
-    ddate: "21-02-2024",
-    issueno: "1003",
-    issuedate: "18-02-2024",
-    kitno: "KIT1704",
-    fname: "GB PUNE TO TATA PUNE",
-    rqty: "10",
-    iqty: "10",
-    nqty: "0",
-    returnqty: "0",
-    tat: "48",
-    pname: "PISTON/PS01",
-    status: "Issued",
+    kitno: "1072",
+    kitqty: "10",
+    balancekit: "20",
+    invoiceno: "1001",
+    cycletime: "20",
+    previous: "19/01/2024",
+    o2o: "10 days",
   },
 
   // {
@@ -81,7 +42,7 @@ const BILLS = [
   // },
 ];
 
-function EmitterInwardDetails() {
+function EmitterOutwardDetails() {
   const [bills, setBills] = useState(BILLS);
   const [isPendingPopupOpen, setPendingPopupOpen] = useState(false);
   const [isPendingPopupOpenIssued, setPendingPopupOpenIssued] = useState(false);
@@ -140,46 +101,32 @@ function EmitterInwardDetails() {
 
   return (
     <>
-      <TitleCard title="Iward Manifest" topMargin="mt-2">
+      <TitleCard title="Outward Manifest" topMargin="mt-2">
         {/* Invoice list in table format loaded constant */}
         <div className="overflow-x-auto w-full ">
           <table className="table w-full">
             <thead>
               <tr>
-                <th>RM No.</th>
-                <th>RM Date</th>
-                <th>Demand Date</th>
-                <th>IM No</th>
-                <th>IM Date</th>
-                <th>Kit No</th>
-                <th>Flow</th>
-                <th>Req Qty</th>
-                <th>Issued Qty</th>
-                <th>Net Rec Qty</th>
-                <th>Return</th>
-                <th>TAT (Hrs)</th>
-                <th>Part</th>
-                <th>Status</th>
+                <th>Kit No.</th>
+                <th>Kit Qty</th>
+                <th>Balance kit</th>
+                <th>Invoice no</th>
+                <th>Cycle Time (days) </th>
+                <th>Previous dispatch</th>
+                <th>O2O - TAT</th>
               </tr>
             </thead>
             <tbody>
               {bills.map((l, k) => {
                 return (
                   <tr key={k}>
-                    <td>{l.rmno}</td>
-                    <td>{l.rmdate}</td>
-                    <td>{l.ddate}</td>
-                    <td>{l.issueno}</td>
-                    <td>{l.issuedate}</td>
                     <td>{l.kitno}</td>
-                    <td>{l.fname}</td>
-                    <td>{l.rqty}</td>
-                    <td>{l.iqty}</td>
-                    <td>{l.nqty}</td>
-                    <td>{l.returnqty}</td>
-                    <td>{l.tat}</td>
-                    <td>{l.pname}</td>
-                    <td>{getPaymentStatus(l.status)}</td>
+                    <td>{l.kitqty}</td>
+                    <td>{l.balancekit}</td>
+                    <td>{l.invoiceno}</td>
+                    <td>{l.cycletime}</td>
+                    <td>{l.previous}</td>
+                    <td>{l.o2o}</td>
                   </tr>
                 );
               })}
@@ -267,7 +214,7 @@ function EmitterInwardDetails() {
         onClose={closePendingPopupIssued}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Inward Manifest</DialogTitle>
+          <DialogTitle>Outward Manifest</DialogTitle>
           <IoMdClose
             className="cursor-pointer w-8 h-8 mt-3 me-3"
             onClick={closePendingPopupIssued}
@@ -373,4 +320,4 @@ function EmitterInwardDetails() {
   );
 }
 
-export default EmitterInwardDetails;
+export default EmitterOutwardDetails;

@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { EmitterOutward } from "../../features/emitter/EmitterOutward";
+import { EmptyCount } from "../../features/emitter/EmptyCount";
 
 function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Emitter Outward" }));
+    dispatch(setPageTitle({ title: "Empty Count Manifest" }));
   }, []);
 
-  return <EmitterOutward />;
+  return <EmptyCount />;
 }
 
 export default InternalPage;

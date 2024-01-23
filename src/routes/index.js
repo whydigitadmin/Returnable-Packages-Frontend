@@ -2,6 +2,7 @@
 
 import { lazy } from "react";
 import "./style.css";
+
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
@@ -77,6 +78,7 @@ const Responsibilities = lazy(() =>
 );
 const Branch = lazy(() => import("../pages/protected/Branch"));
 const AccessRights = lazy(() => import("../pages/protected/AccessRights"));
+const EmptyCount = lazy(() => import("../pages/protected/EmptyCount"));
 
 const routes = [
   {
@@ -319,6 +321,10 @@ const routes = [
   {
     path: "/EmitterOutward",
     component: EmitterOutward,
+  },
+  {
+    path: "/EmptyCount",
+    component: EmptyCount,
   },
 ];
 
