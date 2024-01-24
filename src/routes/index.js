@@ -9,6 +9,9 @@ const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
 const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const EmitterInward = lazy(() => import("../pages/protected/EmitterInward"));
 const EmitterOutward = lazy(() => import("../pages/protected/EmitterOutward"));
+const KitDistributionReport = lazy(() =>
+  import("../pages/protected/KitDistributionReport")
+);
 const StockAdjustment = lazy(() =>
   import("../pages/protected/StockAdjustment")
 );
@@ -332,6 +335,10 @@ const routes = [
   {
     path: "/EmptyCount",
     component: EmptyCount,
+  },
+  {
+    path: "/KitDistributionReport",
+    component: KitDistributionReport,
   },
 ];
 
