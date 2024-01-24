@@ -1,6 +1,5 @@
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
-import DialogContentText from "@mui/material/DialogContentText";
 import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -8,16 +7,13 @@ import TitleCard from "../../components/Cards/TitleCard";
 
 const BILLS = [
   {
-    partno: "2001",
-    partname: "Pallet",
-    partqty: "20",
-    kitno: "1072",
-    kitqty: "10",
-    balancekit: "20",
-    invoiceno: "1001",
-    cycletime: "20",
-    previous: "19/01/2024",
-    o2o: "10 days",
+    assetCode: "2001",
+    assetName: "Pallet",
+    dayOpening: "20",
+    dayEmpty: "10",
+    dayRetrieval: "10",
+    dayClosing: "20",
+    lastRetrieval: "15/01/2024",
   },
 
   // {
@@ -45,7 +41,7 @@ const BILLS = [
   // },
 ];
 
-function EmitterOutwardDetails() {
+function EmptyCountDetails() {
   const [bills, setBills] = useState(BILLS);
   const [isPendingPopupOpen, setPendingPopupOpen] = useState(false);
   const [isPendingPopupOpenIssued, setPendingPopupOpenIssued] = useState(false);
@@ -104,47 +100,45 @@ function EmitterOutwardDetails() {
 
   return (
     <>
-      <div className="d-flex justify-content-end me-4 mt-4">
+      <div className="d-flex justify-content-end me-4">
         <button
           type="button"
           onClick={handlePendingStatusClickIssued}
           className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
         >
-          Outward
+          Empty Count
         </button>
       </div>
-      <TitleCard title="Outward Manifest" topMargin="mt-2">
+      <TitleCard
+        title="Empty Count Details"
+        // TopSideButtons={"Empty Count"}
+        topMargin="mt-0"
+      >
         {/* Invoice list in table format loaded constant */}
         <div className="overflow-x-auto w-full ">
           <table className="table w-full">
             <thead>
               <tr>
-                <th>Part No</th>
-                <th>Part name</th>
-                <th>Part Qty</th>
-                <th>Kit No</th>
-                <th>Kit Qty</th>
-                <th>Balance kit</th>
-                <th>Invoice no</th>
-                <th>Cycle Time (days) </th>
-                <th>Previous dispatch</th>
-                <th>O2O - TAT</th>
+                <th>Asset Code</th>
+                <th>Asset Name</th>
+                <th>Day Opening Stock</th>
+                <th>Day Empty Stock</th>
+                <th>Day Retrieval Stock</th>
+                <th>Day closing Stock</th>
+                <th>Last Retrieval Date</th>
               </tr>
             </thead>
             <tbody>
               {bills.map((l, k) => {
                 return (
                   <tr key={k}>
-                    <td>{l.partno}</td>
-                    <td>{l.partname}</td>
-                    <td>{l.partqty}</td>
-                    <td>{l.kitno}</td>
-                    <td>{l.kitqty}</td>
-                    <td>{l.balancekit}</td>
-                    <td>{l.invoiceno}</td>
-                    <td>{l.cycletime}</td>
-                    <td>{l.previous}</td>
-                    <td>{l.o2o}</td>
+                    <td>{l.assetCode}</td>
+                    <td>{l.assetName}</td>
+                    <td>{l.dayOpening}</td>
+                    <td>{l.dayEmpty}</td>
+                    <td>{l.dayRetrieval}</td>
+                    <td>{l.dayClosing}</td>
+                    <td>{l.lastRetrieval}</td>
                   </tr>
                 );
               })}
@@ -232,88 +226,162 @@ function EmitterOutwardDetails() {
         onClose={closePendingPopupIssued}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Outward Manifest</DialogTitle>
+          <DialogTitle>Empty Count Manifest</DialogTitle>
           <IoMdClose
             className="cursor-pointer w-8 h-8 mt-3 me-3"
             onClick={closePendingPopupIssued}
           />
         </div>
         <DialogContent>
-          <div className="row">
-            <div className="col-lg-6 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Part no
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-6 col-md-6 mb-2">
-              <input
-                className="form-control form-sz mb-2"
-                type={"text"}
-                placeholder={""}
-                // name="storageMapping"
-                // value={storageMapping}
-                // onChange={handleInputChange}
-              />
-              {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
-            </div>
-            <div className="col-lg-6 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Part name
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-6 col-md-6 mb-2">
-              <input
-                className="form-control form-sz mb-2"
-                type={"text"}
-                placeholder={""}
-                // name="storageMapping"
-                // value={storageMapping}
-                // onChange={handleInputChange}
-              />
-              {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
-            </div>
-            <div className="col-lg-6 col-md-6">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Part Qty
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-6 col-md-6">
-              <input
-                className="form-control form-sz mb-2"
-                type={"text"}
-                placeholder={""}
-                // name="storageMapping"
-                // value={storageMapping}
-                // onChange={handleInputChange}
-              />
-              {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
+          <div className="row" style={{ padding: "0% 8% 0% 8%" }}>
+            <div className="col-lg-1"></div>
+            <div className="">
+              <div>
+                <div className="row mt-4">
+                  <div className="col-lg-4 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Asset Name :
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-6 col-md-6 mb-2">
+                    <input
+                      className="form-control form-sz mb-2"
+                      type={"text"}
+                      placeholder={""}
+                      // name="storageMapping"
+                      // value={storageMapping}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-4 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Asset Count :
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-6 col-md-6 mb-2">
+                    <input
+                      className="form-control form-sz mb-2"
+                      type={"text"}
+                      placeholder={""}
+                      // name="storageMapping"
+                      // value={storageMapping}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-4 col-md-6">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Day empty count :
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-6 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      type={"text"}
+                      placeholder={""}
+                      // name="storageMapping"
+                      // value={storageMapping}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                {/* <div className="row">
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Day Opening Stock
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-4 col-md-6 mb-2">
+                    <input
+                      className="form-control form-sz mb-2"
+                      type={"text"}
+                      placeholder={""}
+                      // name="storageMapping"
+                      // value={storageMapping}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Day Retrieval stock
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-4 col-md-6 mb-2">
+                    <input
+                      className="form-control form-sz mb-2"
+                      type={"text"}
+                      placeholder={""}
+                      // name="storageMapping"
+                      // value={storageMapping}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+                <div className="row">
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Day closing stock
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-4 col-md-6 mb-2">
+                    <input
+                      className="form-control form-sz mb-2"
+                      type={"text"}
+                      placeholder={""}
+                      // name="storageMapping"
+                      // value={storageMapping}
+                      // onChange={handleInputChange}
+                    />
+                  </div>
+                </div> */}
+              </div>
             </div>
           </div>
         </DialogContent>
@@ -328,14 +396,14 @@ function EmitterOutwardDetails() {
             </Button>
           </DialogActions>
         </div>
-        <DialogContentText>
+        {/* <DialogContentText>
           <center className="text-dark mb-2">
             Issued by AIPACKS - Karthi-19/01/2024-10:00AM
           </center>
-        </DialogContentText>
+        </DialogContentText> */}
       </Dialog>
     </>
   );
 }
 
-export default EmitterOutwardDetails;
+export default EmptyCountDetails;
