@@ -85,6 +85,9 @@ const Responsibilities = lazy(() =>
 const Branch = lazy(() => import("../pages/protected/Branch"));
 const AccessRights = lazy(() => import("../pages/protected/AccessRights"));
 const EmptyCount = lazy(() => import("../pages/protected/EmptyCount"));
+const EmptyRetrievalManifest = lazy(() =>
+  import("../pages/protected/EmptyRetrievalManifest")
+);
 
 const routes = [
   {
@@ -339,6 +342,10 @@ const routes = [
   {
     path: "/KitDistributionReport",
     component: KitDistributionReport,
+  },
+  {
+    path: "/EmptyRetrievalManifest",
+    component: EmptyRetrievalManifest,
   },
 ];
 
