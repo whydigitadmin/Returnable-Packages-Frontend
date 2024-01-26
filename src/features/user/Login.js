@@ -66,10 +66,13 @@ function Login() {
           );
           localStorage.setItem("userName", trimmedEmail);
           localStorage.setItem(
+            "orgId",
+            response.data.paramObjectsMap.user.orgId
+          );
+          localStorage.setItem(
             "userDetails",
             response.data.paramObjectsMap.user.role
           );
-          // Redirect the user to the welcome page
           console.log("token", response.data);
           if (localStorage.getItem("userDetails") === "ROLE_EMITTER") {
             window.location.href = "/app/EmitterLanding";
