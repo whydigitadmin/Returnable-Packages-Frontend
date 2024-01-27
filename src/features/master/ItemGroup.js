@@ -15,6 +15,7 @@ import { FaBoxOpen } from "react-icons/fa";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
+import { FaStarOfLife } from "react-icons/fa";
 import AddItemSpecification from "./AddItemSpecification";
 
 const statsData = [
@@ -90,10 +91,10 @@ function ItemGroup() {
   const handleAddAssetCategory = () => {
     const errors = {};
     if (!assetCategory) {
-      errors.assetCategory = "Asset Category is required";
+      errors.assetCategory = "Category Name is required";
     }
     if (!assetCategoryId) {
-      errors.assetCategoryId = "asset Category Id is required";
+      errors.assetCategoryId = "Category Code is required";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -292,10 +293,11 @@ function ItemGroup() {
                     <label className="label">
                       <span
                         className={
-                          "label-text label-font-size text-base-content"
+                          "label-text label-font-size text-base-content d-flex flex-row"
                         }
                       >
-                        Category Name
+                        Category Name:
+                        <FaStarOfLife className="must" />
                       </span>
                     </label>
                   </div>
@@ -316,10 +318,11 @@ function ItemGroup() {
                     <label className="label">
                       <span
                         className={
-                          "label-text label-font-size text-base-content"
+                          "label-text label-font-size text-base-content d-flex flex-row"
                         }
                       >
-                        Category Code
+                        Category Code:
+                        <FaStarOfLife className="must" />
                       </span>
                     </label>
                   </div>

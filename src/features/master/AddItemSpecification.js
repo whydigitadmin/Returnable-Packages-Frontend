@@ -60,11 +60,11 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddItemSpecification({ addItemSpecification }) {
-  const [id, setId] = useState("1");
+  const [id, setId] = useState("");
   const [selectedValue, setSelectedValue] = useState(
     "Select an Asset Category"
   );
-  const [assetCode, setAssetCode] = useState("");
+  const [assetName, setAssetName] = useState("");
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
   const [length, setLength] = useState();
@@ -79,9 +79,6 @@ function AddItemSpecification({ addItemSpecification }) {
 
   const handleSelectChange = (e) => {
     setSelectedValue(e.target.value);
-
-    console.log("Select", selectedValue);
-    console.log("Select1", assetCategory);
   };
   const handleUnitChange = (e) => {
     setDimUnit(e.target.value);
@@ -105,7 +102,6 @@ function AddItemSpecification({ addItemSpecification }) {
         const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
         setAssetCategoryVO(assetCategories);
         if (assetCategories.length > 0) {
-          // Set assetCategory to the "Standard" from the zero index
           setAssetCategory(assetCategories[0].assetCategory);
         }
         // setData(response.data.paramObjectsMap.assetCategoryVO);
@@ -119,8 +115,11 @@ function AddItemSpecification({ addItemSpecification }) {
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
-      case "assetCode":
-        setAssetCode(value);
+      case "assetName":
+        setAssetName(value);
+        break;
+      case "id":
+        setId(value);
         break;
       case "length":
         setLength(value);
@@ -141,8 +140,11 @@ function AddItemSpecification({ addItemSpecification }) {
 
   const handleAssetCategory = () => {
     const errors = {};
-    if (!assetCode) {
-      errors.assetCode = "Asset Code is required";
+    if (!id) {
+      errors.id = "Asset Code is required";
+    }
+    if (!assetName) {
+      errors.assetName = "Asset Name is required";
     }
     if (!length) {
       errors.length = "Length is required";
@@ -156,33 +158,39 @@ function AddItemSpecification({ addItemSpecification }) {
     if (!dimUnit) {
       errors.dimUnit = "Unit is required";
     }
-    const formData = {
-      assetCategory,
-      assetCode,
-      length,
-      breath,
-      height,
-      dimUnit,
-      orgId,
-      id,
-      active,
-    };
-    Axios.post(
-      `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
-      formData
-    )
-      .then((response) => {
-        console.log("Response:", response.data);
-        setAssetCode("");
-        setLength("");
-        setHeight("");
-        setBreath("");
-        setDimUnit("");
-        addItemSpecification(false);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        assetCategory,
+        assetName,
+        length,
+        breath,
+        height,
+        dimUnit,
+        orgId,
+        id,
+        active,
+      };
+      Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        formData
+      )
+        .then((response) => {
+          console.log("Response:", response.data);
+          setAssetName("");
+          setLength("");
+          setHeight("");
+          setBreath("");
+          setDimUnit("");
+          setId("");
+          addItemSpecification(false);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
   };
 
   const handleCloseAddItemSpecification = () => {
@@ -252,10 +260,11 @@ function AddItemSpecification({ addItemSpecification }) {
               //   (showStandardDropdown && "STD-") ||
               //   (showVariableDropdown && "CMZ-")
               // }
-              name="assetCode"
-              value={assetCode}
+              name="id"
+              value={id}
               onChange={handleCategoryChange}
             />
+            {errors.id && <span className="error-text">{errors.id}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -273,10 +282,13 @@ function AddItemSpecification({ addItemSpecification }) {
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
-              // name=""
-              // value={}
-              // onChange={handleCategoryChange}
+              name="assetName"
+              value={assetName}
+              onChange={handleCategoryChange}
             />
+            {errors.assetName && (
+              <span className="error-text">{errors.assetName}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -326,7 +338,6 @@ function AddItemSpecification({ addItemSpecification }) {
                 className="input mb-2 p-1 input-bordered"
               />
               <select
-                // name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 56 }}
                 className="input mb-2 p-1 input-bordered ms-1"
                 value={dimUnit}
@@ -351,6 +362,20 @@ function AddItemSpecification({ addItemSpecification }) {
             <FormControlLabel
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2"></div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <div className="d-flex flex-row">
+              {errors.length && (
+                <span className="error-text">{errors.length}</span>
+              )}
+              {errors.breath && (
+                <span className="error-text">{errors.breath}</span>
+              )}
+              {errors.height && (
+                <span className="error-text">{errors.height}</span>
+              )}
+            </div>
           </div>
         </div>
         <div className="d-flex flex-row mt-3">
