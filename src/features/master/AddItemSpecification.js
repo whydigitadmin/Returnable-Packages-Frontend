@@ -1,13 +1,12 @@
+import * as React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Axios from "axios";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import * as React from "react";
-import { useState } from "react";
-import { CiCircleInfo } from "react-icons/ci";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { Tooltip } from "react-tooltip";
-import ToolTip from "../../components/Input/Tooltip";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -61,28 +60,130 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddItemSpecification({ addItemSpecification }) {
-  const [value, setValue] = useState("");
-  const [selectedValue, setSelectedValue] = useState("Select Asset Category");
+  const [id, setId] = useState("1");
+  const [selectedValue, setSelectedValue] = useState(
+    "Select an Asset Category"
+  );
+  const [assetCode, setAssetCode] = useState("");
+  const [assetCategoryVO, setAssetCategoryVO] = useState([]);
+  const [assetCategory, setAssetCategory] = useState("");
+  const [length, setLength] = useState();
+  const [breath, setBreath] = useState();
+  const [height, setHeight] = useState();
+  const [dimUnit, setDimUnit] = useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [active, setActive] = React.useState(true);
+  const [errors, setErrors] = useState({});
   const [showStandardDropdown, setShowStandardDropdown] = useState(false);
   const [showVariableDropdown, setShowVariableDropdown] = useState(false);
-  const updateFormValue = ({ updateType, value }) => {
-    console.log(updateType);
-  };
 
   const handleSelectChange = (e) => {
     setSelectedValue(e.target.value);
-    // Check if the selected value should show the additional dropdown
-    setShowStandardDropdown(e.target.value == "Standard");
-    setShowVariableDropdown(e.target.value == "Customized");
-  };
 
-  const updateInputValue = (val) => {
-    setValue(val);
+    console.log("Select", selectedValue);
+    console.log("Select1", assetCategory);
+  };
+  const handleUnitChange = (e) => {
+    setDimUnit(e.target.value);
   };
 
   // const handleItem = () => {
   //   addItem(false);
   // };
+
+  useEffect(() => {
+    getAllAssetCategory();
+  }, []);
+
+  const getAllAssetCategory = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory`
+      );
+
+      if (response.status === 200) {
+        const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
+        setAssetCategoryVO(assetCategories);
+        if (assetCategories.length > 0) {
+          // Set assetCategory to the "Standard" from the zero index
+          setAssetCategory(assetCategories[0].assetCategory);
+        }
+        // setData(response.data.paramObjectsMap.assetCategoryVO);
+        // setTableData(response.data.paramObjectsMap.assetCategoryVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleCategoryChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "assetCode":
+        setAssetCode(value);
+        break;
+      case "length":
+        setLength(value);
+        break;
+      case "breath":
+        setBreath(value);
+        break;
+      case "height":
+        setHeight(value);
+        break;
+      case "dimUnit":
+        setDimUnit(value);
+        break;
+      // default:
+      //   break;
+    }
+  };
+
+  const handleAssetCategory = () => {
+    const errors = {};
+    if (!assetCode) {
+      errors.assetCode = "Asset Code is required";
+    }
+    if (!length) {
+      errors.length = "Length is required";
+    }
+    if (!breath) {
+      errors.breath = "Breath is required";
+    }
+    if (!height) {
+      errors.height = "Height is required";
+    }
+    if (!dimUnit) {
+      errors.dimUnit = "Unit is required";
+    }
+    const formData = {
+      assetCategory,
+      assetCode,
+      length,
+      breath,
+      height,
+      dimUnit,
+      orgId,
+      id,
+      active,
+    };
+    Axios.post(
+      `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+      formData
+    )
+      .then((response) => {
+        console.log("Response:", response.data);
+        setAssetCode("");
+        setLength("");
+        setHeight("");
+        setBreath("");
+        setDimUnit("");
+        addItemSpecification(false);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
 
   const handleCloseAddItemSpecification = () => {
     addItemSpecification(false);
@@ -119,12 +220,15 @@ function AddItemSpecification({ addItemSpecification }) {
               onChange={handleSelectChange}
               value={selectedValue}
             >
-              {/* <option selected>Open this select menu</option> */}
-              <option value="Select Asset Category">
-                Select Asset Category
+              <option value="" disabled>
+                Select an Asset Category
               </option>
-              <option value="Standard">Standard</option>
-              <option value="Customized">Customized</option>
+              {assetCategoryVO.length > 0 &&
+                assetCategoryVO.map((list) => (
+                  <option key={list.id} value={list.assetCategory}>
+                    {list.assetCategory}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="col-lg-6 col-md-12 mb-2"></div>
@@ -143,14 +247,14 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
-              placeholder={
-                (showStandardDropdown && "STD-") ||
-                (showVariableDropdown && "CMZ-")
-              }
-              // name="warehouseName"
-              // value={warehouseName}
-              // onChange={handleInputChange}
+              // type={"text"}
+              // placeholder={
+              //   (showStandardDropdown && "STD-") ||
+              //   (showVariableDropdown && "CMZ-")
+              // }
+              name="assetCode"
+              value={assetCode}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -168,11 +272,10 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={""}
               // name=""
               // value={}
-              // onChange={handleInputChange}
+              // onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
@@ -186,10 +289,10 @@ function AddItemSpecification({ addItemSpecification }) {
             <div className="d-flex flex-row">
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
+                name="length"
+                value={length}
                 placeholder={"L"}
-                onChange={(e) => updateInputValue(e.target.value)}
+                onChange={handleCategoryChange}
                 className="input mb-2 input-bordered p-1"
               />
               <span>
@@ -201,10 +304,10 @@ function AddItemSpecification({ addItemSpecification }) {
               </span>
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
+                name="breath"
+                value={breath}
                 placeholder={"B"}
-                onChange={(e) => updateInputValue(e.target.value)}
+                onChange={handleCategoryChange}
                 className="input mb-2 p-1 input-bordered"
               />
               <span>
@@ -216,16 +319,18 @@ function AddItemSpecification({ addItemSpecification }) {
               </span>
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
+                name="height"
+                value={height}
                 placeholder={"H"}
-                onChange={(e) => updateInputValue(e.target.value)}
+                onChange={handleCategoryChange}
                 className="input mb-2 p-1 input-bordered"
               />
               <select
-                name="inch"
+                // name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 56 }}
                 className="input mb-2 p-1 input-bordered ms-1"
+                value={dimUnit}
+                onChange={handleUnitChange}
               >
                 <option value="inch">inch</option>
                 <option value="mm">mm</option>
@@ -235,31 +340,6 @@ function AddItemSpecification({ addItemSpecification }) {
               </select>
             </div>
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                UoM
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <select
-              name="inch"
-              style={{ height: 40, fontSize: "0.800rem", width: 56 }}
-              className="input mb-2 p-1 input-bordered ms-1"
-            >
-              <option value="inch">inch</option>
-              <option value="mm">mm</option>
-              <option value="cm">cm</option>
-              <option value="feet">feet</option>
-              <option value="meter">meter</option>
-            </select>
-          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -273,309 +353,10 @@ function AddItemSpecification({ addItemSpecification }) {
             />
           </div>
         </div>
-        {/* <h1 className="text-xl font-semibold my-2">Asset Details</h1>
-        <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Dimensions
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
-            <div className="d-flex flex-row">
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
-                placeholder={"L"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 input-bordered p-1"
-              />
-              <span>
-                <input
-                  placeholder="X"
-                  disabled
-                  className="input mb-2 input-bordered disabled-input mx-1"
-                />
-              </span>
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
-                placeholder={"B"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
-              />
-              <span>
-                <input
-                  placeholder="X"
-                  disabled
-                  className="input mb-2 input-bordered disabled-input mx-1"
-                />
-              </span>
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={value}
-                placeholder={"H"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
-              />
-              <select
-                name="inch"
-                style={{ height: 40, fontSize: "0.800rem", width: 56 }}
-                className="input mb-2 p-1 input-bordered ms-1"
-              >
-                <option value="inch">inch</option>
-                <option value="mm">mm</option>
-                <option value="cm">cm</option>
-                <option value="feet">feet</option>
-                <option value="meter">meter</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content "}>
-                Manufacturer
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <select
-              name="inch"
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 p-1 w-full input-bordered"
-            >
-              <option value="Manufacturer">Manufacturer 1</option>
-              <option value="Manufacturer">Manufacturer 2</option>
-              <option value="Manufacturer">Manufacturer 3</option>
-              <option value="Manufacturer">Manufacturer 4</option>
-            </select>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content "}>
-                G.Weight
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <div className="d-flex flex-row">
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 166 }}
-                type={"text"}
-                value={value}
-                placeholder={"G.Weight"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 input-bordered"
-              />
-              <select
-                name="inch"
-                style={{ height: 40, fontSize: "0.800rem", width: 60 }}
-                className="input mb-2 p-1 input-bordered ms-1"
-              >
-                <option value="kg">kg</option>
-                <option value="tonne">tonne</option>
-                <option value="grams">grams</option>
-              </select>
-            </div>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content "}>
-                Chargable Weight
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <div className="d-flex flex-row">
-              <input
-                style={{ height: 40, fontSize: "0.800rem", width: 166 }}
-                type={"text"}
-                value={value}
-                placeholder={"Chargable Weight"}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 input-bordered"
-              />
-              <select
-                name="inch"
-                style={{ height: 40, fontSize: "0.800rem", width: 60 }}
-                className="input mb-2 p-1 input-bordered ms-1"
-              >
-                <option value="kg">kg</option>
-                <option value="tonne">tonne</option>
-                <option value="grams">grams</option>
-              </select>
-            </div>
-          </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content "}>
-                Brand
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Brand"}
-              content={"Specify the brand associated with this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-        </div>
-        <h1 className="text-xl font-semibold my-2">Asset Information</h1>
-        <div className="row">
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Asset Category
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Asset Category"}
-              content={
-                "Assign this  item to a specific category or group for organizational purposes"
-              }
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Expected Life (Months)
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Expected Life"}
-              content={"Item anticipated lifespan"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Maintenance Interval (Days)
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Maintenance Interval"}
-              content={"Specifies the timeframe for planned maintenance"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Expected Transactions
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Expected Transactions"}
-              content={"Anticipated number of item movements"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text text-base-content "}>EAN/UPC</span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"EAN/UPC"}
-              content={"Enter the UPC code if applicable for this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                HSN Code
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"HSN Code"}
-              content={"Enter the HSN code if applicable for this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Tax Rate
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Tax Rate"}
-              content={"Set the applicable tax rate for this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Cost Price
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Cost Price"}
-              content={"Enter the cost price or acquisition cost of this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Sell Price
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Sell Price"}
-              content={"Specify the selling price of this item"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Scrap Value (%)
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Scrap Value"}
-              content={"Estimated end-of-life item worth"}
-              updateFormValue={updateFormValue}
-            />
-          </div>
-        </div> */}
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
+            onClick={handleAssetCategory}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save

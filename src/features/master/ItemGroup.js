@@ -1,3 +1,5 @@
+import React, { useState, useEffect, useMemo } from "react";
+import Axios from "axios";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -5,12 +7,10 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useEffect, useMemo } from "react";
 import { FaBoxOpen } from "react-icons/fa";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
@@ -47,7 +47,11 @@ const statsData = [
 function ItemGroup() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
+  const [assetCategory, setAssetCategory] = React.useState("");
+  const [assetCategoryId, setAssetCategoryId] = React.useState("");
+  const [active, setActive] = React.useState(true);
   const [data, setData] = React.useState([]);
+  const [errors, setErrors] = useState({});
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -62,24 +66,57 @@ function ItemGroup() {
 
   const handleBack = () => {
     setAdd(false);
-    getWarehouseData();
+    // addAssetCategory();
   };
 
-  useEffect(() => {
-    getWarehouseData();
-  }, []);
+  // useEffect(() => {
+  //   addAssetCategory();
+  // }, []);
 
-  const getWarehouseData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/view`
-      );
+  const handleCategoryChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "assetCategory":
+        setAssetCategory(value);
+        break;
+      case "assetCategoryId":
+        setAssetCategoryId(value);
+        break;
+      // default:
+      //   break;
+    }
+  };
 
-      if (response.status === 200) {
-        setData(response.data.paramObjectsMap.WarehouseVO);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  const handleAddAssetCategory = () => {
+    const errors = {};
+    if (!assetCategory) {
+      errors.assetCategory = "Asset Category is required";
+    }
+    if (!assetCategoryId) {
+      errors.assetCategoryId = "asset Category Id is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        assetCategory,
+        assetCategoryId,
+        active,
+      };
+      Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/master/addAssetCategory`,
+        formData
+      )
+        .then((response) => {
+          console.log("Response:", response.data);
+          setAssetCategory("");
+          setAssetCategoryId("");
+          setOpen(false);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
     }
   };
 
@@ -265,10 +302,15 @@ function ItemGroup() {
                   <div className="col-lg-6 col-md-6 mb-2">
                     <input
                       type={"text"}
-                      // value={value}
+                      name="assetCategory"
+                      value={assetCategory}
+                      onChange={handleCategoryChange}
                       placeholder={""}
                       className="form-control form-sz mb-2"
                     />
+                    {errors.assetCategory && (
+                      <span className="error-text">{errors.assetCategory}</span>
+                    )}
                   </div>
                   <div className="col-lg-4 col-md-6 mb-2">
                     <label className="label">
@@ -284,10 +326,17 @@ function ItemGroup() {
                   <div className="col-lg-6 col-md-6 mb-2">
                     <input
                       type={"text"}
-                      // value={value}
+                      value={assetCategoryId}
+                      name="assetCategoryId"
+                      onChange={handleCategoryChange}
                       placeholder={""}
                       className="form-control form-sz mb-2"
                     />
+                    {errors.assetCategoryId && (
+                      <span className="error-text">
+                        {errors.assetCategoryId}
+                      </span>
+                    )}
                   </div>
                 </div>
               </DialogContentText>
@@ -298,6 +347,7 @@ function ItemGroup() {
               </Button>
               <button
                 type="button"
+                onClick={handleAddAssetCategory}
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
                 Submit
