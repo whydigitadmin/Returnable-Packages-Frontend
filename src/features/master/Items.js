@@ -110,28 +110,6 @@ function Items() {
         },
       },
       {
-        accessorKey: "name",
-        header: "Name",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "sku",
-        header: "SKU",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
         accessorKey: "assetCategory",
         header: "Category",
         size: 50,
@@ -143,8 +121,8 @@ function Items() {
         },
       },
       {
-        accessorKey: "purchasePrice",
-        header: "Purchase Price",
+        accessorKey: "length",
+        header: "Length",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -154,8 +132,20 @@ function Items() {
         },
       },
       {
-        accessorKey: "salesPrice",
-        header: "Sales Price",
+        accessorKey: "breath",
+        header: "Breath",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+
+      {
+        accessorKey: "height",
+        header: "Height",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -165,8 +155,8 @@ function Items() {
         },
       },
       {
-        accessorKey: "hsnCode",
-        header: "HSN",
+        accessorKey: "dimUnit",
+        header: "Dimension Unit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -176,8 +166,41 @@ function Items() {
         },
       },
       {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "manufacturer",
+        header: "Manufacturer",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "brand",
+        header: "Brand",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "weight",
+        header: "Weight",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "expectedLife",
+        header: "Expected Life",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

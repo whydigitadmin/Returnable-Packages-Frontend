@@ -1,12 +1,11 @@
+import * as React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import Axios from "axios";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
-import * as React from "react";
-import { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import ToolTip from "../../components/Input/Tooltip";
-
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -60,113 +59,183 @@ const IOSSwitch = styled((props) => (
 
 function AddItem({ addItem }) {
   const [value, setValue] = useState("");
-  const [selectedItemCategory, setSelectedItemCategory] = useState("");
-  const [lengthValue, setLengthValue] = useState("");
-  const [breadthValue, setBreadthValue] = useState("");
-  const [heightValue, setHeightValue] = useState("");
-  const [selectedWeight, setSelectedWeight] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [assetCategoryVO, setAssetCategoryVO] = useState([]);
+  const [assetCategory, setAssetCategory] = useState("");
+  const [assetGroup, setAssetGroup] = useState("");
+  const [assetId, setAssetId] = useState("");
+  const [assetName, setAssetName] = useState("");
+  const [brand, setBrand] = useState("");
+  const [length, setLength] = useState("");
+  const [breath, setBreath] = useState("");
+  const [height, setHeight] = useState("");
+  const [dimUnit, setDimUnit] = useState("");
+  const [costPrice, setCostPrice] = useState("");
+  const [eanUpc, setEanUpc] = useState("");
+  const [expectedLife, setExpectedLife] = useState("");
+  const [expectedTrips, setExpectedTrips] = useState("");
+  const [hsnCode, setHsnCode] = useState("");
+  const [id, setId] = useState();
+  const [maintanencePeriod, setMaintanencePeriod] = useState("");
+  const [manufacturer, setManufacturer] = useState("");
+  const [scrapValue, setScrapValue] = useState("");
+  const [sellPrice, setSellPrice] = useState("");
+  const [taxRate, setTaxRate] = useState("");
+  const [weight, setWeight] = useState("");
+  const [weightUnit, setWeightUnit] = useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [active, setActive] = React.useState(true);
   const [selectedValue, setSelectedValue] = useState("Select Asset Group");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedItemCategory, setSelectedItemCategory] = useState("");
   const [showStandardDropdown, setShowStandardDropdown] = useState(false);
   const [showVariableDropdown, setShowVariableDropdown] = useState(false);
 
   const handleSelectChange = (e) => {
-    setSelectedValue(e.target.value);
+    setAssetCategory(e.target.value);
     // Check if the selected value should show the additional dropdown
     setShowStandardDropdown(e.target.value == "Standard");
     setShowVariableDropdown(e.target.value == "Customized");
   };
 
-  const [formData, setFormData] = useState({
-    active: true,
-    assetCategory: "",
-    brand: "",
-    breath: 0,
-    costPrice: "",
-    dimUnit: "",
-    expectedLife: "",
-    expectedTrips: "",
-    height: 0,
-    hsnCode: "",
-    id: 0,
-    length: 0,
-    maintanencePeriod: "",
-    manufacturer: "",
-    name: "",
-    productUnit: "",
-    scrapValue: "",
-    sellPrice: "",
-    sku: "",
-    taxRate: "",
-    uanUpc: "",
-    weight: 0,
-    weightUnit: "",
-    itemCategory: "",
-    // Add more fields as needed...
-  });
+  useEffect(() => {
+    getAllAssetCategory();
+  }, []);
 
-  const updateFormValue = ({ updateType, value }) => {
-    if (updateType === "assetCategory") {
-      setFormData({ ...formData, assetCategory: value });
-    } else if (updateType === "dimUnit") {
-      setFormData({ ...formData, dimUnit: value });
-    } else if (updateType === "weightUnit") {
-      setSelectedWeight(value); // Update the selected weight state
-      setFormData({ ...formData, weightUnit: value }); // Update the weightUnit field in formData
-    } else if (updateType === "itemCategory") {
-      setSelectedCategory(value); // Update the selected weight state
-      setFormData({ ...formData, itemCategory: value });
-    } else {
-      setFormData({ ...formData, [updateType]: value });
+  const getAllAssetCategory = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory`
+      );
+
+      if (response.status === 200) {
+        const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
+        setAssetCategoryVO(assetCategories);
+        if (assetCategories.length > 0) {
+          setAssetCategory(assetCategories[0].assetCategory);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
-    // console.log(updateType);
   };
 
-  const updateLengthValue = (val) => {
-    setLengthValue(val);
-  };
-
-  const updateBreadthValue = (val) => {
-    setBreadthValue(val);
-  };
-
-  const updateHeightValue = (val) => {
-    setHeightValue(val);
-  };
-
-  const updateInputValue = (val) => {
-    setValue(val);
-  };
-
-  const handleAssetClose = () => {
-    addItem(false);
+  const handleCategoryChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "value":
+        setValue(value);
+        break;
+      case "length":
+        setLength(value);
+        break;
+      case "breath":
+        setBreath(value);
+        break;
+      case "height":
+        setHeight(value);
+        break;
+      case "dimUnit":
+        setDimUnit(value);
+        break;
+      case "costPrice":
+        setCostPrice(value);
+        break;
+      case "eanUpc":
+        setEanUpc(value);
+        break;
+      case "expectedLife":
+        setExpectedLife(value);
+        break;
+      case "expectedTrips":
+        setExpectedTrips(value);
+        break;
+      case "hsnCode":
+        setHsnCode(value);
+        break;
+      case "maintanencePeriod":
+        setMaintanencePeriod(value);
+        break;
+      case "manufacturer":
+        setManufacturer(value);
+        break;
+      case "scrapValue":
+        setScrapValue(value);
+        break;
+      case "sellPrice":
+        setSellPrice(value);
+        break;
+      case "taxRate":
+        setTaxRate(value);
+        break;
+      case "weight":
+        setWeight(value);
+        break;
+      case "weightUnit":
+        setWeightUnit(value);
+        break;
+      case "orgId":
+        setOrgId(value);
+        break;
+      // default:
+      //   break;
+    }
   };
 
   const handleAsset = () => {
-    const additionalData = {
-      // Add your additional fields here
-      // For example:
-      breath: breadthValue,
-      height: heightValue,
-      length: lengthValue,
-      // ...
+    const formData = {
+      active,
+      assetCategory,
+      assetGroup,
+      assetId,
+      assetName,
+      brand,
+      breath,
+      costPrice,
+      dimUnit,
+      eanUpc,
+      expectedLife,
+      expectedTrips,
+      height,
+      id,
+      length,
+      hsnCode,
+      maintanencePeriod,
+      manufacturer,
+      scrapValue,
+      sellPrice,
+      taxRate,
+      weight,
+      weightUnit,
+      orgId,
     };
-
-    const updatedFormData = { ...formData, ...additionalData };
-
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/api/master/asset`,
-        updatedFormData
-      )
+    Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
       .then((response) => {
         console.log("Response:", response.data);
-
-        addItem(true);
+        addItem(false);
       })
       .catch((error) => {
         console.error("Error:", error);
       });
+  };
+
+  const handleUnitChange = (e) => {
+    setDimUnit(e.target.value);
+  };
+
+  const handleWeightChange = (e) => {
+    setWeightUnit(e.target.value);
+  };
+
+  const handleManufacturerChange = (e) => {
+    setManufacturer(e.target.value);
+  };
+
+  const handleBrandChange = (e) => {
+    setBrand(e.target.value);
+  };
+
+  const handleAssetClose = () => {
+    addItem(false);
   };
 
   return (
@@ -181,31 +250,36 @@ function AddItem({ addItem }) {
         </div>
 
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
               <span
                 className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
+                  "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Group
+                Asset Category
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <select
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-2 input-bordered ps-2"
+              className="form-select form-sz w-full mb-2"
               onChange={handleSelectChange}
-              value={selectedValue}
+              value={assetCategory}
             >
-              <option value="">Select Asset Group</option>
-              <option value="Standard">Standard</option>
-              <option value="Customized">Customized</option>
+              <option value="" disabled>
+                Select an Asset Category
+              </option>
+              {assetCategoryVO.length > 0 &&
+                assetCategoryVO.map((list) => (
+                  <option key={list.id} value={list.assetCategory}>
+                    {list.assetCategory}
+                  </option>
+                ))}
             </select>
           </div>
-          {showStandardDropdown && (
+          {/* {showStandardDropdown && (
             <>
               <div className="col-lg-3 col-md-6 mb-2">
                 <select
@@ -263,7 +337,7 @@ function AddItem({ addItem }) {
                 />
               </div>
             </>
-          )}
+          )} */}
         </div>
         <div className="row">
           {/* <div className="col-lg-3 col-md-6 mb-2"></div> */}
@@ -326,12 +400,12 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={lengthValue}
+                style={{ width: 30 }}
+                name="length"
+                value={length}
                 placeholder={"L"}
-                onChange={(e) => updateLengthValue(e.target.value)}
-                className="input mb-2 input-bordered p-1"
+                className="input mb-2 input-bordered p-1 form-sz"
+                onChange={handleCategoryChange}
               />
               <span>
                 <input
@@ -341,12 +415,12 @@ function AddItem({ addItem }) {
                 />
               </span>
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={breadthValue}
+                style={{ width: 30 }}
+                name="breath"
+                value={breath}
                 placeholder={"B"}
-                onChange={(e) => updateBreadthValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
+                className="input mb-2 p-1 input-bordered form-sz"
+                onChange={handleCategoryChange}
               />
               <span>
                 <input
@@ -356,24 +430,19 @@ function AddItem({ addItem }) {
                 />
               </span>
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
-                type={"text"}
-                value={heightValue}
+                style={{ width: 30 }}
+                name="height"
+                value={height}
                 placeholder={"H"}
-                onChange={(e) => updateHeightValue(e.target.value)}
-                className="input mb-2 p-1 input-bordered"
+                className="input mb-2 p-1 input-bordered form-sz"
+                onChange={handleCategoryChange}
               />
               <select
                 name="dimUnit"
-                style={{ height: 40, fontSize: "0.800rem", width: 56 }}
-                className="input mb-2 p-1 input-bordered ms-1"
-                value={formData.dimUnit} // Set the selected value to the state value
-                onChange={(e) =>
-                  updateFormValue({
-                    updateType: "dimUnit",
-                    value: e.target.value,
-                  })
-                }
+                style={{ width: 56 }}
+                className="input mb-2 p-1 form-sz input-bordered ms-1"
+                value={dimUnit}
+                onChange={handleUnitChange}
               >
                 <option value="inch">inch</option>
                 <option value="mm">mm</option>
@@ -393,20 +462,14 @@ function AddItem({ addItem }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <select
-              name="weightUnit"
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 p-1 input-bordered w-full"
-              // value={selectedWeight} // Set the selected value to the state value
-              // onChange={(e) =>
-              //   updateFormValue({
-              //     updateType: "weightUnit",
-              //     value: e.target.value,
-              //   })
-              // }
+              name="manufacturer"
+              className="input mb-2 p-1 form-sz input-bordered w-full"
+              value={manufacturer}
+              onChange={handleManufacturerChange}
             >
-              <option value="kg">Manufacturer 1</option>
-              <option value="tonne">Manufacturer 2</option>
-              <option value="g">Manufacturer 3</option>
+              <option value="Manufacturer1">Manufacturer 1</option>
+              <option value="Manufacturer2">Manufacturer 2</option>
+              <option value="Manufacturer3">Manufacturer 3</option>
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -418,20 +481,14 @@ function AddItem({ addItem }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <select
-              name="weightUnit"
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 p-1 input-bordered ms-1 w-full"
-              // value={selectedWeight} // Set the selected value to the state value
-              // onChange={(e) =>
-              //   updateFormValue({
-              //     updateType: "weightUnit",
-              //     value: e.target.value,
-              //   })
-              // }
+              name="Brand"
+              className="input mb-2 form-sz input-bordered w-full"
+              value={brand}
+              onChange={handleBrandChange}
             >
-              <option value="kg">Brand 1</option>
-              <option value="tonne">Brand 2</option>
-              <option value="g">Brand 3</option>
+              <option value="Brand1">Brand 1</option>
+              <option value="Brand2">Brand 2</option>
+              <option value="Brand3">Brand 3</option>
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -444,29 +501,19 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 166 }}
-                type="text"
-                //value={formData.weight}  Assuming weight value is stored in formData.weight
+                style={{ width: 166 }}
                 placeholder=""
-                // onChange={(e) =>
-                //   updateFormValue({
-                //     updateType: "weight",
-                //     value: e.target.value,
-                //   })
-                // }
-                className="input mb-2 input-bordered"
+                name="weight"
+                className="input mb-2 input-bordered form-sz"
+                value={weight}
+                onChange={handleCategoryChange}
               />
               <select
                 name="weightUnit"
-                style={{ height: 40, fontSize: "0.800rem", width: 60 }}
-                className="input mb-2 p-1 input-bordered ms-1"
-                // value={selectedWeight} // Set the selected value to the state value
-                // onChange={(e) =>
-                //   updateFormValue({
-                //     updateType: "weightUnit",
-                //     value: e.target.value,
-                //   })
-                // }
+                style={{ width: 60 }}
+                className="input mb-2 p-1 input-bordered form-sz ms-1"
+                value={weightUnit}
+                onChange={handleWeightChange}
               >
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
@@ -484,12 +531,12 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 166 }}
-                type={"text"}
+                style={{ width: 166 }}
                 value={value}
+                name="value"
                 placeholder={""}
-                onChange={(e) => updateInputValue(e.target.value)}
-                className="input mb-2 input-bordered"
+                onChange={handleCategoryChange}
+                className="input mb-2 form-sz input-bordered"
               />
               <select
                 name="inch"
@@ -509,11 +556,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"EAN/UPC"}
-              content={"Enter the UPC code if applicable for this item"}
-              updateFormValue={updateFormValue}
-              updateType="uanUpc"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="eanUpc"
+              value={eanUpc}
+              onChange={handleCategoryChange}
             />
           </div>
         </div>
@@ -544,11 +592,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Expected Life"}
-              content={"Item anticipated lifespan"}
-              updateFormValue={updateFormValue}
-              updateType="expectedLife"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="expectedLife"
+              value={expectedLife}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -559,11 +608,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Maintenance Period"}
-              content={"Specifies the timeframe for planned maintenance"}
-              updateFormValue={updateFormValue}
-              updateType="maintenancePeriod"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="maintanencePeriod"
+              value={maintanencePeriod}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -574,11 +624,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Expected Trips"}
-              content={"Anticipated number of item movements"}
-              updateFormValue={updateFormValue}
-              updateType="expectedTrips"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="expectedTrips"
+              value={expectedTrips}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -589,11 +640,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"HSN Code"}
-              content={"Enter the HSN code if applicable for this item"}
-              updateFormValue={updateFormValue}
-              updateType="hsnCode"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="hsnCode"
+              value={hsnCode}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -609,11 +661,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Select or create Tax Rate"}
-              content={"Set the applicable tax rate for this item"}
-              updateFormValue={updateFormValue}
-              updateType="taxRate"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="taxRate"
+              value={taxRate}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -624,11 +677,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Cost Price"}
-              content={"Enter the cost price or acquisition cost of this item"}
-              updateFormValue={updateFormValue}
-              updateType="costPrice"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="costPrice"
+              value={costPrice}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -639,11 +693,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Sell Price"}
-              content={"Specify the selling price of this item"}
-              updateFormValue={updateFormValue}
-              updateType="sellPrice"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="sellPrice"
+              value={sellPrice}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -654,11 +709,12 @@ function AddItem({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Scrap Value"}
-              content={"Estimated end-of-life item worth"}
-              updateFormValue={updateFormValue}
-              updateType="scrapValue"
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="scrapValue"
+              value={scrapValue}
+              onChange={handleCategoryChange}
             />
           </div>
         </div>
