@@ -108,11 +108,11 @@ const routes = [
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
     name: "Part Study", // name that appear in Sidebar
   },
-  {
-    path: "/app/inbound", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Inbound", // name that appear in Sidebar
-  },
+  // {
+  //   path: "/app/inbound", //no url needed as this has submenu
+  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+  //   name: "Inbound", // name that appear in Sidebar
+  // },
   {
     path: "/app/issuemanifest", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
@@ -128,75 +128,75 @@ const routes = [
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
     name: "Kit Distribution Report", // name that appear in Sidebar
   },
-  {
-    path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Outbound", // name that appear in Sidebar
-    submenu: [
-      {
-        path: "/app/deliverychallanvendors",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Delivery Challan Vendors",
-      },
-      {
-        path: "/app/materialrequest",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Material Request",
-      },
-      {
-        path: "/app/allotment",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Allotment",
-      },
-      {
-        path: "/app/outward",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Outward",
-      },
-      {
-        path: "/app/emptystock",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Empty Stock",
-      },
-      {
-        path: "/app/relocation",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Relocation",
-      },
-    ],
-  },
-  {
-    path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Sales", // name that appear in Sidebar
-    submenu: [
-      {
-        path: "/app/salesleads",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Leads",
-      },
-      {
-        path: "/app/scs",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "SCS",
-      },
-      {
-        path: "/app/technicalproposals",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Technical Proposal",
-      },
-      {
-        path: "/app/commercialproposal",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Commercial Proposal",
-      },
-    ],
-  },
-  {
-    path: "/app/tickets", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Tickets",
-  },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+  //   name: "Outbound", // name that appear in Sidebar
+  //   submenu: [
+  //     {
+  //       path: "/app/deliverychallanvendors",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Delivery Challan Vendors",
+  //     },
+  //     {
+  //       path: "/app/materialrequest",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Material Request",
+  //     },
+  //     {
+  //       path: "/app/allotment",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Allotment",
+  //     },
+  //     {
+  //       path: "/app/outward",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Outward",
+  //     },
+  //     {
+  //       path: "/app/emptystock",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Empty Stock",
+  //     },
+  //     {
+  //       path: "/app/relocation",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Relocation",
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+  //   name: "Sales", // name that appear in Sidebar
+  //   submenu: [
+  //     {
+  //       path: "/app/salesleads",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Leads",
+  //     },
+  //     {
+  //       path: "/app/scs",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "SCS",
+  //     },
+  //     {
+  //       path: "/app/technicalproposals",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Technical Proposal",
+  //     },
+  //     {
+  //       path: "/app/commercialproposal",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Commercial Proposal",
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: "/app/tickets", //no url needed as this has submenu
+  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+  //   name: "Tickets",
+  // },
   {
     path: "/app/expenses", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
@@ -214,28 +214,28 @@ const routes = [
       },
     ],
   },
-  {
-    path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Reports", // name that appear in Sidebar
-    submenu: [
-      {
-        path: "/app/reports",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Reports",
-      },
-      {
-        path: "/app/inventory",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Inventory",
-      },
-      {
-        path: "/app/inventoryadjustments",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Inventory Adjustments",
-      },
-    ],
-  },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+  //   name: "Reports", // name that appear in Sidebar
+  //   submenu: [
+  //     {
+  //       path: "/app/reports",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Reports",
+  //     },
+  //     {
+  //       path: "/app/inventory",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Inventory",
+  //     },
+  //     {
+  //       path: "/app/inventoryadjustments",
+  //       icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+  //       name: "Inventory Adjustments",
+  //     },
+  //   ],
+  // },
   // {
   //   path: '/app/leads', // url
   //   icon: <InboxArrowDownIcon className={iconClasses}/>, // icon component
