@@ -50,6 +50,7 @@ function ItemGroup() {
   const [add, setAdd] = React.useState(false);
   const [assetCategory, setAssetCategory] = React.useState("");
   const [assetCategoryId, setAssetCategoryId] = React.useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [active, setActive] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [errors, setErrors] = useState({});
@@ -67,12 +68,26 @@ function ItemGroup() {
 
   const handleBack = () => {
     setAdd(false);
-    // addAssetCategory();
+    getAllAssetGroup();
   };
 
-  // useEffect(() => {
-  //   addAssetCategory();
-  // }, []);
+  useEffect(() => {
+    getAllAssetGroup();
+  }, []);
+
+  const getAllAssetGroup = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.assetGroupVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
@@ -116,7 +131,6 @@ function ItemGroup() {
           console.error("Error:", error);
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -136,7 +150,7 @@ function ItemGroup() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "warehouse_id",
+        accessorKey: "id",
         header: "ID",
         size: 50,
         muiTableHeadCellProps: {
@@ -147,8 +161,19 @@ function ItemGroup() {
         },
       },
       {
-        accessorKey: "warehouse_name",
-        header: "Asset Group name",
+        accessorKey: "orgId",
+        header: "Organisation ID",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "first",
+        },
+        muiTableBodyCellProps: {
+          align: "first",
+        },
+      },
+      {
+        accessorKey: "assetCategory",
+        header: "Category Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -158,8 +183,8 @@ function ItemGroup() {
         },
       },
       {
-        accessorKey: "country",
-        header: "Country",
+        accessorKey: "assetName",
+        header: "Category Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -169,8 +194,8 @@ function ItemGroup() {
         },
       },
       {
-        accessorKey: "state",
-        header: "State",
+        accessorKey: "length",
+        header: "Length",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -180,8 +205,8 @@ function ItemGroup() {
         },
       },
       {
-        accessorKey: "city",
-        header: "City",
+        accessorKey: "breath",
+        header: "Breath",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -191,8 +216,8 @@ function ItemGroup() {
         },
       },
       {
-        accessorKey: "address",
-        header: "Address",
+        accessorKey: "height",
+        header: "Height",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -202,30 +227,8 @@ function ItemGroup() {
         },
       },
       {
-        accessorKey: "pincode",
-        header: "Pincode",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "gst",
-        header: "Gst",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "active",
-        header: "Active",
+        accessorKey: "dimUnit",
+        header: "Dimension Unit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -271,7 +274,7 @@ function ItemGroup() {
             </div>
           </div>
           <div className="mt-4">
-            <MaterialReactTable table={table} />
+            <MaterialReactTable table={table} columns={columns} />
           </div>
           <Dialog
             fullWidth={true}

@@ -78,7 +78,7 @@ function AddItemSpecification({ addItemSpecification }) {
   const [showVariableDropdown, setShowVariableDropdown] = useState(false);
 
   const handleSelectChange = (e) => {
-    setSelectedValue(e.target.value);
+    setAssetCategory(e.target.value);
   };
   const handleUnitChange = (e) => {
     setDimUnit(e.target.value);
@@ -182,7 +182,7 @@ function AddItemSpecification({ addItemSpecification }) {
           setBreath("");
           setDimUnit("");
           setId("");
-          addItemSpecification(false);
+          addItemSpecification(true);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -194,7 +194,7 @@ function AddItemSpecification({ addItemSpecification }) {
   };
 
   const handleCloseAddItemSpecification = () => {
-    addItemSpecification(false);
+    addItemSpecification(true);
   };
 
   return (
@@ -226,7 +226,7 @@ function AddItemSpecification({ addItemSpecification }) {
             <select
               className="form-select form-sz w-full mb-2"
               onChange={handleSelectChange}
-              value={selectedValue}
+              value={assetCategory}
             >
               <option value="" disabled>
                 Select an Asset Category
