@@ -9,16 +9,15 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
+import { Axios } from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
 import PropTypes from "prop-types";
-import * as React from "react";
-import { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
-import ToolTip from "../../components/Input/Tooltip";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -109,6 +108,17 @@ function AddManufacturer({ addManufacturer }) {
   const [openBillingModal, setOpenBillingModal] = React.useState(false);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [errors, setErrors] = useState({});
+  const [company, setCompany] = useState([]);
+  const [address, setAddress] = useState();
+  const [branch, setBranch] = useState();
+  const [email, setEmail] = useState("");
+  const [contactPerson, setContactPerson] = useState(null);
+  const [designation, setDesignation] = useState("");
+  const [phoneNO, setPhone] = useState("");
+  const [productionCapacity, setProductionCapacity] = useState("");
+  const [notes, setNotes] = useState("");
+  const [active, setActive] = useState("");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -134,12 +144,105 @@ function AddManufacturer({ addManufacturer }) {
   const handleCloseAddManufacturer = () => {
     addManufacturer(false);
   };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "company":
+        setCompany(value);
+        break;
+      case "branch":
+        setBranch(value);
+        break;
+      case "address":
+        setAddress(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "contactPerson":
+        setContactPerson(value);
+        break;
+      case "designation":
+        setDesignation(value);
+        break;
+      case "phone":
+        setPhone(value);
+        break;
+      case "productionCapacity":
+        setProductionCapacity(value);
+        break;
+      case "notes":
+        setNotes(value);
+        break;
+      // default:
+      //   break;
+    }
+  };
+
+  const handleManufacture = () => {
+    const errors = {};
+    if (!company) {
+      errors.company = "Company Name is required";
+    }
+    if (!branch) {
+      errors.branch = "branch is required";
+    }
+    if (!address) {
+      errors.address = "address is required";
+    }
+    if (!contactPerson) {
+      errors.contactPerson = "ContactPerson is required";
+    }
+    if (!designation) {
+      errors.designation = "Designation is required";
+    }
+    if (!phoneNO) {
+      errors.phone = "Phone is required";
+    }
+    if (!productionCapacity) {
+      errors.productionCapacity = "Production Capacity is required";
+    }
+
+    if (!notes) {
+      errors.notes = "Notes Capacity is required";
+    }
+
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        company,
+        branch,
+        address,
+        contactPerson,
+        designation,
+        phoneNO,
+        productionCapacity,
+        notes,
+        active,
+      };
+      Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/master/manufacturer`,
+        formData
+      )
+        .then((response) => {
+          console.log("Response:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
+  };
+
   const columns = useMemo(
     () => [
       {
         accessorKey: "id",
         header: "SNo",
         size: 50,
+
         muiTableHeadCellProps: {
           align: "first",
         },
@@ -253,11 +356,17 @@ function AddManufacturer({ addManufacturer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Manufacturer Company"}
-              content={"Company Name"}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="company"
+              value={company}
+              onChange={handleInputChange}
             />
+            {errors.company && (
+              <span className="error-text">{errors.company}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -271,12 +380,18 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Manufacturer Branch"}
-              content={"Manufacturer Branch Name"}
-              updateFormValue={updateFormValue}
+          <div className="col-lg-3 col-md-6">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="branch"
+              value={branch}
+              onChange={handleInputChange}
             />
+            {errors.branch && (
+              <span className="error-text">{errors.branch}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -290,12 +405,18 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Manufacturer Address"}
-              content={"Manufacturer Address"}
-              updateFormValue={updateFormValue}
+          <div className="col-lg-3 col-md-6">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="address"
+              value={address}
+              onChange={handleInputChange}
             />
+            {errors.address && (
+              <span className="error-text">{errors.address}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -310,12 +431,16 @@ function AddManufacturer({ addManufacturer }) {
             </label>
           </div>
 
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Company E-Mail"}
-              content={"The email address associated with the contact"}
-              updateFormValue={updateFormValue}
+          <div className="col-lg-3 col-md-6">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="email"
+              value={email}
+              onChange={handleInputChange}
             />
+            {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -330,12 +455,18 @@ function AddManufacturer({ addManufacturer }) {
             </label>
           </div>
 
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Contact Person"}
-              content={"Contact Person Name"}
-              updateFormValue={updateFormValue}
+          <div className="col-lg-3 col-md-6">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="contactPerson"
+              value={contactPerson}
+              onChange={handleInputChange}
             />
+            {errors.contactPerson && (
+              <span className="error-text">{errors.contactPerson}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -350,12 +481,18 @@ function AddManufacturer({ addManufacturer }) {
             </label>
           </div>
 
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Designation"}
-              content={"Contact Person's Designation"}
-              updateFormValue={updateFormValue}
+          <div className="col-lg-3 col-md-6">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="designation"
+              value={designation}
+              onChange={handleInputChange}
             />
+            {errors.designation && (
+              <span className="error-text">{errors.designation}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -368,12 +505,18 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Mobile/Landline"}
-              content={"The contact's telephone number"}
-              updateFormValue={updateFormValue}
+          <div className="col-lg-3 col-md-6">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="phone"
+              value={phoneNO}
+              onChange={handleInputChange}
             />
+            {errors.phoneNO && (
+              <span className="error-text">{errors.phoneNO}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -386,12 +529,18 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Production Capacity"}
-              content={"Daily Bases Production Capacity of this product "}
-              updateFormValue={updateFormValue}
+          <div className="col-lg-3 col-md-6">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="company"
+              value={productionCapacity}
+              onChange={handleInputChange}
             />
+            {/* {errors.company && (
+              <span className="error-text">{errors.company}</span>
+            )} */}
           </div>
 
           <div className="col-lg-3 col-md-6 mt-1">
@@ -620,7 +769,7 @@ function AddManufacturer({ addManufacturer }) {
                   <input
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     //type={"number"}
-                    // value={value}
+                    value={value}
                     placeholder={"Maintenance Frequency"}
                     // onChange={(e) => updateInputValue(e.target.value)}
                     className="input input-bordered p-2"
@@ -657,6 +806,7 @@ function AddManufacturer({ addManufacturer }) {
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
+            onClick={handleManufacture}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save

@@ -23,14 +23,14 @@ const routes = [
         name: "User Creation",
       },
       {
-        path: "/app/Responsibilities",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Responsibilities",
-      },
-      {
         path: "/app/Roles",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Roles",
+      },
+      {
+        path: "/app/Responsibilities",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Responsibilities",
       },
       {
         path: "/app/AccessRights",
@@ -89,11 +89,6 @@ const routes = [
         path: "/app/vendors",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Vendors",
-      },
-      {
-        path: "/app/users",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Users",
       },
       {
         path: "/app/unit",
