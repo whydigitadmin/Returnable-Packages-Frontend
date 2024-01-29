@@ -1,10 +1,9 @@
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import * as React from "react";
+import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import ToolTip from "../../components/Input/Tooltip";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -58,12 +57,116 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddFlows({ addFlows }) {
+  const [flowName, setFlowName] = useState("");
+  const [emitter, setEmitter] = useState("");
+  const [receiver, setReceiver] = useState("");
+  const [orgin, setOrgin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [cycleTime, setCycleTime] = useState("");
+  const [active, setActive] = useState(true);
+
+  const [kitName, setKitName] = useState("");
+  const [partName, setPartName] = useState("");
+  const [oemWarehouse, setOemWarehouse] = useState("");
+  const [oem, setOem] = useState("");
+  const [errors, setErrors] = useState("");
   const updateFormValue = ({ updateType, value }) => {
     console.log(updateType);
   };
 
   const handleFlows = () => {
     addFlows(false);
+  };
+
+  const handleSelectEmitter = (event) => {
+    setDestination(event.target.value);
+  };
+  const handleSelectReceiver = (event) => {
+    setReceiver(event.target.value);
+  };
+  const handleSelectKitName = (event) => {
+    setKitName(event.target.value);
+  };
+  const handleSelectPartName = (event) => {
+    setPartName(event.target.value);
+  };
+  const handleSelectOEMWarehouse = (event) => {
+    setOemWarehouse(event.target.value);
+  };
+  const handleSelectOEM = (event) => {
+    setOem(event.target.value);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "flowName":
+        setFlowName(value);
+        break;
+      case "orgin":
+        setOrgin(value);
+        break;
+      case "designation":
+        setDestination(value);
+        break;
+      case "cycleTime":
+        setCycleTime(value);
+        break;
+      // case "dimUnit":
+      //   setDimUnit(value);
+      //   break;
+      // default:
+      //   break;
+    }
+  };
+
+  const handleNew = () => {
+    setFlowName("");
+    setEmitter("");
+    setReceiver("");
+    setOrgin("");
+    setDestination("");
+    setCycleTime("");
+    setKitName("");
+    setPartName("");
+    setOemWarehouse("");
+    setOemWarehouse("");
+  };
+
+  const handleSave = () => {
+    const errors = {};
+    // if (!assetCode) {
+    //   errors.assetCode = "Asset Code is required";
+    // }
+    // if (!length) {
+    //   errors.length = "Length is required";
+    // }
+    // if (!breath) {
+    //   errors.breath = "Breath is required";
+    // }
+    // if (!height) {
+    //   errors.height = "Height is required";
+    // }
+    // if (!dimUnit) {
+    //   errors.dimUnit = "Unit is required";
+    // }
+
+    const formData = {
+      flowName,
+      orgin,
+      destination,
+      cycleTime,
+    };
+    console.log(formData);
+    // Axios.post(`${process.env.REACT_APP_API_URL}/api/master/flow`, formData)
+    //   .then((response) => {
+    //     console.log("Response:", response.data);
+    //     handleNew();
+    //     //addItemSpecification(false);
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error:", error);
+    //   });
   };
 
   return (
@@ -80,6 +183,7 @@ function AddFlows({ addFlows }) {
         </div>
 
         <div className="row">
+          {/* flow Name field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -93,11 +197,17 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"The designated name or label for a particular workflow"}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              //type={"text"}
+              placeholder={""}
+              name="flowName"
+              value={flowName}
+              onChange={handleInputChange}
             />
+            {errors.warehouseName && (
+              <span className="error-text">{errors.flowName}</span>
+            )}
           </div>
           {/* <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -123,6 +233,7 @@ function AddFlows({ addFlows }) {
 
           {/* </div>
         <div className="row"> */}
+          {/* emitter field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -140,11 +251,14 @@ function AddFlows({ addFlows }) {
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
+              value={emitter}
+              onChange={handleSelectEmitter}
             >
               <option value="Branch1">Branch1</option>
               <option value="Branch2">Branch2</option>
             </select>
           </div>
+          {/* receiver field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -162,12 +276,15 @@ function AddFlows({ addFlows }) {
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
+              value={receiver}
+              onChange={handleSelectReceiver}
             >
               <option value="Customer Place1">Customer Place1</option>
               <option value="Customer Place2">Customer Place2</option>
             </select>
           </div>
 
+          {/* orgin field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -181,13 +298,20 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Flow Start Place"}
-              content={"Flow Start place"}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              //type={"text"}
+              placeholder={""}
+              name="orgin"
+              value={orgin}
+              onChange={handleInputChange}
             />
+            {errors.warehouseName && (
+              <span className="error-text">{errors.orgin}</span>
+            )}
           </div>
 
+          {/* designation field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -201,13 +325,19 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Flow End Place"}
-              content={"Flow End Place"}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              //type={"text"}
+              placeholder={""}
+              name="destination"
+              value={destination}
+              onChange={handleInputChange}
             />
+            {errors.warehouseName && (
+              <span className="error-text">{errors.destination}</span>
+            )}
           </div>
-
+          {/* active field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -364,6 +494,7 @@ function AddFlows({ addFlows }) {
         </div> */}
 
         <div className="row">
+          {/* kit Name field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -381,12 +512,15 @@ function AddFlows({ addFlows }) {
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
+              value={kitName}
+              onChange={handleSelectKitName}
             >
               <option value="Kit1">Kit1</option>
               <option value="Kit2">Kit2</option>
               <option value="Kit3">Kit3</option>
             </select>
           </div>
+          {/* Part Name */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -404,12 +538,15 @@ function AddFlows({ addFlows }) {
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
+              value={partName}
+              onChange={handleSelectPartName}
             >
               <option value="Part1">Part1</option>
               <option value="Part2">Part2</option>
               <option value="Part3">Part3</option>
             </select>
           </div>
+          {/* part no field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -424,12 +561,18 @@ function AddFlows({ addFlows }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="form-control mb-2"
-              type={"number"}
-              placeholder={"Part Number"}
+              className="form-control form-sz mb-2"
+              //type={"text"}
+              placeholder={""}
+              name="flowName"
+              value={flowName}
+              onChange={handleInputChange}
             />
+            {errors.warehouseName && (
+              <span className="error-text">{errors.flowName}</span>
+            )}
           </div>
+          {/* cycle Time field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -444,12 +587,18 @@ function AddFlows({ addFlows }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="form-control mb-2"
-              type={"number"}
-              placeholder={"Cycle Time"}
+              className="form-control form-sz mb-2"
+              //type={"text"}
+              placeholder={""}
+              name="cycleTime"
+              value={cycleTime}
+              onChange={handleInputChange}
             />
+            {errors.warehouseName && (
+              <span className="error-text">{errors.cycleTime}</span>
+            )}
           </div>
+          {/* emitter field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -467,11 +616,14 @@ function AddFlows({ addFlows }) {
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
+              value={oemWarehouse}
+              onChange={handleSelectOEMWarehouse}
             >
               <option value="Branch1">Branch1</option>
               <option value="Branch2">Branch2</option>
             </select>
           </div>
+          {/* receiver field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -489,6 +641,8 @@ function AddFlows({ addFlows }) {
               name="Select Item"
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               className="input mb-4 input-bordered ps-2"
+              value={oem}
+              onChange={handleSelectOEM}
             >
               <option value="Customer Place1">Customer Place1</option>
               <option value="Customer Place2">Customer Place2</option>
@@ -508,6 +662,7 @@ function AddFlows({ addFlows }) {
           <button
             type="button"
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={handleSave}
           >
             Save
           </button>
