@@ -480,6 +480,9 @@ function AddItem({ addItem }) {
               value={manufacturer}
               onChange={handleManufacturerChange}
             >
+              <option value="" disabled>
+                Select an Asset Manufacturer
+              </option>
               <option value="Manufacturer1">Manufacturer 1</option>
               <option value="Manufacturer2">Manufacturer 2</option>
               <option value="Manufacturer3">Manufacturer 3</option>
@@ -499,6 +502,9 @@ function AddItem({ addItem }) {
               value={brand}
               onChange={handleBrandChange}
             >
+              <option value="" disabled>
+                Select an Brand
+              </option>
               <option value="Brand1">Brand 1</option>
               <option value="Brand2">Brand 2</option>
               <option value="Brand3">Brand 3</option>
@@ -559,6 +565,9 @@ function AddItem({ addItem }) {
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
               >
+                <option value="" disabled>
+                  Unit
+                </option>
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
                 <option value="grams">grams</option>

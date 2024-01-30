@@ -100,7 +100,7 @@ function Items() {
     () => [
       {
         accessorKey: "id",
-        header: "Sr No",
+        header: "Id",
         size: 50,
         muiTableHeadCellProps: {
           align: "first",

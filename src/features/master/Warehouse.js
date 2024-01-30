@@ -103,6 +103,17 @@ function Warehouse() {
   const columns = useMemo(
     () => [
       {
+        accessorKey: "warehouseCode",
+        header: "Warehouse Code",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
         accessorKey: "warehouseName",
         header: "Warehouse Name",
         size: 50,
