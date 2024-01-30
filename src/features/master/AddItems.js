@@ -92,7 +92,7 @@ function AddItem({ addItem }) {
   const [showVariableDropdown, setShowVariableDropdown] = useState(false);
 
   const handleSelectChange = (e) => {
-    setAssetCategory(e.target.value);
+    setAssetGroup(e.target.value);
     // Check if the selected value should show the additional dropdown
     setShowStandardDropdown(e.target.value == "Standard");
     setShowVariableDropdown(e.target.value == "Customized");
@@ -279,7 +279,7 @@ function AddItem({ addItem }) {
             <select
               className="form-select form-sz w-full mb-2"
               onChange={handleSelectChange}
-              value={assetCategory}
+              value={assetGroup}
             >
               <option value="" disabled>
                 Select an Asset Category

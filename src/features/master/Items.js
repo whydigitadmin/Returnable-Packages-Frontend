@@ -110,7 +110,7 @@ function Items() {
         },
       },
       {
-        accessorKey: "assetCategory",
+        accessorKey: "assetGroup",
         header: "Category",
         size: 50,
         muiTableHeadCellProps: {
