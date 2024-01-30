@@ -11,11 +11,11 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
+import axios from "axios";
 import PropTypes from "prop-types";
-import * as React from "react";
+import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import ToolTip from "../../components/Input/Tooltip";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -106,6 +106,23 @@ function AddVendor({ addVendors }) {
   const [openBillingModal, setOpenBillingModal] = React.useState(false);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [openBankModal, setOpenBankModal] = React.useState(false);
+  const [data, setData] = React.useState([]);
+  const [errors, setErrors] = useState({});
+  const [venderType, setVenderType] = useState("");
+  const [firstName, setFirstName] = useState();
+  const [lastName, setLastName] = useState();
+  const [email, setEmail] = useState("");
+  const [venderOrgName, setVenderOrgName] = useState("");
+  const [displyName, setDisplyName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [active, setActive] = useState("");
+  const [accountName, setAccountName] = useState("");
+  const [accountNO, setAccountNO] = useState("");
+  const [bankName, setBankName] = useState("");
+  const [branch, setBranch] = useState("");
+  const [ifscCode, setIfscCode] = useState("");
+  const [tableData, setTableData] = useState([]);
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -129,6 +146,137 @@ function AddVendor({ addVendors }) {
   };
   const handleShippingClickClose = () => {
     setOpenShippingModal(false);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    console.log("test", value);
+
+    switch (name) {
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "lastName":
+        setLastName(value);
+        break;
+      case "venderType":
+        setVenderType(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "venderOrgName":
+        setVenderOrgName(value);
+        break;
+      case "displyName":
+        setDisplyName(value);
+        break;
+      case "phoneNumber":
+        setPhoneNumber(value);
+        break;
+      case "accountName":
+        setAccountName(value);
+        break;
+      case "accountNO":
+        setAccountNO(value);
+        break;
+      case "bankName":
+        setBankName(value);
+        break;
+      case "branch":
+        setBranch(value);
+        break;
+      case "ifscCode":
+        setIfscCode(value);
+        break;
+    }
+  };
+
+  const handleVender = () => {
+    const errors = {};
+
+    console.log("test");
+    if (!firstName) {
+      errors.firstName = "firstName is required";
+    }
+    if (!lastName) {
+      errors.lastName = "lastName is required";
+    }
+    if (!venderType) {
+      errors.venderType = "venderType is required";
+    }
+    if (!email) {
+      errors.email = "email is required";
+    }
+    if (!venderOrgName) {
+      errors.venderOrgName = "venderOrgName is required";
+    }
+    if (!displyName) {
+      errors.displyName = "displyName is required";
+    }
+    if (!phoneNumber) {
+      errors.phoneNumber = "Phone is required";
+    }
+    if (!bankName) {
+      errors.bankName = "Bank Name is required";
+    }
+    if (!accountNO) {
+      errors.accountNO = "account No is required";
+    }
+    if (!accountName) {
+      errors.accountName = "Account Name No is required";
+    }
+    if (!branch) {
+      errors.branch = "branch Name No is required";
+    }
+    if (!ifscCode) {
+      errors.ifscCode = "ifsc Code  No is required";
+    }
+
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        venderType,
+        firstName,
+        lastName,
+        email,
+        venderOrgName,
+        phoneNumber,
+        displyName,
+        active,
+        orgId,
+        bankName,
+        accountNO,
+        accountName,
+        branch,
+        ifscCode,
+      };
+
+      console.log("test", formData);
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/api/master/vender`, formData)
+        .then((response) => {
+          console.log("Response:", response.data);
+          setVenderType("");
+          setFirstName("");
+          setLastName("");
+          setEmail("");
+          setVenderOrgName("");
+          setPhoneNumber("");
+          setDisplyName("");
+          setAccountNO("");
+          setBankName("");
+          setAccountName("");
+          setBranch("");
+          setIfscCode("");
+          setErrors({});
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
   };
 
   return (
@@ -158,11 +306,17 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Vendor Type"}
-              content={""}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz"
+              type={"text"}
+              placeholder={"Enter"}
+              name="venderType"
+              value={venderType}
+              onChange={handleInputChange}
             />
+            {errors.venderType && (
+              <span className="error-text">{errors.venderType}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-2">
@@ -172,12 +326,17 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"First Name"}
-              content={"The individual's given or personal name"}
-              updateFormValue={updateFormValue}
-              updateType="firstName"
+            <input
+              className="form-control form-sz"
+              type={"text"}
+              placeholder={"Enter"}
+              name="firstName"
+              value={firstName}
+              onChange={handleInputChange}
             />
+            {errors.firstName && (
+              <span className="error-text">{errors.firstName}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-1">
@@ -192,12 +351,17 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Last Name"}
-              content={"The individual's family or surname"}
-              updateFormValue={updateFormValue}
-              updateType="lastName"
+            <input
+              className="form-control form-sz"
+              type={"text"}
+              placeholder={"Enter"}
+              name="lastName"
+              value={lastName}
+              onChange={handleInputChange}
             />
+            {errors.lastName && (
+              <span className="error-text">{errors.lastName}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -212,13 +376,17 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
+            <input
+              className="form-control form-sz"
+              type={"text"}
               placeholder={"Enter"}
-              content={
-                "The official name or title of the vendor's organization or company"
-              }
-              updateFormValue={updateFormValue}
+              name="venderOrgName"
+              value={venderOrgName}
+              onChange={handleInputChange}
             />
+            {errors.venderOrgName && (
+              <span className="error-text">{errors.venderOrgName}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -233,11 +401,17 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
+            <input
+              className="form-control form-sz"
+              type={"text"}
               placeholder={"Enter"}
-              content={"The name or label used for displaying"}
-              updateFormValue={updateFormValue}
+              name="displyName"
+              value={displyName}
+              onChange={handleInputChange}
             />
+            {errors.displyName && (
+              <span className="error-text">{errors.displyName}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -252,11 +426,15 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
+            <input
+              className="form-control form-sz"
+              type={"text"}
               placeholder={"Enter"}
-              content={"The email address associated with the contact."}
-              updateFormValue={updateFormValue}
+              name="email"
+              value={email}
+              onChange={handleInputChange}
             />
+            {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -266,11 +444,17 @@ function AddVendor({ addVendors }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
+            <input
+              className="form-control form-sz"
+              type={"text"}
               placeholder={"Enter"}
-              content={"The contact's telephone number"}
-              updateFormValue={updateFormValue}
+              name="phoneNumber"
+              value={phoneNumber}
+              onChange={handleInputChange}
             />
+            {errors.phoneNumber && (
+              <span className="error-text">{errors.phoneNumber}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -304,15 +488,15 @@ function AddVendor({ addVendors }) {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              <Tab className="text-form" label="Address" {...a11yProps(0)} />
               <Tab
                 className="text-form"
                 label="Bank Details"
                 {...a11yProps(1)}
               />
+              <Tab className="text-form" label="Address" {...a11yProps(0)} />
             </Tabs>
           </Box>
-          <CustomTabPanel value={value} index={0}>
+          <CustomTabPanel value={value} index={1}>
             <div className="row">
               <div className="col-lg-6 col-md-6 d-flex flex-column">
                 <div>
@@ -352,7 +536,7 @@ function AddVendor({ addVendors }) {
               </div>
             </div>
           </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
+          <CustomTabPanel value={value} index={0}>
             <div className="row">
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -368,13 +552,16 @@ function AddVendor({ addVendors }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="Enter"
+                  value={bankName}
+                  name="bankName"
+                  onChange={handleInputChange}
                 />
+                {errors.bankName && (
+                  <div className="error-text">{errors.bankName}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -390,13 +577,16 @@ function AddVendor({ addVendors }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="Enter"
+                  value={accountNO}
+                  name="accountNO"
+                  onChange={handleInputChange}
                 />
+                {errors.accountNO && (
+                  <div className="error-text">{errors.accountNO}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -412,13 +602,16 @@ function AddVendor({ addVendors }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="Enter"
+                  value={accountName}
+                  name="accountName"
+                  onChange={handleInputChange}
                 />
+                {errors.accountName && (
+                  <div className="error-text">{errors.accountName}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -434,13 +627,16 @@ function AddVendor({ addVendors }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="Enter"
+                  value={branch}
+                  name="branch"
+                  onChange={handleInputChange}
                 />
+                {errors.branch && (
+                  <div className="error-text">{errors.branch}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6">
                 <label className="label">
@@ -456,13 +652,16 @@ function AddVendor({ addVendors }) {
               </div>
               <div className="col-lg-3 col-md-6">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="Enter"
+                  value={ifscCode}
+                  name="ifscCode"
+                  onChange={handleInputChange}
                 />
+                {errors.ifscCode && (
+                  <div className="error-text">{errors.ifscCode}</div>
+                )}
               </div>
             </div>
           </CustomTabPanel>
@@ -907,6 +1106,7 @@ function AddVendor({ addVendors }) {
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
+            onClick={handleVender}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save

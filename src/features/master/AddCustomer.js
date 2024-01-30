@@ -120,6 +120,11 @@ function AddCustomer({ addcustomer }) {
     customerActivatePortal: true,
     active: true,
     orgId: orgId,
+    accountName: "",
+    accountNO: "",
+    bankName: "",
+    branch: "",
+    ifscCode: "",
   });
 
   const [formErrors, setFormErrors] = useState({
@@ -132,6 +137,11 @@ function AddCustomer({ addcustomer }) {
     phone: "",
     customerActivatePortal: true,
     active: true,
+    accountName: "",
+    accountNO: "",
+    bankName: "",
+    branch: "",
+    ifscCode: "",
   });
 
   const handleChange = (event, newValue) => {
@@ -195,6 +205,23 @@ function AddCustomer({ addcustomer }) {
     }
     if (!customerData.customerCode.trim()) {
       errors.customerCode = "CustomerCode is required";
+    }
+
+    if (!customerData.bankName.trim()) {
+      errors.bankName = "bankName is required";
+    }
+
+    if (!customerData.accountNO.trim()) {
+      errors.accountNO = "accountNO is required";
+    }
+    if (!customerData.accountName.trim()) {
+      errors.accountName = "accountName is required";
+    }
+    if (!customerData.branch.trim()) {
+      errors.branch = "branch is required";
+    }
+    if (!customerData.ifscCode.trim()) {
+      errors.ifscCode = "ifsc code is required";
     }
 
     if (Object.keys(errors).length > 0) {
@@ -478,15 +505,15 @@ function AddCustomer({ addcustomer }) {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
-              <Tab className="text-form" label="Address" {...a11yProps(0)} />
               <Tab
                 className="text-form"
                 label="Bank Details"
                 {...a11yProps(1)}
               />
+              <Tab className="text-form" label="Address" {...a11yProps(0)} />
             </Tabs>
           </Box>
-          <CustomTabPanel value={value} index={0}>
+          <CustomTabPanel value={value} index={1}>
             <div className="row">
               <div className="col-lg-6 col-md-6 d-flex flex-column">
                 <div>
@@ -526,7 +553,7 @@ function AddCustomer({ addcustomer }) {
               </div>
             </div>
           </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
+          <CustomTabPanel value={value} index={0}>
             <div className="row">
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -542,13 +569,16 @@ function AddCustomer({ addcustomer }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder=""
+                  value={customerData.bankName}
+                  name="bankName"
+                  onChange={handleInputChange}
                 />
+                {formErrors.bankName && (
+                  <div className="error-text">{formErrors.bankName}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -564,13 +594,16 @@ function AddCustomer({ addcustomer }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="email"
+                  value={customerData.accountNO}
+                  name="accountNO"
+                  onChange={handleInputChange}
                 />
+                {formErrors.accountNO && (
+                  <div className="error-text">{formErrors.accountNO}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -586,13 +619,16 @@ function AddCustomer({ addcustomer }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="account name"
+                  value={customerData.accountName}
+                  name="accountName"
+                  onChange={handleInputChange}
                 />
+                {formErrors.accountName && (
+                  <div className="error-text">{formErrors.accountName}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -608,13 +644,16 @@ function AddCustomer({ addcustomer }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="account name"
+                  value={customerData.branch}
+                  name="branch"
+                  onChange={handleInputChange}
                 />
+                {formErrors.branch && (
+                  <div className="error-text">{formErrors.branch}</div>
+                )}
               </div>
               <div className="col-lg-3 col-md-6">
                 <label className="label">
@@ -630,13 +669,16 @@ function AddCustomer({ addcustomer }) {
               </div>
               <div className="col-lg-3 col-md-6">
                 <input
-                  className="form-control form-sz mb-2"
-                  type={"text"}
-                  placeholder={""}
-                  // name=""
-                  // value={}
-                  // onChange={}
+                  type="text"
+                  className="form-control form-sz"
+                  placeholder="account name"
+                  value={customerData.ifscCode}
+                  name="ifscCode"
+                  onChange={handleInputChange}
                 />
+                {formErrors.ifscCode && (
+                  <div className="error-text">{formErrors.ifscCode}</div>
+                )}
               </div>
             </div>
           </CustomTabPanel>

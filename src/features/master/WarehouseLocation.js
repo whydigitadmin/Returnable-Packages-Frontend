@@ -1,6 +1,3 @@
-import { Edit } from "@mui/icons-material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, IconButton, Tooltip } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import {
@@ -254,31 +251,31 @@ function WarehouseLocation() {
             data={tableData}
             editingMode="modal"
             enableColumnOrdering
-            enableEditing
-            renderRowActions={({ row, table }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "1rem",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <Tooltip arrow placement="right" title="Edit">
-                  <IconButton style={{ color: "blue" }}>
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
+            // enableEditing
+            // renderRowActions={({ row, table }) => (
+            //   <Box
+            //     sx={{
+            //       display: "flex",
+            //       gap: "1rem",
+            //       justifyContent: "flex-end",
+            //     }}
+            //   >
+            //     <Tooltip arrow placement="right" title="Edit">
+            //       <IconButton style={{ color: "blue" }}>
+            //         <Edit />
+            //       </IconButton>
+            //     </Tooltip>
 
-                <Tooltip arrow placement="right" title="View">
-                  <IconButton
-                    color="primary"
-                    // onClick={() => handleView(row.original)}
-                  >
-                    <VisibilityIcon />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            )}
+            //     <Tooltip arrow placement="right" title="View">
+            //       <IconButton
+            //         color="primary"
+            //         // onClick={() => handleView(row.original)}
+            //       >
+            //         <VisibilityIcon />
+            //       </IconButton>
+            //     </Tooltip>
+            //   </Box>
+            // )}
           />
         </div>
       </div>

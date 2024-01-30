@@ -5,11 +5,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
@@ -44,34 +45,13 @@ const statsData = [
     description: "",
   },
 ];
-const columns = [
-  { field: "id", headerName: "Sr. No", width: 90 },
-  { field: "VendorDisplayName", headerName: "Vendor Display Name", width: 150 },
-  { field: "VendorType", headerName: "Vendor Type", width: 100 },
-  { field: "Email", headerName: "Email", width: 120 },
-  { field: "GST", headerName: "GST", width: 120 },
-  { field: "City", headerName: "City", width: 120 },
-  { field: "State", headerName: "State", width: 120 },
-  { field: "Status", headerName: "Status", width: 90 },
-];
-
-const rows = [
-  {
-    id: 1,
-    VendorDisplayName: "John",
-    VendorType: "Vap",
-    Email: "John@gmail.com",
-    GST: "12354687",
-    City: "Bengaluru",
-    State: "Karnataka",
-    Status: "Active",
-  },
-];
 
 function Vendors() {
   const [open, setOpen] = React.useState(false);
   const [addVendors, setAddVendors] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -86,6 +66,24 @@ function Vendors() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    getVendorData();
+  }, []);
+
+  const getVendorData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/vendor?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.venderVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -113,7 +111,7 @@ function Vendors() {
         },
       },
       {
-        accessorKey: "vendordisplayname",
+        accessorKey: "displyName",
         header: "Vendor Display Name",
         size: 50,
         muiTableHeadCellProps: {
@@ -124,7 +122,7 @@ function Vendors() {
         },
       },
       {
-        accessorKey: "vendortype",
+        accessorKey: "venderType",
         header: "Vendor Type",
         size: 50,
         muiTableHeadCellProps: {
@@ -146,30 +144,8 @@ function Vendors() {
         },
       },
       {
-        accessorKey: "gst",
-        header: "GST",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "city",
-        header: "City",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "state",
-        header: "State",
+        accessorKey: "phoneNumber",
+        header: "Phone",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

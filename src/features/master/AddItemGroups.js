@@ -13,11 +13,11 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 import Select from "@mui/material/Select";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import * as React from "react";
+import axios from "axios";
+
 import { useState } from "react";
 import { FaBox, FaCube, FaCubes, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import ToolTip from "../../components/Input/Tooltip";
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 5;
@@ -113,46 +113,90 @@ function AddItemGroups({ addItem }) {
   const [rackQty, setRackQty] = React.useState("");
   const [temperatureQty, setTemperatureQty] = React.useState("");
 
+  // const [formValues, setFormValues] = useState({
+  //   kitName: "",
+  //   kitNo: "",
+  //   requiredQuantity: "",
+  //   selectedValue: "Select Required Asset",
+  //   selectedValues: [],
+  // });
+
   const [formValues, setFormValues] = useState({
-    kitName: "",
-    kitNo: "",
-    requiredQuantity: "",
-    selectedValue: "Select Required Asset",
-    selectedValues: [],
+    id: "",
+    kitAssetDTO: [
+      {
+        assetCategory: "",
+        assetName: "",
+        quantity: "",
+      },
+      {
+        assetCategory: "",
+        assetName: "",
+        quantity: "",
+      },
+    ],
+    orgId: localStorage.getItem("orgId"),
+    partId: "",
+    partQty: "",
   });
-
-  // Function to update form values in state
-  const handleFormChange = (event) => {
-    const { name, value } = event.target;
-    setFormValues({ ...formValues, [name]: value });
-  };
-
-  const handleStandardChange = (e) => {
-    const selectedValue = e.target.value;
-    // setFormValues({ ...formValues, selectedValue });
-    setShowAdditionalDropdown(selectedValue === "Standard");
-    // setShowVariableDropdown(selectedValue === "Variable");
-  };
-  const handleCustomChange = (e) => {
-    const selectedValue = e.target.value;
-    // setFormValues({ ...formValues, selectedValue });
-    // setShowAdditionalDropdown(selectedValue === "Standard");
-    setShowVariableDropdown(selectedValue === "Variable");
-  };
 
   // Function to handle form submission
   const handleSubmit = () => {
     // Access form values from state
     console.log(formValues);
     setAddKit(true);
-    // Perform necessary actions or validations
-    // For example: You can pass formValues to addItem or perform other logic here
-    // addItem(formValues);
   };
 
-  // const handleChange = (event) => {
-  //   setSelectedValues(event.target.value);
-  // };
+  const handleKitCreation = () => {
+    const errors = {};
+
+    // if (!userData.state) {
+    //   errors.state = "State is required";
+    // }
+
+    // const token = localStorage.getItem("token");
+    // let headers = {
+    //   "Content-Type": "application/json",
+    // };
+
+    // if (token) {
+    //   headers = {
+    //     ...headers,
+    //     Authorization: `Bearer ${token}`,
+    //   };
+    // }
+
+    // Update userData with the hashed password
+
+    const kitData = {
+      id: formValues.id,
+      kitAssetDTO: [
+        {
+          assetCategory: "Pallet",
+          assetName: "Standard Pallet", // Example names, replace with actual data
+          quantity: palletQty,
+        },
+        {
+          assetCategory: "Lid",
+          assetName: "Standard Lid",
+          quantity: lidQty,
+        },
+        // Add other assets as needed
+      ],
+      orgId: localStorage.getItem("orgId"),
+      partId: "",
+      partQty: "",
+    };
+    // Valid data, perform API call or other actions
+    axios
+      .post(`${process.env.REACT_APP_API_URL}/api/master/createkit`, kitData)
+      .then((response) => {
+        console.log("User saved successfully!", response.data);
+      })
+      .catch((error) => {
+        console.error("Error saving user:", error.message);
+      });
+  };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -168,14 +212,6 @@ function AddItemGroups({ addItem }) {
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleClickOpen = () => {
-    setOpenCheck(true);
-  };
-
-  const updateInputValue = (val) => {
-    setValue(val);
   };
 
   const handleItem = () => {
@@ -274,27 +310,15 @@ function AddItemGroups({ addItem }) {
       setRackQty("");
     }
   };
-  const handleTemperatureChange = (event) => {
-    setTemperatureQty(event.target.value);
-    if (temperature === false) {
-      setTemperatureQty("");
-    }
-  };
-  const handleChange = (event) => {
-    const { options } = event.target;
-    const selectedValues = [];
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].selected) {
-        selectedValues.push(options[i].value);
-      }
-    }
-    setFormValues({ ...formValues, selectedValues });
-  };
 
-  // const updateFormValue = ({ updateType, value }) => {
-  //   setCustomerData({ ...customerData, [updateType]: value });
-  //   console.log(updateType);
-  // };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    // Handle other fields
+    setFormValues((prevFormValues) => ({
+      ...prevFormValues,
+      [name]: value,
+    }));
+  };
 
   return (
     <>
@@ -323,34 +347,16 @@ function AddItemGroups({ addItem }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              name="id"
+              value={formValues.id}
+              onChange={handleChange}
               placeholder={"AAA/AA/000"}
-              content={
-                "The unique identifier or code for this item in your system"
-              }
-              // updateFormValue={updateFormValue}
+              required
             />
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Kit Name
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Kit name"}
-              content={"Enter a unique identifier or name for the Kit name"}
-              value={formValues.kitName}
-              onChange={handleFormChange}
-            />
-          </div> */}
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-3 mb-4">
@@ -420,6 +426,7 @@ function AddItemGroups({ addItem }) {
               </Select>
             </FormControl>
           </div>
+
           <div className="col-lg-3 col-md-3">
             {pallet && (
               <>
@@ -648,7 +655,7 @@ function AddItemGroups({ addItem }) {
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
-            onClick={handleSubmit}
+            onClick={handleKitCreation}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save

@@ -1,6 +1,4 @@
-import { Edit } from "@mui/icons-material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, IconButton, Tooltip } from "@mui/material";
+import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
 
 import { MaterialReactTable } from "material-react-table";
@@ -175,6 +173,7 @@ function Unit() {
         },
         muiTableBodyCellProps: {
           align: "center",
+          render: (value) => (value ? "Active" : "Inactive"),
         },
       },
     ],
@@ -241,14 +240,13 @@ function Unit() {
                 muiTableHeadCellProps: {
                   align: "center",
                 },
-                size: 120,
+                size: 80,
               },
             }}
             columns={columns}
             data={tableData}
             editingMode="modal"
             enableColumnOrdering
-            enableEditing
             renderRowActions={({ row, table }) => (
               <Box
                 sx={{
@@ -257,7 +255,7 @@ function Unit() {
                   justifyContent: "flex-end",
                 }}
               >
-                <Tooltip arrow placement="right" title="Edit">
+                {/* <Tooltip arrow placement="right" title="Edit">
                   <IconButton style={{ color: "blue" }}>
                     <Edit />
                   </IconButton>
@@ -270,7 +268,7 @@ function Unit() {
                   >
                     <VisibilityIcon />
                   </IconButton>
-                </Tooltip>
+                </Tooltip> */}
               </Box>
             )}
           />

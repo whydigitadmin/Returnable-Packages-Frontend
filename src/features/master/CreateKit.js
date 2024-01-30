@@ -5,11 +5,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FaBoxes, FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegObjectGroup } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
@@ -55,22 +56,10 @@ const columns = [
   { field: "Status", headerName: "Status", width: 100 },
 ];
 
-const data = [
-  {
-    id: 1,
-    Name: "Snow",
-    SKU: "Jon",
-    Category: "texas",
-    PurchasePrice: "1000",
-    SalesPrice: "1500",
-    HSN: "Active",
-    Status: "Active",
-  },
-];
-
 function CreateKit() {
   const [open, setOpen] = React.useState(false);
   const [addItem, setAddItem] = React.useState(false);
+  const [data, setData] = React.useState([]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -85,6 +74,24 @@ function CreateKit() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    getAllKitData();
+  }, []);
+
+  const getAllKitData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.localCurrencies);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -102,7 +109,7 @@ function CreateKit() {
     () => [
       {
         accessorKey: "id",
-        header: "Sr No",
+        header: "Kit ID",
         size: 50,
         muiTableHeadCellProps: {
           align: "first",
@@ -112,7 +119,7 @@ function CreateKit() {
         },
       },
       {
-        accessorKey: "name",
+        accessorKey: "assetCategory",
         header: "Name",
         size: 50,
         muiTableHeadCellProps: {
@@ -123,8 +130,8 @@ function CreateKit() {
         },
       },
       {
-        accessorKey: "sku",
-        header: "SKU",
+        accessorKey: "assetName",
+        header: "assetName",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -134,52 +141,8 @@ function CreateKit() {
         },
       },
       {
-        accessorKey: "category",
-        header: "Category",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "purchaseprice",
-        header: "Purchase Price",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "salesprice",
-        header: "Sales price",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "hsn",
-        header: "HSN",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
+        accessorKey: "quantity",
+        header: "quantity",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
