@@ -92,7 +92,7 @@ function ManufacturerDetails() {
         },
       },
       {
-        accessorKey: "Email",
+        accessorKey: "email",
         header: "Email",
         size: 50,
         muiTableHeadCellProps: {
@@ -114,7 +114,7 @@ function ManufacturerDetails() {
         },
       },
       {
-        accessorKey: "PhNo",
+        accessorKey: "phoneNO",
         header: "Phone No",
         size: 50,
         muiTableHeadCellProps: {

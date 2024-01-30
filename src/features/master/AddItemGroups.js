@@ -111,6 +111,7 @@ function AddItemGroups({ addItem }) {
   const [boundQty, setBoundQty] = React.useState("");
   const [rackQty, setRackQty] = React.useState("");
   const [temperatureQty, setTemperatureQty] = React.useState("");
+  const [errors, setErrors] = useState({});
 
   // const [formValues, setFormValues] = useState({
   //   kitName: "",
@@ -149,52 +150,77 @@ function AddItemGroups({ addItem }) {
   const handleKitCreation = () => {
     const errors = {};
 
-    // if (!userData.state) {
-    //   errors.state = "State is required";
-    // }
+    if (!formValues.id) {
+      errors.id = "Kit id is required";
+    }
 
-    // const token = localStorage.getItem("token");
-    // let headers = {
-    //   "Content-Type": "application/json",
-    // };
+    const kitAssetDTO = [];
 
-    // if (token) {
-    //   headers = {
-    //     ...headers,
-    //     Authorization: `Bearer ${token}`,
-    //   };
-    // }
+    if (pallet && palletQty) {
+      kitAssetDTO.push({
+        assetCategory: "Standard", // or a more appropriate category
+        assetName: "Pallet", // or the actual name based on your logic
+        quantity: palletQty,
+      });
+    }
+
+    if (lid && lidQty) {
+      kitAssetDTO.push({
+        assetCategory: "Standard", // or a more appropriate category
+        assetName: "Lid", // or the actual name based on your logic
+        quantity: lidQty,
+      });
+    }
+    if (sw && lidQty) {
+      kitAssetDTO.push({
+        assetCategory: "Standard", // or a more appropriate category
+        assetName: "Lid", // or the actual name based on your logic
+        quantity: lidQty,
+      });
+    }
+
+    if (open && openQty) {
+      kitAssetDTO.push({
+        assetCategory: "Customized", // or a more appropriate category
+        assetName: "Insert", // or the actual name based on your logic
+        quantity: openQty,
+      });
+    }
+
+    if (bound && boundQty) {
+      kitAssetDTO.push({
+        assetCategory: "Customized", // or a more appropriate category
+        assetName: "PP Box", // or the actual name based on your logic
+        quantity: boundQty,
+      });
+    }
+
+    setFormValues((prevFormValues) => ({
+      ...prevFormValues,
+      kitAssetDTO,
+    }));
 
     // Update userData with the hashed password
-
-    const kitData = {
-      id: formValues.id,
-      kitAssetDTO: [
-        {
-          assetCategory: "Pallet",
-          assetName: "Standard Pallet", // Example names, replace with actual data
-          quantity: palletQty,
-        },
-        {
-          assetCategory: "Lid",
-          assetName: "Standard Lid",
-          quantity: lidQty,
-        },
-        // Add other assets as needed
-      ],
-      orgId: localStorage.getItem("orgId"),
-      partId: "",
-      partQty: "",
-    };
-    // Valid data, perform API call or other actions
-    axios
-      .post(`${process.env.REACT_APP_API_URL}/api/master/createkit`, kitData)
-      .then((response) => {
-        console.log("User saved successfully!", response.data);
-      })
-      .catch((error) => {
-        console.error("Error saving user:", error.message);
-      });
+    if (Object.keys(errors).length === 0) {
+      const kitData = {
+        id: formValues.id,
+        kitAssetDTO,
+        orgId: localStorage.getItem("orgId"),
+        partId: "",
+        partQty: "",
+      };
+      // Valid data, perform API call or other actions
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/api/master/createkit`, kitData)
+        .then((response) => {
+          console.log("User saved successfully!", response.data);
+        })
+        .catch((error) => {
+          console.error("Error saving user:", error.message);
+        });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -355,6 +381,7 @@ function AddItemGroups({ addItem }) {
               placeholder={"AAA/AA/000"}
               required
             />
+            {errors.id && <span className="error-text">{errors.id}</span>}
           </div>
         </div>
         <div className="row">

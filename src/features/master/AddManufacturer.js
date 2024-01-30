@@ -252,6 +252,7 @@ function AddManufacturer({ addManufacturer }) {
         productionCapacity,
         notes,
         active,
+        orgId,
       };
 
       console.log("test", formData);
