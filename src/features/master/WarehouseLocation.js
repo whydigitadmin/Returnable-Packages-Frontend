@@ -78,7 +78,7 @@ function WarehouseLocation() {
   const getWarehouseData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/warehouselocation?orgId${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/warehouselocation?orgId=${orgId}`
       );
 
       if (response.status === 200) {

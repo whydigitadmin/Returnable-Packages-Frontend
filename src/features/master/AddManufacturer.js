@@ -9,13 +9,13 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import { Axios } from "axios";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
 import PropTypes from "prop-types";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
 
@@ -109,7 +109,7 @@ function AddManufacturer({ addManufacturer }) {
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [errors, setErrors] = useState({});
-  const [company, setCompany] = useState([]);
+  const [company, setCompany] = useState("");
   const [address, setAddress] = useState();
   const [branch, setBranch] = useState();
   const [email, setEmail] = useState("");
@@ -119,6 +119,8 @@ function AddManufacturer({ addManufacturer }) {
   const [productionCapacity, setProductionCapacity] = useState("");
   const [notes, setNotes] = useState("");
   const [active, setActive] = useState("");
+  const [tableData, setTableData] = useState([]);
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -145,8 +147,34 @@ function AddManufacturer({ addManufacturer }) {
     addManufacturer(false);
   };
 
+  useEffect(() => {
+    getWareManufacture();
+  }, []);
+
+  const getWareManufacture = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/manufacturer?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.manufacturerVO);
+        setTableData(response.data.paramObjectsMap.manufacturerVO);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    console.log("test", value);
+
     switch (name) {
       case "company":
         setCompany(value);
@@ -182,6 +210,8 @@ function AddManufacturer({ addManufacturer }) {
 
   const handleManufacture = () => {
     const errors = {};
+
+    console.log("test");
     if (!company) {
       errors.company = "Company Name is required";
     }
@@ -190,6 +220,9 @@ function AddManufacturer({ addManufacturer }) {
     }
     if (!address) {
       errors.address = "address is required";
+    }
+    if (!email) {
+      errors.email = "email is required";
     }
     if (!contactPerson) {
       errors.contactPerson = "ContactPerson is required";
@@ -200,13 +233,13 @@ function AddManufacturer({ addManufacturer }) {
     if (!phoneNO) {
       errors.phone = "Phone is required";
     }
-    if (!productionCapacity) {
-      errors.productionCapacity = "Production Capacity is required";
-    }
+    // if (!productionCapacity) {
+    //   errors.productionCapacity = "Production Capacity is required";
+    // }
 
-    if (!notes) {
-      errors.notes = "Notes Capacity is required";
-    }
+    // if (!notes) {
+    //   errors.notes = "Notes Capacity is required";
+    // }
 
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -220,12 +253,23 @@ function AddManufacturer({ addManufacturer }) {
         notes,
         active,
       };
-      Axios.post(
-        `${process.env.REACT_APP_API_URL}/api/master/manufacturer`,
-        formData
-      )
+
+      console.log("test", formData);
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/master/manufacturer`,
+          formData
+        )
         .then((response) => {
           console.log("Response:", response.data);
+          setCompany("");
+          setBranch("");
+          setAddress("");
+          setContactPerson("");
+          setDesignation("");
+          setPhone("");
+          setProductionCapacity("");
+          setNotes("");
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -357,7 +401,7 @@ function AddManufacturer({ addManufacturer }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz"
               type={"text"}
               placeholder={"Enter"}
               name="company"
@@ -382,7 +426,7 @@ function AddManufacturer({ addManufacturer }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz"
               type={"text"}
               placeholder={"Enter"}
               name="branch"
@@ -407,7 +451,7 @@ function AddManufacturer({ addManufacturer }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz"
               type={"text"}
               placeholder={"Enter"}
               name="address"
@@ -433,7 +477,7 @@ function AddManufacturer({ addManufacturer }) {
 
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz"
               type={"text"}
               placeholder={"Enter"}
               name="email"
@@ -457,7 +501,7 @@ function AddManufacturer({ addManufacturer }) {
 
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz mt-2"
               type={"text"}
               placeholder={"Enter"}
               name="contactPerson"
@@ -483,7 +527,7 @@ function AddManufacturer({ addManufacturer }) {
 
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz mt-2"
               type={"text"}
               placeholder={"Enter"}
               name="designation"
@@ -507,7 +551,7 @@ function AddManufacturer({ addManufacturer }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz mt-2"
               type={"text"}
               placeholder={"Enter"}
               name="phone"
@@ -531,16 +575,16 @@ function AddManufacturer({ addManufacturer }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz mt-2"
               type={"text"}
               placeholder={"Enter"}
-              name="company"
+              name="productionCapacity"
               value={productionCapacity}
               onChange={handleInputChange}
             />
-            {/* {errors.company && (
-              <span className="error-text">{errors.company}</span>
-            )} */}
+            {errors.productionCapacity && (
+              <span className="error-text">{errors.productionCapacity}</span>
+            )}
           </div>
 
           <div className="col-lg-3 col-md-6 mt-1">
@@ -554,7 +598,7 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mt-2 ">
             <textarea
               style={{ fontSize: "0.800rem" }}
               className="form-control w-full label"

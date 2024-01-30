@@ -10,7 +10,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
@@ -71,6 +71,7 @@ function Customer() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -215,7 +216,7 @@ function Customer() {
   const getCustomerData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/customers`
+        `${process.env.REACT_APP_API_URL}/api/master/customers?orgId=${orgId}`
       );
 
       if (response.status === 200) {

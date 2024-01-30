@@ -11,12 +11,11 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
-import Axios from "axios";
+import axios from "axios";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import ToolTip from "../../components/Input/Tooltip";
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -104,31 +103,36 @@ const IOSSwitch = styled((props) => (
 function AddCustomer({ addcustomer }) {
   //const [openBankModal, setOpenBankModal] = React.useState(false);
 
+  const [value, setValue] = React.useState(0);
+  const [openBillingModal, setOpenBillingModal] = React.useState(false);
+  const [openShippingModal, setOpenShippingModal] = React.useState(false);
+  const [openBankModal, setOpenBankModal] = React.useState(false);
+  const [orgId, setOrgId] = React.useState(1);
+
   const [customerData, setCustomerData] = useState({
     firstName: "",
     lastName: "",
     customerOrgName: "",
     displayName: "",
+    customerCode: "",
     email: "",
-    phone: 0,
+    phone: "",
     customerActivatePortal: true,
     active: true,
+    orgId: orgId,
   });
 
   const [formErrors, setFormErrors] = useState({
     firstName: "",
     lastName: "",
     customerOrgName: "",
+    customerCode: "",
     displayName: "",
     email: "",
     phone: "",
     customerActivatePortal: true,
     active: true,
   });
-  const [value, setValue] = React.useState(0);
-  const [openBillingModal, setOpenBillingModal] = React.useState(false);
-  const [openShippingModal, setOpenShippingModal] = React.useState(false);
-  const [openBankModal, setOpenBankModal] = React.useState(false);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -167,35 +171,42 @@ function AddCustomer({ addcustomer }) {
     setOpenShippingModal(false);
   };
 
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setCustomerData({ ...customerData, [name]: value });
+  };
+
   const handleCustomer = () => {
     const errors = {};
-    // if (!customerData.firstName.trim()) {
-    //   errors.firstName = "First Name is required";
-    // }
-    // if (!customerData.lastName.trim()) {
-    //   errors.lastName = "Last Name is required";
-    // }
+    if (!customerData.firstName.trim()) {
+      errors.firstName = "First Name is required";
+    }
+    if (!customerData.lastName.trim()) {
+      errors.lastName = "Last Name is required";
+    }
     if (!customerData.customerOrgName.trim()) {
       errors.customerOrgName = "Organisation Name is required";
     }
     if (!customerData.displayName.trim()) {
       errors.displayName = "Display Name is required";
     }
-    // if (!customerData.email.trim()) {
-    //   errors.email = "Email is required";
-    // }
-    // if (!customerData.phone.trim()) {
-    //   errors.phone = "phone is required";
-    // }
+    if (!customerData.email.trim()) {
+      errors.email = "Email is required";
+    }
+    if (!customerData.customerCode.trim()) {
+      errors.customerCode = "CustomerCode is required";
+    }
+
     if (Object.keys(errors).length > 0) {
       setFormErrors(errors);
       return;
     }
-
-    Axios.post(
-      `${process.env.REACT_APP_API_URL}/api/master/customers`,
-      customerData
-    )
+    console.log("Test", customerData);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/master/customers`,
+        customerData
+      )
       .then((response) => {
         console.log("Response:", response.data);
         addcustomer(true);
@@ -223,16 +234,22 @@ function AddCustomer({ addcustomer }) {
             <label className="label mb-2">
               <span className={"label-text label-font-size text-base-content"}>
                 First Name
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"First Name"}
-              content={"The individual's given or personal name"}
-              updateFormValue={updateFormValue}
-              updateType="firstName"
+            <input
+              type="text"
+              className="form-control form-sz"
+              placeholder="First Name"
+              name="firstName"
+              value={customerData.firstName}
+              onChange={handleInputChange}
             />
+            {formErrors.firstName && (
+              <div className="error-text">{formErrors.firstName}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-1">
@@ -247,12 +264,17 @@ function AddCustomer({ addcustomer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Last Name"}
-              content={"The individual's family or surname"}
-              updateFormValue={updateFormValue}
-              updateType="lastName"
+            <input
+              type="text"
+              placeholder="Last Name"
+              value={customerData.lastName}
+              name="lastName"
+              className="form-control form-sz"
+              onChange={handleInputChange}
             />
+            {formErrors.lastName && (
+              <div className="error-text">{formErrors.lastName}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -267,16 +289,16 @@ function AddCustomer({ addcustomer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={
-                "The official code or title of the customer's organization"
-              }
-              updateFormValue={updateFormValue}
-              updateType="customerOrgName"
+            <input
+              type="text"
+              placeholder="Customer Code"
+              value={customerData.customerCode}
+              className="form-control form-sz"
+              name="customerCode"
+              onChange={handleInputChange}
             />
-            {formErrors.customerOrgName && (
-              <div className="error-text">{formErrors.customerOrgName}</div>
+            {formErrors.customerCode && (
+              <div className="error-text">{formErrors.customerCode}</div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
@@ -292,13 +314,13 @@ function AddCustomer({ addcustomer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={
-                "The official name or title of the customer's organization"
-              }
-              updateFormValue={updateFormValue}
-              updateType="customerOrgName"
+            <input
+              type="text"
+              placeholder="Org name"
+              value={customerData.customerOrgName}
+              className="form-control form-sz"
+              name="customerOrgName"
+              onChange={handleInputChange}
             />
             {formErrors.customerOrgName && (
               <div className="error-text">{formErrors.customerOrgName}</div>
@@ -317,11 +339,13 @@ function AddCustomer({ addcustomer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"The name or label used for displaying"}
-              updateFormValue={updateFormValue}
-              updateType="displayName"
+            <input
+              type="text"
+              placeholder="Display Name"
+              value={customerData.displayName}
+              className="form-control form-sz"
+              name="displayName"
+              onChange={handleInputChange}
             />
             {formErrors.displayName && (
               <div className="error-text">{formErrors.displayName}</div>
@@ -340,12 +364,17 @@ function AddCustomer({ addcustomer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"The email address associated with the contact"}
-              updateFormValue={updateFormValue}
-              updateType="email"
+            <input
+              type="text"
+              className="form-control form-sz"
+              placeholder="email"
+              value={customerData.email}
+              name="email"
+              onChange={handleInputChange}
             />
+            {formErrors.email && (
+              <div className="error-text">{formErrors.email}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
@@ -359,11 +388,13 @@ function AddCustomer({ addcustomer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"The contact's telephone number"}
-              // updateFormValue={updateFormValue}
-              // updateType="phone"
+            <input
+              type="text"
+              className="form-control form-sz"
+              placeholder="Phone"
+              value={customerData.phone}
+              name="phone"
+              onChange={handleInputChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
@@ -378,11 +409,13 @@ function AddCustomer({ addcustomer }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mt-1">
-            <ToolTip
-              placeholder={"Enter"}
-              content={"The contact's telephone number"}
-              // updateFormValue={updateFormValue}
-              // updateType="phone"
+            <input
+              type="text"
+              placeholder="SOP"
+              value={customerData.sop}
+              name="sop"
+              onChange={handleInputChange}
+              className="form-control form-sz"
             />
           </div>
 

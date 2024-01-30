@@ -71,16 +71,18 @@ function Unit() {
 
   useEffect(() => {
     getWarehouseData();
-  }, []);
+  }, [unit]);
 
   const getWarehouseData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/unit?orgId${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/unit?orgId=${orgId}`
       );
       console.log("API Response:", response);
 
       if (response.status === 200) {
+        setData(response.data.paramObjectsMap.unitVO);
+        setTableData(response.data.paramObjectsMap.unitVO);
         // Handle success
       } else {
         // Handle error
@@ -154,8 +156,8 @@ function Unit() {
         },
       },
       {
-        accessorKey: "unitname",
-        header: "Unit Name",
+        accessorKey: "unit",
+        header: "Unit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

@@ -1,14 +1,17 @@
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { IoIosAdd } from "react-icons/io";
 import AddManufacturer from "./AddManufacturer";
 
 function ManufacturerDetails() {
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
 
   const handleAddOpen = () => {
     setAdd(true);
@@ -16,6 +19,30 @@ function ManufacturerDetails() {
 
   const handleBack = () => {
     setAdd(false);
+  };
+
+  useEffect(() => {
+    getWareManufacture();
+  }, []);
+
+  const getWareManufacture = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/manufacturer?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.manufacturerVO);
+        setTableData(response.data.paramObjectsMap.manufacturerVO);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const columns = useMemo(
