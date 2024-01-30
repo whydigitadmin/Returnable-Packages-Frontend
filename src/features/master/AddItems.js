@@ -84,6 +84,7 @@ function AddItem({ addItem }) {
   const [weightUnit, setWeightUnit] = useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [active, setActive] = React.useState(true);
+  const [errors, setErrors] = useState({});
   const [selectedValue, setSelectedValue] = useState("Select Asset Group");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedItemCategory, setSelectedItemCategory] = useState("");
@@ -182,40 +183,52 @@ function AddItem({ addItem }) {
   };
 
   const handleAsset = () => {
-    const formData = {
-      active,
-      assetCategory,
-      assetGroup,
-      assetId,
-      assetName,
-      brand,
-      breath,
-      costPrice,
-      dimUnit,
-      eanUpc,
-      expectedLife,
-      expectedTrips,
-      height,
-      id,
-      length,
-      hsnCode,
-      maintanencePeriod,
-      manufacturer,
-      scrapValue,
-      sellPrice,
-      taxRate,
-      weight,
-      weightUnit,
-      orgId,
-    };
-    Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
-      .then((response) => {
-        console.log("Response:", response.data);
-        addItem(false);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+    const errors = {};
+    if (!weight) {
+      errors.weight = "Weight Name is required";
+    }
+    if (!taxRate) {
+      errors.taxRate = "Tax Rate is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        active,
+        assetCategory,
+        assetGroup,
+        assetId,
+        assetName,
+        brand,
+        breath,
+        costPrice,
+        dimUnit,
+        eanUpc,
+        expectedLife,
+        expectedTrips,
+        height,
+        id,
+        length,
+        hsnCode,
+        maintanencePeriod,
+        manufacturer,
+        scrapValue,
+        sellPrice,
+        taxRate,
+        weight,
+        weightUnit,
+        orgId,
+      };
+      Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
+        .then((response) => {
+          console.log("Response:", response.data);
+          addItem(false);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
   };
 
   const handleUnitChange = (e) => {
@@ -520,6 +533,9 @@ function AddItem({ addItem }) {
                 <option value="g">g</option>
               </select>
             </div>
+            {errors.weight && (
+              <span className="error-text">{errors.weight}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -668,6 +684,9 @@ function AddItem({ addItem }) {
               value={taxRate}
               onChange={handleCategoryChange}
             />
+            {errors.taxRate && (
+              <span className="error-text">{errors.taxRate}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

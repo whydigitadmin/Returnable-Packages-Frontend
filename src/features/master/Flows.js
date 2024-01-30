@@ -9,7 +9,8 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
+import axios from "axios";
 import { FaBoxes, FaCloudUploadAlt, FaTruck } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
@@ -78,10 +79,29 @@ function Flows() {
 
   const handleBack = () => {
     setAddFlows(false);
+    getFlowData();
   };
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  useEffect(() => {
+    getFlowData();
+  }, []);
+
+  const getFlowData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.flowVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -109,8 +129,30 @@ function Flows() {
         },
       },
       {
-        accessorKey: "flowname",
+        accessorKey: "flowName",
         header: "Flow Name",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "emitter",
+        header: "Emitter",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "receiver",
+        header: "Receiver",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -133,28 +175,6 @@ function Flows() {
       {
         accessorKey: "destination",
         header: "Destination",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "movementtype",
-        header: "Movement Type",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

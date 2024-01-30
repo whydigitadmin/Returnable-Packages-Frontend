@@ -53,7 +53,6 @@ function Warehouse() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
-  const [tableData, setTableData] = useState([]);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -83,7 +82,6 @@ function Warehouse() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.WarehouseVO);
-        setTableData(response.data.paramObjectsMap.WarehouseVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -104,17 +102,6 @@ function Warehouse() {
 
   const columns = useMemo(
     () => [
-      {
-        accessorKey: "warehouse_id",
-        header: "ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
       {
         accessorKey: "warehouseName",
         header: "Warehouse Name",
@@ -258,47 +245,7 @@ function Warehouse() {
             </div>
           </div>
           <div className="mt-4">
-            <MaterialReactTable
-              displayColumnDefOptions={{
-                "mrt-row-actions": {
-                  muiTableHeadCellProps: {
-                    align: "center",
-                  },
-                  size: 120,
-                },
-              }}
-              columns={columns}
-              data={tableData}
-              editingMode="modal"
-              enableColumnOrdering
-              enableEditing
-              onEditingRowSave={handleSaveRowEdits}
-              onEditingRowCancel={handleCancelRowEdits}
-              renderRowActions={({ row, table }) => (
-                <Box
-                  sx={{
-                    display: "flex",
-                    gap: "1rem",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <Tooltip arrow placement="right" title="Edit">
-                    <IconButton style={{ color: "blue" }}>
-                      <Edit />
-                    </IconButton>
-                  </Tooltip>
-
-                  <Tooltip arrow placement="right" title="View">
-                    <IconButton
-                      color="primary"
-                      // onClick={() => handleView(row.original)}
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              )}
-            />
+            <MaterialReactTable table={table} />
           </div>
           <Dialog
             fullWidth={true}
