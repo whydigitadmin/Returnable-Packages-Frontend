@@ -14,8 +14,7 @@ import Select from "@mui/material/Select";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-
-import { useState } from "react";
+import React, { useState } from "react";
 import { FaBox, FaCube, FaCubes, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
