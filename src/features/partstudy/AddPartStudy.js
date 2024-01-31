@@ -7,7 +7,7 @@ import { IoMdClose } from "react-icons/io";
 
 function AddPartStudy({ addPartStudy }) {
   const [id, setId] = useState();
-  const [partStudyNo, setPartStudyNo] = useState();
+  const [partStudyId, setPartStudyId] = useState();
   const [partStudyDate, setPartStudyDate] = useState({
     startDate: null,
     endDate: null,
@@ -18,17 +18,17 @@ function AddPartStudy({ addPartStudy }) {
   const [partNumber, setPartNumber] = useState();
   const [weight, setWeight] = useState();
   const [weightUnit, setWeightUnit] = useState();
-  const [partValue, setPartValue] = useState();
-  const [highestValue, setHighestValue] = useState();
-  const [lowestValue, setLowestValue] = useState();
+  const [partVolume, setPartVolume] = useState();
+  const [highestVolume, setHighestVolume] = useState();
+  const [lowestVolume, setLowestVolume] = useState();
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
 
   const handlePartChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
-      case "partStudyNo":
-        setPartStudyNo(value);
+      case "partStudyId":
+        setPartStudyId(value);
         break;
       case "partStudyDate":
         setPartStudyDate(value);
@@ -51,14 +51,14 @@ function AddPartStudy({ addPartStudy }) {
       case "weightUnit":
         setWeightUnit(value);
         break;
-      case "partValue":
-        setPartValue(value);
+      case "partVolume":
+        setPartVolume(value);
         break;
-      case "highestValue":
-        setHighestValue(value);
+      case "highestVolume":
+        setHighestVolume(value);
         break;
-      case "lowestValue":
-        setLowestValue(value);
+      case "lowestVolume":
+        setLowestVolume(value);
         break;
     }
   };
@@ -77,8 +77,8 @@ function AddPartStudy({ addPartStudy }) {
 
   const handlePartStudy = () => {
     const errors = {};
-    if (!partStudyNo) {
-      errors.partStudyNo = "Part Study Number is required";
+    if (!partStudyId) {
+      errors.partStudyId = "Part Study Number is required";
     }
     if (!partStudyDate.startDate) {
       errors.partStudyDate = "Part Study Date is required";
@@ -98,19 +98,19 @@ function AddPartStudy({ addPartStudy }) {
     if (!weight) {
       errors.weight = "Weight is required";
     }
-    if (!partValue) {
-      errors.partValue = "Part Volume is required";
+    if (!partVolume) {
+      errors.partVolume = "Part Volume is required";
     }
-    if (!highestValue) {
-      errors.highestValue = "Highest Volume is required";
+    if (!highestVolume) {
+      errors.highestVolume = "Highest Volume is required";
     }
-    if (!lowestValue) {
-      errors.lowestValue = "Lowest Volume is required";
+    if (!lowestVolume) {
+      errors.lowestVolume = "Lowest Volume is required";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
         id,
-        partStudyNo,
+        partStudyId,
         partStudyDate: partStudyDate.startDate,
         emitterId,
         receiverId,
@@ -118,9 +118,9 @@ function AddPartStudy({ addPartStudy }) {
         partNumber,
         weight,
         weightUnit,
-        partValue,
-        highestValue,
-        lowestValue,
+        partVolume,
+        highestVolume,
+        lowestVolume,
         orgId,
       };
       Axios.post(
@@ -168,12 +168,12 @@ function AddPartStudy({ addPartStudy }) {
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
-              name="partStudyNo"
-              value={partStudyNo}
+              name="partStudyId"
+              value={partStudyId}
               onChange={handlePartChange}
             />
-            {errors.partStudyNo && (
-              <span className="error-text">{errors.partStudyNo}</span>
+            {errors.partStudyId && (
+              <span className="error-text">{errors.partStudyId}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -354,12 +354,12 @@ function AddPartStudy({ addPartStudy }) {
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
-              name="partValue"
-              value={partValue}
+              name="partVolume"
+              value={partVolume}
               onChange={handlePartChange}
             />
-            {errors.partValue && (
-              <span className="error-text">{errors.partValue}</span>
+            {errors.partVolume && (
+              <span className="error-text">{errors.partVolume}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -374,12 +374,12 @@ function AddPartStudy({ addPartStudy }) {
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
-              name="highestValue"
-              value={highestValue}
+              name="highestVolume"
+              value={highestVolume}
               onChange={handlePartChange}
             />
-            {errors.highestValue && (
-              <span className="error-text">{errors.highestValue}</span>
+            {errors.highestVolume && (
+              <span className="error-text">{errors.highestVolume}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -394,12 +394,12 @@ function AddPartStudy({ addPartStudy }) {
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
-              name="lowestValue"
-              value={lowestValue}
+              name="lowestVolume"
+              value={lowestVolume}
               onChange={handlePartChange}
             />
-            {errors.lowestValue && (
-              <span className="error-text">{errors.lowestValue}</span>
+            {errors.lowestVolume && (
+              <span className="error-text">{errors.lowestVolume}</span>
             )}
           </div>
         </div>

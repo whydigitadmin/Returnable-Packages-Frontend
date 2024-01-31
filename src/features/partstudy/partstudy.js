@@ -21,8 +21,8 @@ import { LuPackageOpen } from "react-icons/lu";
 import { FiTruck } from "react-icons/fi";
 import { TbBuildingWarehouse } from "react-icons/tb";
 import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
+import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import AddPartStudy from "./AddPartStudy";
@@ -162,7 +162,7 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "partStudyNo",
+        accessorKey: "partStudyId",
         header: "Part Study Id",
         size: 50,
         muiTableHeadCellProps: {
@@ -239,7 +239,7 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "partValue",
+        accessorKey: "partVolume",
         header: "Part Volume",
         size: 50,
         muiTableHeadCellProps: {
@@ -250,7 +250,7 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "highestValue",
+        accessorKey: "highestVolume",
         header: "Highest Volume",
         size: 50,
         muiTableHeadCellProps: {
@@ -261,7 +261,7 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "lowestValue",
+        accessorKey: "lowestVolume",
         header: "Lowest Volume",
         size: 50,
         muiTableHeadCellProps: {
@@ -335,18 +335,20 @@ function Partstudy() {
               <div className="">
                 <div className="flex justify-between">
                   <button
-                    type="button"
+                    className="btn btn-ghost btn-lg text-sm col-xs-1 p-0 pe-2"
+                    style={{ color: "blue" }}
                     onClick={handleClickOpen}
-                    className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                   >
-                    Upload
+                    <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                    <span className="text-form text-base">Upload</span>
                   </button>
                   <button
-                    type="button"
+                    className="btn btn-ghost btn-lg text-sm col-xs-1 p-0 pe-2"
+                    style={{ color: "blue" }}
                     onClick={handleAddOpen}
-                    className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                   >
-                    Add Part Study
+                    <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                    <span className="text-form text-base">Part Study</span>
                   </button>
                 </div>
               </div>
