@@ -1,24 +1,26 @@
-import React, { useMemo } from "react";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import AddLogistics from "./AddLogistics";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import React, { useEffect, useMemo } from "react";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
-import { styled } from "@mui/material/styles";
+import AddLogistics from "./AddLogistics";
 
 function Logistics() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [tableData, setTableData] = React.useState([]);
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -31,6 +33,30 @@ function Logistics() {
     whiteSpace: "nowrap",
     width: 1,
   });
+
+  useEffect(() => {
+    getLogistics();
+  }, []);
+
+  const getLogistics = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/logisticsVO`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.logisticsVO);
+        setTableData(response.data.paramObjectsMap.logisticsVO);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -61,7 +87,7 @@ function Logistics() {
         },
       },
       {
-        accessorKey: "avglotsize",
+        accessorKey: "avgLotSize",
         header: "Avg Lot Size",
         size: 50,
         muiTableHeadCellProps: {
@@ -72,7 +98,18 @@ function Logistics() {
         },
       },
       {
-        accessorKey: "dispatchto",
+        accessorKey: "dispatchFrequency",
+        header: "Avg Lot Size",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "diapatchTo",
         header: "Dispatch To",
         size: 50,
         muiTableHeadCellProps: {
@@ -83,7 +120,7 @@ function Logistics() {
         },
       },
       {
-        accessorKey: "transportationto",
+        accessorKey: "transpotationTo",
         header: "Transportation To",
         size: 50,
         muiTableHeadCellProps: {

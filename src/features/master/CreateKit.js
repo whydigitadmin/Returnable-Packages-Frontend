@@ -87,7 +87,7 @@ function CreateKit() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.localCurrencies);
+        setData(response.data.paramObjectsMap.KitVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

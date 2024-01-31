@@ -73,7 +73,7 @@ function UserCreation() {
     phone: "",
     isActive: true,
     role: "ROLE_USER",
-    orgId: 1,
+    orgId: localStorage.getItem("orgId"),
     userName: localStorage.getItem("userName"),
   });
 

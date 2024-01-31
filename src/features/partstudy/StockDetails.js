@@ -5,11 +5,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
@@ -48,6 +49,7 @@ function StockDetails() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [tableData, setTableData] = React.useState([]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -59,6 +61,30 @@ function StockDetails() {
 
   const handleAddOpen = () => {
     setAdd(true);
+  };
+
+  useEffect(() => {
+    getStockDetails();
+  }, []);
+
+  const getStockDetails = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/stockDetail`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.stockDetailVO);
+        setTableData(response.data.paramObjectsMap.stockDetailVO);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handleBack = () => {
@@ -99,7 +125,7 @@ function StockDetails() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "sno",
+        accessorKey: "id",
         header: "ID",
         size: 50,
         muiTableHeadCellProps: {
@@ -154,7 +180,7 @@ function StockDetails() {
         },
       },
       {
-        accessorKey: "endUserManufLineDays",
+        accessorKey: "endUserManufacturingLineDays",
         header: "EndUser Manufacture LineDays",
         size: 300,
         muiTableHeadCellProps: {
@@ -176,7 +202,7 @@ function StockDetails() {
         },
       },
       {
-        accessorKey: "totCycleTime",
+        accessorKey: "totalCycleTime",
         header: "Total CycleTime",
         size: 50,
         muiTableHeadCellProps: {
@@ -187,7 +213,7 @@ function StockDetails() {
         },
       },
       {
-        accessorKey: "ePakRevDay",
+        accessorKey: "emptyPackagingReverseDays",
         header: "Empty Packaging Reverse LogisticsDays",
         size: 300,
         muiTableHeadCellProps: {
