@@ -69,7 +69,7 @@ function AddFlows({ addFlows }) {
 
   const [kitName, setKitName] = useState("");
   const [partName, setPartName] = useState("");
-  const [partNumber, setPartNumber] = useState("");
+  const [partNumber, setPartNumber] = useState(0);
   const [subReceiver, setSubReceiver] = useState("");
   const [cycleTime, setCycleTime] = useState("");
   const [errors, setErrors] = useState("");
@@ -117,18 +117,6 @@ function AddFlows({ addFlows }) {
     }
   };
 
-  const handleNew = () => {
-    setFlowName("");
-    setEmitter("");
-    setReceiver("");
-    setOrgin("");
-    setDestination("");
-    setCycleTime("");
-    setKitName("");
-    setPartName("");
-    setSubReceiver("");
-  };
-
   const handleSave = () => {
     const errors = {};
     if (!flowName) {
@@ -163,43 +151,36 @@ function AddFlows({ addFlows }) {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        flowVO: {
-          id,
-          orgId,
-          flowName,
-          emitter,
-          receiver,
-          orgin,
-          destination,
-          active,
-          flowDetailVO: [
-            {
-              id,
-              orgId,
-              kitName,
-              partNumber,
-              emitter,
-              partName,
-              cycleTime,
-              subReceiver,
-              active,
-            },
-          ],
-        },
+        id,
+        orgId,
+        flowName,
+        emitter,
+        receiver,
+        orgin,
+        destination,
+        active,
+        flowDetailDTO: [
+          {
+            kitName,
+            partNumber,
+            emitter,
+            partName,
+            cycleTime,
+            subReceiver,
+            active,
+          },
+        ],
       };
 
-      // console.log(formData);
       Axios.post(`${process.env.REACT_APP_API_URL}/api/master/flow`, formData)
         .then((response) => {
           console.log("Response:", response.data);
-          // handleNew();
           addFlows(true);
         })
         .catch((error) => {
           console.error("Error:", error);
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -207,8 +188,6 @@ function AddFlows({ addFlows }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <h1 className="text-xl font-semibold mb-4">Master Flow Details</h1> */}
-
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-3">Master Flow Details</h1>
           <IoMdClose
@@ -243,30 +222,6 @@ function AddFlows({ addFlows }) {
               <span className="error-text">{errors.flowName}</span>
             )}
           </div>
-          {/* <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Flow Info
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <ToolTip
-              placeholder={"Enter"}
-              content={
-                "General information or details related to a specific workflow or process"
-              }
-              updateFormValue={updateFormValue}
-            />
-          </div> */}
-
-          {/* </div>
-        <div className="row"> */}
           {/* emitter field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -558,15 +513,6 @@ function AddFlows({ addFlows }) {
             </select>
           </div>
         </div>
-
-        {/* <div className="col-lg-6 col-md-6 border-dotted border-2 border-black-600 text-center rounded my-4">
-          <button
-            type="button"
-            class="inline-block w-full px-2 pb-2 pt-2.5 text-xs font-medium leading-normal hover:text-primary-600 focus:text-primary-600 focus:outline-none focus:ring-0 active:text-primary-700"
-          >
-            + Add Flows
-          </button>
-        </div> */}
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
