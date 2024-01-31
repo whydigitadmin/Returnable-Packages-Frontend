@@ -15,7 +15,7 @@ function AddLogistics({ addlogistics }) {
   const [diapatchTo, setDispatchTo] = useState(""); // Added state for Dispatch To
   const [transpotationTo, setTransportationTo] = useState(""); // Added state for Transportation To
 
-  const handleLogistics = () => {
+  const handleCloseLogistics = () => {
     addlogistics(false);
   };
 
@@ -86,7 +86,10 @@ function AddLogistics({ addlogistics }) {
       <div className="partstudy-font">
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-4 ms-4">Logistics</h1>
-          <IoMdClose onClick={""} className="cursor-pointer w-8 h-8 mb-3" />
+          <IoMdClose
+            onClick={handleCloseLogistics}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-6 mt-1">
@@ -204,6 +207,7 @@ function AddLogistics({ addlogistics }) {
           </button>
           <button
             type="button"
+            onClick={handleCloseLogistics}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Cancel

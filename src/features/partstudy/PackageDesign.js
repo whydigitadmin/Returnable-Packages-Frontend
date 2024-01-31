@@ -13,7 +13,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
+import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import { FaBoxOpen } from "react-icons/fa";
@@ -65,26 +65,26 @@ function PackageDesign() {
 
   const handleBack = () => {
     setAdd(false);
-    // getWarehouseData();
+    getAllPackingDetail();
   };
 
-  // useEffect(() => {
-  //   getWarehouseData();
-  // }, []);
+  useEffect(() => {
+    getAllPackingDetail();
+  }, []);
 
-  // const getWarehouseData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/warehouse/view`
-  //     );
+  const getAllPackingDetail = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/packingDetail`
+      );
 
-  //     if (response.status === 200) {
-  //       setData(response.data.paramObjectsMap.WarehouseVO);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.packingDetailVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -217,18 +217,20 @@ function PackageDesign() {
           <div className="">
             <div className="flex justify-between">
               <button
-                type="button"
+                className="btn btn-ghost btn-lg text-sm col-xs-1 p-0 pe-2"
+                style={{ color: "blue" }}
                 onClick={handleClickOpen}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Upload
+                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                <span className="text-form text-base">Upload</span>
               </button>
               <button
-                type="button"
+                className="btn btn-ghost btn-lg text-sm col-xs-1 p-0 pe-2"
+                style={{ color: "blue" }}
                 onClick={handleAddOpen}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               >
-                Add Package
+                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                <span className="text-form text-base">Package</span>
               </button>
             </div>
           </div>

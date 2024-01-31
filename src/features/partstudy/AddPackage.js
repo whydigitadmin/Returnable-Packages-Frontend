@@ -2,89 +2,36 @@ import React, { useState } from "react";
 import Axios from "axios";
 import Button from "@mui/material/Button";
 import { FaCloudUploadAlt } from "react-icons/fa";
-import ToolTip from "../../components/Input/Tooltip";
-import Switch from "@mui/material/Switch";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import { IoMdClose } from "react-icons/io";
 import { styled } from "@mui/material/styles";
 import { FaStarOfLife } from "react-icons/fa";
 
-const IOSSwitch = styled((props) => (
-  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
-))(({ theme }) => ({
-  width: 42,
-  height: 26,
-  padding: 0,
-  "& .MuiSwitch-switchBase": {
-    padding: 0,
-    margin: 2,
-    transitionDuration: "300ms",
-    "&.Mui-checked": {
-      transform: "translateX(16px)",
-      color: "#fff",
-      "& + .MuiSwitch-track": {
-        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#0d6ef",
-        opacity: 1,
-        border: 0,
-      },
-      "&.Mui-disabled + .MuiSwitch-track": {
-        opacity: 0.5,
-      },
-    },
-    "&.Mui-focusVisible .MuiSwitch-thumb": {
-      color: "#33cf4d",
-      border: "6px solid #fff",
-    },
-    "&.Mui-disabled .MuiSwitch-thumb": {
-      color:
-        theme.palette.mode === "light"
-          ? theme.palette.grey[100]
-          : theme.palette.grey[600],
-    },
-    "&.Mui-disabled + .MuiSwitch-track": {
-      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
-    },
-  },
-  "& .MuiSwitch-thumb": {
-    boxSizing: "border-box",
-    width: 22,
-    height: 22,
-  },
-  "& .MuiSwitch-track": {
-    borderRadius: 26 / 2,
-    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
-    opacity: 1,
-    transition: theme.transitions.create(["background-color"], {
-      duration: 500,
-    }),
-  },
-}));
-
 function AddPackage({ addPackage }) {
-  const [value, setValue] = useState("");
-  const [formData, setFormData] = useState({
-    warehouse_name: "",
-    country: "",
-    state: "",
-    city: "",
-    address: "",
-    pincode: "",
-    gst: "",
-    document: null,
-    active: true,
-  });
-
-  const [formErrors, setFormErrors] = useState({
-    warehouse_name: "",
-    country: "",
-    state: "",
-    city: "",
-    address: "",
-    pincode: "",
-    gst: "",
-    document: null,
-    active: true,
-  });
+  const [id, setId] = useState();
+  const [length, setLength] = useState("");
+  const [breath, setBreath] = useState("");
+  const [height, setHeight] = useState("");
+  const [dimUnit, setDimUnit] = useState("");
+  const [existingPart, setExistingPart] = useState("");
+  const [currentPackingStudy, setCurrentPackingStudy] = useState("");
+  const [currentPackingChallenges, setCurrentPackingChallenges] = useState("");
+  const [noOfParts, setNoOfParts] = useState("");
+  const [partSensitive, setPartSensitive] = useState("");
+  const [greasy, setGreasy] = useState("");
+  const [partOrientation, setPartOrientation] = useState("");
+  const [multiPartInSingleSocket, setMultiPartInSingleSocket] = useState("");
+  const [stacking, setStacking] = useState("");
+  const [nesting, setNesting] = useState("");
+  const [remarks, setRemarks] = useState("");
+  const [partImage, setPartImage] = useState("");
+  const [existingPackingImage, setExistingPackingImage] = useState("");
+  const [partDrawing, setPartDrawing] = useState("");
+  const [approvedPackingTechnicalDrawing, setApprovedPackingTechnicalDrawing] =
+    useState("");
+  const [approvedCommercialContract, setApprovedCommercialContract] =
+    useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [errors, setErrors] = useState({});
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -98,53 +45,166 @@ function AddPackage({ addPackage }) {
     width: 1,
   });
 
-  const updateFormValue = ({ updateType, value }) => {
-    setFormData({ ...formData, [updateType]: value });
-    // console.log(updateType);
+  const handlePackageChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "existingPart":
+        setExistingPart(value);
+        break;
+      case "length":
+        setLength(value);
+        break;
+      case "breath":
+        setBreath(value);
+        break;
+      case "height":
+        setHeight(value);
+        break;
+      case "currentPackingStudy":
+        setCurrentPackingStudy(value);
+        break;
+      case "currentPackingChallenges":
+        setCurrentPackingChallenges(value);
+        break;
+      case "noOfParts":
+        setNoOfParts(value);
+        break;
+      case "partSensitive":
+        setPartSensitive(value);
+        break;
+      case "greasy":
+        setGreasy(value);
+        break;
+      case "partOrientation":
+        setPartOrientation(value);
+        break;
+      case "multiPartInSingleSocket":
+        setMultiPartInSingleSocket(value);
+        break;
+      case "stacking":
+        setStacking(value);
+        break;
+      case "nesting":
+        setNesting(value);
+        break;
+      case "remarks":
+        setRemarks(value);
+        break;
+      case "partImage":
+        setPartImage(value);
+        break;
+      case "existingPackingImage":
+        setExistingPackingImage(value);
+        break;
+      case "partDrawing":
+        setPartDrawing(value);
+        break;
+      case "approvedPackingTechnicalDrawing":
+        setApprovedPackingTechnicalDrawing(value);
+        break;
+      case "approvedCommercialContract":
+        setApprovedCommercialContract(value);
+        break;
+    }
   };
 
-  const updateInputValue = (val) => {
-    setValue(val);
+  const handlePackage = () => {
+    const errors = {};
+    if (!existingPart) {
+      errors.existingPart = "Existing Part is required";
+    }
+    if (!currentPackingStudy) {
+      errors.currentPackingStudy = "Current Packing Study is required";
+    }
+    if (!currentPackingChallenges) {
+      errors.currentPackingChallenges =
+        "Current Packing Challenges is required";
+    }
+    if (!noOfParts) {
+      errors.noOfParts = "Number Of Parts is required";
+    }
+    if (!partSensitive) {
+      errors.partSensitive = "Part Sensitive is required";
+    }
+    if (!greasy) {
+      errors.greasy = "Part greasy is required";
+    }
+    if (!partOrientation) {
+      errors.partOrientation = "Part Orientation is required";
+    }
+    if (!multiPartInSingleSocket) {
+      errors.multiPartInSingleSocket = "MultiPart In Single Socket is required";
+    }
+    if (!stacking) {
+      errors.stacking = "Stacking is required";
+    }
+    if (!nesting) {
+      errors.nesting = "Nesting is required";
+    }
+    if (!remarks) {
+      errors.remarks = "Remarks is required";
+    }
+    if (!partImage) {
+      errors.partImage = "Part Image is required";
+    }
+    if (!existingPackingImage) {
+      errors.existingPackingImage = "Existing Packing Image is required";
+    }
+    if (!partDrawing) {
+      errors.partDrawing = "Part Drawing is required";
+    }
+    if (!approvedPackingTechnicalDrawing) {
+      errors.approvedPackingTechnicalDrawing =
+        "Approved Packing Technical Drawing is required";
+    }
+    if (!approvedCommercialContract) {
+      errors.approvedCommercialContract =
+        "Approved Commercial Contract is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        id,
+        existingPart,
+        length,
+        breath,
+        height,
+        dimUnit,
+        currentPackingStudy,
+        currentPackingChallenges,
+        noOfParts,
+        partSensitive,
+        greasy,
+        partOrientation,
+        multiPartInSingleSocket,
+        stacking,
+        nesting,
+        remarks,
+        partImage,
+        existingPackingImage,
+        partDrawing,
+        approvedPackingTechnicalDrawing,
+        approvedCommercialContract,
+        orgId,
+      };
+      Axios.post(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/packingDetail`,
+        formData
+      )
+        .then((response) => {
+          console.log("Response:", response.data);
+          addPackage(false);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const handleClosePackage = () => {
     addPackage(false);
   };
-
-  //   const handlePackage = () => {
-  //     const errors = {};
-  //     if (!formData.warehouse_name.trim()) {
-  //       errors.warehouse_name = "Warehouse Name is required";
-  //     }
-  //     if (!formData.country.trim()) {
-  //       errors.country = "Country is required";
-  //     }
-  //     if (!formData.state.trim()) {
-  //       errors.state = "State is required";
-  //     }
-  //     if (!formData.city.trim()) {
-  //       errors.city = "City is required";
-  //     }
-  //     if (!formData.address.trim()) {
-  //       errors.address = "Address is required";
-  //     }
-  //     if (!formData.pincode.trim()) {
-  //       errors.pincode = "Pincode is required";
-  //     }
-  //     if (Object.keys(errors).length > 0) {
-  //       setFormErrors(errors);
-  //       return;
-  //     }
-
-  //     Axios.post(`${process.env.REACT_APP_API_URL}/api/warehouse/view`, formData)
-  //       .then((response) => {
-  //         console.log("Response:", response.data);
-  //         addWarehouse(true);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error:", error);
-  //       });
-  //   };
 
   return (
     <>
@@ -174,10 +234,10 @@ function AddPackage({ addPackage }) {
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 50 }}
                 type={"number"}
-                value={value}
+                value={length}
                 placeholder={"L"}
-                onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 input-bordered p-1"
+                onChange={handlePackageChange}
               />
               {/* <span>
                 <input
@@ -189,10 +249,10 @@ function AddPackage({ addPackage }) {
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 50 }}
                 type={"number"}
-                value={value}
+                value={breath}
                 placeholder={"B"}
-                onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 p-1 mx-1 input-bordered"
+                onChange={handlePackageChange}
               />
               {/* <span>
                 <input
@@ -204,15 +264,16 @@ function AddPackage({ addPackage }) {
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 50 }}
                 type={"number"}
-                value={value}
+                value={height}
                 placeholder={"H"}
-                onChange={(e) => updateInputValue(e.target.value)}
                 className="input mb-2 p-1 mx-1 input-bordered"
+                onChange={handlePackageChange}
               />
               <select
                 name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
+                value={dimUnit}
               >
                 <option value="inch">inch</option>
                 <option value="mm">mm</option>
@@ -220,10 +281,12 @@ function AddPackage({ addPackage }) {
                 <option value="feet">feet</option>
               </select>
             </div>
-            {formErrors.warehouse_name && (
-              <div className="error-text">{formErrors.warehouse_name}</div>
-            )}
           </div>
+          {errors.dimUnit && (
+            <div className="d-flex flex-column">
+              <div className="error-text">{errors.dimUnit}</div>
+            </div>
+          )}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -240,12 +303,13 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
+              value={existingPart}
             >
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
-            {formErrors.country && (
-              <div className="error-text">{formErrors.country}</div>
+            {errors.existingPart && (
+              <div className="error-text">{errors.existingPart}</div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -261,14 +325,15 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
-              updateType="address"
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="currentPackingStudy"
+              value={currentPackingStudy}
+              onChange={handlePackageChange}
             />
-            {formErrors.address && (
-              <div className="error-text">{formErrors.address}</div>
+            {errors.currentPackingStudy && (
+              <div className="error-text">{errors.currentPackingStudy}</div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -284,14 +349,17 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
-              updateType="city"
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="currentPackingChallenges"
+              value={currentPackingChallenges}
+              onChange={handlePackageChange}
             />
-            {formErrors.city && (
-              <div className="error-text">{formErrors.city}</div>
+            {errors.currentPackingChallenges && (
+              <div className="error-text">
+                {errors.currentPackingChallenges}
+              </div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -307,14 +375,15 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
-              updateType="state"
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="noOfParts"
+              value={noOfParts}
+              onChange={handlePackageChange}
             />
-            {formErrors.state && (
-              <div className="error-text">{formErrors.state}</div>
+            {errors.noOfParts && (
+              <div className="error-text">{errors.noOfParts}</div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -333,12 +402,13 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
+              value={partSensitive}
             >
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
-            {formErrors.country && (
-              <div className="error-text">{formErrors.country}</div>
+            {errors.partSensitive && (
+              <div className="error-text">{errors.partSensitive}</div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -357,13 +427,12 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
+              value={greasy}
             >
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
-            {formErrors.pincode && (
-              <div className="error-text">{formErrors.pincode}</div>
-            )}
+            {errors.greasy && <div className="error-text">{errors.greasy}</div>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -376,13 +445,14 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
+              value={partOrientation}
             >
               <option value="Horizontal">Horizontal</option>
               <option value="Vertical">Vertical</option>
               <option value="Diagonal">Diagonal</option>
             </select>
-            {formErrors.gst && (
-              <div className="error-text">{formErrors.gst}</div>
+            {errors.partOrientation && (
+              <div className="error-text">{errors.partOrientation}</div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -396,6 +466,7 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
+              value={multiPartInSingleSocket}
             >
               <option value="yes">Yes</option>
               <option value="no">No</option>
@@ -412,6 +483,7 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
+              value={stacking}
             >
               <option value="yes">Yes</option>
               <option value="no">No</option>
@@ -428,6 +500,7 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
+              value={nesting}
             >
               <option value="yes">Yes</option>
               <option value="no">No</option>
@@ -446,14 +519,15 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
-              updateType="address"
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="remarks"
+              value={remarks}
+              onChange={handlePackageChange}
             />
-            {formErrors.address && (
-              <div className="error-text">{formErrors.address}</div>
+            {errors.remarks && (
+              <div className="error-text">{errors.remarks}</div>
             )}
           </div>
           <h1 className="text-xl font-semibold mb-4 ms-4">Attachments</h1>
@@ -502,9 +576,6 @@ function AddPackage({ addPackage }) {
               Upload file
               <VisuallyHiddenInput type="file" />
             </Button>
-            {formErrors.address && (
-              <div className="error-text">{formErrors.address}</div>
-            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -519,11 +590,16 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="partDrawing"
+              value={partDrawing}
+              onChange={handlePackageChange}
             />
+            {errors.partDrawing && (
+              <div className="error-text">{errors.partDrawing}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -538,11 +614,18 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="approvedPackingTechnicalDrawing"
+              value={approvedPackingTechnicalDrawing}
+              onChange={handlePackageChange}
             />
+            {errors.approvedPackingTechnicalDrawing && (
+              <div className="error-text">
+                {errors.approvedPackingTechnicalDrawing}
+              </div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -557,17 +640,24 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <ToolTip
-              placeholder={"Enter"}
-              content={""}
-              updateFormValue={updateFormValue}
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="approvedCommercialContract"
+              value={approvedCommercialContract}
+              onChange={handlePackageChange}
             />
+            {errors.approvedCommercialContract && (
+              <div className="error-text">
+                {errors.approvedCommercialContract}
+              </div>
+            )}
           </div>
         </div>
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
-            // onClick={handlePackage}
+            onClick={handlePackage}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save
