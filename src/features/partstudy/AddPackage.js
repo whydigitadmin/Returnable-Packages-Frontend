@@ -148,7 +148,7 @@ function AddPackage({ addPackage }) {
 
   return (
     <>
-      <div>
+      <div className="partstudy-font">
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-4 ms-4">Package Details</h1>
           <IoMdClose

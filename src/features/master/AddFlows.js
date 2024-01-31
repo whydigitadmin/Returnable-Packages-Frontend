@@ -69,7 +69,7 @@ function AddFlows({ addFlows }) {
 
   const [kitName, setKitName] = useState("");
   const [partName, setPartName] = useState("");
-  const [partNumber, setPartNumber] = useState(0);
+  const [partNumber, setPartNumber] = useState("");
   const [subReceiver, setSubReceiver] = useState("");
   const [cycleTime, setCycleTime] = useState("");
   const [errors, setErrors] = useState("");
@@ -288,6 +288,9 @@ function AddFlows({ addFlows }) {
               value={emitter}
               onChange={handleSelectEmitter}
             >
+              <option value="" disabled>
+                Select an Emitter
+              </option>
               <option value="Denso">Denso</option>
               <option value="Gabriel">Gabriel</option>
             </select>
@@ -313,6 +316,9 @@ function AddFlows({ addFlows }) {
               value={receiver}
               onChange={handleSelectReceiver}
             >
+              <option value="" disabled>
+                Select an Receiver
+              </option>
               <option value="Tata Motors">Tata Motors</option>
               <option value="Mahindra">Mahindra</option>
             </select>
@@ -410,6 +416,9 @@ function AddFlows({ addFlows }) {
               value={kitName}
               onChange={handleSelectKitName}
             >
+              <option value="" disabled>
+                Select an Kit
+              </option>
               <option value="Kit1">Kit1</option>
               <option value="Kit2">Kit2</option>
               <option value="Kit3">Kit3</option>
@@ -436,6 +445,9 @@ function AddFlows({ addFlows }) {
               value={partName}
               onChange={handleSelectPartName}
             >
+              <option value="" disabled>
+                Select an Part
+              </option>
               <option value="Part1">Part1</option>
               <option value="Part2">Part2</option>
               <option value="Part3">Part3</option>
@@ -538,6 +550,9 @@ function AddFlows({ addFlows }) {
               value={subReceiver}
               onChange={handleSubReceiver}
             >
+              <option value="" disabled>
+                Select an Receiver
+              </option>
               <option value="Tata Motors">Tata Motors</option>
               <option value="Mahindra">Mahindra</option>
             </select>
