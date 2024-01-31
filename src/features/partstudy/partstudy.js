@@ -1,4 +1,5 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useEffect } from "react";
+import axios from "axios";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
@@ -114,26 +115,26 @@ function Partstudy() {
 
   const handleBack = () => {
     setAdd(false);
-    // getWarehouseData();
+    getAllBasicDetail();
   };
 
-  // useEffect(() => {
-  //   getWarehouseData();
-  // }, []);
+  useEffect(() => {
+    getAllBasicDetail();
+  }, []);
 
-  // const getWarehouseData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/warehouse/view`
-  //     );
+  const getAllBasicDetail = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails`
+      );
 
-  //     if (response.status === 200) {
-  //       setData(response.data.paramObjectsMap.WarehouseVO);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.basicDetailVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -150,30 +151,19 @@ function Partstudy() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "warehouse_id",
+        accessorKey: "id",
         header: "ID",
         size: 50,
         muiTableHeadCellProps: {
-          align: "first",
+          align: "left",
         },
         muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
-      {
-        accessorKey: "partStudyId",
-        header: "Part Study Id",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
+          align: "left",
         },
       },
       {
         accessorKey: "partStudyNo",
-        header: "Part Study No",
+        header: "Part Study Id",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -205,19 +195,8 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "receiverID",
+        accessorKey: "receiverId",
         header: "Receiver ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "partStudyID",
-        header: "Part Study ID",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -238,7 +217,7 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "partNo",
+        accessorKey: "partNumber",
         header: "Part No",
         size: 50,
         muiTableHeadCellProps: {
@@ -260,7 +239,7 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "partVol",
+        accessorKey: "partValue",
         header: "Part Volume",
         size: 50,
         muiTableHeadCellProps: {
@@ -271,7 +250,7 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "highvol",
+        accessorKey: "highestValue",
         header: "Highest Volume",
         size: 50,
         muiTableHeadCellProps: {
@@ -282,19 +261,8 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "lowVol",
+        accessorKey: "lowestValue",
         header: "Lowest Volume",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "active",
-        header: "Active",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
