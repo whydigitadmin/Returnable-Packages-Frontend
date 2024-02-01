@@ -50,6 +50,7 @@ function StockDetails() {
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [tableData, setTableData] = React.useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -70,7 +71,7 @@ function StockDetails() {
   const getStockDetails = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/stockDetail`
+        `${process.env.REACT_APP_API_URL}/api/partStudy/stockDetail?orgId=${orgId}`
       );
       console.log("API Response:", response);
 

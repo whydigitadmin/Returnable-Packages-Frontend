@@ -75,7 +75,7 @@ function Vendors() {
   const getVendorData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/vender?id=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/vender?orgId=${orgId}`
       );
 
       if (response.status === 200) {

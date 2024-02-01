@@ -21,6 +21,7 @@ function Logistics() {
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [tableData, setTableData] = React.useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -41,7 +42,7 @@ function Logistics() {
   const getLogistics = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/logisticsVO`
+        `${process.env.REACT_APP_API_URL}/api/partStudy/logistics?orgId=${orgId}`
       );
       console.log("API Response:", response);
 

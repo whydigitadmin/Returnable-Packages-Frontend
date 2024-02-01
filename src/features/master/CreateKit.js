@@ -58,8 +58,11 @@ const columns = [
 
 function CreateKit() {
   const [open, setOpen] = React.useState(false);
+  const [openNew, setOpenNew] = React.useState(false);
   const [addItem, setAddItem] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [selectedKitDetails, setSelectedKitDetails] = React.useState(null);
+  const [kitAssetCategory, setKitAssetCategory] = React.useState(null);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -68,12 +71,20 @@ function CreateKit() {
     setAddItem(true);
   };
 
+  const handleKitIdClick = (kitDetails, data) => {
+    setSelectedKitDetails(kitDetails);
+    setKitAssetCategory(kitDetails.kitAssetCategory); // Set kitAssetCategory in state
+    setOpenNew(true); // Open the popup
+    console.log("test", data);
+  };
+
   const handleBack = () => {
     setAddItem(false);
   };
 
   const handleClose = () => {
     setOpen(false);
+    setOpenNew(false);
   };
 
   useEffect(() => {
@@ -88,6 +99,7 @@ function CreateKit() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.KitVO);
+        console.log("testttt", data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -109,51 +121,86 @@ function CreateKit() {
     () => [
       {
         accessorKey: "id",
+        header: "Sr. No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "first",
+        },
+        muiTableBodyCellProps: {
+          align: "first",
+        },
+      },
+      {
+        accessorKey: "id",
         header: "Kit ID",
         size: 50,
         muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
-      {
-        accessorKey: "assetCategory",
-        header: "Name",
-        size: 50,
-        muiTableHeadCellProps: {
           align: "center",
         },
         muiTableBodyCellProps: {
           align: "center",
+          onClick: (row) => handleKitIdClick(row, data), // Handle click event
+          style: {
+            cursor: "pointer",
+            textDecoration: "underline",
+            color: "blue",
+          },
         },
       },
-      {
-        accessorKey: "assetName",
-        header: "assetName",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "quantity",
-        header: "quantity",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // ... (other columns if needed)
     ],
-    []
+    [] // Dependency array
   );
+
+  // const columns = useMemo(
+  //   () => [
+  //     {
+  //       accessorKey: "id",
+  //       header: "Kit ID",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "first",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "first",
+  //       },
+  //     },
+  //     {
+  //       accessorKey: "assetCategory",
+  //       header: "Name",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //     },
+  //     {
+  //       accessorKey: "assetName",
+  //       header: "assetName",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //     },
+  //     {
+  //       accessorKey: "quantity",
+  //       header: "quantity",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //     },
+  //   ],
+  //   []
+  // );
 
   const table = useMaterialReactTable({
     data,
@@ -241,6 +288,44 @@ function CreateKit() {
               <Button component="label" variant="contained">
                 Submit
               </Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog
+            fullWidth={true}
+            maxWidth={"sm"}
+            open={openNew}
+            onClose={handleClose}
+          >
+            <DialogTitle>Kit Details</DialogTitle>
+            <DialogContent>
+              {/* Display selected kit details in the popup */}
+              {selectedKitDetails && (
+                <div>
+                  <p>Kit ID: {data.orgId}</p>
+                  {/* Render kitAssetCategory details */}
+                  {kitAssetCategory && (
+                    <div>
+                      <p>Kit Asset Category:</p>
+                      {Object.keys(kitAssetCategory).map((category) => (
+                        <div key={category}>
+                          <strong>{category}:</strong>
+                          <ul>
+                            {kitAssetCategory[category].map((asset) => (
+                              <li key={asset.id}>
+                                {asset.assetName}: {asset.quantity}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </DialogContent>
+
+            <DialogActions className="mb-2 me-2">
+              <Button onClick={handleClose}>Close</Button>
             </DialogActions>
           </Dialog>
         </div>
