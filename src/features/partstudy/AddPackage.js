@@ -11,7 +11,7 @@ function AddPackage({ addPackage }) {
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
   const [height, setHeight] = useState("");
-  const [dimUnit, setDimUnit] = useState("");
+  const [partUnit, setPartUnit] = useState("");
   const [existingPart, setExistingPart] = useState("");
   const [currentPackingStudy, setCurrentPackingStudy] = useState("");
   const [currentPackingChallenges, setCurrentPackingChallenges] = useState("");
@@ -19,12 +19,12 @@ function AddPackage({ addPackage }) {
   const [partSensitive, setPartSensitive] = useState("");
   const [greasy, setGreasy] = useState("");
   const [partOrientation, setPartOrientation] = useState("");
-  const [multiPartInSingleSocket, setMultiPartInSingleSocket] = useState("");
+  const [multiPartInSingleUnit, SetMultiPartInSingleUnit] = useState("");
   const [stacking, setStacking] = useState("");
   const [nesting, setNesting] = useState("");
   const [remarks, setRemarks] = useState("");
-  const [partImage, setPartImage] = useState("");
-  const [existingPackingImage, setExistingPackingImage] = useState("");
+  const [partImage, setPartImage] = useState(null);
+  const [existingPackingImage, setExistingPackingImage] = useState(null);
   const [partDrawing, setPartDrawing] = useState("");
   const [approvedPackingTechnicalDrawing, setApprovedPackingTechnicalDrawing] =
     useState("");
@@ -78,8 +78,8 @@ function AddPackage({ addPackage }) {
       case "partOrientation":
         setPartOrientation(value);
         break;
-      case "multiPartInSingleSocket":
-        setMultiPartInSingleSocket(value);
+      case "multiPartInSingleUnit":
+        SetMultiPartInSingleUnit(value);
         break;
       case "stacking":
         setStacking(value);
@@ -110,6 +110,18 @@ function AddPackage({ addPackage }) {
 
   const handlePackage = () => {
     const errors = {};
+    if (!length) {
+      errors.length = "Length is required";
+    }
+    if (!breath) {
+      errors.breath = "Breath is required";
+    }
+    if (!height) {
+      errors.height = "Height is required";
+    }
+    if (!partUnit) {
+      errors.partUnit = "Part Unit is required";
+    }
     if (!existingPart) {
       errors.existingPart = "Existing Part is required";
     }
@@ -132,8 +144,8 @@ function AddPackage({ addPackage }) {
     if (!partOrientation) {
       errors.partOrientation = "Part Orientation is required";
     }
-    if (!multiPartInSingleSocket) {
-      errors.multiPartInSingleSocket = "MultiPart In Single Socket is required";
+    if (!multiPartInSingleUnit) {
+      errors.multiPartInSingleUnit = "Multi Part In Single Pocket is required";
     }
     if (!stacking) {
       errors.stacking = "Stacking is required";
@@ -144,12 +156,12 @@ function AddPackage({ addPackage }) {
     if (!remarks) {
       errors.remarks = "Remarks is required";
     }
-    if (!partImage) {
-      errors.partImage = "Part Image is required";
-    }
-    if (!existingPackingImage) {
-      errors.existingPackingImage = "Existing Packing Image is required";
-    }
+    // if (!partImage) {
+    //   errors.partImage = "Part Image is required";
+    // }
+    // if (!existingPackingImage) {
+    //   errors.existingPackingImage = "Existing Packing Image is required";
+    // }
     if (!partDrawing) {
       errors.partDrawing = "Part Drawing is required";
     }
@@ -168,14 +180,14 @@ function AddPackage({ addPackage }) {
         length,
         breath,
         height,
-        dimUnit,
+        partUnit,
         currentPackingStudy,
         currentPackingChallenges,
         noOfParts,
         partSensitive,
         greasy,
         partOrientation,
-        multiPartInSingleSocket,
+        multiPartInSingleUnit,
         stacking,
         nesting,
         remarks,
@@ -187,7 +199,7 @@ function AddPackage({ addPackage }) {
         orgId,
       };
       Axios.post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/packingDetail`,
+        `${process.env.REACT_APP_API_URL}/api/partStudy/packageDetail`,
         formData
       )
         .then((response) => {
@@ -200,6 +212,31 @@ function AddPackage({ addPackage }) {
     } else {
       setErrors(errors);
     }
+  };
+
+  const handleUnitChange = (e) => {
+    setPartUnit(e.target.value);
+  };
+  const handlePart = (e) => {
+    setExistingPart(e.target.value);
+  };
+  const handlePartGreasy = (e) => {
+    setGreasy(e.target.value);
+  };
+  const handlePartOrientation = (e) => {
+    setPartOrientation(e.target.value);
+  };
+  const handleMultiPart = (e) => {
+    SetMultiPartInSingleUnit(e.target.value);
+  };
+  const handleStacking = (e) => {
+    setStacking(e.target.value);
+  };
+  const handlePartSensitive = (e) => {
+    setPartSensitive(e.target.value);
+  };
+  const handleNesting = (e) => {
+    setNesting(e.target.value);
   };
 
   const handleClosePackage = () => {
@@ -233,7 +270,7 @@ function AddPackage({ addPackage }) {
             <div className="d-flex flex-row">
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 50 }}
-                type={"number"}
+                name="length"
                 value={length}
                 placeholder={"L"}
                 className="input mb-2 input-bordered p-1"
@@ -248,7 +285,7 @@ function AddPackage({ addPackage }) {
               </span> */}
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 50 }}
-                type={"number"}
+                name="breath"
                 value={breath}
                 placeholder={"B"}
                 className="input mb-2 p-1 mx-1 input-bordered"
@@ -263,30 +300,40 @@ function AddPackage({ addPackage }) {
               </span> */}
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 50 }}
-                type={"number"}
+                name="height"
                 value={height}
                 placeholder={"H"}
                 className="input mb-2 p-1 mx-1 input-bordered"
                 onChange={handlePackageChange}
               />
               <select
-                name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
-                value={dimUnit}
+                value={partUnit}
+                onChange={handleUnitChange}
               >
+                <option value="">unit</option>
                 <option value="inch">inch</option>
                 <option value="mm">mm</option>
                 <option value="cm">cm</option>
                 <option value="feet">feet</option>
               </select>
             </div>
-          </div>
-          {errors.dimUnit && (
             <div className="d-flex flex-column">
-              <div className="error-text">{errors.dimUnit}</div>
+              {errors.length && (
+                <div className="error-text">{errors.length}</div>
+              )}
+              {errors.breath && (
+                <div className="error-text">{errors.breath}</div>
+              )}
+              {errors.height && (
+                <div className="error-text">{errors.height}</div>
+              )}
+              {errors.partUnit && (
+                <div className="error-text">{errors.partUnit}</div>
+              )}
             </div>
-          )}
+          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -304,7 +351,9 @@ function AddPackage({ addPackage }) {
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
               value={existingPart}
+              onChange={handlePart}
             >
+              <option value="">Select an option</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
@@ -403,7 +452,9 @@ function AddPackage({ addPackage }) {
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
               value={partSensitive}
+              onChange={handlePartSensitive}
             >
+              <option value="">Select an option</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
@@ -428,7 +479,9 @@ function AddPackage({ addPackage }) {
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
               value={greasy}
+              onChange={handlePartGreasy}
             >
+              <option value="">Select an option</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
@@ -446,7 +499,9 @@ function AddPackage({ addPackage }) {
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
               value={partOrientation}
+              onChange={handlePartOrientation}
             >
+              <option value="">Select an option</option>
               <option value="Horizontal">Horizontal</option>
               <option value="Vertical">Vertical</option>
               <option value="Diagonal">Diagonal</option>
@@ -466,11 +521,16 @@ function AddPackage({ addPackage }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
-              value={multiPartInSingleSocket}
+              value={multiPartInSingleUnit}
+              onChange={handleMultiPart}
             >
+              <option value="">Select an option</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
+            {errors.multiPartInSingleUnit && (
+              <div className="error-text">{errors.multiPartInSingleUnit}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -484,10 +544,15 @@ function AddPackage({ addPackage }) {
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
               value={stacking}
+              onChange={handleStacking}
             >
+              <option value="">Select an option</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
+            {errors.stacking && (
+              <div className="error-text">{errors.stacking}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -501,10 +566,15 @@ function AddPackage({ addPackage }) {
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
               value={nesting}
+              onChange={handleNesting}
             >
+              <option value="">Select an option</option>
               <option value="yes">Yes</option>
               <option value="no">No</option>
             </select>
+            {errors.nesting && (
+              <div className="error-text">{errors.nesting}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

@@ -75,7 +75,7 @@ function PackageDesign() {
   const getAllPackingDetail = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/packingDetail`
+        `${process.env.REACT_APP_API_URL}/api/partStudy/packageDetail`
       );
 
       if (response.status === 200) {
@@ -101,19 +101,19 @@ function PackageDesign() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "warehouse_id",
+        accessorKey: "id",
         header: "ID",
         size: 50,
         muiTableHeadCellProps: {
-          align: "first",
+          align: "left",
         },
         muiTableBodyCellProps: {
-          align: "first",
+          align: "left",
         },
       },
       {
-        accessorKey: "warehouse_name",
-        header: "Name",
+        accessorKey: "existingPart",
+        header: "Existing Part",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -123,8 +123,8 @@ function PackageDesign() {
         },
       },
       {
-        accessorKey: "country",
-        header: "Country",
+        accessorKey: "noOfParts",
+        header: "No Of Parts",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -134,8 +134,8 @@ function PackageDesign() {
         },
       },
       {
-        accessorKey: "state",
-        header: "State",
+        accessorKey: "partSensitive",
+        header: "Part Sensitive",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -145,8 +145,8 @@ function PackageDesign() {
         },
       },
       {
-        accessorKey: "city",
-        header: "City",
+        accessorKey: "partOrientation",
+        header: "Part Orientation",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -156,8 +156,8 @@ function PackageDesign() {
         },
       },
       {
-        accessorKey: "address",
-        header: "Address",
+        accessorKey: "greasy",
+        header: "Part greasy",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -167,8 +167,8 @@ function PackageDesign() {
         },
       },
       {
-        accessorKey: "pincode",
-        header: "Pincode",
+        accessorKey: "stacking",
+        header: "Stacking",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -178,8 +178,8 @@ function PackageDesign() {
         },
       },
       {
-        accessorKey: "gst",
-        header: "Gst",
+        accessorKey: "nesting",
+        header: "Nesting",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -189,9 +189,31 @@ function PackageDesign() {
         },
       },
       {
-        accessorKey: "active",
-        header: "Active",
+        accessorKey: "partDrawing",
+        header: "Part Drawing 2D 3D",
         size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "approvedPackingTechnicalDrawing",
+        header: "Approved Packing Technical Drawing",
+        size: 380,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "approvedCommercialContract",
+        header: "Approved Commercial Contract",
+        size: 380,
         muiTableHeadCellProps: {
           align: "center",
         },
