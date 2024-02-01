@@ -49,7 +49,6 @@ function StockDetails() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
-  const [tableData, setTableData] = React.useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
   const handleClickOpen = () => {
@@ -77,7 +76,6 @@ function StockDetails() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.stockDetailVO);
-        setTableData(response.data.paramObjectsMap.stockDetailVO);
         // Handle success
       } else {
         // Handle error
@@ -90,26 +88,8 @@ function StockDetails() {
 
   const handleBack = () => {
     setAdd(false);
-    // getWarehouseData();
+    getStockDetails();
   };
-
-  // useEffect(() => {
-  //   getWarehouseData();
-  // }, []);
-
-  // const getWarehouseData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/warehouse/view`
-  //     );
-
-  //     if (response.status === 200) {
-  //       setData(response.data.paramObjectsMap.WarehouseVO);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -217,17 +197,6 @@ function StockDetails() {
         accessorKey: "emptyPackagingReverseDays",
         header: "Empty Packaging Reverse LogisticsDays",
         size: 300,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "active",
-        header: "Active",
-        size: 50,
         muiTableHeadCellProps: {
           align: "center",
         },

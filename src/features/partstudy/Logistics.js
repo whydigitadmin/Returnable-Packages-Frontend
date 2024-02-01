@@ -73,6 +73,7 @@ function Logistics() {
 
   const handleBack = () => {
     setAdd(false);
+    getLogistics();
   };
   const columns = useMemo(
     () => [

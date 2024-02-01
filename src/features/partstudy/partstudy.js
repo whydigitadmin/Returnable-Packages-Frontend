@@ -239,6 +239,17 @@ function Partstudy() {
         },
       },
       {
+        accessorKey: "weightUnit",
+        header: "Weight Unit",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
         accessorKey: "partVolume",
         header: "Part Volume",
         size: 50,

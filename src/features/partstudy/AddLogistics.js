@@ -45,10 +45,10 @@ function AddLogistics({ addlogistics }) {
     const errors = {};
     console.log("test");
     if (!avgLotSize) {
-      errors.avgLotSize = "lot size Name is required";
+      errors.avgLotSize = "Lot size Name is required";
     }
     if (!dispatchFrequency) {
-      errors.dispatchFrequency = "dispatch frequency is required";
+      errors.dispatchFrequency = "Dispatch frequency is required";
     }
 
     if (Object.keys(errors).length === 0) {
@@ -92,7 +92,7 @@ function AddLogistics({ addlogistics }) {
           />
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -104,11 +104,11 @@ function AddLogistics({ addlogistics }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-sz mt-2"
+              className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="avgLotSize"
               value={avgLotSize}
               onChange={handleInputChange}
@@ -117,7 +117,7 @@ function AddLogistics({ addlogistics }) {
               <span className="error-text">{errors.avgLotSize}</span>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -129,11 +129,11 @@ function AddLogistics({ addlogistics }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-sz mt-2"
+              className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="dispatchFrequency"
               value={dispatchFrequency}
               onChange={handleInputChange}

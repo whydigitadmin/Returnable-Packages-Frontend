@@ -17,7 +17,7 @@ function AddPartStudy({ addPartStudy }) {
   const [partName, setPartName] = useState();
   const [partNumber, setPartNumber] = useState();
   const [weight, setWeight] = useState();
-  const [weightUnit, setWeightUnit] = useState();
+  const [weightUnit, setWeightUnit] = useState("");
   const [partVolume, setPartVolume] = useState();
   const [highestVolume, setHighestVolume] = useState();
   const [lowestVolume, setLowestVolume] = useState();
@@ -97,6 +97,9 @@ function AddPartStudy({ addPartStudy }) {
     }
     if (!weight) {
       errors.weight = "Weight is required";
+    }
+    if (!weightUnit) {
+      errors.weightUnit = "Weight Unit is required";
     }
     if (!partVolume) {
       errors.partVolume = "Part Volume is required";
@@ -323,20 +326,25 @@ function AddPartStudy({ addPartStudy }) {
                 onChange={handlePartChange}
               />
               <select
-                name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
                 value={weightUnit}
                 onChange={handleWeightChange}
               >
+                <option value="">unit</option>
                 <option value="kg">kg</option>
-                <option value="tonne">tonne</option>
-                <option value="g">gm</option>
+                <option value="ton">ton</option>
+                <option value="gm">gm</option>
               </select>
             </div>
-            {errors.weight && (
-              <span className="error-text">{errors.weight}</span>
-            )}
+            <div className="d-flex flex-column">
+              {errors.weight && (
+                <span className="error-text">{errors.weight}</span>
+              )}
+              {errors.weightUnit && (
+                <span className="error-text">{errors.weightUnit}</span>
+              )}
+            </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
