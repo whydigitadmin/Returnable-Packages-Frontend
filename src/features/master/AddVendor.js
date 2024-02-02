@@ -256,6 +256,7 @@ function AddVendor({ addVendors }) {
         .post(`${process.env.REACT_APP_API_URL}/api/master/vender`, formData)
         .then((response) => {
           console.log("Response:", response.data);
+          addVendors(true);
           setVenderType("");
           setFirstName("");
           setLastName("");

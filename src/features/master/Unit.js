@@ -69,7 +69,7 @@ function Unit() {
 
   useEffect(() => {
     getWarehouseData();
-  }, [unit]);
+  }, []);
 
   const getWarehouseData = async () => {
     try {
@@ -116,6 +116,7 @@ function Unit() {
         .post(`${process.env.REACT_APP_API_URL}/api/master/unit`, formData)
         .then((response) => {
           console.log("Response:", response.data);
+          getWarehouseData();
           setUnit("");
           setErrors("");
         })

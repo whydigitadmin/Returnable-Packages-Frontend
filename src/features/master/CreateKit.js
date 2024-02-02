@@ -72,14 +72,15 @@ function CreateKit() {
   };
 
   const handleKitIdClick = (kitDetails, data) => {
-    setSelectedKitDetails(kitDetails);
-    setKitAssetCategory(kitDetails.kitAssetCategory); // Set kitAssetCategory in state
+    setSelectedKitDetails(selectedKitDetails);
+    setKitAssetCategory(kitAssetCategory); // Set kitAssetCategory in state
     setOpenNew(true); // Open the popup
-    console.log("test", data);
+    console.log("test", kitDetails);
   };
 
   const handleBack = () => {
     setAddItem(false);
+    getAllKitData();
   };
 
   const handleClose = () => {
@@ -89,7 +90,7 @@ function CreateKit() {
 
   useEffect(() => {
     getAllKitData();
-  }, []);
+  }, [addItem]);
 
   const getAllKitData = async () => {
     try {
@@ -99,12 +100,20 @@ function CreateKit() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.KitVO);
-        console.log("testttt", data);
+        console.log(
+          "Updated data inside getAllKitData:",
+          response.data.paramObjectsMap.KitVO
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+
+  // Log the updated state whenever 'data' changes
+  useEffect(() => {
+    console.log("Updated data:", data);
+  }, [data]);
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -121,7 +130,7 @@ function CreateKit() {
     () => [
       {
         accessorKey: "id",
-        header: "Sr. No",
+        header: "S.No",
         size: 50,
         muiTableHeadCellProps: {
           align: "first",
@@ -301,7 +310,8 @@ function CreateKit() {
               {/* Display selected kit details in the popup */}
               {selectedKitDetails && (
                 <div>
-                  <p>Kit ID: {data.orgId}</p>
+                  <p>Kit ID: {selectedKitDetails && selectedKitDetails.id}</p>
+
                   {/* Render kitAssetCategory details */}
                   {kitAssetCategory && (
                     <div>

@@ -70,7 +70,7 @@ function WarehouseLocation() {
 
   useEffect(() => {
     getWarehouseData();
-  }, [warehouselocation]);
+  }, []);
 
   const getWarehouseData = async () => {
     try {
@@ -107,6 +107,7 @@ function WarehouseLocation() {
         .then((response) => {
           console.log("Response:", response.data);
           setWarehouseLocation("");
+          getWarehouseData();
           setErrors("");
         })
         .catch((error) => {

@@ -62,6 +62,7 @@ function Vendors() {
 
   const handleBack = () => {
     setAddVendors(false);
+    getVendorData();
   };
 
   const handleClose = () => {

@@ -8,15 +8,17 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
+import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useEffect } from "react";
 import { FaLocationDot, FaPallet } from "react-icons/fa6";
 import { MdDoubleArrow, MdPallet } from "react-icons/md";
 import kit3 from "../../assets/gearbox.jpg";
 import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
+import ToastComponent from "../../utils/ToastComponent";
 
 function IssueReq() {
   const [value, setValue] = React.useState(0);
@@ -24,40 +26,181 @@ function IssueReq() {
   const [selectedKitNumbers, setSelectedKitNumbers] = React.useState([""]);
   const [partFields, setPartFields] = React.useState([{ partNo: "", qty: "" }]);
   const [selectedPartNumbers, setSelectedPartNumbers] = React.useState("");
+  const [getkit, setGetKit] = React.useState("");
+  const [getKitIds, setGetKitIds] = React.useState([]);
+  const [selectedKitId, setSelectedKitId] = React.useState("");
+  const [demandDate, setSelectedDate] = React.useState(null);
+  const [errors, setErrors] = React.useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [address, setAddress] = React.useState({});
+  const [aleartState, setAleartState] = React.useState("");
+  const [flowNames, setFlowNames] = React.useState([]);
+  const [selectedFlow, setSelectedFlow] = React.useState("");
+
+  useEffect(() => {
+    getAllKitData();
+    getAddressById();
+  }, []);
+
+  const getAllKitData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit`
+      );
+
+      if (response.status === 200) {
+        setGetKit(response.data.paramObjectsMap.KitVO);
+        const kitsData = response.data.paramObjectsMap.KitVO;
+        const kitIds = kitsData.map((kit) => kit.id);
+        setGetKitIds(kitIds);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    console.log("Updated getkit:", getKitIds);
+  }, [getKitIds]);
+
+  const getAddressById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow?emitterId=${userId}&orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setAddress(response.data.paramObjectsMap.flowVO);
+        const validFlowNames = response.data.paramObjectsMap.flowVO
+          .map((flow) => flow.flowName)
+          .filter((flowName) => typeof flowName === "string");
+
+        setFlowNames(validFlowNames);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleIssueReq = () => {
+    console.log("test");
+    const errors = {};
+
+    const kitNoErrors = kitFields.some((field) => !field.kitNo);
+    if (kitNoErrors) {
+      errors.kitNo = "kit Id is required";
+    }
+
+    if (!demandDate) {
+      errors.demandDate = "demand date is required";
+    }
+    const kitQtyErrors = kitFields.some((field) => !field.qty);
+    if (kitQtyErrors) {
+      errors.kitQty = "kit quantity is required";
+    }
+
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        demandDate,
+        orgId,
+        // flowTo,
+        issueItemDTO: kitFields.map((field) => ({
+          kitNo: field.kitNo,
+          kitQty: field.qty,
+        })),
+      };
+      console.log("test1", formData);
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/emitter/createIssueRequest`,
+          formData
+        )
+        .then((response) => {
+          setAleartState(true);
+          console.log("Response:", response.data);
+          setKitFields([{ kitNo: "", qty: "" }]);
+          setSelectedKitNumbers([""]);
+          // setPartFields([{ partNo: "", qty: "" }]);
+          // setSelectedPartNumbers([""]);
+          setSelectedKitId("");
+          setSelectedDate(null);
+          setErrors("");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
+  };
+
+  const handlePartReq = () => {
+    console.log("test");
+    const errors = {};
+
+    const partNoErrors = partFields.some((field) => !field.partNo);
+    if (partNoErrors) {
+      errors.partNo = "part is required";
+    }
+
+    if (!demandDate) {
+      errors.demandDate = "date is required";
+    }
+    const partQtyErrors = partFields.some((field) => !field.qty);
+    if (partQtyErrors) {
+      errors.partQty = "part is required";
+    }
+
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        demandDate,
+        orgId,
+        // flowTo,
+        issueItemDTO: partFields.map((field) => ({
+          partNo: field.partNo,
+          partQty: field.qty,
+        })),
+      };
+      console.log("test1", formData);
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/emitter/createIssueRequest`,
+          formData
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          setPartFields([{ partNo: "", qty: "" }]);
+          // setSelectedKitNumbers([""]);
+          // setPartFields([{ partNo: "", qty: "" }]);
+          // setSelectedPartNumbers([""]);
+          // setSelectedKitId("");
+          setSelectedDate(null);
+          setErrors("");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
-  const handleQtyChange = (e, index) => {
-    const newFields = [...kitFields];
-    newFields[index].qty = e.target.value;
-    setKitFields(newFields);
-  };
+  const handleDateChange = (newDate) => {
+    // Update the state with the selected date
+    const formattedDate = dayjs(newDate).format("YYYY-MM-DD");
 
-  const handleAddField = () => {
-    setKitFields([...kitFields, { kitNo: "", qty: "" }]);
-    setSelectedKitNumbers([...selectedKitNumbers, ""]);
-  };
+    // Update the state with the formatted date
+    setSelectedDate(formattedDate);
 
-  const handleRemoveField = (index) => {
-    const newFields = [...kitFields];
-    newFields.splice(index, 1);
-    setKitFields(newFields);
-
-    const newSelectedKitNumbers = [...selectedKitNumbers];
-    newSelectedKitNumbers.splice(index, 1);
-    setSelectedKitNumbers(newSelectedKitNumbers);
-  };
-
-  const handleKitNoChange = (e, index) => {
-    const newFields = [...kitFields];
-    newFields[index].kitNo = e.target.value;
-    setKitFields(newFields);
-
-    const newSelectedKitNumbers = [...selectedKitNumbers];
-    newSelectedKitNumbers[index] = e.target.value;
-    setSelectedKitNumbers(newSelectedKitNumbers);
+    console.log("Selected Date:", newDate);
+    console.log("Formatted Date:", formattedDate);
   };
 
   const handleAddPartField = () => {
@@ -90,8 +233,32 @@ function IssueReq() {
     setPartFields(newFields);
   };
 
+  const handleQtyChange = (e, index) => {
+    const newFields = [...kitFields];
+    newFields[index].qty = e.target.value;
+    setKitFields(newFields);
+  };
+
+  const handleAddField = () => {
+    setKitFields([...kitFields, { kitNo: "", qty: "" }]);
+    setSelectedKitNumbers([...selectedKitNumbers, ""]);
+  };
+
+  const handleRemoveField = (index) => {
+    const newFields = [...kitFields];
+    newFields.splice(index, 1);
+    setKitFields(newFields);
+
+    const newSelectedKitNumbers = [...selectedKitNumbers];
+    newSelectedKitNumbers.splice(index, 1);
+    setSelectedKitNumbers(newSelectedKitNumbers);
+  };
+
+  // Modify this function to handle kit number change
+
   const getKitImageByNumber = (kitNo) => {
-    switch (kitNo) {
+    const kitId = kitNo.toUpperCase();
+    switch (kitId) {
       case "KIT012":
         return kit1;
       case "KIT017":
@@ -103,6 +270,17 @@ function IssueReq() {
       default:
         return "";
     }
+  };
+
+  const handleKitNoChange = (e, index) => {
+    const newFields = [...kitFields];
+    newFields[index].kitNo = e.target.value;
+    setKitFields(newFields);
+
+    // Use kit ID instead of kit number
+    const newSelectedKitNumbers = [...selectedKitNumbers];
+    newSelectedKitNumbers[index] = e.target.value.toUpperCase();
+    setSelectedKitNumbers(newSelectedKitNumbers);
   };
 
   const getPartImageByNumber = (partNo) => {
@@ -180,6 +358,11 @@ function IssueReq() {
   return (
     <>
       <div className="container-sm">
+        {aleartState ? (
+          <ToastComponent content="Issue created successfully" />
+        ) : (
+          ""
+        )}
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
             <div className="col-lg-1"></div>
@@ -217,14 +400,18 @@ function IssueReq() {
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
                     Flow To -
                   </h4>
-                  <select className="form-select w-56 h-10 mt-1 mb-2">
-                    <option value="Tata Motors-Pune">Tata Motors-Pune</option>
-                    <option value="Tata Motors-Chennai">
-                      Tata Motors-Chennai
-                    </option>
-                    <option value="Tata Motors-Mumbai">
-                      Tata Motors-Mumbai
-                    </option>
+                  <select
+                    className="form-select w-56 h-10 mt-1 mb-2"
+                    value={selectedFlow}
+                    onChange={(e) => setSelectedFlow(e.target.value)}
+                  >
+                    <option value="">Select a Flow</option>
+                    {flowNames &&
+                      flowNames.map((flowName) => (
+                        <option key={flowName} value={flowName}>
+                          {flowName}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
@@ -240,11 +427,16 @@ function IssueReq() {
           </div>
           <div className="row">
             <div className="col-lg-4 card bg-base-100 shadow-xl m-4">
+              {errors.demandDate && (
+                <span className="error-text">{errors.demandDate}</span>
+              )}
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DemoContainer components={["StaticDatePicker"]}>
                   <StaticDatePicker
                     disablePast
                     minDate={dayjs().add(2, "day")}
+                    value={demandDate} // Set the selected date
+                    onChange={(newDate) => handleDateChange(newDate)} // Handle date change
                   />
                 </DemoContainer>
               </LocalizationProvider>
@@ -281,18 +473,20 @@ function IssueReq() {
                           </span>
                         </label>
                         <select
-                          className="form-select form-sz w-full mb-2"
+                          className="form-select form-sz w-full"
                           value={field.kitNo}
-                          onChange={(e) => {
-                            handleKitNoChange(e, index);
-                          }}
+                          onChange={(e) => handleKitNoChange(e, index)}
                         >
                           <option value="">Select a Kit</option>
-                          <option value="KIT012">KIT012</option>
-                          <option value="KIT017">KIT017</option>
-                          <option value="KIT004">KIT004</option>
-                          <option value="KIT015">KIT015</option>
+                          {getKitIds.map((kitId) => (
+                            <option key={kitId} value={kitId}>
+                              {kitId}
+                            </option>
+                          ))}
                         </select>
+                        {errors.kitNo && (
+                          <span className="error-text">{errors.kitNo}</span>
+                        )}
                       </div>
 
                       <div className="col-lg-4 col-md-6 mb-2">
@@ -307,6 +501,9 @@ function IssueReq() {
                           value={field.qty}
                           onChange={(e) => handleQtyChange(e, index)}
                         />
+                        {errors.kitQty && (
+                          <span className="error-text">{errors.kitQty}</span>
+                        )}
                       </div>
 
                       <div className="col-lg-1 col-md-2 mb-2">
@@ -348,7 +545,7 @@ function IssueReq() {
                 ))}
                 <button
                   type="button"
-                  // onClick={handleSubmit}
+                  onClick={handleIssueReq}
                   className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 >
                   Submit
@@ -382,6 +579,9 @@ function IssueReq() {
                         <option value="Part0157">Part0157</option>
                       </select>
                     </div>
+                    {errors.partNo && (
+                      <span className="error-text">{errors.partNo}</span>
+                    )}
                     <div className="col-lg-4 col-md-8">
                       <label className="label">
                         <span
@@ -399,6 +599,9 @@ function IssueReq() {
                         value={field.qty}
                         onChange={(e) => handlePartQtyChange(e, index)}
                       />
+                      {errors.partQty && (
+                        <span className="error-text">{errors.partQty}</span>
+                      )}
                     </div>
                     <div className="col-lg-1 col-md-2">
                       {index === 0 ? (
@@ -443,7 +646,7 @@ function IssueReq() {
                 ))}
                 <button
                   type="button"
-                  // onClick={handleSubmit}
+                  onClick={handlePartReq}
                   className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 >
                   Submit

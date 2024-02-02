@@ -214,6 +214,7 @@ function AddItemGroups({ addItem }) {
         .post(`${process.env.REACT_APP_API_URL}/api/master/createkit`, kitData)
         .then((response) => {
           console.log("User saved successfully!", response.data);
+          addItem(true);
           setFormValues({
             id: "",
             kitAssetDTO: [

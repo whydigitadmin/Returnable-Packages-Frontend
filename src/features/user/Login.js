@@ -73,6 +73,10 @@ function Login() {
             "userDetails",
             response.data.paramObjectsMap.user.role
           );
+          localStorage.setItem(
+            "userId",
+            response.data.paramObjectsMap.user.userId
+          );
           console.log("token", response.data);
           if (localStorage.getItem("userDetails") === "ROLE_EMITTER") {
             window.location.href = "/app/EmitterLanding";
