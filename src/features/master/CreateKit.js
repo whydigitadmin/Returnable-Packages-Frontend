@@ -63,6 +63,7 @@ function CreateKit() {
   const [data, setData] = React.useState([]);
   const [selectedKitDetails, setSelectedKitDetails] = React.useState(null);
   const [kitAssetCategory, setKitAssetCategory] = React.useState(null);
+  const [serialNumber, setSerialNumber] = React.useState(0);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -71,11 +72,11 @@ function CreateKit() {
     setAddItem(true);
   };
 
-  const handleKitIdClick = (kitDetails, data) => {
-    setSelectedKitDetails(selectedKitDetails);
-    setKitAssetCategory(kitAssetCategory); // Set kitAssetCategory in state
+  const handleKitIdClick = (row) => {
+    setSelectedKitDetails(row); // Assuming the row contains necessary details
+    setKitAssetCategory(row.kitAssetCategory); // Adjust this based on your actual data structure
     setOpenNew(true); // Open the popup
-    console.log("test", kitDetails);
+    console.log("Kit Details:", row);
   };
 
   const handleBack = () => {
@@ -92,6 +93,11 @@ function CreateKit() {
     getAllKitData();
   }, [addItem]);
 
+  useEffect(() => {
+    // Reset serial number when data changes
+    setSerialNumber(0);
+  }, [data]);
+
   const getAllKitData = async () => {
     try {
       const response = await axios.get(
@@ -99,11 +105,19 @@ function CreateKit() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.KitVO);
-        console.log(
-          "Updated data inside getAllKitData:",
-          response.data.paramObjectsMap.KitVO
-        );
+        const kits = response.data.paramObjectsMap.KitVO;
+        // setData(response.data.paramObjectsMap.KitVO);
+        let serialNumberCounter = 0;
+
+        // Add a static serial number to each kit object
+        const kitsWithSerialNumber = kits.map((kit) => ({
+          ...kit,
+          serialNumber: ++serialNumberCounter,
+        }));
+
+        // Set the data state with kits including the serial number
+        setData(kitsWithSerialNumber);
+        console.log("Updated data inside getAllKitData:", kitsWithSerialNumber);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -127,38 +141,38 @@ function CreateKit() {
     width: 1,
   });
   const columns = useMemo(
-    () => [
+    (row) => [
       {
-        accessorKey: "id",
         header: "S.No",
         size: 50,
         muiTableHeadCellProps: {
-          align: "first",
+          textAlign: "first",
         },
         muiTableBodyCellProps: {
-          align: "first",
+          textAlign: "first",
         },
+        renderCell: (rowData) => rowData.serialNumber,
       },
       {
         accessorKey: "id",
         header: "Kit ID",
         size: 50,
         muiTableHeadCellProps: {
-          align: "center",
+          textAlign: "center",
         },
-        muiTableBodyCellProps: {
-          align: "center",
-          onClick: (row) => handleKitIdClick(row, data), // Handle click event
+        muiTableBodyCellProps: (row) => ({
+          textAlign: "center",
+          onClick: () => handleKitIdClick(row.row.original), // Pass the entire kit object
           style: {
             cursor: "pointer",
             textDecoration: "underline",
             color: "blue",
           },
-        },
+        }),
       },
       // ... (other columns if needed)
     ],
-    [] // Dependency array
+    [data] // Dependency array
   );
 
   // const columns = useMemo(
@@ -307,27 +321,33 @@ function CreateKit() {
           >
             <DialogTitle>Kit Details</DialogTitle>
             <DialogContent>
-              {/* Display selected kit details in the popup */}
               {selectedKitDetails && (
                 <div>
-                  <p>Kit ID: {selectedKitDetails && selectedKitDetails.id}</p>
+                  <p className="kit-detail">Kit ID: {selectedKitDetails.id}</p>
 
-                  {/* Render kitAssetCategory details */}
                   {kitAssetCategory && (
                     <div>
-                      <p>Kit Asset Category:</p>
-                      {Object.keys(kitAssetCategory).map((category) => (
-                        <div key={category}>
-                          <strong>{category}:</strong>
-                          <ul>
-                            {kitAssetCategory[category].map((asset) => (
-                              <li key={asset.id}>
-                                {asset.assetName}: {asset.quantity}
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
+                      <p className="kit-detail">Kit Asset Category:</p>
+                      <table className="asset-table">
+                        <thead>
+                          <tr>
+                            <th>Category</th>
+                            <th>Asset Name</th>
+                            <th>Quantity</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.keys(kitAssetCategory).map((category) =>
+                            kitAssetCategory[category].map((asset) => (
+                              <tr key={asset.id}>
+                                <td>{category}</td>
+                                <td>{asset.assetName}</td>
+                                <td>{asset.quantity}</td>
+                              </tr>
+                            ))
+                          )}
+                        </tbody>
+                      </table>
                     </div>
                   )}
                 </div>

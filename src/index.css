@@ -63,3 +63,21 @@
 .bg-gray {
   background-color: rgb(75 85 99);
 }
+
+/* Example styling for the table */
+.asset-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 8px;
+}
+
+.asset-table th,
+.asset-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.asset-table th {
+  background-color: #f2f2f2;
+}

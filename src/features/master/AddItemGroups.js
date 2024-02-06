@@ -171,11 +171,11 @@ function AddItemGroups({ addItem }) {
         quantity: lidQty,
       });
     }
-    if (sw && lidQty) {
+    if (sw && swQty) {
       kitAssetDTO.push({
         assetCategory: "Standard", // or a more appropriate category
-        assetName: "Lid", // or the actual name based on your logic
-        quantity: lidQty,
+        assetName: "side wall", // or the actual name based on your logic
+        quantity: swQty,
       });
     }
 
@@ -392,7 +392,7 @@ function AddItemGroups({ addItem }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <input
-              className="form-control form-sz mb-2"
+              className="form-control form-sz mb-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 uppercase"
               type={"text"}
               name="id"
               value={formValues.id}

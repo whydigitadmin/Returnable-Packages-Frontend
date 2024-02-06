@@ -1,9 +1,8 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import Axios from "axios";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
+import { default as Axios, default as axios } from "axios";
+import * as React from "react";
+import { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 const IOSSwitch = styled((props) => (
@@ -90,14 +89,20 @@ function AddItem({ addItem }) {
   const [selectedItemCategory, setSelectedItemCategory] = useState("");
   const [showStandardDropdown, setShowStandardDropdown] = useState(false);
   const [showVariableDropdown, setShowVariableDropdown] = useState(false);
-
+  const [selectedAssetCategoryId, setSelectedAssetCategoryId] = useState("");
   const handleSelectChange = (e) => {
     setAssetGroup(e.target.value);
+    // Update the selected asset category ID when an asset category is selected
+    const selectedCategory = assetCategoryVO.find(
+      (category) => category.assetCategory === e.target.value
+    );
+    setSelectedAssetCategoryId(
+      selectedCategory ? selectedCategory.assetCategoryId : ""
+    );
     // Check if the selected value should show the additional dropdown
-    setShowStandardDropdown(e.target.value == "Standard");
-    setShowVariableDropdown(e.target.value == "Customized");
+    setShowStandardDropdown(e.target.value === "Standard");
+    setShowVariableDropdown(e.target.value === "Customized");
   };
-
   useEffect(() => {
     getAllAssetCategory();
   }, []);
@@ -292,6 +297,27 @@ function AddItem({ addItem }) {
                 ))}
             </select>
           </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Asset Category ID
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
+            <input
+              className="form-control form-sz mb-2"
+              type="text"
+              readOnly
+              disabled
+              value={selectedAssetCategoryId}
+            />
+          </div>
+
           {/* {showStandardDropdown && (
             <>
               <div className="col-lg-3 col-md-6 mb-2">
@@ -352,6 +378,30 @@ function AddItem({ addItem }) {
             </>
           )} */}
         </div>
+        {selectedAssetCategoryId && (
+          <div className="row">
+            <div className="col-lg-3 col-md-6 mb-2"></div>
+            <div className="col-lg-3 col-md-6 mb-2"></div>
+            <div className="col-lg-3 col-md-6 mb-2">
+              <label className="label">
+                <span
+                  className={"label-text label-font-size text-base-content"}
+                >
+                  Asset Qty :
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-3 col-md-6 mb-2">
+              <input
+                placeholder=""
+                className="input mb-2 input-bordered form-sz w-full"
+                name="maintanencePeriod"
+                value={maintanencePeriod}
+                onChange={handleCategoryChange}
+              />
+            </div>
+          </div>
+        )}
         <div className="row">
           {/* <div className="col-lg-3 col-md-6 mb-2"></div> */}
           <div className="col-lg-3 col-md-6 mb-2">

@@ -60,6 +60,8 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
+const roleOptions = ["ROLE_USER", "ROLE_EMITTER"];
+
 function UserCreation() {
   const [userData, setUserData] = useState({
     firstName: "",
@@ -320,14 +322,20 @@ function UserCreation() {
           </label>
         </div>
         <div className="col-lg-3 col-md-6 mb-2">
-          <input
-            className="form-control form-sz mb-2"
-            type={"text"}
-            placeholder={"Enter"}
+          <select
             name="role"
+            style={{ height: 40, fontSize: "0.800rem" }}
+            className="input mb-4 w-full input-bordered ps-2"
             value={userData.role}
             onChange={handleInputChange}
-          />
+          >
+            <option value="">Select a role</option>
+            {roleOptions.map((role) => (
+              <option key={role} value={role}>
+                {role}
+              </option>
+            ))}
+          </select>
           {errors.role && <span className="error-text">{errors.role}</span>}
         </div>
         <div className="col-lg-3 col-md-6 mb-2">

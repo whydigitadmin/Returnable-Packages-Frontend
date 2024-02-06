@@ -1,3 +1,14 @@
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Tooltip,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -5,12 +16,12 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
+import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useMemo, useEffect } from "react";
-import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaBoxes, FaCloudUploadAlt, FaTruck } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
@@ -69,6 +80,8 @@ function Flows() {
   const [open, setOpen] = React.useState(false);
   const [addFlows, setAddFlows] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [createModalOpenView, setCreateModalOpenView] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -102,6 +115,12 @@ function Flows() {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const handleVisibilityClick = (rowData) => {
+    setSelectedRowData(rowData);
+    console.log("rowData", rowData);
+    setCreateModalOpenView(true);
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -222,7 +241,27 @@ function Flows() {
             </div>
           </div>
           <div className="mt-4">
-            <MaterialReactTable table={table} />
+            <MaterialReactTable
+              table={table}
+              displayColumnDefOptions={{
+                "mrt-row-actions": {
+                  muiTableHeadCellProps: {
+                    align: "center",
+                  },
+                  size: 120,
+                },
+              }}
+              renderRowActions={({ row, table }) => (
+                <Tooltip arrow placement="left" title="Operate">
+                  <IconButton
+                    color="error"
+                    onClick={() => handleVisibilityClick(row.original)}
+                  >
+                    <VisibilityIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+            />
           </div>
           <Dialog
             fullWidth={true}
@@ -271,6 +310,44 @@ function Flows() {
                 Submit
               </Button>
             </DialogActions>
+          </Dialog>
+
+          <Dialog
+            open={Boolean(selectedRowData)}
+            onClose={() => setSelectedRowData(null)}
+          >
+            <DialogTitle>Row Data Details</DialogTitle>
+            <DialogContent>
+              {selectedRowData && (
+                <TableContainer>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <strong>Title</strong>
+                        </TableCell>
+                        <TableCell>
+                          <strong>Value</strong>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {Object.entries(selectedRowData).map(([key, value]) => (
+                        <TableRow key={key}>
+                          <TableCell>{key}</TableCell>
+                          <TableCell>
+                            {typeof value === "object"
+                              ? JSON.stringify(value)
+                              : value}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              )}
+            </DialogContent>
+            <Button onClick={() => setSelectedRowData(null)}>Close</Button>
           </Dialog>
         </div>
       )}
