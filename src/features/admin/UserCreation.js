@@ -299,7 +299,7 @@ function UserCreation() {
         <div className="col-lg-3 col-md-6 mb-2">
           <input
             className="form-control form-sz mb-2"
-            type={"text"}
+            type={"password"}
             placeholder={"Enter"}
             name="password"
             value={userData.password}

@@ -7,7 +7,7 @@ const BILLS = [
     partno: "ABC1234",
     emitter: "GABRIAL CHENNAI",
     receiver: "TATA PUNE",
-    receivingblock: "18-01-2024",
+    receivingblock: " Q BLOCK",
     poolsize: "50",
     s_in_hand: "10",
     s_in_flow: "35",
@@ -95,14 +95,15 @@ function KitReport() {
           {openSection === "poolSize" && (
             <div className="card bg-base-100 shadow-xl p-6 mt-3">
               <div className="d-flex flex-row mb-3">
-                <div className="text-xl font-semibold me-2 mt-1">Pool Size</div>
-                <div className="text-2xl font-bold">50</div>
+                <div className="text-xl font-semibold me-2 mt-1">
+                  Pool Size<span className="text-2xl font-bold mx-2">50</span>
+                  (INSERT/CUSTOMIZED)
+                </div>
               </div>
               <div className="">
                 <p className="mb-2">GRN:1234 / Date: 01-JAN-2024 / 30 qty</p>
                 <p className="mb-2">GRN:1235 / Date: 20-JAN-2024 / 10 qty</p>
-                <p className="mb-2">GRN:1236 / Date: 05-FEB-2024 / 20 qty</p>
-                <p className="mb-2">GRN:1237 / Date: 12-FEB-2024 / 40 qty</p>
+                <p className="mb-2">GRN:1236 / Date: 05-FEB-2024 / 10 qty</p>
               </div>
             </div>
           )}
