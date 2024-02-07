@@ -210,7 +210,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                EndUser Line Storage Days
+                Receiver Line Storage Days
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -237,7 +237,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                EndUser Manufacturing Line Days
+                Receiver Manufacturing Line Days
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -283,7 +283,7 @@ function AddStockKeeping({ addStockKeeping }) {
             )}
           </div>
         </div>
-        <h1 className="text-xl font-semibold my-2">Part Basic Details</h1>
+        {/* <h1 className="text-xl font-semibold my-2"></h1> */}
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

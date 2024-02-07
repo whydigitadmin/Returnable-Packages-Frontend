@@ -149,21 +149,21 @@ function ItemGroup() {
 
   const columns = useMemo(
     () => [
+      // {
+      //   accessorKey: "orgId",
+      //   header: "Organisation ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "first",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "first",
+      //   },
+      // },
       {
-        accessorKey: "id",
-        header: "ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
-      {
-        accessorKey: "orgId",
-        header: "Organisation ID",
-        size: 50,
+        accessorKey: "assetCodeId",
+        header: "Asset Code",
+        size: 200,
         muiTableHeadCellProps: {
           align: "first",
         },
@@ -184,7 +184,7 @@ function ItemGroup() {
       },
       {
         accessorKey: "assetName",
-        header: "Category Name",
+        header: "Asset Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -269,7 +269,7 @@ function ItemGroup() {
                 onClick={handleAddOpen}
               >
                 <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Asset Group</span>
+                <span className="text-form text-base">Asset Type</span>
               </button>
             </div>
           </div>

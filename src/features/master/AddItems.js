@@ -304,7 +304,7 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Asset Category ID
+                Asset Code
               </span>
             </label>
           </div>

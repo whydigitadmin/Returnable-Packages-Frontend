@@ -201,9 +201,7 @@ function AddItemSpecification({ addItemSpecification }) {
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
-            Create Asset Specification
-          </h1>
+          <h1 className="text-xl font-semibold mb-3">Asset Specification</h1>
           <IoMdClose
             onClick={handleCloseAddItemSpecification}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -247,6 +245,30 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
+                Asset Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              placeholder={""}
+              name="assetName"
+              value={assetName}
+              onChange={handleCategoryChange}
+            />
+            {errors.assetName && (
+              <span className="error-text">{errors.assetName}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex"
+                }
+              >
                 Asset Code
                 <FaStarOfLife className="must" />
               </span>
@@ -265,30 +287,6 @@ function AddItemSpecification({ addItemSpecification }) {
               onChange={handleCategoryChange}
             />
             {errors.id && <span className="error-text">{errors.id}</span>}
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex"
-                }
-              >
-                Asset Name
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="assetName"
-              value={assetName}
-              onChange={handleCategoryChange}
-            />
-            {errors.assetName && (
-              <span className="error-text">{errors.assetName}</span>
-            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">

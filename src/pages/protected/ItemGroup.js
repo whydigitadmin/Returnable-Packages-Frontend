@@ -1,19 +1,16 @@
-import { useEffect } from 'react'
-import { useDispatch } from 'react-redux'
-import { setPageTitle } from '../../features/common/headerSlice'
-import ItemGroup from '../../features/master/ItemGroup'
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setPageTitle } from "../../features/common/headerSlice";
+import ItemGroup from "../../features/master/ItemGroup";
 
-function InternalPage(){
-    const dispatch = useDispatch()
+function InternalPage() {
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(setPageTitle({ title : "Asset Category"}))
-      }, [])
+  useEffect(() => {
+    dispatch(setPageTitle({ title: "Asset" }));
+  }, []);
 
-
-    return(
-        <ItemGroup />
-    )
+  return <ItemGroup />;
 }
 
-export default InternalPage
+export default InternalPage;

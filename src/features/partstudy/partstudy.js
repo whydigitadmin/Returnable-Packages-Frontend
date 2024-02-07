@@ -323,7 +323,7 @@ function Partstudy() {
               {...a11yProps(2)}
             />
             <Tab
-              label="STOCK DETAILS"
+              label="STOCK KEEPING DAYS"
               icon={<TbBuildingWarehouse className="w-16 h-6" />}
               {...a11yProps(3)}
             />

@@ -140,7 +140,7 @@ function EmitterInwardDetails() {
 
   return (
     <>
-      <TitleCard title="Iward Manifest" topMargin="mt-2">
+      <TitleCard title="Inward Manifest" topMargin="mt-2">
         {/* Invoice list in table format loaded constant */}
         <div className="overflow-x-auto w-full ">
           <table className="table w-full">

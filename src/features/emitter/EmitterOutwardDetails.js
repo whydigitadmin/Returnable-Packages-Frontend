@@ -9,7 +9,7 @@ import TitleCard from "../../components/Cards/TitleCard";
 const BILLS = [
   {
     partno: "2001",
-    partname: "Pallet",
+    partname: "Mobile",
     partqty: "20",
     kitno: "1072",
     kitqty: "10",
@@ -125,7 +125,7 @@ function EmitterOutwardDetails() {
                 <th>Kit No</th>
                 <th>Kit Qty</th>
                 <th>Balance kit</th>
-                <th>Invoice no</th>
+                <th>Emitter Inv no</th>
                 <th>Cycle Time (days) </th>
                 <th>Previous dispatch</th>
                 <th>O2O - TAT</th>
