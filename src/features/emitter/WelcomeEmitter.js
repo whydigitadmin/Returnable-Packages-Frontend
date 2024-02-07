@@ -4,8 +4,16 @@ import { MdOutbound } from "react-icons/md";
 import { TbChartInfographic } from "react-icons/tb";
 import { FaLocationDot } from "react-icons/fa6";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 function WelcomeEmitter() {
+  const [userDetail, setUserDetail] = useState(
+    JSON.parse(localStorage.getItem("userDto"))
+  );
+  useEffect(() => {
+    console.log(userDetail);
+  }, [userDetail]);
+
   return (
     <>
       <div className="row">
