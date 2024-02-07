@@ -65,6 +65,7 @@ function AddItemSpecification({ addItemSpecification }) {
     "Select an Asset Category"
   );
   const [assetName, setAssetName] = useState("");
+  const [assetCodeId, setAssetCodeId] = useState("");
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
   const [length, setLength] = useState();
@@ -118,8 +119,8 @@ function AddItemSpecification({ addItemSpecification }) {
       case "assetName":
         setAssetName(value);
         break;
-      case "id":
-        setId(value);
+      case "assetCodeId":
+        setAssetCodeId(value);
         break;
       case "length":
         setLength(value);
@@ -140,8 +141,8 @@ function AddItemSpecification({ addItemSpecification }) {
 
   const handleAssetCategory = () => {
     const errors = {};
-    if (!id) {
-      errors.id = "Asset Code is required";
+    if (!assetCodeId) {
+      errors.assetCodeId = "Asset Code is required";
     }
     if (!assetName) {
       errors.assetName = "Asset Name is required";
@@ -167,7 +168,7 @@ function AddItemSpecification({ addItemSpecification }) {
         height,
         dimUnit,
         orgId,
-        id,
+        assetCodeId,
         active,
       };
       Axios.post(
@@ -282,11 +283,13 @@ function AddItemSpecification({ addItemSpecification }) {
               //   (showStandardDropdown && "STD-") ||
               //   (showVariableDropdown && "CMZ-")
               // }
-              name="id"
-              value={id}
+              name="assetCodeId"
+              value={assetCodeId}
               onChange={handleCategoryChange}
             />
-            {errors.id && <span className="error-text">{errors.id}</span>}
+            {errors.assetCodeId && (
+              <span className="error-text">{errors.assetCodeId}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -338,9 +341,13 @@ function AddItemSpecification({ addItemSpecification }) {
               <select
                 style={{ height: 40, fontSize: "0.800rem", width: 56 }}
                 className="input mb-2 p-1 input-bordered ms-1"
+                name="dimUnit"
                 value={dimUnit}
                 onChange={handleUnitChange}
               >
+                <option value="" disabled>
+                  Unit
+                </option>
                 <option value="inch">inch</option>
                 <option value="mm">mm</option>
                 <option value="cm">cm</option>
@@ -372,6 +379,9 @@ function AddItemSpecification({ addItemSpecification }) {
               )}
               {errors.height && (
                 <span className="error-text">{errors.height}</span>
+              )}
+              {errors.dimUnit && (
+                <span className="error-text">{errors.dimUnit}</span>
               )}
             </div>
           </div>
