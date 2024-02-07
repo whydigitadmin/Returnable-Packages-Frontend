@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Box from "@mui/material/Box";
@@ -10,15 +11,17 @@ import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
 import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import axios from "axios";
 import dayjs from "dayjs";
+import moment from "moment";
 import PropTypes from "prop-types";
-import React, { useEffect } from "react";
 import { FaLocationDot, FaPallet } from "react-icons/fa6";
 import { MdDoubleArrow, MdPallet } from "react-icons/md";
+import { TbReport } from "react-icons/tb";
 import kit3 from "../../assets/gearbox.jpg";
 import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
+import TitleCard from "../../components/Cards/TitleCard";
 
 function IssueReq() {
   const [value, setValue] = React.useState(0);
@@ -37,10 +40,14 @@ function IssueReq() {
   const [aleartState, setAleartState] = React.useState("");
   const [flowNames, setFlowNames] = React.useState([]);
   const [selectedFlow, setSelectedFlow] = React.useState("");
+  const [bills, setBills] = useState([]);
+  const [selectedIssueRequest, setSelectedIssueRequest] = useState(null);
+  const [selectedSubIndex, setSelectedSubIndex] = useState(null);
 
   useEffect(() => {
     getAllKitData();
     getAddressById();
+    getIssueRequest();
   }, []);
 
   const getAllKitData = async () => {
@@ -355,6 +362,61 @@ function IssueReq() {
     };
   }
 
+  const getIssueRequest = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest`
+      );
+
+      if (response.status === 200) {
+        setBills(response.data.paramObjectsMap.issueRequestVO);
+        console.log(
+          "getIssueRequest",
+          response.data.paramObjectsMap.issueRequestVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getPaymentStatus = (issueRequest, bill) => {
+    if (issueRequest === 0)
+      return (
+        <div
+          className="badge bg-danger text-white"
+          // onClick={() => handlePendingStatusClick(issueRequest)}
+        >
+          Pending
+        </div>
+      );
+    if (issueRequest === 1)
+      return (
+        <div
+          className="badge bg-warning text-white"
+          // onClick={() => handlePendingStatusClick(issueRequest)}
+        >
+          Inprogress
+        </div>
+      );
+    if (issueRequest === 2)
+      return (
+        <div
+          className="badge bg-success text-white"
+          // onClick={() => handlePendingStatusClick(issueRequest)}
+        >
+          Issued
+        </div>
+      );
+    else return <div className="badge badge-ghost">Unknown</div>;
+  };
+
+  const handlePendingStatusClick = (issueRequest, subIndex) => {
+    console.log("Pending", issueRequest);
+    setSelectedIssueRequest(issueRequest);
+    setSelectedSubIndex(subIndex);
+  };
+
   return (
     <>
       <div className="container-sm">
@@ -426,7 +488,7 @@ function IssueReq() {
             </div>
           </div>
           <div className="row">
-            <div className="col-lg-4 card bg-base-100 shadow-xl m-4">
+            <div className="col-lg-4 card bg-base-100 shadow-xl m-4 h-fit">
               {errors.demandDate && (
                 <span className="error-text">{errors.demandDate}</span>
               )}
@@ -459,6 +521,11 @@ function IssueReq() {
                     label="PART WISE"
                     icon={<FaPallet className="w-16 h-6" />}
                     {...a11yProps(1)}
+                  />
+                  <Tab
+                    label="REQ SUMMARY"
+                    icon={<TbReport className="w-16 h-6" />}
+                    {...a11yProps(2)}
                   />
                 </Tabs>
               </Box>
@@ -651,6 +718,131 @@ function IssueReq() {
                 >
                   Submit
                 </button>
+              </CustomTabPanel>
+
+              <CustomTabPanel value={value} index={2}>
+                <>
+                  <div
+                    className="w-full p-2 bg-base-100 shadow-xl"
+                    style={{ borderRadius: 16 }}
+                  >
+                    <div className="text-xl font-semibold p-3">
+                      Issue Manifest Details
+                    </div>
+                    <div className="divider mt-0 mb-0"></div>
+                    <div className="overflow-x-auto w-full "></div>
+                    {/* Invoice list in table format loaded constant */}
+                    <div className="overflow-x-auto w-full ">
+                      <table className="table w-full">
+                        <thead>
+                          <tr>
+                            <th>RM No.</th>
+                            <th>RM Date</th>
+                            <th>Demand Date</th>
+                            <th>Flow Name</th>
+                            <th>TAT (Hrs)</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bills.map((issueRequest, index) => (
+                            <React.Fragment key={index}>
+                              {issueRequest.issueItemVO.map(
+                                (item, subIndex) => (
+                                  <tr key={`${index}-${subIndex}`}>
+                                    {subIndex === 0 && (
+                                      <>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {issueRequest.reqAddressId}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {moment(
+                                            issueRequest.requestedDate
+                                          ).format("DD-MM-YY")}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {moment(
+                                            issueRequest.demandDate
+                                          ).format("DD-MM-YY")}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {issueRequest.flowTo}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                          className="text-center"
+                                        >
+                                          48
+                                        </td>
+                                        {/* <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                          className="text-center"
+                                        >
+                                          {issueRequest.totalIssueItem}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                          className="text-center"
+                                        >
+                                          {issueRequest.partQty}
+                                        </td> */}
+                                      </>
+                                    )}
+                                    <td
+                                    // onClick={() =>
+                                    //   handlePendingStatusClick(
+                                    //     issueRequest,
+                                    //     subIndex
+                                    //   )
+                                    // }
+                                    >
+                                      {getPaymentStatus(
+                                        issueRequest.issueStatus
+                                      )}
+                                    </td>
+
+                                    {/* Random Status Code */}
+                                    {/* 
+                                    <td
+                                      style={{ width: 100 }}
+                                      // onClick={() =>
+                                      //   handlePendingStatusClick(issueRequest, subIndex)
+                                      // }
+                                    >
+                                      {getPaymentStatus()}
+                                    </td> */}
+                                  </tr>
+                                )
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
               </CustomTabPanel>
             </div>
           </div>
