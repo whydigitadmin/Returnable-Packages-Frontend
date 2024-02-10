@@ -1,8 +1,8 @@
+import * as React from "react";
+import { useEffect, useState } from "react";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import { default as Axios, default as axios } from "axios";
-import * as React from "react";
-import { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 const IOSSwitch = styled((props) => (
@@ -58,11 +58,12 @@ const IOSSwitch = styled((props) => (
 
 function AddItem({ addItem }) {
   const [value, setValue] = useState("");
+  const [assetCodeVO, setAssetCodeVO] = useState([]);
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
-  const [assetGroup, setAssetGroup] = useState("");
-  const [assetId, setAssetId] = useState("");
+  const [assetCodeId, setAssetCodeId] = useState("");
   const [assetName, setAssetName] = useState("");
+  const [assetQty, setAssetQty] = useState("");
   const [brand, setBrand] = useState("");
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
@@ -90,21 +91,15 @@ function AddItem({ addItem }) {
   const [showStandardDropdown, setShowStandardDropdown] = useState(false);
   const [showVariableDropdown, setShowVariableDropdown] = useState(false);
   const [selectedAssetCategoryId, setSelectedAssetCategoryId] = useState("");
-  const handleSelectChange = (e) => {
-    setAssetGroup(e.target.value);
-    // Update the selected asset category ID when an asset category is selected
-    const selectedCategory = assetCategoryVO.find(
-      (category) => category.assetCategory === e.target.value
-    );
-    setSelectedAssetCategoryId(
-      selectedCategory ? selectedCategory.assetCategoryId : ""
-    );
-    // Check if the selected value should show the additional dropdown
-    setShowStandardDropdown(e.target.value === "Standard");
-    setShowVariableDropdown(e.target.value === "Customized");
+  const handleAssetCategoryChange = (event) => {
+    setAssetCategory(event.target.value);
+    // Call function to fetch asset names based on the selected category
+    getAssetNamesByCategory(event.target.value);
   };
   useEffect(() => {
     getAllAssetCategory();
+    // getAllAssetGroup();
+    // populateAssetDropdowns();
   }, []);
 
   const getAllAssetCategory = async () => {
@@ -124,10 +119,64 @@ function AddItem({ addItem }) {
       console.error("Error fetching data:", error);
     }
   };
+  const getAssetNamesByCategory = async (category) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAssetGroupByCategoryType`
+      );
+      console.log("Response from API:", response.data);
+      if (response.status === 200) {
+        const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
+        // Filter asset names based on the selected category
+        const assetNames = assetGroupVO[category];
+        setAssetCodeVO(assetNames);
+        console.log("assetName", assetNames);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  // function populateAssetDropdowns() {
+  //   // Step 1: Fetch data from the API endpoint
+  //   fetch("http://139.5.189.195:9088/api/master/assetGroup")
+  //     .then((response) => response.json())
+  //     .then((data) => {
+  //       // Step 2: Parse the response body
+  //       const assetGroupVO = data.paramObjectsMap.assetGroupVO;
+
+  //       // Step 3: Create a mapping between assetName and assetCodeId
+  //       const assetMap = {};
+  //       assetGroupVO.forEach((asset) => {
+  //         assetMap[asset.assetName] = asset.assetCodeId;
+  //       });
+
+  //       // Step 4: Populate dropdown with assetNames
+  //       const dropdown = document.getElementById("assetDropdown");
+  //       assetGroupVO.forEach((asset) => {
+  //         const option = document.createElement("option");
+  //         option.text = asset.assetName;
+  //         dropdown.add(option);
+  //       });
+
+  //       // Step 5: Implement change event listener on dropdown
+  //       dropdown.addEventListener("change", function () {
+  //         // Step 6: Update dropdown value with assetCodeId
+  //         const selectedAssetName = this.value;
+  //         const selectedAssetCodeId = assetMap[selectedAssetName];
+  //         document.getElementById("assetCodeIdDropdown").value =
+  //           selectedAssetCodeId;
+  //       });
+  //     })
+  //     .catch((error) => console.error("Error fetching data:", error));
+  // }
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
+      case "assetQty":
+        setAssetQty(value);
+        break;
       case "value":
         setValue(value);
         break;
@@ -199,8 +248,7 @@ function AddItem({ addItem }) {
       const formData = {
         active,
         assetCategory,
-        assetGroup,
-        assetId,
+        assetCodeId,
         assetName,
         brand,
         breath,
@@ -231,7 +279,6 @@ function AddItem({ addItem }) {
           console.error("Error:", error);
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -255,6 +302,13 @@ function AddItem({ addItem }) {
   const handleAssetClose = () => {
     addItem(false);
   };
+
+  // const handleAssetCodeIdChange = (e) => {
+  //   const selectedValue = e.target.value;
+  //   const [selectedAssetName, selectedAssetCodeId] = selectedValue.split(",");
+  //   setAssetName(selectedAssetName);
+  //   setAssetCodeId(selectedAssetCodeId);
+  // };
 
   return (
     <>
@@ -283,8 +337,8 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleSelectChange}
-              value={assetGroup}
+              onChange={handleAssetCategoryChange}
+              value={assetCategory}
             >
               <option value="" disabled>
                 Select an Asset Category
@@ -304,20 +358,53 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Asset Code
+                Asset Name
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
-            <input
-              className="form-control form-sz mb-2"
-              type="text"
-              readOnly
-              disabled
-              value={selectedAssetCategoryId}
-            />
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={(e) => setAssetName(e.target.value)}
+              value={assetName}
+            >
+              <option value="" disabled>
+                Select an Asset Name
+              </option>
+              {Object.values(assetCodeVO).map((assets, index) => (
+                <optgroup key={index} label={Object.keys(assetCodeVO)[index]}>
+                  {assets.map((asset) => (
+                    <option key={asset.assetCodeId} value={asset.assetName}>
+                      {asset.assetName}
+                    </option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
           </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Asset Code :
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              // onChange={(e) => {
+              //   // When an asset name is selected, set the corresponding asset code ID
+              //   setAssetCodeId(e.target.value);
 
+              // }}
+              value={assetCodeId}
+            >
+              <option value="" disabled>
+                Select an Asset Code
+              </option>
+              <option value={assetCodeId}>STD-PL-176012</option>
+            </select>
+          </div>
           {/* {showStandardDropdown && (
             <>
               <div className="col-lg-3 col-md-6 mb-2">
@@ -380,8 +467,26 @@ function AddItem({ addItem }) {
         </div>
         {selectedAssetCategoryId && (
           <div className="row">
-            <div className="col-lg-3 col-md-6 mb-2"></div>
-            <div className="col-lg-3 col-md-6 mb-2"></div>
+            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+              <label className="label">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  Asset Code
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
+              <input
+                className="form-control form-sz mb-2"
+                type="text"
+                readOnly
+                disabled
+                value={selectedAssetCategoryId}
+              />
+            </div>
             <div className="col-lg-3 col-md-6 mb-2">
               <label className="label">
                 <span
@@ -395,8 +500,8 @@ function AddItem({ addItem }) {
               <input
                 placeholder=""
                 className="input mb-2 input-bordered form-sz w-full"
-                name="maintanencePeriod"
-                value={maintanencePeriod}
+                name="assetQty"
+                value={assetQty}
                 onChange={handleCategoryChange}
               />
             </div>

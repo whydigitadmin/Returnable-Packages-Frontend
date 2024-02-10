@@ -115,6 +115,7 @@ function ItemGroup() {
       const formData = {
         assetCategory,
         assetCategoryId,
+        orgId,
         active,
       };
       Axios.post(
@@ -149,17 +150,6 @@ function ItemGroup() {
 
   const columns = useMemo(
     () => [
-      // {
-      //   accessorKey: "orgId",
-      //   header: "Organisation ID",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "first",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "first",
-      //   },
-      // },
       {
         accessorKey: "assetCodeId",
         header: "Asset Code",
@@ -253,7 +243,6 @@ function ItemGroup() {
       ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="">
-            {/* <h1 className="text-2xl font-semibold">Asset Category Details</h1> */}
             <div className="flex justify-between">
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
