@@ -110,8 +110,52 @@ function Items() {
         },
       },
       {
-        accessorKey: "assetGroup",
-        header: "Category",
+        accessorKey: "assetCategory",
+        header: "Asset Category",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "assetName",
+        header: "Asset Name",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "assetCodeId",
+        header: "Asset Code",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "skuFrom",
+        header: "sku From",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "skuTo",
+        header: "sku To",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -229,7 +273,6 @@ function Items() {
             })}
           </div>
           <div className="">
-            {/* <h1 className="text-2xl font-semibold mt-4">Assets</h1> */}
             <div className="flex justify-between mt-4">
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -301,7 +344,6 @@ function Items() {
             </DialogActions>
           </Dialog>
         </div>
-        // </div>
       )}
     </>
   );

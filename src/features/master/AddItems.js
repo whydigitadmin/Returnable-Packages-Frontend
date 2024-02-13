@@ -66,7 +66,7 @@ function AddItem({ addItem }) {
   const [assetCodeIdVO, setAssetCodeIdVO] = useState([]);
   const [assetName, setAssetName] = useState([]);
   const [assetNameVO, setAssetNameVO] = useState([]);
-  const [assetQty, setAssetQty] = useState("");
+  const [assetQty, setAssetQty] = useState();
   const [brand, setBrand] = useState("");
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
@@ -83,11 +83,14 @@ function AddItem({ addItem }) {
   const [scrapValue, setScrapValue] = useState("");
   const [sellPrice, setSellPrice] = useState("");
   const [taxRate, setTaxRate] = useState("");
+  const [skuTo, setSkuTo] = useState();
+  const [skuFrom, setSkuFrom] = useState(1);
   const [weight, setWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
+  const [showAssetQtyInput, setShowAssetQtyInput] = useState(false);
   const [selectedValue, setSelectedValue] = useState("Select Asset Group");
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedItemCategory, setSelectedItemCategory] = useState("");
@@ -108,9 +111,17 @@ function AddItem({ addItem }) {
   };
 
   const handleAsseCodeChange = (event) => {
-    setAssetCodeId(event.target.value);
+    const selectedAssetCodeId = event.target.value;
+    setAssetCodeId(selectedAssetCodeId);
+
+    // Check if a valid Asset Code is selected
+    if (selectedAssetCodeId) {
+      setShowAssetQtyInput(true); // Show Asset Qty input
+    } else {
+      setShowAssetQtyInput(false); // Hide Asset Qty input
+    }
     // Call function to fetch asset names based on the selected category
-    getAssetIdByName(event.target.value);
+    // getAssetIdByName(event.target.value);
   };
 
   useEffect(() => {
@@ -199,45 +210,24 @@ function AddItem({ addItem }) {
     }
   };
 
-  // function populateAssetDropdowns() {
-  //   // Step 1: Fetch data from the API endpoint
-  //   fetch("http://139.5.189.195:9088/api/master/assetGroup")
-  //     .then((response) => response.json())
-  //     .then((data) => {
-  //       // Step 2: Parse the response body
-  //       const assetGroupVO = data.paramObjectsMap.assetGroupVO;
-
-  //       // Step 3: Create a mapping between assetName and assetCodeId
-  //       const assetMap = {};
-  //       assetGroupVO.forEach((asset) => {
-  //         assetMap[asset.assetName] = asset.assetCodeId;
-  //       });
-
-  //       // Step 4: Populate dropdown with assetNames
-  //       const dropdown = document.getElementById("assetDropdown");
-  //       assetGroupVO.forEach((asset) => {
-  //         const option = document.createElement("option");
-  //         option.text = asset.assetName;
-  //         dropdown.add(option);
-  //       });
-
-  //       // Step 5: Implement change event listener on dropdown
-  //       dropdown.addEventListener("change", function () {
-  //         // Step 6: Update dropdown value with assetCodeId
-  //         const selectedAssetName = this.value;
-  //         const selectedAssetCodeId = assetMap[selectedAssetName];
-  //         document.getElementById("assetCodeIdDropdown").value =
-  //           selectedAssetCodeId;
-  //       });
-  //     })
-  //     .catch((error) => console.error("Error fetching data:", error));
-  // }
+  const calculateSkuTo = (assetQty, skuFrom) => {
+    const calculatedSkuTo = parseInt(skuFrom) + parseInt(assetQty);
+    return calculatedSkuTo;
+  };
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
       case "assetQty":
         setAssetQty(value);
+        setSkuTo(calculateSkuTo(value, skuFrom));
+        break;
+      case "skuFrom":
+        setSkuFrom(value);
+        setSkuTo(calculateSkuTo(assetQty, value));
+        break;
+      case "skuTo":
+        setSkuTo(value);
         break;
       case "value":
         setValue(value);
@@ -328,6 +318,8 @@ function AddItem({ addItem }) {
         scrapValue,
         sellPrice,
         taxRate,
+        skuFrom,
+        skuTo,
         weight,
         weightUnit,
         orgId,
@@ -465,51 +457,32 @@ function AddItem({ addItem }) {
                 ))}
             </select>
           </div>
+          {showAssetQtyInput && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Asset Quantity
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
+                <input
+                  className="form-control form-sz mb-2"
+                  name="assetQty"
+                  value={assetQty}
+                  onChange={handleCategoryChange}
+                />
+              </div>
+            </>
+          )}
         </div>
-        {selectedAssetCategoryId && (
-          <div className="row">
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Asset Code
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
-              <input
-                className="form-control form-sz mb-2"
-                type="text"
-                readOnly
-                disabled
-                value={selectedAssetCategoryId}
-              />
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={"label-text label-font-size text-base-content"}
-                >
-                  Asset Qty :
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <input
-                placeholder=""
-                className="input mb-2 input-bordered form-sz w-full"
-                name="assetQty"
-                value={assetQty}
-                onChange={handleCategoryChange}
-              />
-            </div>
-          </div>
-        )}
+
         <div className="row">
-          {/* <div className="col-lg-3 col-md-6 mb-2"></div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -527,10 +500,10 @@ function AddItem({ addItem }) {
               className="form-control form-sz mb-2"
               disabled
               type={"number"}
-              placeholder={"100"}
-              // name="warehouseCode"
-              // value={warehouseCode}
-              // onChange={handleInputChange}
+              placeholder={""}
+              name="skuFrom"
+              value={skuFrom}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -550,10 +523,10 @@ function AddItem({ addItem }) {
               className="form-control form-sz mb-2"
               disabled
               type={"number"}
-              placeholder={"200"}
-              // name="warehouseCode"
-              // value={warehouseCode}
-              // onChange={handleInputChange}
+              placeholder={""}
+              name="skuTo"
+              value={skuTo}
+              onChange={handleCategoryChange}
             />
           </div>
         </div>
