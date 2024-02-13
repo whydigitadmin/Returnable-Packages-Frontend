@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -13,7 +14,6 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
 import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 function CustomTabPanel(props) {
@@ -101,57 +101,40 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddCustomer({ addcustomer }) {
-  //const [openBankModal, setOpenBankModal] = React.useState(false);
-
+  const [id, setId] = React.useState("");
   const [value, setValue] = React.useState(0);
   const [openBillingModal, setOpenBillingModal] = React.useState(false);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [openBankModal, setOpenBankModal] = React.useState(false);
-  const [orgId, setOrgId] = React.useState(1);
-
-  const [customerData, setCustomerData] = useState({
-    firstName: "",
-    lastName: "",
-    customerOrgName: "",
-    displayName: "",
-    customerCode: "",
-    email: "",
-    phone: "",
-    customerActivatePortal: true,
-    active: true,
-    orgId: orgId,
-    accountName: "",
-    accountNO: "",
-    bankName: "",
-    branch: "",
-    ifscCode: "",
-  });
-
-  const [formErrors, setFormErrors] = useState({
-    firstName: "",
-    lastName: "",
-    customerOrgName: "",
-    customerCode: "",
-    displayName: "",
-    email: "",
-    phone: "",
-    customerActivatePortal: true,
-    active: true,
-    accountName: "",
-    accountNO: "",
-    bankName: "",
-    branch: "",
-    ifscCode: "",
-  });
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const updateFormValue = ({ updateType, value }) => {
-    setCustomerData({ ...customerData, [updateType]: value });
-    // console.log(updateType);
-  };
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [accountNO, setAccountNO] = React.useState("abc");
+  const [accountName, setAccountName] = React.useState("abc");
+  const [bankName, setBankName] = React.useState("abc");
+  const [branch, setBranch] = React.useState("abc");
+  const [customerActivatePortal, setCustomerActivatePortal] =
+    React.useState(true);
+  const [customerCode, setCustomerCode] = React.useState("");
+  const [customerOrgName, setCustomerOrgName] = React.useState("");
+  const [customerType, setCustomerType] = React.useState("");
+  const [displayName, setDisplayName] = React.useState("");
+  const [document, setDocument] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [firstName, setFirstName] = React.useState("");
+  const [ifscCode, setIfscCode] = React.useState("abc");
+  const [lastName, setLastName] = React.useState("");
+  const [phone, setPhone] = React.useState("");
+  const [sop, setSop] = React.useState("1");
+  const [gstRegStatus, setGstRegStatus] = React.useState("");
+  const [gstNo, setGstNo] = React.useState("");
+  const [street1, setStreet1] = React.useState("");
+  const [street2, setStreet2] = React.useState("");
+  const [state, setState] = React.useState("");
+  const [city, setCity] = React.useState("");
+  const [pincode, setPincode] = React.useState("");
+  const [contactName, setContactName] = React.useState("");
+  const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [active, setActive] = React.useState(true);
+  const [errors, setErrors] = React.useState({});
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -164,6 +147,188 @@ function AddCustomer({ addcustomer }) {
     whiteSpace: "nowrap",
     width: 1,
   });
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
+  const handleCustomerChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "accountNO":
+        setAccountNO(value);
+        break;
+      case "accountName":
+        setAccountName(value);
+        break;
+      case "bankName":
+        setBankName(value);
+        break;
+      case "branch":
+        setBranch(value);
+        break;
+      case "customerActivatePortal":
+        setCustomerActivatePortal(value);
+        break;
+      case "customerCode":
+        setCustomerCode(value);
+        break;
+      case "customerOrgName":
+        setCustomerOrgName(value);
+        break;
+      case "customerType":
+        setCustomerType(value);
+        break;
+      case "displayName":
+        setDisplayName(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "ifscCode":
+        setIfscCode(value);
+        break;
+      case "lastName":
+        setLastName(value);
+        break;
+      case "phone":
+        setPhone(value);
+        break;
+      // case "sop":
+      //   setSop(value);
+      //   break;
+      case "gstNo":
+        setGstNo(value);
+        break;
+      case "gstRegStatus":
+        setGstRegStatus(value);
+        break;
+      case "street1":
+        setStreet1(value);
+        break;
+      case "street2":
+        setStreet2(value);
+        break;
+      case "state":
+        setState(value);
+        break;
+      case "city":
+        setCity(value);
+        break;
+      case "pincode":
+        setPincode(value);
+        break;
+      case "contactName":
+        setContactName(value);
+        break;
+      case "phoneNumber":
+        setPhoneNumber(value);
+        break;
+    }
+  };
+
+  const handleCustomer = () => {
+    console.log("click");
+    const errors = {};
+    if (!firstName) {
+      errors.firstName = "First Name is required";
+    }
+    if (!lastName) {
+      errors.lastName = "Last Name is required";
+    }
+    if (!customerCode) {
+      errors.customerCode = "Customer Code is required";
+    }
+    if (!customerOrgName) {
+      errors.customerOrgName = "Customer Org Name is required";
+    }
+    if (!customerType) {
+      errors.customerType = "Customer Type is required";
+    }
+    if (!displayName) {
+      errors.displayName = "Display Name is required";
+    }
+    if (!email) {
+      errors.email = "Email is required";
+    }
+    if (!phone) {
+      errors.phone = "Phone Number is required";
+    }
+    if (!gstRegStatus) {
+      errors.gstRegStatus = "GST Reg Status is required";
+    }
+    if (!gstNo) {
+      errors.gstNo = "GST Number is required";
+    }
+    if (!street1) {
+      errors.street1 = "Address is required";
+    }
+    if (!state) {
+      errors.state = "State is required";
+    }
+    if (!city) {
+      errors.city = "City is required";
+    }
+    if (!pincode) {
+      errors.pincode = "Pincode is required";
+    }
+    if (!contactName) {
+      errors.contactName = "Contact Name is required";
+    }
+    if (!phoneNumber) {
+      errors.phoneNumber = "Phone Number is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        id,
+        accountNO,
+        accountName,
+        bankName,
+        branch,
+        customerActivatePortal,
+        customerCode,
+        customerOrgName,
+        customerType: customerType,
+        displayName,
+        document,
+        email,
+        firstName,
+        ifscCode,
+        lastName,
+        phone,
+        sop,
+        gstRegStatus,
+        gstNo,
+        street1,
+        street2,
+        city,
+        state,
+        pincode,
+        contactName,
+        phoneNumber,
+        active,
+        orgId,
+      };
+      axios
+        .post(`${process.env.REACT_APP_API_URL}/api/master/customers`, formData)
+        .then((response) => {
+          console.log("Response:", response.data);
+          addcustomer(true);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
+
+  const handleCustomerTypeChange = (e) => {
+    setCustomerType(e.target.value);
+  };
 
   const handleCustomerClose = () => {
     addcustomer(false);
@@ -181,73 +346,9 @@ function AddCustomer({ addcustomer }) {
     setOpenShippingModal(false);
   };
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    setCustomerData({ ...customerData, [name]: value });
-  };
-
-  const handleCustomer = () => {
-    const errors = {};
-    if (!customerData.firstName.trim()) {
-      errors.firstName = "First Name is required";
-    }
-    if (!customerData.lastName.trim()) {
-      errors.lastName = "Last Name is required";
-    }
-    if (!customerData.customerOrgName.trim()) {
-      errors.customerOrgName = "Organisation Name is required";
-    }
-    if (!customerData.displayName.trim()) {
-      errors.displayName = "Display Name is required";
-    }
-    if (!customerData.email.trim()) {
-      errors.email = "Email is required";
-    }
-    if (!customerData.customerCode.trim()) {
-      errors.customerCode = "CustomerCode is required";
-    }
-
-    if (!customerData.bankName.trim()) {
-      errors.bankName = "bankName is required";
-    }
-
-    if (!customerData.accountNO.trim()) {
-      errors.accountNO = "accountNO is required";
-    }
-    if (!customerData.accountName.trim()) {
-      errors.accountName = "accountName is required";
-    }
-    if (!customerData.branch.trim()) {
-      errors.branch = "branch is required";
-    }
-    if (!customerData.ifscCode.trim()) {
-      errors.ifscCode = "ifsc code is required";
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setFormErrors(errors);
-      return;
-    }
-    console.log("Test", customerData);
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/api/master/customers`,
-        customerData
-      )
-      .then((response) => {
-        console.log("Response:", response.data);
-        addcustomer(true);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
-  };
-
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <h1 className="text-xl font-semibold mb-4">New Customer</h1> */}
-
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-3">New Customer Details</h1>
           <IoMdClose
@@ -257,28 +358,59 @@ function AddCustomer({ addcustomer }) {
         </div>
 
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-2">
-              <span className={"label-text label-font-size text-base-content"}>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex"
+                }
+              >
+                Customer Type
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <select
+              className="form-select form-sz w-full"
+              onChange={handleCustomerTypeChange}
+              value={customerType}
+            >
+              <option value="" disabled>
+                Select a Customer
+              </option>
+              <option value="0">Emitter</option>
+              <option value="1">Receiver</option>
+            </select>
+            {errors.customerType && (
+              <div className="error-text">{errors.customerType}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 First Name
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              type="text"
               className="form-control form-sz"
-              placeholder="First Name"
+              placeholder=""
               name="firstName"
-              value={customerData.firstName}
-              onChange={handleInputChange}
+              value={firstName}
+              onChange={handleCustomerChange}
             />
-            {formErrors.firstName && (
-              <div className="error-text">{formErrors.firstName}</div>
+            {errors.firstName && (
+              <div className="error-text">{errors.firstName}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -290,20 +422,19 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              type="text"
-              placeholder="Last Name"
-              value={customerData.lastName}
+              placeholder=""
+              value={lastName}
               name="lastName"
               className="form-control form-sz"
-              onChange={handleInputChange}
+              onChange={handleCustomerChange}
             />
-            {formErrors.lastName && (
-              <div className="error-text">{formErrors.lastName}</div>
+            {errors.lastName && (
+              <div className="error-text">{errors.lastName}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -315,20 +446,19 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              type="text"
-              placeholder="Customer Code"
-              value={customerData.customerCode}
+              placeholder=""
+              value={customerCode}
               className="form-control form-sz"
               name="customerCode"
-              onChange={handleInputChange}
+              onChange={handleCustomerChange}
             />
-            {formErrors.customerCode && (
-              <div className="error-text">{formErrors.customerCode}</div>
+            {errors.customerCode && (
+              <div className="error-text">{errors.customerCode}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -340,20 +470,19 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              type="text"
-              placeholder="Org name"
-              value={customerData.customerOrgName}
+              placeholder=""
+              value={customerOrgName}
               className="form-control form-sz"
               name="customerOrgName"
-              onChange={handleInputChange}
+              onChange={handleCustomerChange}
             />
-            {formErrors.customerOrgName && (
-              <div className="error-text">{formErrors.customerOrgName}</div>
+            {errors.customerOrgName && (
+              <div className="error-text">{errors.customerOrgName}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -365,20 +494,19 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              type="text"
-              placeholder="Display Name"
-              value={customerData.displayName}
+              placeholder=""
+              value={displayName}
               className="form-control form-sz"
               name="displayName"
-              onChange={handleInputChange}
+              onChange={handleCustomerChange}
             />
-            {formErrors.displayName && (
-              <div className="error-text">{formErrors.displayName}</div>
+            {errors.displayName && (
+              <div className="error-text">{errors.displayName}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -390,20 +518,17 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              type="text"
               className="form-control form-sz"
-              placeholder="email"
-              value={customerData.email}
+              placeholder=""
+              value={email}
               name="email"
-              onChange={handleInputChange}
+              onChange={handleCustomerChange}
             />
-            {formErrors.email && (
-              <div className="error-text">{formErrors.email}</div>
-            )}
+            {errors.email && <div className="error-text">{errors.email}</div>}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -411,20 +536,21 @@ function AddCustomer({ addcustomer }) {
                 }
               >
                 Phone Number
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
-              type="text"
               className="form-control form-sz"
-              placeholder="Phone"
-              value={customerData.phone}
+              placeholder=""
+              value={phone}
               name="phone"
-              onChange={handleInputChange}
+              onChange={handleCustomerChange}
             />
+            {errors.phone && <div className="error-text">{errors.phone}</div>}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -435,17 +561,17 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
-            <input
-              type="text"
-              placeholder="SOP"
-              value={customerData.sop}
-              name="sop"
-              onChange={handleInputChange}
-              className="form-control form-sz"
-            />
+          <div className="col-lg-3 col-md-6 mb-2">
+            <Button
+              component="label"
+              variant="contained"
+              className="text-form mb-2"
+              startIcon={<FaCloudUploadAlt />}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
           </div>
-
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -457,15 +583,14 @@ function AddCustomer({ addcustomer }) {
             <Button
               component="label"
               variant="contained"
-              className="text-form mt-1"
+              className="text-form mb-2"
               startIcon={<FaCloudUploadAlt />}
             >
               Upload file
               <VisuallyHiddenInput type="file" />
             </Button>
           </div>
-
-          <div className="col-lg-3 col-md-6 mt-1 mb-2">
+          <div className="col-lg-3 col-md-6 mb-2 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -476,12 +601,12 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <FormControlLabel
               control={<IOSSwitch disabled sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -492,7 +617,7 @@ function AddCustomer({ addcustomer }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 mb-2">
             <FormControlLabel
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
@@ -505,16 +630,216 @@ function AddCustomer({ addcustomer }) {
               onChange={handleChange}
               aria-label="basic tabs example"
             >
+              <Tab className="text-form" label="Address" {...a11yProps(1)} />
               <Tab
                 className="text-form"
                 label="Bank Details"
-                {...a11yProps(1)}
+                {...a11yProps(0)}
               />
-              <Tab className="text-form" label="Address" {...a11yProps(0)} />
             </Tabs>
           </Box>
-          <CustomTabPanel value={value} index={1}>
+          <CustomTabPanel value={value} index={0}>
             <div className="row">
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  GST Registration Status
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <select
+                  name="gstRegStatus"
+                  value={gstRegStatus}
+                  onChange={handleCustomerChange}
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="input input-bordered ps-2"
+                >
+                  <option value="" disabled>
+                    Select a GST status
+                  </option>
+                  <option value="Registered">Registered</option>
+                  <option value="Unregistered">Unregistered</option>
+                </select>
+                {errors.gstRegStatus && (
+                  <span className="error-text">{errors.gstRegStatus}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  GST Number
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <input
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  name="gstNo"
+                  value={gstNo}
+                  placeholder={""}
+                  onChange={handleCustomerChange}
+                  className="input input-bordered p-2"
+                />
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  Street 1
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <textarea
+                  style={{ fontSize: "0.800rem" }}
+                  className="form-control label label-text label-font-size text-base-content"
+                  placeholder="Street 1"
+                  name="street1"
+                  value={street1}
+                  onChange={handleCustomerChange}
+                ></textarea>
+                {errors.street1 && (
+                  <span className="error-text">{errors.street1}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span className="label-text label-font-size text-base-content">
+                  Street 2
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <textarea
+                  style={{ fontSize: "0.800rem" }}
+                  className="form-control label label-text label-font-size text-base-content"
+                  placeholder="Street 2"
+                  name="street2"
+                  value={street2}
+                  onChange={handleCustomerChange}
+                ></textarea>
+                {errors.street2 && (
+                  <span className="error-text">{errors.street2}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  State
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <select
+                  name="state"
+                  value={state}
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="input input-bordered ps-2"
+                  onChange={handleCustomerChange}
+                >
+                  <option value="" disabled>
+                    Select a state
+                  </option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Goa">Goa</option>
+                </select>
+                {errors.state && (
+                  <span className="error-text">{errors.state}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  City
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <input
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  value={city}
+                  name="city"
+                  placeholder={""}
+                  onChange={handleCustomerChange}
+                  className="input input-bordered p-2"
+                />
+                {errors.city && (
+                  <span className="error-text">{errors.city}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  Pin Code
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <input
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  value={pincode}
+                  name="pincode"
+                  placeholder={""}
+                  onChange={handleCustomerChange}
+                  className="input input-bordered p-2"
+                />
+                {errors.pincode && (
+                  <span className="error-text">{errors.pincode}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Contact Name
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <input
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  value={contactName}
+                  name="contactName"
+                  placeholder={""}
+                  onChange={handleCustomerChange}
+                  className="input input-bordered p-2"
+                />
+                {errors.contactName && (
+                  <span className="error-text">{errors.contactName}</span>
+                )}
+              </div>
+
+              <div className="col-lg-3 col-md-3 mb-2">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Phone
+                  <FaStarOfLife className="must" />
+                </span>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <input
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  value={phoneNumber}
+                  name="phoneNumber"
+                  placeholder={""}
+                  onChange={handleCustomerChange}
+                  className="input input-bordered p-2"
+                />
+                {errors.phoneNumber && (
+                  <span className="error-text">{errors.phoneNumber}</span>
+                )}
+              </div>
+            </div>
+            {/* <div className="row">
               <div className="col-lg-6 col-md-6 d-flex flex-column">
                 <div>
                   <Button
@@ -551,9 +876,9 @@ function AddCustomer({ addcustomer }) {
                   + Add Shipping Address
                 </button>
               </div>
-            </div>
+            </div> */}
           </CustomTabPanel>
-          <CustomTabPanel value={value} index={0}>
+          <CustomTabPanel value={value} index={1}>
             <div className="row">
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -563,22 +888,18 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Bank
-                    <FaStarOfLife className="must" />
+                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  type="text"
                   className="form-control form-sz"
                   placeholder=""
-                  value={customerData.bankName}
+                  value={bankName}
                   name="bankName"
-                  onChange={handleInputChange}
+                  onChange={handleCustomerChange}
                 />
-                {formErrors.bankName && (
-                  <div className="error-text">{formErrors.bankName}</div>
-                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -588,22 +909,18 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Account No
-                    <FaStarOfLife className="must" />
+                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  type="text"
                   className="form-control form-sz"
-                  placeholder="email"
-                  value={customerData.accountNO}
+                  placeholder=""
+                  value={accountNO}
                   name="accountNO"
-                  onChange={handleInputChange}
+                  onChange={handleCustomerChange}
                 />
-                {formErrors.accountNO && (
-                  <div className="error-text">{formErrors.accountNO}</div>
-                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -613,22 +930,18 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Account Name
-                    <FaStarOfLife className="must" />
+                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  type="text"
                   className="form-control form-sz"
-                  placeholder="account name"
-                  value={customerData.accountName}
+                  placeholder=""
+                  value={accountName}
                   name="accountName"
-                  onChange={handleInputChange}
+                  onChange={handleCustomerChange}
                 />
-                {formErrors.accountName && (
-                  <div className="error-text">{formErrors.accountName}</div>
-                )}
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -638,7 +951,7 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Branch
-                    <FaStarOfLife className="must" />
+                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
               </div>
@@ -646,14 +959,11 @@ function AddCustomer({ addcustomer }) {
                 <input
                   type="text"
                   className="form-control form-sz"
-                  placeholder="account name"
-                  value={customerData.branch}
+                  placeholder=""
+                  value={branch}
                   name="branch"
-                  onChange={handleInputChange}
+                  onChange={handleCustomerChange}
                 />
-                {formErrors.branch && (
-                  <div className="error-text">{formErrors.branch}</div>
-                )}
               </div>
               <div className="col-lg-3 col-md-6">
                 <label className="label">
@@ -663,7 +973,7 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     IFSC Code
-                    <FaStarOfLife className="must" />
+                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
               </div>
@@ -671,20 +981,17 @@ function AddCustomer({ addcustomer }) {
                 <input
                   type="text"
                   className="form-control form-sz"
-                  placeholder="account name"
-                  value={customerData.ifscCode}
+                  placeholder=""
+                  value={ifscCode}
                   name="ifscCode"
-                  onChange={handleInputChange}
+                  onChange={handleCustomerChange}
                 />
-                {formErrors.ifscCode && (
-                  <div className="error-text">{formErrors.ifscCode}</div>
-                )}
               </div>
             </div>
           </CustomTabPanel>
         </Box>
 
-        {/* Billing Address Modal Define */}
+        {/* Billing Address Modal Define
         <Dialog
           fullWidth={true}
           maxWidth={"sm"}
@@ -902,7 +1209,7 @@ function AddCustomer({ addcustomer }) {
           </DialogActions>
         </Dialog>
 
-        {/* Shipping Address Modal Define */}
+        Shipping Address Modal Define
         <Dialog
           fullWidth={true}
           maxWidth={"sm"}
@@ -918,198 +1225,7 @@ function AddCustomer({ addcustomer }) {
           </div>
           <DialogContent>
             <DialogContentText className="d-flex flex-column">
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    GST Registration Status
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Registered</option>
-                    <option value="">Unregistered</option>
-                  </select>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    GST Number
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"GST Number"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Street 1
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <textarea
-                    style={{ fontSize: "0.800rem" }}
-                    className="form-control label label-text label-font-size text-base-content"
-                    placeholder="Street 1"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Street 2
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <textarea
-                    style={{ fontSize: "0.800rem" }}
-                    className="form-control label label-text label-font-size text-base-content"
-                    placeholder="Street 2"
-                  ></textarea>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    State
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Tamil Nadu</option>
-                    <option value="">Goa</option>
-                  </select>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    City
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"City"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Pin Code
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"Pin Code"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Contact Name
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Contact Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Phone
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"Phone"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <div className="d-flex flex-row">
-                    <input
-                      style={{ marginTop: 10 }}
-                      className="form-check-input me-1"
-                      type="checkbox"
-                      id="flexCheckDefault"
-                    />
-                    <label
-                      className="label label-text label-font-size text-base-content"
-                      for="flexCheckDefault"
-                    >
-                      Mark as Primary
-                    </label>
-                  </div>
-                </div>
-              </div>
+              
             </DialogContentText>
           </DialogContent>
           <DialogActions className="mb-2 me-2">
@@ -1118,9 +1234,9 @@ function AddCustomer({ addcustomer }) {
               Submit
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
 
-        <div className="d-flex flex-row mt-3">
+        <div className="d-flex flex-row">
           <button
             type="button"
             onClick={handleCustomer}

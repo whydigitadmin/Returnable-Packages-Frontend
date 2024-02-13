@@ -1,3 +1,4 @@
+import React, { useEffect, useMemo, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -10,7 +11,6 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useEffect, useMemo, useState } from "react";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
@@ -45,27 +45,6 @@ const statsData = [
     description: "",
   },
 ];
-// const columns = [
-//   { field: "id", headerName: "Sr. No", width: 90 },
-//   { field: "CustomerName", headerName: "Customer Name", width: 180 },
-//   { field: "Email", headerName: "Email", width: 120 },
-//   { field: "GST", headerName: "GST", width: 120 },
-//   { field: "City", headerName: "City", width: 120 },
-//   { field: "State", headerName: "State", width: 150 },
-//   { field: "Status", headerName: "Status", width: 120 },
-// ];
-
-// const data = [
-//   {
-//     id: 1,
-//     CustomerName: "John",
-//     Email: "John@gmail.com",
-//     GST: "12354687",
-//     City: "Bengaluru",
-//     State: "Karnataka",
-//     Status: "Active",
-//   },
-// ];
 
 function Customer() {
   const [open, setOpen] = React.useState(false);
@@ -114,8 +93,8 @@ function Customer() {
         },
       },
       {
-        accessorKey: "firstName",
-        header: "First Name",
+        accessorKey: "customerType",
+        header: "Customer Type",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -123,10 +102,13 @@ function Customer() {
         muiTableBodyCellProps: {
           align: "center",
         },
+        Cell: ({ cell }) => {
+          return cell.row.original.customerType === 0 ? "Emitter" : "Receiver";
+        },
       },
       {
-        accessorKey: "lastName",
-        header: "Last Name",
+        accessorKey: "displayName",
+        header: "Display Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -147,8 +129,19 @@ function Customer() {
         },
       },
       {
-        accessorKey: "displayName",
-        header: "Display Name",
+        accessorKey: "firstName",
+        header: "First Name",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "lastName",
+        header: "Last Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -172,17 +165,6 @@ function Customer() {
         accessorKey: "phone",
         header: "Phone",
         size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "customerActivatePortal",
-        header: "Customer Activate Portal",
-        size: 250,
         muiTableHeadCellProps: {
           align: "center",
         },
