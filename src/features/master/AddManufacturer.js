@@ -671,7 +671,6 @@ function AddManufacturer({ addManufacturer }) {
                     <option value=""></option>
                     <option value="">Standard</option>
                     <option value="">Customized</option>
-                    <option value="">Customized1</option>
                   </select>
                 </div>
               </div>
@@ -691,6 +690,29 @@ function AddManufacturer({ addManufacturer }) {
                     <option value="">Pallet</option>
                     <option value="">Lid</option>
                     <option value="">Side Wall</option>
+                  </select>
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Asset Code
+                    <FaStarOfLife className="must" />
+                  </span>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <select
+                    name="Select Asset"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="input input-bordered ps-2"
+                  >
+                    <option value=""></option>
+                    <option value="">STD-PL-192910</option>
+                    <option value="">STD-PL-235623</option>
                   </select>
                 </div>
               </div>
@@ -814,7 +836,7 @@ function AddManufacturer({ addManufacturer }) {
                   <input
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     //type={"number"}
-                    value={value}
+                    // value={value}
                     placeholder={"Maintenance Frequency"}
                     // onChange={(e) => updateInputValue(e.target.value)}
                     className="input input-bordered p-2"

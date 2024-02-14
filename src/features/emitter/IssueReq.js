@@ -15,13 +15,14 @@ import moment from "moment";
 import PropTypes from "prop-types";
 import { FaLocationDot, FaPallet } from "react-icons/fa6";
 import { MdDoubleArrow, MdPallet } from "react-icons/md";
+import { FaArrowCircleLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { TbReport } from "react-icons/tb";
 import kit3 from "../../assets/gearbox.jpg";
 import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
-import TitleCard from "../../components/Cards/TitleCard";
 
 function IssueReq() {
   const [value, setValue] = React.useState(0);
@@ -427,7 +428,13 @@ function IssueReq() {
         )}
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-            <div className="col-lg-1"></div>
+            <div className="col-lg-1">
+              <div className="d-flex justify-content-center">
+                <Link to="/app/EmitterLanding">
+                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
+                </Link>
+              </div>
+            </div>
             <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
