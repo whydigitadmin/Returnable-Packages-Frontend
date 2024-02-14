@@ -1,6 +1,8 @@
 import React from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdDoubleArrow } from "react-icons/md";
+import { FaArrowCircleLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import EmitterInwardDetails from "./EmitterInwardDetails";
 
 function EmitterInward() {
@@ -9,7 +11,13 @@ function EmitterInward() {
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-            <div className="col-lg-1"></div>
+            <div className="col-lg-1">
+              <div className="d-flex justify-content-center">
+                <Link to="/app/EmitterLanding">
+                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
+                </Link>
+              </div>
+            </div>
             <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">

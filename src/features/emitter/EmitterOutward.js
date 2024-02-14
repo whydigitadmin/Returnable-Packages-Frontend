@@ -1,6 +1,8 @@
 import React from "react";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdDoubleArrow } from "react-icons/md";
+import { FaArrowCircleLeft } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import EmitterOutwardDetails from "./EmitterOutwardDetails";
 
 export const EmitterOutward = () => {
@@ -9,7 +11,14 @@ export const EmitterOutward = () => {
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-            <div className="col-lg-5 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
+            <div className="col-lg-1">
+              <div className="d-flex justify-content-center">
+                <Link to="/app/EmitterLanding">
+                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
+                </Link>
+              </div>
+            </div>
+            <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -33,7 +42,7 @@ export const EmitterOutward = () => {
                 style={{ marginTop: 70 }}
               />
             </div>
-            <div className="col-lg-5 card bg-base-100 shadow-xl ms-2 mt-3">
+            <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -43,7 +52,7 @@ export const EmitterOutward = () => {
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
                     Issued To -
                   </h4>
-                  <select className="form-select w-56 h-10 mt-1 mb-2">
+                  <select className="form-select w-52 h-10 mt-1 mb-2">
                     <option value="Tata Motors-Pune">Tata Motors-Pune</option>
                     <option value="Tata Motors-Chennai">
                       Tata Motors-Chennai
