@@ -1,8 +1,8 @@
+import * as React from "react";
+import { useEffect, useState } from "react";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import { default as Axios, default as axios } from "axios";
-import * as React from "react";
-import { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 const IOSSwitch = styled((props) => (
@@ -58,16 +58,15 @@ const IOSSwitch = styled((props) => (
 
 function AddItem({ addItem }) {
   const [value, setValue] = useState("");
-  const [assetCodeVO, setAssetCodeVO] = useState([]);
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
-  const [assetId, setAssetId] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
   const [assetCodeId, setAssetCodeId] = useState([]);
   const [assetCodeIdVO, setAssetCodeIdVO] = useState([]);
   const [assetName, setAssetName] = useState([]);
   const [assetNameVO, setAssetNameVO] = useState([]);
   const [assetQty, setAssetQty] = useState();
-  const [brand, setBrand] = useState("");
+  const [brand, setBrand] = useState([]);
+  const [brandVO, setBrandVO] = useState([]);
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
   const [height, setHeight] = useState("");
@@ -79,24 +78,19 @@ function AddItem({ addItem }) {
   const [hsnCode, setHsnCode] = useState("");
   const [id, setId] = useState();
   const [maintanencePeriod, setMaintanencePeriod] = useState("");
-  const [manufacturer, setManufacturer] = useState("");
+  const [manufacturer, setManufacturer] = useState([]);
+  const [manufacturerVO, setManufacturerVO] = useState([]);
   const [scrapValue, setScrapValue] = useState("");
   const [sellPrice, setSellPrice] = useState("");
   const [taxRate, setTaxRate] = useState("");
   const [skuTo, setSkuTo] = useState();
-  const [skuFrom, setSkuFrom] = useState(1);
+  const [skuFrom, setSkuFrom] = useState("");
   const [weight, setWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
   const [showAssetQtyInput, setShowAssetQtyInput] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("Select Asset Group");
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [selectedItemCategory, setSelectedItemCategory] = useState("");
-  const [showStandardDropdown, setShowStandardDropdown] = useState(false);
-  const [showVariableDropdown, setShowVariableDropdown] = useState(false);
-  const [selectedAssetCategoryId, setSelectedAssetCategoryId] = useState("");
 
   const handleAssetCategoryChange = (event) => {
     setAssetCategory(event.target.value);
@@ -121,13 +115,11 @@ function AddItem({ addItem }) {
       setShowAssetQtyInput(false); // Hide Asset Qty input
     }
     // Call function to fetch asset names based on the selected category
-    // getAssetIdByName(event.target.value);
+    getAssetDimById(selectedAssetCodeId);
   };
 
   useEffect(() => {
     getAllAssetCategory();
-    // getAllAssetGroup();
-    // populateAssetDropdowns();
   }, []);
 
   const getAllAssetCategory = async () => {
@@ -141,19 +133,9 @@ function AddItem({ addItem }) {
           response.data.paramObjectsMap.assetGroupVO.assetCategory;
         setAssetCategoryVO(assetCategories);
 
-        // const assetCatId = response.data.paramObjectsMap.assetGroupVO.assetName;
-        // setAssetNameVO(assetCatId);
-
-        // console.log("Test", assetCategories);
-        // console.log("Test1", assetCatId);
-
         if (assetCategories.length > 0) {
           setAssetCategory(assetCategories[0].assetCategory);
         }
-
-        // if (assetCatId.length > 0) {
-        //   setAssetName(assetCatId[0].assetCatId);
-        // }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -175,10 +157,8 @@ function AddItem({ addItem }) {
       if (response.status === 200) {
         const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
         // // Filter asset names based on the selected category
-        // const assetNames = assetGroupVO[category];
-        // setAssetCodeVO(assetNames);
+
         setAssetNameVO(response.data.paramObjectsMap.assetGroupVO.assetName);
-        // setAssetName(response.data.paramObjectsMap.assetGroupVO.assetName);
         console.log("assetName", assetGroupVO);
       }
     } catch (error) {
@@ -193,7 +173,6 @@ function AddItem({ addItem }) {
         {
           params: {
             orgId: orgId,
-            // assetCategory: assetCategory,
             assetName: category,
           },
         }
@@ -203,7 +182,36 @@ function AddItem({ addItem }) {
         setAssetCodeIdVO(
           response.data.paramObjectsMap.assetGroupVO.assetCodeId
         );
-        // setAssetName(response.data.paramObjectsMap.assetGroupVO.assetName);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAssetDimById = async (category) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        {
+          params: {
+            orgId: orgId,
+            assetCodeId: category,
+          },
+        }
+      );
+      console.log("Response from API:", response.data);
+      if (response.status === 200) {
+        setSkuFrom(response.data.paramObjectsMap.assetGroupVO.skuLatestCount);
+        setManufacturerVO(response.data.paramObjectsMap.assetGroupVO.company);
+        setBrandVO(response.data.paramObjectsMap.assetGroupVO.brand);
+        const units = response.data.paramObjectsMap.assetGroupVO.assetGroupVO;
+
+        if (units.length > 0) {
+          setLength(units[0].length);
+          setBreath(units[0].breath);
+          setHeight(units[0].height);
+          setDimUnit(units[0].dimUnit);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -356,13 +364,6 @@ function AddItem({ addItem }) {
   const handleAssetClose = () => {
     addItem(false);
   };
-
-  // const handleAssetCodeIdChange = (e) => {
-  //   const selectedValue = e.target.value;
-  //   const [selectedAssetName, selectedAssetCodeId] = selectedValue.split(",");
-  //   setAssetName(selectedAssetName);
-  //   setAssetCodeId(selectedAssetCodeId);
-  // };
 
   return (
     <>
@@ -546,6 +547,7 @@ function AddItem({ addItem }) {
                 name="length"
                 value={length}
                 placeholder={"L"}
+                disabled
                 className="input mb-2 input-bordered p-1 form-sz"
                 onChange={handleCategoryChange}
               />
@@ -561,6 +563,7 @@ function AddItem({ addItem }) {
                 name="breath"
                 value={breath}
                 placeholder={"B"}
+                disabled
                 className="input mb-2 p-1 input-bordered form-sz"
                 onChange={handleCategoryChange}
               />
@@ -576,6 +579,7 @@ function AddItem({ addItem }) {
                 name="height"
                 value={height}
                 placeholder={"H"}
+                disabled
                 className="input mb-2 p-1 input-bordered form-sz"
                 onChange={handleCategoryChange}
               />
@@ -584,6 +588,7 @@ function AddItem({ addItem }) {
                 style={{ width: 56 }}
                 className="input mb-2 p-1 form-sz input-bordered ms-1"
                 value={dimUnit}
+                disabled
                 onChange={handleUnitChange}
               >
                 <option value="inch">inch</option>
@@ -610,11 +615,14 @@ function AddItem({ addItem }) {
               onChange={handleManufacturerChange}
             >
               <option value="" disabled>
-                Select an Asset Manufacturer
+                Select an Manufacturer
               </option>
-              <option value="Manufacturer1">Manufacturer 1</option>
-              <option value="Manufacturer2">Manufacturer 2</option>
-              <option value="Manufacturer3">Manufacturer 3</option>
+              {manufacturerVO.length > 0 &&
+                manufacturerVO.map((name) => (
+                  <option key={name.id} value={name}>
+                    {name}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -634,9 +642,12 @@ function AddItem({ addItem }) {
               <option value="" disabled>
                 Select an Brand
               </option>
-              <option value="Brand1">Brand 1</option>
-              <option value="Brand2">Brand 2</option>
-              <option value="Brand3">Brand 3</option>
+              {brandVO.length > 0 &&
+                brandVO.map((name) => (
+                  <option key={name.id} value={name}>
+                    {name}
+                  </option>
+                ))}
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
