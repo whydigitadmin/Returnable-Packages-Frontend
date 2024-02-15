@@ -19,6 +19,7 @@ function ManufacturerDetails() {
 
   const handleBack = () => {
     setAdd(false);
+    getWareManufacture();
   };
 
   useEffect(() => {

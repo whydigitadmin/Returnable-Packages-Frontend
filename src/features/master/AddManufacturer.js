@@ -1,10 +1,4 @@
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
@@ -17,40 +11,7 @@ import {
 import PropTypes from "prop-types";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
-
-function CustomTabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-CustomTabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    "aria-controls": `simple-tabpanel-${index}`,
-  };
-}
+import { IoMdClose } from "react-icons/io";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -104,9 +65,6 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddManufacturer({ addManufacturer }) {
-  const [value, setValue] = React.useState(0);
-  const [openBillingModal, setOpenBillingModal] = React.useState(false);
-  const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [errors, setErrors] = useState({});
   const [company, setCompany] = useState("");
@@ -118,30 +76,21 @@ function AddManufacturer({ addManufacturer }) {
   const [phoneNO, setPhone] = useState("");
   const [productionCapacity, setProductionCapacity] = useState("");
   const [notes, setNotes] = useState("");
-  const [active, setActive] = useState("");
-  const [tableData, setTableData] = useState([]);
+  const [assetCategoryVO, setAssetCategoryVO] = useState([]);
+  const [assetCategory, setAssetCategory] = useState("");
+  const [assetCodeId, setAssetCodeId] = useState([]);
+  const [assetCodeIdVO, setAssetCodeIdVO] = useState([]);
+  const [assetName, setAssetName] = useState([]);
+  const [assetNameVO, setAssetNameVO] = useState([]);
+  const [brand, setBrand] = useState("");
+  const [warranty, setWarranty] = useState("");
+  const [sellingPrice, setSellingPrice] = useState("");
+  const [leadTime, setLeadTime] = useState("");
+  const [maintananceFrequency, setMaintananceFrequency] = useState("");
+  const [productNotes, setProductNotes] = useState("");
+  const [id, setId] = useState();
+  const [active, setActive] = useState(true);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-  };
-
-  const updateFormValue = ({ updateType, value }) => {
-    console.log(updateType);
-  };
-
-  const handleBillingOpen = () => {
-    setOpenBillingModal(true);
-  };
-  const handleBillingClose = () => {
-    setOpenBillingModal(false);
-  };
-  const handleShippingOpen = () => {
-    setOpenShippingModal(true);
-  };
-  const handleShippingClose = () => {
-    setOpenShippingModal(false);
-  };
 
   const handleCloseAddManufacturer = () => {
     addManufacturer(false);
@@ -149,6 +98,7 @@ function AddManufacturer({ addManufacturer }) {
 
   useEffect(() => {
     getWareManufacture();
+    getAllAssetCategory();
   }, []);
 
   const getWareManufacture = async () => {
@@ -160,7 +110,6 @@ function AddManufacturer({ addManufacturer }) {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.manufacturerVO);
-        setTableData(response.data.paramObjectsMap.manufacturerVO);
         // Handle success
       } else {
         // Handle error
@@ -170,10 +119,91 @@ function AddManufacturer({ addManufacturer }) {
       console.error("Error fetching data:", error);
     }
   };
+  const handleAssetCategoryChange = (event) => {
+    setAssetCategory(event.target.value);
+    // Call function to fetch asset names based on the selected category
+    getAssetNamesByCategory(event.target.value);
+  };
+
+  const handleAssetNameChange = (event) => {
+    setAssetName(event.target.value);
+    // Call function to fetch asset names based on the selected category
+    getAssetIdByName(event.target.value);
+  };
+
+  const handleAsseCodeChange = (event) => {
+    const selectedAssetCodeId = event.target.value;
+    setAssetCodeId(selectedAssetCodeId);
+  };
+
+  const getAllAssetCategory = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
+      );
+
+      if (response.status === 200) {
+        const assetCategories =
+          response.data.paramObjectsMap.assetGroupVO.assetCategory;
+        setAssetCategoryVO(assetCategories);
+
+        if (assetCategories.length > 0) {
+          setAssetCategory(assetCategories[0].assetCategory);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAssetNamesByCategory = async (category) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        {
+          params: {
+            orgId: orgId,
+            assetCategory: category,
+          },
+        }
+      );
+      console.log("Response from API:", response.data);
+      if (response.status === 200) {
+        const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
+        // // Filter asset names based on the selected category
+
+        setAssetNameVO(response.data.paramObjectsMap.assetGroupVO.assetName);
+        console.log("assetName", assetGroupVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAssetIdByName = async (category) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        {
+          params: {
+            orgId: orgId,
+            assetName: category,
+          },
+        }
+      );
+      console.log("Response from API:", response.data);
+      if (response.status === 200) {
+        setAssetCodeIdVO(
+          response.data.paramObjectsMap.assetGroupVO.assetCodeId
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log("test", value);
 
     switch (name) {
       case "company":
@@ -203,6 +233,24 @@ function AddManufacturer({ addManufacturer }) {
       case "notes":
         setNotes(value);
         break;
+      case "brand":
+        setBrand(value);
+        break;
+      case "warranty":
+        setWarranty(value);
+        break;
+      case "sellingPrice":
+        setSellingPrice(value);
+        break;
+      case "leadTime":
+        setLeadTime(value);
+        break;
+      case "maintananceFrequency":
+        setMaintananceFrequency(value);
+        break;
+      case "productNotes":
+        setProductNotes(value);
+        break;
       // default:
       //   break;
     }
@@ -211,7 +259,6 @@ function AddManufacturer({ addManufacturer }) {
   const handleManufacture = () => {
     const errors = {};
 
-    console.log("test");
     if (!company) {
       errors.company = "Company Name is required";
     }
@@ -233,9 +280,9 @@ function AddManufacturer({ addManufacturer }) {
     if (!phoneNO) {
       errors.phone = "Phone is required";
     }
-    // if (!productionCapacity) {
-    //   errors.productionCapacity = "Production Capacity is required";
-    // }
+    if (!productionCapacity) {
+      errors.productionCapacity = "Production Capacity is required";
+    }
 
     // if (!notes) {
     //   errors.notes = "Notes Capacity is required";
@@ -243,13 +290,34 @@ function AddManufacturer({ addManufacturer }) {
 
     if (Object.keys(errors).length === 0) {
       const formData = {
+        assetCategory,
+        assetCodeId,
+        assetName,
         company,
         branch,
         address,
         contactPerson,
         designation,
+        email,
         phoneNO,
         productionCapacity,
+        id,
+        manufacturerProductVO: [
+          {
+            active,
+            assetCategory,
+            assetCodeId,
+            assetName,
+            brand,
+            id,
+            leadTime,
+            maintananceFrequency,
+            notes: productNotes,
+            orgId,
+            sellingPrice,
+            warranty,
+          },
+        ],
         notes,
         active,
         orgId,
@@ -263,6 +331,7 @@ function AddManufacturer({ addManufacturer }) {
         )
         .then((response) => {
           console.log("Response:", response.data);
+          addManufacturer(false);
           setCompany("");
           setBranch("");
           setAddress("");
@@ -281,105 +350,6 @@ function AddManufacturer({ addManufacturer }) {
     }
   };
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "id",
-        header: "SNo",
-        size: 50,
-
-        muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
-      {
-        accessorKey: "itemGroup",
-        header: "Item Group",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "itemName",
-        header: "Item Name",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "weight",
-        header: "Weight",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "warrenty",
-        header: "Warrenty",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "sellingPrice",
-        header: "Selling Price",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "serviceDuration",
-        header: "Service Duration(Days)",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "status",
-        header: "Status",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-    ],
-    []
-  );
-  const table = useMaterialReactTable({
-    data,
-    columns,
-  });
-
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
@@ -393,18 +363,22 @@ function AddManufacturer({ addManufacturer }) {
           />
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span className={"label-text label-font-size text-base-content"}>
+          <div className="col-lg-3 col-md-6 my-1">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Company
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz"
-              type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="company"
               value={company}
               onChange={handleInputChange}
@@ -413,7 +387,7 @@ function AddManufacturer({ addManufacturer }) {
               <span className="error-text">{errors.company}</span>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          <div className="col-lg-3 col-md-6 my-1">
             <label className="label mb-1">
               <span
                 className={
@@ -429,7 +403,7 @@ function AddManufacturer({ addManufacturer }) {
             <input
               className="form-control form-sz"
               type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="branch"
               value={branch}
               onChange={handleInputChange}
@@ -453,8 +427,7 @@ function AddManufacturer({ addManufacturer }) {
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz"
-              type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="address"
               value={address}
               onChange={handleInputChange}
@@ -479,8 +452,7 @@ function AddManufacturer({ addManufacturer }) {
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz"
-              type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="email"
               value={email}
               onChange={handleInputChange}
@@ -503,8 +475,7 @@ function AddManufacturer({ addManufacturer }) {
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="contactPerson"
               value={contactPerson}
               onChange={handleInputChange}
@@ -525,12 +496,10 @@ function AddManufacturer({ addManufacturer }) {
               </span>
             </label>
           </div>
-
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="designation"
               value={designation}
               onChange={handleInputChange}
@@ -547,14 +516,14 @@ function AddManufacturer({ addManufacturer }) {
                 }
               >
                 Phone Number
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="phone"
               value={phoneNO}
               onChange={handleInputChange}
@@ -571,14 +540,14 @@ function AddManufacturer({ addManufacturer }) {
                 }
               >
                 Production Capacity
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
-              placeholder={"Enter"}
+              placeholder={""}
               name="productionCapacity"
               value={productionCapacity}
               onChange={handleInputChange}
@@ -602,11 +571,13 @@ function AddManufacturer({ addManufacturer }) {
           <div className="col-lg-3 col-md-6 mt-2 ">
             <textarea
               style={{ fontSize: "0.800rem" }}
+              name="notes"
+              value={notes}
               className="form-control w-full label"
-              placeholder="Hints about the manufacturer"
+              placeholder=""
+              onChange={handleInputChange}
             ></textarea>
           </div>
-
           <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
@@ -624,8 +595,225 @@ function AddManufacturer({ addManufacturer }) {
             />
           </div>
         </div>
-        <h1 className="text-xl font-semibold mt-3">Product Details</h1>
-        <div className="d-flex justify-content-start">
+        <h1 className="text-xl font-semibold my-3">Product Details</h1>
+        <div className="row">
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Asset Category
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <select
+              name="Select Asset"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input input-bordered ps-2"
+              onChange={handleAssetCategoryChange}
+              value={assetCategory}
+            >
+              <option value="" disabled>
+                Select an Asset Category
+              </option>
+              {assetCategoryVO.length > 0 &&
+                assetCategoryVO.map((list) => (
+                  <option key={list.id} value={list}>
+                    {list}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Asset Name
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <select
+              name="Select Asset"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input input-bordered ps-2"
+              onChange={handleAssetNameChange}
+              value={assetName}
+            >
+              <option value="" disabled>
+                Select an Asset Name
+              </option>
+              {assetNameVO.length > 0 &&
+                assetNameVO.map((name) => (
+                  <option key={name.id} value={name}>
+                    {name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Asset Code
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <select
+              name="Select Asset"
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              className="input input-bordered ps-2"
+              onChange={handleAsseCodeChange}
+              value={assetCodeId}
+            >
+              <option value="" disabled>
+                Select an Asset Code
+              </option>
+              {assetCodeIdVO.length > 0 &&
+                assetCodeIdVO.map((name) => (
+                  <option key={name.id} value={name}>
+                    {name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Brand
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              value={brand}
+              name="brand"
+              placeholder={""}
+              onChange={handleInputChange}
+              className="form-control form-sz"
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Warranty
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              name="warranty"
+              value={warranty}
+              placeholder={""}
+              onChange={handleInputChange}
+              className="form-control form-sz"
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Selling Price
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              type={"text"}
+              name="sellingPrice"
+              value={sellingPrice}
+              placeholder={""}
+              onChange={handleInputChange}
+              className="form-control form-sz"
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Del. Lead Time(Days)
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              name="leadTime"
+              value={leadTime}
+              placeholder={""}
+              onChange={handleInputChange}
+              className="form-control form-sz"
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Maintenance Frequency(Days)
+              <FaStarOfLife className="must" />
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              name="maintananceFrequency"
+              value={maintananceFrequency}
+              placeholder={""}
+              onChange={handleInputChange}
+              className="form-control form-sz"
+            />
+          </div>
+
+          <div className="col-lg-3 col-md-3 mb-2">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row p-1"
+              }
+            >
+              Product Notes
+            </span>
+          </div>
+          <div className="col-lg-3 col-md-3 mb-2">
+            <textarea
+              value={productNotes}
+              name="productNotes"
+              style={{ fontSize: "0.800rem", width: "100%" }}
+              className="form-control form-sz"
+              placeholder=""
+              onChange={handleInputChange}
+            ></textarea>
+          </div>
+        </div>
+        {/* <div className="d-flex justify-content-start">
           <button
             className="btn btn-ghost btn-lg text-sm col-xs-1 my-2"
             style={{ color: "blue" }}
@@ -634,247 +822,7 @@ function AddManufacturer({ addManufacturer }) {
             <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
             <span className="text-form text-base">Product</span>
           </button>
-        </div>
-        <MaterialReactTable table={table} />
-        <Dialog
-          fullWidth={true}
-          maxWidth={"sm"}
-          open={openBillingModal}
-          onClose={handleBillingClose}
-        >
-          <div className="d-flex justify-content-between">
-            <DialogTitle>Add Product</DialogTitle>
-            <IoMdClose
-              onClick={handleBillingClose}
-              className="cursor-pointer w-8 h-8 mt-3 me-3"
-            />
-          </div>
-          <DialogContent>
-            <DialogContentText className="d-flex flex-column">
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Asset Category
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Asset"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Standard</option>
-                    <option value="">Customized</option>
-                  </select>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Asset Name
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Asset"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Pallet</option>
-                    <option value="">Lid</option>
-                    <option value="">Side Wall</option>
-                  </select>
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Asset Code
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Asset"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">STD-PL-192910</option>
-                    <option value="">STD-PL-235623</option>
-                  </select>
-                </div>
-              </div>
-              {/* <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Weight
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Weight"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div> */}
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Brand
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Brand"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label-text label-font-size text-base-content d-flex flex-row">
-                    Warranty
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Warranty"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Selling Price
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Selling Price"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Del. Lead Time(Days)
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    //type={"number"}
-                    // value={value}
-                    placeholder={"Del. Lead Time"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Maintenance Frequency(Days)
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    //type={"number"}
-                    // value={value}
-                    placeholder={"Maintenance Frequency"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Notes
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <textarea
-                    style={{ fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered p-2"
-                    placeholder="Hints about this Asset"
-                  ></textarea>
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="mb-2 me-2">
-            <Button onClick={handleBillingClose}>Cancel</Button>
-            <Button component="label" variant="contained">
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
+        </div> */}
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
@@ -891,6 +839,7 @@ function AddManufacturer({ addManufacturer }) {
             Cancel
           </button>
         </div>
+        {/* <MaterialReactTable table={table} /> */}
       </div>
     </>
   );
