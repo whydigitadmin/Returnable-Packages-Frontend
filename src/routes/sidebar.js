@@ -54,11 +54,11 @@ const routes = [
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Asset Group",
       },
-      {
-        path: "/app/manufacturerDetails",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Manufacture",
-      },
+      // {
+      //   path: "/app/manufacturerDetails",
+      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+      //   name: "Manufacture",
+      // },
       {
         path: "/app/items",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,

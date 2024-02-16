@@ -82,7 +82,14 @@ function ItemGroup() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.assetGroupVO);
+        const dataWithId =
+          response.data.paramObjectsMap.assetGroupVO.assetGroupVO.map(
+            (item, index) => ({
+              ...item,
+              id: index + 1, // Auto-incrementing ID
+            })
+          );
+        setData(dataWithId);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -106,10 +113,10 @@ function ItemGroup() {
   const handleAddAssetCategory = () => {
     const errors = {};
     if (!assetCategory) {
-      errors.assetCategory = "Category Name is required";
+      errors.assetCategory = "Name is required";
     }
     if (!assetCategoryId) {
-      errors.assetCategoryId = "Category Code is required";
+      errors.assetCategoryId = "Code is required";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -151,9 +158,9 @@ function ItemGroup() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "assetCodeId",
-        header: "Asset Code",
-        size: 200,
+        accessorKey: "id",
+        header: "ID",
+        size: 30,
         muiTableHeadCellProps: {
           align: "first",
         },
@@ -163,8 +170,19 @@ function ItemGroup() {
       },
       {
         accessorKey: "assetCategory",
-        header: "Category Name",
+        header: "Category",
         size: 50,
+        muiTableHeadCellProps: {
+          align: "first",
+        },
+        muiTableBodyCellProps: {
+          align: "first",
+        },
+      },
+      {
+        accessorKey: "assetCodeId",
+        header: "Asset Code",
+        size: 30,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -186,7 +204,7 @@ function ItemGroup() {
       {
         accessorKey: "length",
         header: "Length",
-        size: 50,
+        size: 20,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -197,7 +215,7 @@ function ItemGroup() {
       {
         accessorKey: "breath",
         header: "Breath",
-        size: 50,
+        size: 20,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -208,7 +226,7 @@ function ItemGroup() {
       {
         accessorKey: "height",
         header: "Height",
-        size: 50,
+        size: 20,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -219,7 +237,7 @@ function ItemGroup() {
       {
         accessorKey: "dimUnit",
         header: "Dimension Unit",
-        size: 50,
+        size: 20,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -250,7 +268,7 @@ function ItemGroup() {
                 onClick={handleClickOpen}
               >
                 <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Asset Category</span>
+                <span className="text-form text-base">Type</span>
               </button>
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -258,7 +276,7 @@ function ItemGroup() {
                 onClick={handleAddOpen}
               >
                 <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Asset Type</span>
+                <span className="text-form text-base">Category</span>
               </button>
             </div>
           </div>
@@ -272,7 +290,7 @@ function ItemGroup() {
             onClose={handleClose}
           >
             <div className="d-flex justify-content-between">
-              <DialogTitle>Asset Category</DialogTitle>
+              <DialogTitle>Type</DialogTitle>
               <IoMdClose
                 onClick={handleClose}
                 className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -288,7 +306,7 @@ function ItemGroup() {
                           "label-text label-font-size text-base-content d-flex flex-row"
                         }
                       >
-                        Category Name:
+                        Name:
                         <FaStarOfLife className="must" />
                       </span>
                     </label>
@@ -313,7 +331,7 @@ function ItemGroup() {
                           "label-text label-font-size text-base-content d-flex flex-row"
                         }
                       >
-                        Category Code:
+                        Code:
                         <FaStarOfLife className="must" />
                       </span>
                     </label>

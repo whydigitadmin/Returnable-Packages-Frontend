@@ -42,7 +42,8 @@ const statsData = [
     description: "",
   },
   {
-    title: "Average Transaction",
+    // title: "Average Transaction",
+    title: "--",
     value: "0",
     icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
     description: "",

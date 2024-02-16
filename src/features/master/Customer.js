@@ -33,13 +33,15 @@ const statsData = [
     description: "",
   },
   {
-    title: "So Value",
+    // title: "So Value",
+    title: "--",
     value: "0",
     icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
     description: "",
   },
   {
-    title: "Invoice Value",
+    // title: "Invoice Value",
+    title: "--",
     value: "0",
     icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
     description: "",

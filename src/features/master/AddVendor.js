@@ -301,7 +301,7 @@ function AddVendor({ addVendors }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Vendor Type
+                Type
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -319,7 +319,7 @@ function AddVendor({ addVendors }) {
               <span className="error-text">{errors.venderType}</span>
             )}
           </div>
-          <div className="col-lg-3 col-md-6">
+          {/* <div className="col-lg-3 col-md-6">
             <label className="label mb-2">
               <span className={"label-text label-font-size text-base-content"}>
                 First Name
@@ -363,7 +363,7 @@ function AddVendor({ addVendors }) {
             {errors.lastName && (
               <span className="error-text">{errors.lastName}</span>
             )}
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -371,7 +371,7 @@ function AddVendor({ addVendors }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Vendor Organisation Name
+                Entity Legal Name
                 <FaStarOfLife className="must" />
               </span>
             </label>

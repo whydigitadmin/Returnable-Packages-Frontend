@@ -466,7 +466,7 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Location Type
+                Warehouse Type
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -474,7 +474,7 @@ function AddWarehouse({ addWarehouse }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <FormControl sx={{ m: 1, width: "100%" }} size="small">
               <InputLabel id="demo-multiple-chip-label">
-                Location Type
+                Warehouse Type
               </InputLabel>
               <Select
                 labelId="demo-multiple-chip-label"
@@ -485,7 +485,7 @@ function AddWarehouse({ addWarehouse }) {
                 input={
                   <OutlinedInput
                     id="select-multiple-chip"
-                    label="Location Type"
+                    label="Warehouse Type"
                   />
                 }
                 renderValue={(selected) => (

@@ -44,35 +44,18 @@ const statsData = [
     description: "",
   },
   {
-    title: "Unique Item/Item group",
+    // title: "Unique Item/Item group",
+    title: "--",
     value: "0",
     icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
     description: "",
   },
   {
-    title: "Cycle Time",
+    // title: "Cycle Time",
+    title: "--",
     value: "0",
     icon: <LuTimerReset className="w-5 h-5 text-white dashicon-sm" />,
     description: "",
-  },
-];
-const columns = [
-  { field: "id", headerName: "Sr. No", width: 90 },
-  { field: "FlowName", headerName: "Flow Name", width: 180 },
-  { field: "origin", headerName: "origin", width: 180 },
-  { field: "Destination", headerName: "Destination", width: 160 },
-  { field: "MovementType", headerName: "Movement Type", width: 170 },
-  { field: "Status", headerName: "Status", width: 130 },
-];
-
-const data = [
-  {
-    id: 1,
-    FlowName: "John",
-    origin: "Vap",
-    Destination: "Bengaluru",
-    MovementType: "Special Movement Types",
-    Status: "Active",
   },
 ];
 

@@ -39,21 +39,11 @@ const statsData = [
     description: "",
   },
   {
-    title: "Average Life",
+    title: "-",
     value: "0",
     icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
     description: "",
   },
-];
-const columns = [
-  { field: "id", headerName: "Sr. No", width: 90 },
-  { field: "Name", headerName: "Name", width: 150 },
-  { field: "SKU", headerName: "SKU", width: 90 },
-  { field: "Category", headerName: "Category", width: 130 },
-  { field: "PurchasePrice", headerName: "Purchase Price", width: 130 },
-  { field: "SalesPrice", headerName: "Sales Price", width: 120 },
-  { field: "HSN", headerName: "HSN", width: 100 },
-  { field: "Status", headerName: "Status", width: 100 },
 ];
 
 function CreateKit() {
@@ -143,8 +133,9 @@ function CreateKit() {
   const columns = useMemo(
     (row) => [
       {
+        accessorKey: "serialNumber",
         header: "S.No",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
           textAlign: "first",
         },
@@ -156,7 +147,7 @@ function CreateKit() {
       {
         accessorKey: "id",
         header: "Kit ID",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
           textAlign: "center",
         },
@@ -262,8 +253,10 @@ function CreateKit() {
               </button>
             </div>
           </div>
-          <div className="mt-4">
-            <MaterialReactTable table={table} />
+          <div className="row">
+            <div className="col-lg-6 mt-4">
+              <MaterialReactTable table={table} />
+            </div>
           </div>
           <Dialog
             fullWidth={true}

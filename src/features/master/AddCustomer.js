@@ -107,10 +107,10 @@ function AddCustomer({ addcustomer }) {
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [openBankModal, setOpenBankModal] = React.useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [accountNO, setAccountNO] = React.useState("abc");
-  const [accountName, setAccountName] = React.useState("abc");
-  const [bankName, setBankName] = React.useState("abc");
-  const [branch, setBranch] = React.useState("abc");
+  const [accountNO, setAccountNO] = React.useState("");
+  const [accountName, setAccountName] = React.useState("");
+  const [bankName, setBankName] = React.useState("");
+  const [branch, setBranch] = React.useState("");
   const [customerActivatePortal, setCustomerActivatePortal] =
     React.useState(true);
   const [customerCode, setCustomerCode] = React.useState("");
@@ -120,7 +120,7 @@ function AddCustomer({ addcustomer }) {
   const [document, setDocument] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [firstName, setFirstName] = React.useState("");
-  const [ifscCode, setIfscCode] = React.useState("abc");
+  const [ifscCode, setIfscCode] = React.useState("");
   const [lastName, setLastName] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [sop, setSop] = React.useState("1");
@@ -350,7 +350,7 @@ function AddCustomer({ addcustomer }) {
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">New Customer Details</h1>
+          <h1 className="text-xl font-semibold mb-3">Customer Details</h1>
           <IoMdClose
             onClick={handleCustomerClose}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -365,7 +365,7 @@ function AddCustomer({ addcustomer }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Customer Type
+                Type
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -386,7 +386,7 @@ function AddCustomer({ addcustomer }) {
               <div className="error-text">{errors.customerType}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
                 className={
@@ -433,7 +433,7 @@ function AddCustomer({ addcustomer }) {
             {errors.lastName && (
               <div className="error-text">{errors.lastName}</div>
             )}
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
@@ -441,7 +441,7 @@ function AddCustomer({ addcustomer }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Customer Code
+                Code
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -465,7 +465,7 @@ function AddCustomer({ addcustomer }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Customer Organisation Name
+                Entity Legal Name
                 <FaStarOfLife className="must" />
               </span>
             </label>

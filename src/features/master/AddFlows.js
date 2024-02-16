@@ -69,7 +69,7 @@ function AddFlows({ addFlows }) {
 
   const [kitName, setKitName] = useState("");
   const [partName, setPartName] = useState("");
-  const [partNumber, setPartNumber] = useState(0);
+  const [partNumber, setPartNumber] = useState();
   const [subReceiver, setSubReceiver] = useState("");
   const [cycleTime, setCycleTime] = useState("");
   const [errors, setErrors] = useState("");
@@ -483,8 +483,8 @@ function AddFlows({ addFlows }) {
               <option value="Branch1">Branch1</option>
               <option value="Branch2">Branch2</option>
             </select>
-          </div> */}
-          {/* receiver field */}
+          </div>
+          receiver field
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -512,6 +512,7 @@ function AddFlows({ addFlows }) {
               <option value="Mahindra">Mahindra</option>
             </select>
           </div>
+           */}
         </div>
         <div className="d-flex flex-row mt-3">
           <button

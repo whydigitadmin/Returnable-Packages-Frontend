@@ -583,7 +583,7 @@ function AddItem({ addItem }) {
                 className="input mb-2 p-1 input-bordered form-sz"
                 onChange={handleCategoryChange}
               />
-              <select
+              {/* <select
                 name="dimUnit"
                 style={{ width: 56 }}
                 className="input mb-2 p-1 form-sz input-bordered ms-1"
@@ -595,12 +595,26 @@ function AddItem({ addItem }) {
                 <option value="mm">mm</option>
                 <option value="cm">cm</option>
                 <option value="feet">feet</option>
-              </select>
+              </select> */}
             </div>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text text-base-content "}>EAN/UPC</span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              name="eanUpc"
+              value={eanUpc}
+              onChange={handleCategoryChange}
+            />
           </div>
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
                 Manufacturer
@@ -649,25 +663,24 @@ function AddItem({ addItem }) {
                   </option>
                 ))}
             </select>
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
-                G. Weight
+                Gross Weight
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ width: 166 }}
                 placeholder=""
                 name="weight"
-                className="input mb-2 input-bordered form-sz"
+                className="input mb-2 input-bordered form-sz w-full"
                 value={weight}
                 onChange={handleCategoryChange}
               />
-              <select
+              {/* <select
                 name="weightUnit"
                 style={{ width: 60 }}
                 className="input mb-2 p-1 input-bordered form-sz ms-1"
@@ -677,7 +690,7 @@ function AddItem({ addItem }) {
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
                 <option value="g">g</option>
-              </select>
+              </select> */}
             </div>
             {errors.weight && (
               <span className="error-text">{errors.weight}</span>
@@ -693,14 +706,13 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ width: 166 }}
                 value={value}
                 name="value"
                 placeholder={""}
                 onChange={handleCategoryChange}
-                className="input mb-2 form-sz input-bordered"
+                className="input mb-2 form-sz input-bordered w-full"
               />
-              <select
+              {/* <select
                 name="inch"
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
@@ -711,23 +723,8 @@ function AddItem({ addItem }) {
                 <option value="kg">kg</option>
                 <option value="tonne">tonne</option>
                 <option value="grams">grams</option>
-              </select>
+              </select> */}
             </div>
-          </div>
-
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text text-base-content "}>EAN/UPC</span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              placeholder=""
-              className="input mb-2 input-bordered form-sz w-full"
-              name="eanUpc"
-              value={eanUpc}
-              onChange={handleCategoryChange}
-            />
           </div>
         </div>
         <h1 className="text-xl font-semibold my-2">Asset Information</h1>

@@ -61,9 +61,6 @@ const IOSSwitch = styled((props) => (
 
 function AddItemSpecification({ addItemSpecification }) {
   const [id, setId] = useState("");
-  const [selectedValue, setSelectedValue] = useState(
-    "Select an Asset Category"
-  );
   const [assetName, setAssetName] = useState("");
   const [assetCodeId, setAssetCodeId] = useState("");
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
@@ -75,8 +72,6 @@ function AddItemSpecification({ addItemSpecification }) {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
-  const [showStandardDropdown, setShowStandardDropdown] = useState(false);
-  const [showVariableDropdown, setShowVariableDropdown] = useState(false);
 
   const handleSelectChange = (e) => {
     setAssetCategory(e.target.value);
@@ -84,10 +79,6 @@ function AddItemSpecification({ addItemSpecification }) {
   const handleUnitChange = (e) => {
     setDimUnit(e.target.value);
   };
-
-  // const handleItem = () => {
-  //   addItem(false);
-  // };
 
   useEffect(() => {
     getAllAssetCategory();
@@ -105,8 +96,6 @@ function AddItemSpecification({ addItemSpecification }) {
         if (assetCategories.length > 0) {
           setAssetCategory(assetCategories[0].assetCategory);
         }
-        // setData(response.data.paramObjectsMap.assetCategoryVO);
-        // setTableData(response.data.paramObjectsMap.assetCategoryVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -142,10 +131,10 @@ function AddItemSpecification({ addItemSpecification }) {
   const handleAssetCategory = () => {
     const errors = {};
     if (!assetCodeId) {
-      errors.assetCodeId = "Asset Code is required";
+      errors.assetCodeId = "Code is required";
     }
     if (!assetName) {
-      errors.assetName = "Asset Name is required";
+      errors.assetName = "Name is required";
     }
     if (!length) {
       errors.length = "Length is required";
@@ -202,7 +191,7 @@ function AddItemSpecification({ addItemSpecification }) {
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">Asset Specification</h1>
+          <h1 className="text-xl font-semibold mb-3">Specification</h1>
           <IoMdClose
             onClick={handleCloseAddItemSpecification}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -216,7 +205,7 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Category
+                Category
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -246,7 +235,7 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Name
+                Name
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -270,7 +259,7 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Code
+                Code
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -278,11 +267,6 @@ function AddItemSpecification({ addItemSpecification }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              // type={"text"}
-              // placeholder={
-              //   (showStandardDropdown && "STD-") ||
-              //   (showVariableDropdown && "CMZ-")
-              // }
               name="assetCodeId"
               value={assetCodeId}
               onChange={handleCategoryChange}
@@ -293,8 +277,13 @@ function AddItemSpecification({ addItemSpecification }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Dimensions
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -338,7 +327,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 onChange={handleCategoryChange}
                 className="input mb-2 p-1 input-bordered"
               />
-              <select
+              {/* <select
                 style={{ height: 40, fontSize: "0.800rem", width: 56 }}
                 className="input mb-2 p-1 input-bordered ms-1"
                 name="dimUnit"
@@ -353,7 +342,7 @@ function AddItemSpecification({ addItemSpecification }) {
                 <option value="cm">cm</option>
                 <option value="feet">feet</option>
                 <option value="meter">meter</option>
-              </select>
+              </select> */}
             </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -380,9 +369,9 @@ function AddItemSpecification({ addItemSpecification }) {
               {errors.height && (
                 <span className="error-text">{errors.height}</span>
               )}
-              {errors.dimUnit && (
+              {/* {errors.dimUnit && (
                 <span className="error-text">{errors.dimUnit}</span>
-              )}
+              )} */}
             </div>
           </div>
         </div>

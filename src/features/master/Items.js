@@ -39,7 +39,7 @@ const statsData = [
     description: "",
   },
   {
-    title: "Average Life",
+    title: "-",
     value: "0",
     icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
     description: "",
@@ -101,7 +101,7 @@ function Items() {
       {
         accessorKey: "id",
         header: "Id",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
           align: "first",
         },
@@ -111,7 +111,7 @@ function Items() {
       },
       {
         accessorKey: "assetCategory",
-        header: "Asset Category",
+        header: "Category",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -201,28 +201,6 @@ function Items() {
       {
         accessorKey: "dimUnit",
         header: "Dimension Unit",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "manufacturer",
-        header: "Manufacturer",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "brand",
-        header: "Brand",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
