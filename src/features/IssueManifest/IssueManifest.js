@@ -221,7 +221,7 @@ function IssueManifest() {
             handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
           }
         >
-          Wip
+          WIP
         </div>
       );
     if (randomStatus === 2)

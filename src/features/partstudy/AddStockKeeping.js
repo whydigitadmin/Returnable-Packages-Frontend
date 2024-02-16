@@ -120,7 +120,7 @@ function AddStockKeeping({ addStockKeeping }) {
       <div className="partstudy-font">
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-4 ms-4">
-            Stock Keeping Days
+            Stock Keeping (In Days)
           </h1>
           <IoMdClose
             onClick={handleCloseAddStockKeeping}
@@ -317,7 +317,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex "
                 }
               >
-                Empty Packaging Reverse Logistics Days
+                Reverse Logistics
                 <FaStarOfLife className="must" />
               </span>
             </label>

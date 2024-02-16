@@ -171,7 +171,7 @@ function AddLogistics({ addlogistics }) {
               </option>
             </select>
           </div>
-          <div className="col-lg-3 col-md-6 mt-1">
+          {/* <div className="col-lg-3 col-md-6 mt-1">
             <label className="label mb-1">
               <span
                 className={
@@ -191,11 +191,11 @@ function AddLogistics({ addlogistics }) {
               onChange={handleInputChange}
             >
               <option value="">Select an option</option>{" "}
-              {/* Add a default option */}
+              Add a default option
               <option value="Part Load">Part Load</option>
               <option value="Full Truck Load">Full Truck Load</option>
             </select>
-          </div>
+          </div> */}
         </div>
         <div className="d-flex flex-row mt-1">
           <button

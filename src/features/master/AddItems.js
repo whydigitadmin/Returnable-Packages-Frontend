@@ -368,8 +368,8 @@ function AddItem({ addItem }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">Create Asset</h1>
+        <div className="d-flex justify-content-end">
+          {/* <h1 className="text-xl font-semibold mb-3">Create Asset</h1> */}
           <IoMdClose
             onClick={handleAssetClose}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -384,7 +384,7 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Asset Category
+                Category
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -699,7 +699,7 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
-                Chargable Weight
+                Chargeable Weight
               </span>
             </label>
           </div>

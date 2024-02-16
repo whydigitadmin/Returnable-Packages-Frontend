@@ -609,7 +609,6 @@ function AddPackage({ addPackage }) {
                 }
               >
                 Part Image
-                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -632,7 +631,6 @@ function AddPackage({ addPackage }) {
                 }
               >
                 Existing Packaging Image
-                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -655,7 +653,6 @@ function AddPackage({ addPackage }) {
                 }
               >
                 Part Drawing 2D 3D
-                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -679,7 +676,6 @@ function AddPackage({ addPackage }) {
                 }
               >
                 Approved Packaging Technical Drawing
-                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -705,7 +701,6 @@ function AddPackage({ addPackage }) {
                 }
               >
                 Approved Commercial Contract
-                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>

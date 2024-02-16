@@ -397,7 +397,7 @@ function AddItemGroups({ addItem }) {
               name="id"
               value={formValues.id}
               onChange={handleChange}
-              placeholder={"AAA/AA/000"}
+              placeholder={"PLS0000/MMYY/0000"}
               required
             />
             {errors.id && <span className="error-text">{errors.id}</span>}

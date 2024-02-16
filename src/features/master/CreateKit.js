@@ -253,11 +253,11 @@ function CreateKit() {
               </button>
             </div>
           </div>
-          <div className="row">
+          {/* <div className="row">
             <div className="col-lg-6 mt-4">
               <MaterialReactTable table={table} />
             </div>
-          </div>
+          </div> */}
           <Dialog
             fullWidth={true}
             maxWidth={"sm"}
