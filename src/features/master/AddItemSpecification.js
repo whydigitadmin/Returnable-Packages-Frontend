@@ -205,7 +205,7 @@ function AddItemSpecification({ addItemSpecification }) {
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Category
+                Type
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -217,7 +217,7 @@ function AddItemSpecification({ addItemSpecification }) {
               value={assetCategory}
             >
               <option value="" disabled>
-                Select an Asset Category
+                Select an Asset Type
               </option>
               {assetCategoryVO.length > 0 &&
                 assetCategoryVO.map((list) => (

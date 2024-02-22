@@ -283,10 +283,8 @@ function AddVendor({ addVendors }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <h1 className="text-xl font-semibold mb-4">Vendor Details</h1> */}
-
-        <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">Vendor Details</h1>
+        <div className="d-flex justify-content-end">
+          {/* <h1 className="text-xl font-semibold mb-3">Vendor Details</h1> */}
           <IoMdClose
             onClick={handleCloseAddVendor}
             className="cursor-pointer w-8 h-8 mb-3"

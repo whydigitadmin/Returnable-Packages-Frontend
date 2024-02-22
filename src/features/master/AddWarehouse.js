@@ -207,8 +207,8 @@ function AddWarehouse({ addWarehouse }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">Warehouse Details</h1>
+        <div className="d-flex justify-content-end">
+          {/* <h1 className="text-xl font-semibold mb-3">Warehouse Details</h1> */}
           <IoMdClose
             onClick={handleCloseWarehouse}
             className="cursor-pointer w-8 h-8 mb-3"

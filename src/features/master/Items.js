@@ -111,7 +111,7 @@ function Items() {
       },
       {
         accessorKey: "assetCategory",
-        header: "Category",
+        header: "Type",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -122,7 +122,7 @@ function Items() {
       },
       {
         accessorKey: "assetName",
-        header: "Asset Name",
+        header: "Asset",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -133,7 +133,7 @@ function Items() {
       },
       {
         accessorKey: "assetCodeId",
-        header: "Asset Code",
+        header: "Code",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -144,7 +144,7 @@ function Items() {
       },
       {
         accessorKey: "skuFrom",
-        header: "sku From",
+        header: "SKU From",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -155,7 +155,7 @@ function Items() {
       },
       {
         accessorKey: "skuTo",
-        header: "sku To",
+        header: "SKU To",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -198,17 +198,17 @@ function Items() {
           align: "center",
         },
       },
-      {
-        accessorKey: "dimUnit",
-        header: "Dimension Unit",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "dimUnit",
+      //   header: "Dimension Unit",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
         accessorKey: "weight",
         header: "Weight",

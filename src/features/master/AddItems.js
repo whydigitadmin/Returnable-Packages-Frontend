@@ -396,7 +396,7 @@ function AddItem({ addItem }) {
               value={assetCategory}
             >
               <option value="" disabled>
-                Select an Asset Type
+                Select an Type
               </option>
               {assetCategoryVO.length > 0 &&
                 assetCategoryVO.map((list) => (
@@ -413,7 +413,7 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Asset Name
+                Name
               </span>
             </label>
           </div>
@@ -424,7 +424,7 @@ function AddItem({ addItem }) {
               value={assetName}
             >
               <option value="" disabled>
-                Select an Asset Name
+                Select a Name
               </option>
               {assetNameVO.length > 0 &&
                 assetNameVO.map((name) => (
@@ -437,7 +437,7 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Asset Code :
+                Code
               </span>
             </label>
           </div>
@@ -448,7 +448,7 @@ function AddItem({ addItem }) {
               value={assetCodeId}
             >
               <option value="" disabled>
-                Select an Asset Code
+                Select a Code
               </option>
               {assetCodeIdVO.length > 0 &&
                 assetCodeIdVO.map((name) => (
@@ -467,7 +467,7 @@ function AddItem({ addItem }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Asset Quantity
+                    Quantity
                   </span>
                 </label>
               </div>
@@ -491,7 +491,7 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Asset/SKU No FROM
+                SKU No FROM
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -514,7 +514,7 @@ function AddItem({ addItem }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Asset/SKU No TO
+                SKU No TO
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -531,7 +531,7 @@ function AddItem({ addItem }) {
             />
           </div>
         </div>
-        <h1 className="text-xl font-semibold my-2">Asset Details</h1>
+        <h1 className="text-xl font-semibold my-2">Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -727,7 +727,7 @@ function AddItem({ addItem }) {
             </div>
           </div>
         </div>
-        <h1 className="text-xl font-semibold my-2">Asset Information</h1>
+        <h1 className="text-xl font-semibold my-2">Information</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">

@@ -170,30 +170,30 @@ function ItemGroup() {
       },
       {
         accessorKey: "assetCategory",
-        header: "Category",
+        header: "Type",
         size: 50,
         muiTableHeadCellProps: {
           align: "first",
         },
         muiTableBodyCellProps: {
           align: "first",
-        },
-      },
-      {
-        accessorKey: "assetCodeId",
-        header: "Asset Code",
-        size: 30,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
         },
       },
       {
         accessorKey: "assetName",
-        header: "Asset Name",
+        header: "Asset",
         size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "assetCodeId",
+        header: "Code",
+        size: 30,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -234,17 +234,17 @@ function ItemGroup() {
           align: "center",
         },
       },
-      {
-        accessorKey: "dimUnit",
-        header: "Dimension Unit",
-        size: 20,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "dimUnit",
+      //   header: "Dimension Unit",
+      //   size: 20,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
     ],
     []
   );
