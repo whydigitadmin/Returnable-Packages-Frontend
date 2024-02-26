@@ -16,6 +16,9 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import Modal from "react-modal";
+import { FaTrash } from "react-icons/fa";
+
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
 
@@ -133,8 +136,124 @@ function AddCustomer({ addcustomer }) {
   const [pincode, setPincode] = React.useState("");
   const [contactName, setContactName] = React.useState("");
   const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [isPrimary, setIsPrimary] = useState(false);
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = React.useState({});
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [submittedData, setSubmittedData] = useState(null);
+  const [shippingAddresses, setShippingAddresses] = useState([]);
+  const [newAddress, setNewAddress] = useState({
+    gstRegStatus: "",
+    gstNo: "",
+    street1: "",
+    street2: "",
+    state: "",
+    city: "",
+    pincode: "",
+    contactName: "",
+    phoneNumber: "",
+    isPrimary: false,
+  });
+
+  // const [errors1, setErrors1] = useState({});
+
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   // Your form submission logic goes here
+  // };
+
+  // const handleClose = () => {
+  //   setModalIsOpen(false);
+  // };
+
+  // const labelStyle = {
+  //   marginBottom: "5px",
+  //   display: "block",
+  //   fontSize: "16px",
+  //   color: "#333",
+  //   fontWeight: "400",
+  // };
+
+  // const inputStyle = {
+  //   width: "100%",
+  //   height: "40px",
+  //   fontSize: "16px",
+  //   border: "1px solid #ccc",
+  //   borderRadius: "4px",
+  //   padding: "8px",
+  // };
+
+  // const errorStyle = {
+  //   color: "red",
+  // };
+
+  const handleShippingClickOpen = () => {
+    setOpenShippingModal(true);
+  };
+  const handleShippingClickClose = () => {
+    setOpenShippingModal(false);
+  };
+
+  const handleAddShippingAddress = () => {
+    setShippingAddresses([...shippingAddresses, newAddress]);
+    setNewAddress({
+      gstRegStatus: "",
+      gstNo: "",
+      street1: "",
+      street2: "",
+      state: "",
+      city: "",
+      pincode: "",
+      contactName: "",
+      phoneNumber: "",
+      isPrimary: false,
+    });
+    setOpenShippingModal(false);
+  };
+
+  const handleDeleteAddress = (index) => {
+    const updatedAddresses = [...shippingAddresses];
+    updatedAddresses.splice(index, 1);
+    setShippingAddresses(updatedAddresses);
+  };
+
+  const styles = {
+    submittedDataContainer: {
+      border: "1px solid #ccc",
+      padding: "20px",
+      borderRadius: "5px",
+      backgroundColor: "#f9f9f9",
+      marginLeft: "40px",
+    },
+    submittedDataTitle: {
+      fontSize: "1.5rem",
+      marginBottom: "15px",
+      color: "#333",
+    },
+    submittedDataItem: {
+      display: "flex",
+      marginBottom: "10px",
+    },
+    submittedDataLabel: {
+      fontWeight: "bold",
+      marginRight: "10px",
+      color: "#555",
+    },
+  };
+
+  const clearForm = () => {
+    // Clear form fields
+    setGstRegStatus("");
+    setGstNo("");
+    setStreet1("");
+    setStreet2("");
+    setState("");
+    setCity("");
+    setPincode("");
+    setContactName("");
+    setPhoneNumber("");
+    setIsPrimary(false);
+  };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -386,54 +505,6 @@ function AddCustomer({ addcustomer }) {
               <div className="error-text">{errors.customerType}</div>
             )}
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                First Name
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz"
-              placeholder=""
-              name="firstName"
-              value={firstName}
-              onChange={handleCustomerChange}
-            />
-            {errors.firstName && (
-              <div className="error-text">{errors.firstName}</div>
-            )}
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Last Name
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              placeholder=""
-              value={lastName}
-              name="lastName"
-              className="form-control form-sz"
-              onChange={handleCustomerChange}
-            />
-            {errors.lastName && (
-              <div className="error-text">{errors.lastName}</div>
-            )}
-          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
@@ -622,6 +693,22 @@ function AddCustomer({ addcustomer }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
+          <div className="d-flex flex-row">
+            <button
+              type="button"
+              onClick={handleCustomer}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleCustomerClose}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -639,244 +726,83 @@ function AddCustomer({ addcustomer }) {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={0}>
-            <div className="row">
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
+            <div className="row d-flex justify-content-center">
+              <div className="col-md-12">
+                <button
+                  type="button"
+                  onClick={handleShippingClickOpen}
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 >
-                  GST Registration Status
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <select
-                  name="gstRegStatus"
-                  value={gstRegStatus}
-                  onChange={handleCustomerChange}
-                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                  className="input input-bordered ps-2"
-                >
-                  <option value="" disabled>
-                    Select a GST status
-                  </option>
-                  <option value="Registered">Registered</option>
-                  <option value="Unregistered">Unregistered</option>
-                </select>
-                {errors.gstRegStatus && (
-                  <span className="error-text">{errors.gstRegStatus}</span>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  GST Number
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <input
-                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                  name="gstNo"
-                  value={gstNo}
-                  placeholder={""}
-                  onChange={handleCustomerChange}
-                  className="input input-bordered p-2"
-                />
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Street 1
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <textarea
-                  style={{ fontSize: "0.800rem" }}
-                  className="form-control label label-text label-font-size text-base-content"
-                  placeholder="Street 1"
-                  name="street1"
-                  value={street1}
-                  onChange={handleCustomerChange}
-                ></textarea>
-                {errors.street1 && (
-                  <span className="error-text">{errors.street1}</span>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span className="label-text label-font-size text-base-content">
-                  Street 2
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <textarea
-                  style={{ fontSize: "0.800rem" }}
-                  className="form-control label label-text label-font-size text-base-content"
-                  placeholder="Street 2"
-                  name="street2"
-                  value={street2}
-                  onChange={handleCustomerChange}
-                ></textarea>
-                {errors.street2 && (
-                  <span className="error-text">{errors.street2}</span>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  State
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <select
-                  name="state"
-                  value={state}
-                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                  className="input input-bordered ps-2"
-                  onChange={handleCustomerChange}
-                >
-                  <option value="" disabled>
-                    Select a state
-                  </option>
-                  <option value="Tamil Nadu">Tamil Nadu</option>
-                  <option value="Goa">Goa</option>
-                </select>
-                {errors.state && (
-                  <span className="error-text">{errors.state}</span>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  City
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <input
-                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                  value={city}
-                  name="city"
-                  placeholder={""}
-                  onChange={handleCustomerChange}
-                  className="input input-bordered p-2"
-                />
-                {errors.city && (
-                  <span className="error-text">{errors.city}</span>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Pin Code
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <input
-                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                  value={pincode}
-                  name="pincode"
-                  placeholder={""}
-                  onChange={handleCustomerChange}
-                  className="input input-bordered p-2"
-                />
-                {errors.pincode && (
-                  <span className="error-text">{errors.pincode}</span>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Contact Name
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <input
-                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                  value={contactName}
-                  name="contactName"
-                  placeholder={""}
-                  onChange={handleCustomerChange}
-                  className="input input-bordered p-2"
-                />
-                {errors.contactName && (
-                  <span className="error-text">{errors.contactName}</span>
-                )}
-              </div>
-
-              <div className="col-lg-3 col-md-3 mb-2">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Phone
-                  <FaStarOfLife className="must" />
-                </span>
-              </div>
-              <div className="col-lg-3 col-md-3 mb-2">
-                <input
-                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                  value={phoneNumber}
-                  name="phoneNumber"
-                  placeholder={""}
-                  onChange={handleCustomerChange}
-                  className="input input-bordered p-2"
-                />
-                {errors.phoneNumber && (
-                  <span className="error-text">{errors.phoneNumber}</span>
-                )}
+                  + Add Address
+                </button>
               </div>
             </div>
-            {/* <div className="row">
-              <div className="col-lg-6 col-md-6 d-flex flex-column">
-                <div>
-                  <Button
-                    onClick={handleBillingOpen}
-                    variant="outlined"
-                    size="small"
-                    className="white-btn label px-4 mb-4"
-                  >
-                    Add Billing Address 1
-                  </Button>
-                </div>
-                <button
-                  type="button"
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            <div className="d-flex align-items-center justify-content-center flex-wrap">
+              {shippingAddresses.map((address, index) => (
+                <div
+                  className="col-md-5 mt-3"
+                  key={index}
+                  style={styles.submittedDataContainer}
                 >
-                  + Add Billing Address
-                </button>
-              </div>
-              <div className="col-lg-6 col-md-6 d-flex flex-column">
-                <div>
-                  <Button
-                    onClick={handleShippingOpen}
-                    variant="outlined"
-                    size="small"
-                    className="white-btn label px-4 mb-4"
-                  >
-                    Add Shipping Address 1
-                  </Button>
+                  <div className="row">
+                    <div className="col-md-10">
+                      <h2 style={styles.submittedDataTitle}>
+                        Address {index + 1}
+                      </h2>
+                    </div>
+                    <div className="col-md-2">
+                      <FaTrash
+                        className="cursor-pointer w-5 h-8 me-3"
+                        onClick={() => handleDeleteAddress(index)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>
+                      GST Registration Status:
+                    </span>
+                    <span>{address.gstRegStatus}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>GST Number:</span>
+                    <span>{address.gstNo}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Street 1:</span>
+                    <span>{address.street1}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Street 2:</span>
+                    <span>{address.street2}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>State:</span>
+                    <span>{address.state}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>City:</span>
+                    <span>{address.city}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Pin Code:</span>
+                    <span>{address.pincode}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Contact Name:</span>
+                    <span>{address.contactName}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Phone Number:</span>
+                    <span>{address.phoneNumber}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Primary:</span>
+                    <span>{address.isPrimary ? "Yes" : "No"}</span>
+                  </div>
                 </div>
-                <button
-                  type="button"
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                >
-                  + Add Shipping Address
-                </button>
-              </div>
-            </div> */}
+              ))}
+            </div>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <div className="row">
@@ -990,25 +916,26 @@ function AddCustomer({ addcustomer }) {
             </div>
           </CustomTabPanel>
         </Box>
-
-        {/* Billing Address Modal Define
-        <Dialog
-          fullWidth={true}
-          maxWidth={"sm"}
-          open={openBillingModal}
-          onClose={handleBillingClose}
-        >
-          <div className="d-flex justify-content-between">
-            <DialogTitle>Add Billing Address 1</DialogTitle>
-            <IoMdClose
-              onClick={handleBillingClose}
-              className="cursor-pointer w-8 h-8 mt-3 me-3"
-            />
-          </div>
-          <DialogContent>
-            <DialogContentText className="d-flex flex-column">
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
+      </div>
+      <Dialog
+        fullWidth={true}
+        maxWidth={"sm"}
+        open={openShippingModal}
+        onClose={handleShippingClickClose}
+      >
+        <div className="d-flex justify-content-between">
+          <DialogTitle>Add Shipping Address</DialogTitle>
+          <IoMdClose
+            onClick={handleShippingClickClose}
+            className="cursor-pointer w-8 h-8 mt-3 me-3"
+          />
+        </div>
+        <DialogContent>
+          <DialogContentText className="d-flex flex-column">
+            {/* GST Registration Status */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label mb-1">
                   <span
                     className={
                       "label-text label-font-size text-base-content d-flex flex-row"
@@ -1017,38 +944,61 @@ function AddCustomer({ addcustomer }) {
                     GST Registration Status
                     <FaStarOfLife className="must" />
                   </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Registered</option>
-                    <option value="">Unregistered</option>
-                  </select>
-                </div>
+                </label>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    GST Number
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"GST Number"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
+              <div className="col-lg-6 col-md-6">
+                <select
+                  name="Select Item"
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  className="input input-bordered ps-2"
+                  value={newAddress.gstRegStatus}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      gstRegStatus: e.target.value,
+                    })
+                  }
+                >
+                  <option value=""></option>
+                  <option value="Registered">Registered</option>
+                  <option value="Unregistered">Unregistered</option>
+                </select>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
+            </div>
+            {/* GST Number */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  GST Number
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  type={"number"}
+                  value={newAddress.gstNo}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      gstNo: e.target.value,
+                    })
+                  }
+                  className="input input-bordered p-2"
+                />
+              </div>
+            </div>
+            {/* Street 1 */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label mb-1">
                   <span
                     className={
                       "label-text label-font-size text-base-content d-flex flex-row"
@@ -1057,31 +1007,47 @@ function AddCustomer({ addcustomer }) {
                     Street 1
                     <FaStarOfLife className="must" />
                   </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <textarea
-                    style={{ fontSize: "0.800rem" }}
-                    className="form-control label label-text label-font-size text-base-content"
-                    placeholder="Street 1"
-                  ></textarea>
-                </div>
+                </label>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Street 2
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <textarea
-                    style={{ fontSize: "0.800rem" }}
-                    className="form-control label label-text label-font-size text-base-content"
-                    placeholder="Street 2"
-                  ></textarea>
-                </div>
+              <div className="col-lg-6 col-md-6">
+                <textarea
+                  style={{ fontSize: "0.800rem" }}
+                  className="form-control label label-text label-font-size text-base-content"
+                  value={newAddress.street1}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      street1: e.target.value,
+                    })
+                  }
+                ></textarea>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
+            </div>
+            {/* Street 2 */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  Street 2
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <textarea
+                  style={{ fontSize: "0.800rem" }}
+                  className="form-control label label-text label-font-size text-base-content"
+                  value={newAddress.street2}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      street2: e.target.value,
+                    })
+                  }
+                ></textarea>
+              </div>
+            </div>
+            {/* State */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label mb-1">
                   <span
                     className={
                       "label-text label-font-size text-base-content d-flex flex-row"
@@ -1090,21 +1056,35 @@ function AddCustomer({ addcustomer }) {
                     State
                     <FaStarOfLife className="must" />
                   </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Tamil Nadu</option>
-                    <option value="">Goa</option>
-                  </select>
-                </div>
+                </label>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
+              <div className="col-lg-6 col-md-6">
+                <select
+                  name="Select Item"
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  className="input input-bordered ps-2"
+                  value={newAddress.state}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      state: e.target.value,
+                    })
+                  }
+                >
+                  <option value=""></option>
+                  <option value="Tamil Nadu">Tamil Nadu</option>
+                  <option value="Goa">Goa</option>
+                </select>
+              </div>
+            </div>
+            {/* City */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label mb-1">
                   <span
                     className={
                       "label-text label-font-size text-base-content d-flex flex-row"
@@ -1113,20 +1093,31 @@ function AddCustomer({ addcustomer }) {
                     City
                     <FaStarOfLife className="must" />
                   </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"City"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
+                </label>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  type={"text"}
+                  value={newAddress.city}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      city: e.target.value,
+                    })
+                  }
+                  className="input input-bordered p-2"
+                />
+              </div>
+            </div>
+            {/* Pin Code */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label mb-1">
                   <span
                     className={
                       "label-text label-font-size text-base-content d-flex flex-row"
@@ -1135,124 +1126,119 @@ function AddCustomer({ addcustomer }) {
                     Pin Code
                     <FaStarOfLife className="must" />
                   </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"Pin Code"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
+                </label>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Contact Name
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  type={"number"}
+                  value={newAddress.pincode}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      pincode: e.target.value,
+                    })
+                  }
+                  className="input input-bordered p-2"
+                />
+              </div>
+            </div>
+            {/* Contact Name */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  Contact Name
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  type={"text"}
+                  value={newAddress.contactName}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      contactName: e.target.value,
+                    })
+                  }
+                  className="input input-bordered p-2"
+                />
+              </div>
+            </div>
+            {/* Phone */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  Phone
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  type={"number"}
+                  value={newAddress.phoneNumber}
+                  onChange={(e) =>
+                    setNewAddress({
+                      ...newAddress,
+                      phoneNumber: e.target.value,
+                    })
+                  }
+                  className="input input-bordered p-2"
+                />
+              </div>
+            </div>
+            {/* Checkbox */}
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <div className="d-flex flex-row">
+                  <input
+                    style={{ marginTop: 10 }}
+                    className="form-check-input me-1"
+                    type="checkbox"
+                    id="flexCheckDefault"
+                    checked={isPrimary}
+                    onChange={(e) =>
+                      setNewAddress({
+                        ...newAddress,
+                        isPrimary: e.target.checked,
+                      })
+                    }
+                    // onChange={(e) => setIsPrimary(e.target.checked)}
+                  />
+                  <label
+                    className="label label-text label-font-size text-base-content"
+                    htmlFor="flexCheckDefault"
+                  >
+                    Mark as Primary
                   </label>
                 </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"Contact Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
               </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Phone
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"Phone"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <div className="d-flex flex-row">
-                    <input
-                      style={{ marginTop: 10 }}
-                      className="form-check-input me-1"
-                      type="checkbox"
-                      id="flexCheckDefault"
-                    />
-                    <label
-                      className="label label-text label-font-size text-base-content"
-                      for="flexCheckDefault"
-                    >
-                      Mark as Primary
-                    </label>
-                  </div>
-                </div>
-              </div>
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="mb-2 me-2">
-            <Button onClick={handleBillingClose}>Cancel</Button>
-            <Button component="label" variant="contained">
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
-
-        Shipping Address Modal Define
-        <Dialog
-          fullWidth={true}
-          maxWidth={"sm"}
-          open={openShippingModal}
-          onClose={handleShippingClose}
-        >
-          <div className="d-flex justify-content-between">
-            <DialogTitle>Add Shipping Address 1</DialogTitle>
-            <IoMdClose
-              onClick={handleShippingClose}
-              className="cursor-pointer w-8 h-8 mt-3 me-3"
-            />
-          </div>
-          <DialogContent>
-            <DialogContentText className="d-flex flex-column">
-              
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions className="mb-2 me-2">
-            <Button onClick={handleShippingClose}>Cancel</Button>
-            <Button component="label" variant="contained">
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog> */}
-
-        <div className="d-flex flex-row">
-          <button
-            type="button"
-            onClick={handleCustomer}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className="mb-2 me-2">
+          <Button onClick={handleShippingClickClose}>Cancel</Button>
+          <Button
+            component="label"
+            variant="contained"
+            onClick={handleAddShippingAddress}
           >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleCustomerClose}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
