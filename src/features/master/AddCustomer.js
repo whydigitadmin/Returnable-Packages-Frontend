@@ -16,7 +16,6 @@ import axios from "axios";
 import PropTypes from "prop-types";
 import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import Modal from "react-modal";
 import { FaTrash } from "react-icons/fa";
 
 function CustomTabPanel(props) {
@@ -155,6 +154,155 @@ function AddCustomer({ addcustomer }) {
     isPrimary: false,
   });
 
+  const [errors1, setErrors1] = useState({
+    gstRegStatus: false,
+    street1: false,
+    state: false,
+    city: false,
+    pincode: false,
+  });
+
+  const isValidAddress = () => {
+    return (
+      newAddress.gstRegStatus.trim() !== "" &&
+      newAddress.street1.trim() !== "" &&
+      newAddress.state.trim() !== "" &&
+      newAddress.city.trim() !== "" &&
+      newAddress.pincode.trim() !== ""
+    );
+  };
+
+  const handleBankInputChange = (e, field) => {
+    const value = e.target.value;
+    setNewAddress((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+    // Clear error when user starts typing in a field
+    setErrors1((prevErrors) => ({
+      ...prevErrors,
+      [field]: false,
+    }));
+  };
+
+  const handleCancel = () => {
+    // Clear form fields
+    setNewAddress({
+      gstRegStatus: "",
+      gstNo: "",
+      street1: "",
+      street2: "",
+      state: "",
+      city: "",
+      pincode: "",
+      contactName: "",
+      phoneNumber: "",
+      isPrimary: false,
+    });
+    // Clear all error messages
+    setErrors({
+      gstRegStatus: false,
+      street1: false,
+      state: false,
+      city: false,
+      pincode: false,
+    });
+    // Close the dialog
+    handleShippingClickClose();
+  };
+
+  // const handleAddressSubmit = () => {
+  //   if (isValidAddress()) {
+  //     handleAddShippingAddress();
+  //   } else {
+  //     // Set errors for invalid or empty fields
+  //     const updatedErrors = {};
+  //     for (const field in newAddress) {
+  //       if (!newAddress[field]?.trim()) {
+  //         updatedErrors[field] = true;
+  //       }
+  //     }
+  //     setErrors1(updatedErrors);
+  //   }
+  // };
+
+  const handleAddressSubmit = () => {
+    if (isValidAddress()) {
+      handleAddShippingAddress();
+    } else {
+      // Set errors for invalid or empty fields
+      const updatedErrors = {};
+      for (const field in newAddress) {
+        if (
+          field !== "street2" &&
+          field !== "contactName" &&
+          field !== "phoneNumber" &&
+          field !== "isPrimary"
+        ) {
+          if (!newAddress[field].trim()) {
+            updatedErrors[field] = true;
+          }
+        }
+      }
+      setErrors1(updatedErrors);
+    }
+  };
+
+  const [bankAddresses, setBankAddresses] = useState([]);
+  const [newBankAddress, setNewBankAddress] = useState({
+    bankName: "",
+    accountNO: "",
+    accountName: "",
+    branch: "",
+    ifscCode: "",
+  });
+
+  const [errors2, setErrors2] = useState({
+    bankName: false,
+    accountNO: false,
+    accountName: false,
+    branch: false,
+    ifscCode: false,
+  });
+
+  const isValidBankAddress = () => {
+    return (
+      newBankAddress?.bankName?.trim() !== "" &&
+      newBankAddress?.accountNO?.trim() !== "" &&
+      newBankAddress?.accountName?.trim() !== "" &&
+      newBankAddress?.branch?.trim() !== "" &&
+      newBankAddress?.ifscCode?.trim() !== ""
+    );
+  };
+
+  const handleInputChange = (e, field) => {
+    const value = e.target.value;
+    setNewBankAddress((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+    // Clear error when user starts typing in a field
+    setErrors2((prevErrors) => ({
+      ...prevErrors,
+      [field]: false,
+    }));
+  };
+
+  const handleBankSubmit = () => {
+    if (isValidBankAddress()) {
+      handleAddBankAddress();
+    } else {
+      // Set errors for invalid or empty fields
+      const updatedErrors = {};
+      for (const field in newBankAddress) {
+        if (!newBankAddress[field]?.trim()) {
+          updatedErrors[field] = true;
+        }
+      }
+      setErrors2(updatedErrors);
+    }
+  };
+
   // const [errors1, setErrors1] = useState({});
 
   // const handleSubmit = (e) => {
@@ -194,6 +342,13 @@ function AddCustomer({ addcustomer }) {
     setOpenShippingModal(false);
   };
 
+  const handleBankClickOpen = () => {
+    setOpenBankModal(true);
+  };
+  const handleBankClickClose = () => {
+    setOpenBankModal(false);
+  };
+
   const handleAddShippingAddress = () => {
     setShippingAddresses([...shippingAddresses, newAddress]);
     setNewAddress({
@@ -210,11 +365,28 @@ function AddCustomer({ addcustomer }) {
     });
     setOpenShippingModal(false);
   };
+  const handleAddBankAddress = () => {
+    setBankAddresses([...bankAddresses, newBankAddress]);
+    setNewBankAddress({
+      bankName: "",
+      accountNO: "",
+      accountName: "",
+      branch: "",
+      ifscCode: "",
+    });
+    setOpenBankModal(false);
+  };
 
   const handleDeleteAddress = (index) => {
     const updatedAddresses = [...shippingAddresses];
     updatedAddresses.splice(index, 1);
     setShippingAddresses(updatedAddresses);
+  };
+
+  const handleDeleteBank = (index) => {
+    const updatedBank = [...bankAddresses];
+    updatedBank.splice(index, 1);
+    setBankAddresses(updatedBank);
   };
 
   const styles = {
@@ -752,7 +924,7 @@ function AddCustomer({ addcustomer }) {
                     </div>
                     <div className="col-md-2">
                       <FaTrash
-                        className="cursor-pointer w-5 h-8 me-3"
+                        className="cursor-pointer w-4 h-8 me-3"
                         onClick={() => handleDeleteAddress(index)}
                       />
                     </div>
@@ -805,8 +977,65 @@ function AddCustomer({ addcustomer }) {
             </div>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
-            <div className="row">
-              <div className="col-lg-3 col-md-6 mb-2">
+            <div className="row d-flex justify-content-center">
+              <div className="col-md-12">
+                <button
+                  type="button"
+                  onClick={handleBankClickOpen}
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  + Add Bank
+                </button>
+              </div>
+            </div>
+            <div className="d-flex align-items-center justify-content-center flex-wrap">
+              {bankAddresses.map((bank, index) => (
+                <div
+                  className="col-md-5 mt-3"
+                  key={index}
+                  style={styles.submittedDataContainer}
+                >
+                  <div className="row">
+                    <div className="col-md-10">
+                      <h2 style={styles.submittedDataTitle}>
+                        Bank {index + 1}
+                      </h2>
+                    </div>
+                    <div className="col-md-2">
+                      <FaTrash
+                        className="cursor-pointer w-4 h-8 me-3"
+                        onClick={() => handleDeleteBank(index)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Bank:</span>
+                    <span>{bank.bankName}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>
+                      Account Number:
+                    </span>
+                    <span>{bank.accountNO}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Account Name:</span>
+                    <span>{bank.accountName}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Branch:</span>
+                    <span>{bank.branch}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>IFSC Code:</span>
+                    <span>{bank.ifscCode}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* <div className="row"> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
                   <span
                     className={
@@ -814,11 +1043,10 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Bank
-                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <input
                   className="form-control form-sz"
                   placeholder=""
@@ -826,8 +1054,8 @@ function AddCustomer({ addcustomer }) {
                   name="bankName"
                   onChange={handleCustomerChange}
                 />
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
                   <span
                     className={
@@ -835,11 +1063,10 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Account No
-                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <input
                   className="form-control form-sz"
                   placeholder=""
@@ -847,8 +1074,8 @@ function AddCustomer({ addcustomer }) {
                   name="accountNO"
                   onChange={handleCustomerChange}
                 />
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
                   <span
                     className={
@@ -856,11 +1083,10 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Account Name
-                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <input
                   className="form-control form-sz"
                   placeholder=""
@@ -868,8 +1094,8 @@ function AddCustomer({ addcustomer }) {
                   name="accountName"
                   onChange={handleCustomerChange}
                 />
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
                   <span
                     className={
@@ -877,11 +1103,10 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     Branch
-                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6 mb-2">
                 <input
                   type="text"
                   className="form-control form-sz"
@@ -890,8 +1115,8 @@ function AddCustomer({ addcustomer }) {
                   name="branch"
                   onChange={handleCustomerChange}
                 />
-              </div>
-              <div className="col-lg-3 col-md-6">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6">
                 <label className="label">
                   <span
                     className={
@@ -899,11 +1124,10 @@ function AddCustomer({ addcustomer }) {
                     }
                   >
                     IFSC Code
-                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
-              </div>
-              <div className="col-lg-3 col-md-6">
+              </div> */}
+            {/* <div className="col-lg-3 col-md-6">
                 <input
                   type="text"
                   className="form-control form-sz"
@@ -912,8 +1136,8 @@ function AddCustomer({ addcustomer }) {
                   name="ifscCode"
                   onChange={handleCustomerChange}
                 />
-              </div>
-            </div>
+              </div> */}
+            {/* </div> */}
           </CustomTabPanel>
         </Box>
       </div>
@@ -924,7 +1148,7 @@ function AddCustomer({ addcustomer }) {
         onClose={handleShippingClickClose}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Add Shipping Address</DialogTitle>
+          <DialogTitle>Add Address</DialogTitle>
           <IoMdClose
             onClick={handleShippingClickClose}
             className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -953,20 +1177,21 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
+                    borderColor: errors1.gstRegStatus ? "red" : "",
                   }}
                   className="input input-bordered ps-2"
                   value={newAddress.gstRegStatus}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      gstRegStatus: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "gstRegStatus")}
                 >
                   <option value=""></option>
                   <option value="Registered">Registered</option>
                   <option value="Unregistered">Unregistered</option>
                 </select>
+                {errors1.gstRegStatus && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    GST Registration Status is required
+                  </span>
+                )}
               </div>
             </div>
             {/* GST Number */}
@@ -985,12 +1210,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"number"}
                   value={newAddress.gstNo}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      gstNo: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "gstNo")}
                   className="input input-bordered p-2"
                 />
               </div>
@@ -1011,16 +1231,19 @@ function AddCustomer({ addcustomer }) {
               </div>
               <div className="col-lg-6 col-md-6">
                 <textarea
-                  style={{ fontSize: "0.800rem" }}
+                  style={{
+                    fontSize: "0.800rem",
+                    borderColor: errors1.street1 ? "red" : "",
+                  }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street1}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      street1: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "street1")}
                 ></textarea>
+                {errors1.street1 && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Street 1 is required
+                  </span>
+                )}
               </div>
             </div>
             {/* Street 2 */}
@@ -1035,12 +1258,7 @@ function AddCustomer({ addcustomer }) {
                   style={{ fontSize: "0.800rem" }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street2}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      street2: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "street2")}
                 ></textarea>
               </div>
             </div>
@@ -1065,20 +1283,21 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
+                    borderColor: errors1.state ? "red" : "",
                   }}
                   className="input input-bordered ps-2"
                   value={newAddress.state}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      state: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "state")}
                 >
                   <option value=""></option>
                   <option value="Tamil Nadu">Tamil Nadu</option>
                   <option value="Goa">Goa</option>
                 </select>
+                {errors1.state && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    State is required
+                  </span>
+                )}
               </div>
             </div>
             {/* City */}
@@ -1101,17 +1320,18 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
+                    borderColor: errors1.city ? "red" : "",
                   }}
                   type={"text"}
                   value={newAddress.city}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      city: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "city")}
                   className="input input-bordered p-2"
                 />
+                {errors1.city && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    City is required
+                  </span>
+                )}
               </div>
             </div>
             {/* Pin Code */}
@@ -1134,17 +1354,18 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
+                    borderColor: errors1.pincode ? "red" : "",
                   }}
                   type={"number"}
                   value={newAddress.pincode}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      pincode: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "pincode")}
                   className="input input-bordered p-2"
                 />
+                {errors1.pincode && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Pin Code is required
+                  </span>
+                )}
               </div>
             </div>
             {/* Contact Name */}
@@ -1163,12 +1384,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newAddress.contactName}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      contactName: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "contactName")}
                   className="input input-bordered p-2"
                 />
               </div>
@@ -1189,12 +1405,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"number"}
                   value={newAddress.phoneNumber}
-                  onChange={(e) =>
-                    setNewAddress({
-                      ...newAddress,
-                      phoneNumber: e.target.value,
-                    })
-                  }
+                  onChange={(e) => handleBankInputChange(e, "phoneNumber")}
                   className="input input-bordered p-2"
                 />
               </div>
@@ -1208,14 +1419,8 @@ function AddCustomer({ addcustomer }) {
                     className="form-check-input me-1"
                     type="checkbox"
                     id="flexCheckDefault"
-                    checked={isPrimary}
-                    onChange={(e) =>
-                      setNewAddress({
-                        ...newAddress,
-                        isPrimary: e.target.checked,
-                      })
-                    }
-                    // onChange={(e) => setIsPrimary(e.target.checked)}
+                    checked={newAddress.isPrimary}
+                    onChange={(e) => handleBankInputChange(e, "isPrimary")}
                   />
                   <label
                     className="label label-text label-font-size text-base-content"
@@ -1229,11 +1434,205 @@ function AddCustomer({ addcustomer }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
-          <Button onClick={handleShippingClickClose}>Cancel</Button>
+          <Button onClick={handleCancel}>Cancel</Button>
           <Button
             component="label"
             variant="contained"
-            onClick={handleAddShippingAddress}
+            onClick={handleAddressSubmit}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog
+        fullWidth={true}
+        maxWidth={"sm"}
+        open={openBankModal}
+        onClose={handleBankClickClose}
+      >
+        <div className="d-flex justify-content-between">
+          <DialogTitle>Add Bank Address</DialogTitle>
+          <IoMdClose
+            onClick={handleBankClickClose}
+            className="cursor-pointer w-8 h-8 mt-3 me-3"
+          />
+        </div>
+        <DialogContent>
+          <DialogContentText className="d-flex flex-column">
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Bank
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                    borderColor: errors2.bankName ? "red" : "",
+                  }}
+                  type={"text"}
+                  value={newBankAddress.bankName}
+                  onChange={(e) => handleInputChange(e, "bankName")}
+                  className="input input-bordered p-2"
+                />
+                {errors2.bankName && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Bank is required
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Account No
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                    borderColor: errors2.accountNO ? "red" : "",
+                  }}
+                  type={"text"}
+                  value={newBankAddress.accountNO}
+                  onChange={(e) => handleInputChange(e, "accountNO")}
+                  className="input input-bordered p-2"
+                />
+                {errors2.accountNO && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Account number is required and must be numeric
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Account Name
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                    borderColor: errors2.accountName ? "red" : "",
+                  }}
+                  type={"text"}
+                  value={newBankAddress.accountName}
+                  onChange={(e) => handleInputChange(e, "accountName")}
+                  className="input input-bordered p-2"
+                />
+                {errors2.accountName && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Account name is required
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Branch
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                    borderColor: errors2.branch ? "red" : "",
+                  }}
+                  type={"text"}
+                  value={newBankAddress.branch}
+                  onChange={(e) => handleInputChange(e, "branch")}
+                  className="input input-bordered p-2"
+                />
+                {errors2.branch && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Branch is required
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    IFSC Code
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                    borderColor: errors2.ifscCode ? "red" : "",
+                  }}
+                  type={"text"}
+                  value={newBankAddress.ifscCode}
+                  onChange={(e) => handleInputChange(e, "ifscCode")}
+                  className="input input-bordered p-2"
+                />
+                {errors2.ifscCode && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    IFSC Code is required and must be in proper format
+                  </span>
+                )}
+              </div>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className="mb-2 me-2">
+          <Button onClick={handleBankClickClose}>Cancel</Button>
+          <Button
+            component="label"
+            variant="contained"
+            onClick={handleBankSubmit}
           >
             Submit
           </Button>
