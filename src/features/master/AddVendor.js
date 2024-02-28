@@ -16,6 +16,7 @@ import PropTypes from "prop-types";
 import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { FaTrash } from "react-icons/fa";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -123,6 +124,158 @@ function AddVendor({ addVendors }) {
   const [ifscCode, setIfscCode] = useState("");
   const [tableData, setTableData] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [isPrimary, setIsPrimary] = useState(false);
+  const [gstRegStatus, setGstRegStatus] = React.useState("");
+  const [gstNo, setGstNo] = React.useState("");
+  const [street1, setStreet1] = React.useState("");
+  const [street2, setStreet2] = React.useState("");
+  const [state, setState] = React.useState("");
+  const [city, setCity] = React.useState("");
+  const [pincode, setPincode] = React.useState("");
+  const [contactName, setContactName] = React.useState("");
+  const [desination, setDesination] = React.useState("");
+  const [emailAddress, setEmailAddress] = React.useState("");
+
+  const [shippingAddresses, setShippingAddresses] = useState([]);
+  const [newAddress, setNewAddress] = useState({
+    gstRegStatus: "",
+    gstNo: "",
+    street1: "",
+    street2: "",
+    state: "",
+    city: "",
+    pincode: "",
+    contactName: "",
+    phoneNumber: "",
+    desination: "",
+    emailAddress: "",
+    isPrimary: false,
+  });
+  const [errors1, setErrors1] = useState({
+    gstRegStatus: false,
+    street1: false,
+    state: false,
+    city: false,
+    pincode: false,
+  });
+
+  const isValidAddress = () => {
+    return (
+      newAddress.gstRegStatus.trim() !== "" &&
+      newAddress.street1.trim() !== "" &&
+      newAddress.state.trim() !== "" &&
+      newAddress.city.trim() !== "" &&
+      newAddress.pincode.trim() !== ""
+    );
+  };
+  const handleCancel = () => {
+    // Clear form fields
+    setNewAddress({
+      gstRegStatus: "",
+      gstNo: "",
+      street1: "",
+      street2: "",
+      state: "",
+      city: "",
+      pincode: "",
+      contactName: "",
+      phoneNumber: "",
+      desination: "",
+      emailAddress: "",
+      isPrimary: false,
+    });
+    // Clear all error messages
+    setErrors1({
+      gstRegStatus: false,
+      street1: false,
+      state: false,
+      city: false,
+      pincode: false,
+    });
+    // Close the dialog
+    handleShippingClickClose();
+  };
+
+  const handleAddressSubmit = () => {
+    if (isValidAddress()) {
+      handleAddShippingAddress();
+    } else {
+      // Set errors for invalid or empty fields
+      const updatedErrors = {};
+      for (const field in newAddress) {
+        if (
+          field !== "street2" &&
+          field !== "contactName" &&
+          field !== "phoneNumber" &&
+          field !== "isPrimary"
+        ) {
+          if (!newAddress[field].trim()) {
+            updatedErrors[field] = true;
+          }
+        }
+      }
+      setErrors1(updatedErrors);
+    }
+  };
+
+  const handleAddressInputChange = (e, field) => {
+    const value = e.target.value;
+    setNewAddress((prevState) => ({
+      ...prevState,
+      [field]: value,
+    }));
+    // Clear error when user starts typing in a field
+    setErrors1((prevErrors) => ({
+      ...prevErrors,
+      [field]: false,
+    }));
+  };
+  const handleAddShippingAddress = () => {
+    setShippingAddresses([...shippingAddresses, newAddress]);
+    setNewAddress({
+      gstRegStatus: "",
+      gstNo: "",
+      street1: "",
+      street2: "",
+      state: "",
+      city: "",
+      pincode: "",
+      contactName: "",
+      phoneNumber: "",
+      desination: "",
+      emailAddress: "",
+      isPrimary: false,
+    });
+    setOpenShippingModal(false);
+  };
+  const handleDeleteAddress = (index) => {
+    const updatedAddresses = [...shippingAddresses];
+    updatedAddresses.splice(index, 1);
+    setShippingAddresses(updatedAddresses);
+  };
+  const styles = {
+    submittedDataContainer: {
+      border: "1px solid #ccc",
+      padding: "20px",
+      borderRadius: "5px",
+      backgroundColor: "#f9f9f9",
+      marginLeft: "40px",
+    },
+    submittedDataTitle: {
+      fontSize: "1.5rem",
+      marginBottom: "15px",
+      color: "#333",
+    },
+    submittedDataItem: {
+      display: "flex",
+      marginBottom: "10px",
+    },
+    submittedDataLabel: {
+      fontWeight: "bold",
+      marginRight: "10px",
+      color: "#555",
+    },
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -290,13 +443,12 @@ function AddVendor({ addVendors }) {
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
-
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label mb-1">
               <span
                 className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
+                  "label-text label-font-size text-base-content d-flex"
                 }
               >
                 Type
@@ -304,17 +456,20 @@ function AddVendor({ addVendors }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
-            <input
-              className="form-control form-sz"
-              type={"text"}
-              placeholder={"Enter"}
-              name="venderType"
-              value={venderType}
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <select
+              className="form-select form-sz w-full"
               onChange={handleInputChange}
-            />
+              value={venderType}
+            >
+              <option value="" disabled>
+                Select a vendor
+              </option>
+              <option value="0">Transport</option>
+              <option value="1">Supplier</option>
+            </select>
             {errors.venderType && (
-              <span className="error-text">{errors.venderType}</span>
+              <div className="error-text">{errors.venderType}</div>
             )}
           </div>
           {/* <div className="col-lg-3 col-md-6">
@@ -496,43 +651,94 @@ function AddVendor({ addVendors }) {
             </Tabs>
           </Box>
           <CustomTabPanel value={value} index={1}>
-            <div className="row">
-              <div className="col-lg-6 col-md-6 d-flex flex-column">
-                <div>
-                  <Button
-                    onClick={handleBillingOpen}
-                    variant="outlined"
-                    size="small"
-                    className="white-btn label px-4 mb-4"
-                  >
-                    Add Billing Address 1
-                  </Button>
-                </div>
+            <div className="row d-flex justify-content-center">
+              <div className="col-md-12">
                 <button
                   type="button"
+                  onClick={handleShippingClickOpen}
                   className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 >
                   + Add Billing Address
                 </button>
               </div>
-              <div className="col-lg-6 col-md-6 d-flex flex-column">
-                <div>
-                  <Button
-                    onClick={handleShippingClickOpen}
-                    variant="outlined"
-                    size="small"
-                    className="white-btn label px-4 mb-4"
-                  >
-                    Add Shipping Address 1
-                  </Button>
-                </div>
-                <button
-                  type="button"
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            </div>
+            <div className="d-flex align-items-center justify-content-center flex-wrap">
+              {shippingAddresses.map((address, index) => (
+                <div
+                  className="col-md-5 mt-3"
+                  key={index}
+                  style={styles.submittedDataContainer}
                 >
-                  + Add Shipping Address
-                </button>
-              </div>
+                  <div className="row">
+                    <div className="col-md-10">
+                      <h2 style={styles.submittedDataTitle}>
+                        Address {index + 1}
+                      </h2>
+                    </div>
+                    <div className="col-md-2">
+                      <FaTrash
+                        className="cursor-pointer w-4 h-8 me-3"
+                        onClick={() => handleDeleteAddress(index)}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>
+                      GST Registration Status:
+                    </span>
+                    <span>{address.gstRegStatus}</span>
+                  </div>
+                  {address.gstRegStatus === "Registered" && (
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>GST Number:</span>
+                      <span>{address.gstNo}</span>
+                    </div>
+                  )}
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Street 1:</span>
+                    <span>{address.street1}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Street 2:</span>
+                    <span>{address.street2}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>State:</span>
+                    <span>{address.state}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>City:</span>
+                    <span>{address.city}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Pin Code:</span>
+                    <span>{address.pincode}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>
+                      Contact Person:
+                    </span>
+                    <span>{address.contactName}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Destination:</span>
+                    <span>{address.desination}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Email:</span>
+                    <span>{address.emailAddress}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Phone Number:</span>
+                    <span>{address.phoneNumber}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Primary:</span>
+                    <span>{address.isPrimary ? "Yes" : "No"}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </CustomTabPanel>
           <CustomTabPanel value={value} index={0}>
@@ -667,7 +873,7 @@ function AddVendor({ addVendors }) {
         </Box>
 
         {/* Billing Address Modal Define */}
-        <Dialog
+        {/* <Dialog
           fullWidth={true}
           maxWidth={"sm"}
           open={openBillingModal}
@@ -882,7 +1088,7 @@ function AddVendor({ addVendors }) {
               Submit
             </Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
 
         {/* Shipping Address Modal Define */}
         <Dialog
@@ -892,7 +1098,7 @@ function AddVendor({ addVendors }) {
           onClose={handleShippingClickClose}
         >
           <div className="d-flex justify-content-between">
-            <DialogTitle>Add Shipping Address 1</DialogTitle>
+            <DialogTitle>Add Address</DialogTitle>
             <IoMdClose
               onClick={handleShippingClickClose}
               className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -900,65 +1106,104 @@ function AddVendor({ addVendors }) {
           </div>
           <DialogContent>
             <DialogContentText className="d-flex flex-column">
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    GST Registration Status
-                    <FaStarOfLife className="must" />
-                  </span>
+              {/* GST Registration Status */}
+              <div>
+                <div className="row mb-3">
+                  <div className="col-lg-6 col-md-6">
+                    <label className="label mb-1">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        GST Registration Status
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-6 col-md-6">
+                    <select
+                      name="Select Item"
+                      style={{
+                        height: 40,
+                        fontSize: "0.800rem",
+                        width: "100%",
+                        borderColor: errors1.gstRegStatus ? "red" : "",
+                      }}
+                      className="input input-bordered ps-2"
+                      value={newAddress.gstRegStatus}
+                      onChange={(e) =>
+                        handleAddressInputChange(e, "gstRegStatus")
+                      }
+                    >
+                      <option value="">Select</option>
+                      <option value="Registered">Registered</option>
+                      <option value="Unregistered">Unregistered</option>
+                    </select>
+                    {errors1.gstRegStatus && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        GST Registration Status is required
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="input input-bordered ps-2"
-                  >
-                    <option value=""></option>
-                    <option value="">Registered</option>
-                    <option value="">Unregistered</option>
-                  </select>
-                </div>
+
+                {/* Show GST Number input field only when "Registered" is selected */}
+                {newAddress.gstRegStatus === "Registered" && (
+                  <div className="row mb-3">
+                    <div className="col-lg-6 col-md-6">
+                      <label className="label label-text label-font-size text-base-content">
+                        GST Number
+                      </label>
+                    </div>
+                    <div className="col-lg-6 col-md-6">
+                      <input
+                        style={{
+                          height: 40,
+                          fontSize: "0.800rem",
+                          width: "100%",
+                        }}
+                        type={"number"}
+                        value={newAddress.gstNo}
+                        onChange={(e) => handleAddressInputChange(e, "gstNo")}
+                        className="input input-bordered p-2"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
+              {/* Street 1 */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    GST Number
+                  <label className="label mb-1">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Street 1
+                      <FaStarOfLife className="must" />
+                    </span>
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"GST Number"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Street 1
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
                   <textarea
-                    style={{ fontSize: "0.800rem" }}
+                    style={{
+                      fontSize: "0.800rem",
+                      borderColor: errors1.street1 ? "red" : "",
+                    }}
                     className="form-control label label-text label-font-size text-base-content"
-                    placeholder="Street 1"
+                    value={newAddress.street1}
+                    onChange={(e) => handleAddressInputChange(e, "street1")}
                   ></textarea>
+                  {errors1.street1 && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      Street 1 is required
+                    </span>
+                  )}
                 </div>
               </div>
+              {/* Street 2 */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <label className="label label-text label-font-size text-base-content">
@@ -969,94 +1214,139 @@ function AddVendor({ addVendors }) {
                   <textarea
                     style={{ fontSize: "0.800rem" }}
                     className="form-control label label-text label-font-size text-base-content"
-                    placeholder="Street 2"
+                    value={newAddress.street2}
+                    onChange={(e) => handleAddressInputChange(e, "street2")}
                   ></textarea>
                 </div>
               </div>
+              {/* State */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    State
-                    <FaStarOfLife className="must" />
-                  </span>
+                  <label className="label mb-1">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      State
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
                   <select
                     name="Select Item"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                      borderColor: errors1.state ? "red" : "",
+                    }}
                     className="input input-bordered ps-2"
+                    value={newAddress.state}
+                    onChange={(e) => handleAddressInputChange(e, "state")}
                   >
                     <option value=""></option>
-                    <option value="">Tamil Nadu</option>
-                    <option value="">Goa</option>
+                    <option value="Tamil Nadu">Tamil Nadu</option>
+                    <option value="Goa">Goa</option>
                   </select>
+                  {errors1.state && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      State is required
+                    </span>
+                  )}
                 </div>
               </div>
+              {/* City */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    City
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"text"}
-                    // value={value}
-                    placeholder={"City"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Pin Code
-                    <FaStarOfLife className="must" />
-                  </span>
-                </div>
-                <div className="col-lg-6 col-md-6">
-                  <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    type={"number"}
-                    // value={value}
-                    placeholder={"Pin Code"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
-                    className="input input-bordered p-2"
-                  />
-                </div>
-              </div>
-              <div className="row mb-3">
-                <div className="col-lg-6 col-md-6">
-                  <label className="label label-text label-font-size text-base-content">
-                    Contact Name
+                  <label className="label mb-1">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      City
+                      <FaStarOfLife className="must" />
+                    </span>
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
                   <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                      borderColor: errors1.city ? "red" : "",
+                    }}
                     type={"text"}
-                    // value={value}
-                    placeholder={"Contact Name"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
+                    value={newAddress.city}
+                    onChange={(e) => handleAddressInputChange(e, "city")}
+                    className="input input-bordered p-2"
+                  />
+                  {errors1.city && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      City is required
+                    </span>
+                  )}
+                </div>
+              </div>
+              {/* Pin Code */}
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label mb-1">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Pin Code
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                      borderColor: errors1.pincode ? "red" : "",
+                    }}
+                    type={"number"}
+                    value={newAddress.pincode}
+                    onChange={(e) => handleAddressInputChange(e, "pincode")}
+                    className="input input-bordered p-2"
+                  />
+                  {errors1.pincode && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      Pin Code is required
+                    </span>
+                  )}
+                </div>
+              </div>
+              {/* Contact Name */}
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Contact Person
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                    }}
+                    type={"text"}
+                    value={newAddress.contactName}
+                    onChange={(e) => handleAddressInputChange(e, "contactName")}
                     className="input input-bordered p-2"
                   />
                 </div>
               </div>
+              {/* Phone */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <label className="label label-text label-font-size text-base-content">
@@ -1065,15 +1355,61 @@ function AddVendor({ addVendors }) {
                 </div>
                 <div className="col-lg-6 col-md-6">
                   <input
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                    }}
                     type={"number"}
-                    // value={value}
-                    placeholder={"Phone"}
-                    // onChange={(e) => updateInputValue(e.target.value)}
+                    value={newAddress.phoneNumber}
+                    onChange={(e) => handleAddressInputChange(e, "phoneNumber")}
                     className="input input-bordered p-2"
                   />
                 </div>
               </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Destination
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                    }}
+                    type={"number"}
+                    value={newAddress.desination}
+                    onChange={(e) => handleAddressInputChange(e, "desination")}
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Email
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                    }}
+                    type={"number"}
+                    value={newAddress.emailAddress}
+                    onChange={(e) =>
+                      handleAddressInputChange(e, "emailAddress")
+                    }
+                    className="input input-bordered p-2"
+                  />
+                </div>
+              </div>
+              {/* Checkbox */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <div className="d-flex flex-row">
@@ -1082,10 +1418,12 @@ function AddVendor({ addVendors }) {
                       className="form-check-input me-1"
                       type="checkbox"
                       id="flexCheckDefault"
+                      checked={newAddress.isPrimary}
+                      onChange={(e) => handleAddressInputChange(e, "isPrimary")}
                     />
                     <label
                       className="label label-text label-font-size text-base-content"
-                      for="flexCheckDefault"
+                      htmlFor="flexCheckDefault"
                     >
                       Mark as Primary
                     </label>
@@ -1095,8 +1433,12 @@ function AddVendor({ addVendors }) {
             </DialogContentText>
           </DialogContent>
           <DialogActions className="mb-2 me-2">
-            <Button onClick={handleShippingClickClose}>Cancel</Button>
-            <Button component="label" variant="contained">
+            <Button onClick={handleCancel}>Cancel</Button>
+            <Button
+              component="label"
+              variant="contained"
+              onClick={handleAddressSubmit}
+            >
               Submit
             </Button>
           </DialogActions>

@@ -134,6 +134,8 @@ function AddCustomer({ addcustomer }) {
   const [city, setCity] = React.useState("");
   const [pincode, setPincode] = React.useState("");
   const [contactName, setContactName] = React.useState("");
+  const [desination, setDesination] = React.useState("");
+  const [emailAddress, setEmailAddress] = React.useState("");
   const [phoneNumber, setPhoneNumber] = React.useState("");
   const [isPrimary, setIsPrimary] = useState(false);
   const [active, setActive] = React.useState(true);
@@ -151,6 +153,8 @@ function AddCustomer({ addcustomer }) {
     pincode: "",
     contactName: "",
     phoneNumber: "",
+    desination: "",
+    emailAddress: "",
     isPrimary: false,
   });
 
@@ -172,7 +176,7 @@ function AddCustomer({ addcustomer }) {
     );
   };
 
-  const handleBankInputChange = (e, field) => {
+  const handleAddressInputChange = (e, field) => {
     const value = e.target.value;
     setNewAddress((prevState) => ({
       ...prevState,
@@ -197,6 +201,8 @@ function AddCustomer({ addcustomer }) {
       pincode: "",
       contactName: "",
       phoneNumber: "",
+      desination: "",
+      emailAddress: "",
       isPrimary: false,
     });
     // Clear all error messages
@@ -275,7 +281,7 @@ function AddCustomer({ addcustomer }) {
     );
   };
 
-  const handleInputChange = (e, field) => {
+  const handleBankInputChange = (e, field) => {
     const value = e.target.value;
     setNewBankAddress((prevState) => ({
       ...prevState,
@@ -361,6 +367,8 @@ function AddCustomer({ addcustomer }) {
       pincode: "",
       contactName: "",
       phoneNumber: "",
+      desination: "",
+      emailAddress: "",
       isPrimary: false,
     });
     setOpenShippingModal(false);
@@ -424,6 +432,8 @@ function AddCustomer({ addcustomer }) {
     setPincode("");
     setContactName("");
     setPhoneNumber("");
+    setDesination("");
+    setEmailAddress("");
     setIsPrimary(false);
   };
 
@@ -567,7 +577,7 @@ function AddCustomer({ addcustomer }) {
       errors.pincode = "Pincode is required";
     }
     if (!contactName) {
-      errors.contactName = "Contact Name is required";
+      errors.contactName = "Contact Person is required";
     }
     if (!phoneNumber) {
       errors.phoneNumber = "Phone Number is required";
@@ -600,6 +610,8 @@ function AddCustomer({ addcustomer }) {
         pincode,
         contactName,
         phoneNumber,
+        desination,
+        email,
         active,
         orgId,
       };
@@ -936,10 +948,12 @@ function AddCustomer({ addcustomer }) {
                     </span>
                     <span>{address.gstRegStatus}</span>
                   </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>GST Number:</span>
-                    <span>{address.gstNo}</span>
-                  </div>
+                  {address.gstRegStatus === "Registered" && (
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>GST Number:</span>
+                      <span>{address.gstNo}</span>
+                    </div>
+                  )}
                   <div style={styles.submittedDataItem}>
                     <span style={styles.submittedDataLabel}>Street 1:</span>
                     <span>{address.street1}</span>
@@ -961,12 +975,22 @@ function AddCustomer({ addcustomer }) {
                     <span>{address.pincode}</span>
                   </div>
                   <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Contact Name:</span>
+                    <span style={styles.submittedDataLabel}>
+                      Contact Person:
+                    </span>
                     <span>{address.contactName}</span>
                   </div>
                   <div style={styles.submittedDataItem}>
                     <span style={styles.submittedDataLabel}>Phone Number:</span>
                     <span>{address.phoneNumber}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Destination:</span>
+                    <span>{address.desination}</span>
+                  </div>
+                  <div style={styles.submittedDataItem}>
+                    <span style={styles.submittedDataLabel}>Email:</span>
+                    <span>{address.emailAddress}</span>
                   </div>
                   <div style={styles.submittedDataItem}>
                     <span style={styles.submittedDataLabel}>Primary:</span>
@@ -1157,63 +1181,70 @@ function AddCustomer({ addcustomer }) {
         <DialogContent>
           <DialogContentText className="d-flex flex-column">
             {/* GST Registration Status */}
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6">
-                <label className="label mb-1">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
+            <div>
+              <div className="row mb-3">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label mb-1">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      GST Registration Status
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <select
+                    name="Select Item"
+                    style={{
+                      height: 40,
+                      fontSize: "0.800rem",
+                      width: "100%",
+                      borderColor: errors1.gstRegStatus ? "red" : "",
+                    }}
+                    className="input input-bordered ps-2"
+                    value={newAddress.gstRegStatus}
+                    onChange={(e) =>
+                      handleAddressInputChange(e, "gstRegStatus")
                     }
                   >
-                    GST Registration Status
-                    <FaStarOfLife className="must" />
-                  </span>
-                </label>
+                    <option value="">Select</option>
+                    <option value="Registered">Registered</option>
+                    <option value="Unregistered">Unregistered</option>
+                  </select>
+                  {errors1.gstRegStatus && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      GST Registration Status is required
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="col-lg-6 col-md-6">
-                <select
-                  name="Select Item"
-                  style={{
-                    height: 40,
-                    fontSize: "0.800rem",
-                    width: "100%",
-                    borderColor: errors1.gstRegStatus ? "red" : "",
-                  }}
-                  className="input input-bordered ps-2"
-                  value={newAddress.gstRegStatus}
-                  onChange={(e) => handleBankInputChange(e, "gstRegStatus")}
-                >
-                  <option value=""></option>
-                  <option value="Registered">Registered</option>
-                  <option value="Unregistered">Unregistered</option>
-                </select>
-                {errors1.gstRegStatus && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    GST Registration Status is required
-                  </span>
-                )}
-              </div>
-            </div>
-            {/* GST Number */}
-            <div className="row mb-3">
-              <div className="col-lg-6 col-md-6">
-                <label className="label label-text label-font-size text-base-content">
-                  GST Number
-                </label>
-              </div>
-              <div className="col-lg-6 col-md-6">
-                <input
-                  style={{
-                    height: 40,
-                    fontSize: "0.800rem",
-                    width: "100%",
-                  }}
-                  type={"number"}
-                  value={newAddress.gstNo}
-                  onChange={(e) => handleBankInputChange(e, "gstNo")}
-                  className="input input-bordered p-2"
-                />
-              </div>
+
+              {/* Show GST Number input field only when "Registered" is selected */}
+              {newAddress.gstRegStatus === "Registered" && (
+                <div className="row mb-3">
+                  <div className="col-lg-6 col-md-6">
+                    <label className="label label-text label-font-size text-base-content">
+                      GST Number
+                    </label>
+                  </div>
+                  <div className="col-lg-6 col-md-6">
+                    <input
+                      style={{
+                        height: 40,
+                        fontSize: "0.800rem",
+                        width: "100%",
+                      }}
+                      type={"number"}
+                      value={newAddress.gstNo}
+                      onChange={(e) => handleAddressInputChange(e, "gstNo")}
+                      className="input input-bordered p-2"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
             {/* Street 1 */}
             <div className="row mb-3">
@@ -1237,7 +1268,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street1}
-                  onChange={(e) => handleBankInputChange(e, "street1")}
+                  onChange={(e) => handleAddressInputChange(e, "street1")}
                 ></textarea>
                 {errors1.street1 && (
                   <span style={{ color: "red", fontSize: "12px" }}>
@@ -1258,7 +1289,7 @@ function AddCustomer({ addcustomer }) {
                   style={{ fontSize: "0.800rem" }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street2}
-                  onChange={(e) => handleBankInputChange(e, "street2")}
+                  onChange={(e) => handleAddressInputChange(e, "street2")}
                 ></textarea>
               </div>
             </div>
@@ -1287,7 +1318,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   className="input input-bordered ps-2"
                   value={newAddress.state}
-                  onChange={(e) => handleBankInputChange(e, "state")}
+                  onChange={(e) => handleAddressInputChange(e, "state")}
                 >
                   <option value=""></option>
                   <option value="Tamil Nadu">Tamil Nadu</option>
@@ -1324,7 +1355,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newAddress.city}
-                  onChange={(e) => handleBankInputChange(e, "city")}
+                  onChange={(e) => handleAddressInputChange(e, "city")}
                   className="input input-bordered p-2"
                 />
                 {errors1.city && (
@@ -1358,7 +1389,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"number"}
                   value={newAddress.pincode}
-                  onChange={(e) => handleBankInputChange(e, "pincode")}
+                  onChange={(e) => handleAddressInputChange(e, "pincode")}
                   className="input input-bordered p-2"
                 />
                 {errors1.pincode && (
@@ -1372,7 +1403,7 @@ function AddCustomer({ addcustomer }) {
             <div className="row mb-3">
               <div className="col-lg-6 col-md-6">
                 <label className="label label-text label-font-size text-base-content">
-                  Contact Name
+                  Contact Person
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -1384,7 +1415,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newAddress.contactName}
-                  onChange={(e) => handleBankInputChange(e, "contactName")}
+                  onChange={(e) => handleAddressInputChange(e, "contactName")}
                   className="input input-bordered p-2"
                 />
               </div>
@@ -1405,7 +1436,47 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"number"}
                   value={newAddress.phoneNumber}
-                  onChange={(e) => handleBankInputChange(e, "phoneNumber")}
+                  onChange={(e) => handleAddressInputChange(e, "phoneNumber")}
+                  className="input input-bordered p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  Destination
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  type={"number"}
+                  value={newAddress.desination}
+                  onChange={(e) => handleAddressInputChange(e, "desination")}
+                  className="input input-bordered p-2"
+                />
+              </div>
+            </div>
+            <div className="row mb-3">
+              <div className="col-lg-6 col-md-6">
+                <label className="label label-text label-font-size text-base-content">
+                  Email
+                </label>
+              </div>
+              <div className="col-lg-6 col-md-6">
+                <input
+                  style={{
+                    height: 40,
+                    fontSize: "0.800rem",
+                    width: "100%",
+                  }}
+                  type={"number"}
+                  value={newAddress.emailAddress}
+                  onChange={(e) => handleAddressInputChange(e, "emailAddress")}
                   className="input input-bordered p-2"
                 />
               </div>
@@ -1420,7 +1491,7 @@ function AddCustomer({ addcustomer }) {
                     type="checkbox"
                     id="flexCheckDefault"
                     checked={newAddress.isPrimary}
-                    onChange={(e) => handleBankInputChange(e, "isPrimary")}
+                    onChange={(e) => handleAddressInputChange(e, "isPrimary")}
                   />
                   <label
                     className="label label-text label-font-size text-base-content"
@@ -1483,7 +1554,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newBankAddress.bankName}
-                  onChange={(e) => handleInputChange(e, "bankName")}
+                  onChange={(e) => handleBankInputChange(e, "bankName")}
                   className="input input-bordered p-2"
                 />
                 {errors2.bankName && (
@@ -1516,12 +1587,12 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newBankAddress.accountNO}
-                  onChange={(e) => handleInputChange(e, "accountNO")}
+                  onChange={(e) => handleBankInputChange(e, "accountNO")}
                   className="input input-bordered p-2"
                 />
                 {errors2.accountNO && (
                   <span style={{ color: "red", fontSize: "12px" }}>
-                    Account number is required and must be numeric
+                    Account number is required
                   </span>
                 )}
               </div>
@@ -1549,7 +1620,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newBankAddress.accountName}
-                  onChange={(e) => handleInputChange(e, "accountName")}
+                  onChange={(e) => handleBankInputChange(e, "accountName")}
                   className="input input-bordered p-2"
                 />
                 {errors2.accountName && (
@@ -1582,7 +1653,7 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newBankAddress.branch}
-                  onChange={(e) => handleInputChange(e, "branch")}
+                  onChange={(e) => handleBankInputChange(e, "branch")}
                   className="input input-bordered p-2"
                 />
                 {errors2.branch && (
@@ -1615,12 +1686,12 @@ function AddCustomer({ addcustomer }) {
                   }}
                   type={"text"}
                   value={newBankAddress.ifscCode}
-                  onChange={(e) => handleInputChange(e, "ifscCode")}
+                  onChange={(e) => handleBankInputChange(e, "ifscCode")}
                   className="input input-bordered p-2"
                 />
                 {errors2.ifscCode && (
                   <span style={{ color: "red", fontSize: "12px" }}>
-                    IFSC Code is required and must be in proper format
+                    IFSC Code is required
                   </span>
                 )}
               </div>
