@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import Button from "@mui/material/Button";
 import { FaCloudUploadAlt } from "react-icons/fa";
@@ -6,7 +6,7 @@ import { IoMdClose } from "react-icons/io";
 import { styled } from "@mui/material/styles";
 import { FaStarOfLife } from "react-icons/fa";
 
-function AddPackage({ addPackage }) {
+function AddPackage({ addPackage, handleBack, handleNext }) {
   const [id, setId] = useState();
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
@@ -30,6 +30,11 @@ function AddPackage({ addPackage }) {
     useState("");
   const [approvedCommercialContract, setApprovedCommercialContract] =
     useState("");
+  const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
+  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [emitterId, setEmitterId] = useState();
+  const [receiverId, setReceiverId] = useState();
+  const [partStudyId, setPartStudyId] = useState();
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
 
@@ -214,6 +219,39 @@ function AddPackage({ addPackage }) {
     }
   };
 
+  const handleEmitterChange = (event) => {
+    setEmitterId(event.target.value);
+  };
+  const handleReceiverChange = (event) => {
+    setReceiverId(event.target.value);
+  };
+  useEffect(() => {
+    getCustomersList();
+  }, []);
+
+  const getCustomersList = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setReceiverCustomersVO(
+          response.data.paramObjectsMap.customersVO.receiverCustomersVO
+        );
+        setEmitterCustomersVO(
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+        console.log(
+          "Emitter",
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleUnitChange = (e) => {
     setPartUnit(e.target.value);
   };
@@ -247,13 +285,84 @@ function AddPackage({ addPackage }) {
     <>
       <div className="partstudy-font">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-4 ms-4">Package Details</h1>
-          <IoMdClose
+          <h1 className="text-xl font-semibold mb-4">Basic Details</h1>
+          {/* <IoMdClose
             onClick={handleClosePackage}
             className="cursor-pointer w-8 h-8 mb-3"
-          />
+          /> */}
         </div>
         <div className="row">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                PS ID
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            {/* <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 w-full input-bordered ps-2"
+              value={partStudyId}
+              // onChange={handleInputChange}
+            >
+              <option value="">Select an option</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select> */}
+            <input
+              className="form-control form-sz mb-2"
+              disabled
+              placeholder={"1"}
+              name="partStudyId"
+              value={partStudyId}
+            />
+            {errors.partStudyId && (
+              <span className="error-text">{errors.partStudyId}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Emitter ID
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleEmitterChange}
+              value={emitterId}
+              disabled
+            >
+              <option value="" disabled>
+                Select an Type
+              </option>
+              {emitterCustomersVO.length > 0 &&
+                emitterCustomersVO.map((list) => (
+                  <option key={list.id} value={list.displayName}>
+                    {list.displayName}
+                  </option>
+                ))}
+            </select>
+            {errors.emitterId && (
+              <span className="error-text">{errors.emitterId}</span>
+            )}
+          </div>
+        </div>
+        <div className="row">
+          <h1 className="text-xl font-semibold mb-4">Package Details</h1>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -269,7 +378,7 @@ function AddPackage({ addPackage }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 68 }}
                 name="length"
                 value={length}
                 placeholder={"L"}
@@ -284,7 +393,7 @@ function AddPackage({ addPackage }) {
                 />
               </span> */}
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 68 }}
                 name="breath"
                 value={breath}
                 placeholder={"B"}
@@ -299,14 +408,14 @@ function AddPackage({ addPackage }) {
                 />
               </span> */}
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 68 }}
                 name="height"
                 value={height}
                 placeholder={"H"}
                 className="input mb-2 p-1 mx-1 input-bordered"
                 onChange={handlePackageChange}
               />
-              <select
+              {/* <select
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
                 value={partUnit}
@@ -317,7 +426,7 @@ function AddPackage({ addPackage }) {
                 <option value="mm">mm</option>
                 <option value="cm">cm</option>
                 <option value="feet">feet</option>
-              </select>
+              </select> */}
             </div>
             <div className="d-flex flex-column">
               {errors.length && (
@@ -329,9 +438,9 @@ function AddPackage({ addPackage }) {
               {errors.height && (
                 <div className="error-text">{errors.height}</div>
               )}
-              {errors.partUnit && (
+              {/* {errors.partUnit && (
                 <div className="error-text">{errors.partUnit}</div>
-              )}
+              )} */}
             </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -361,7 +470,7 @@ function AddPackage({ addPackage }) {
               <div className="error-text">{errors.existingPart}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -384,7 +493,7 @@ function AddPackage({ addPackage }) {
             {errors.currentPackingStudy && (
               <div className="error-text">{errors.currentPackingStudy}</div>
             )}
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -398,9 +507,9 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
+            <textarea
+              style={{ fontSize: "0.800rem" }}
+              className="form-control label label-text label-font-size text-base-content"
               name="currentPackingChallenges"
               value={currentPackingChallenges}
               onChange={handlePackageChange}
@@ -418,7 +527,7 @@ function AddPackage({ addPackage }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                No of Parts Per Current Packaging
+                Parts Per Packaging
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -584,7 +693,6 @@ function AddPackage({ addPackage }) {
                 }
               >
                 Remarks
-                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -600,7 +708,7 @@ function AddPackage({ addPackage }) {
               <div className="error-text">{errors.remarks}</div>
             )}
           </div>
-          <h1 className="text-xl font-semibold mb-4 ms-4">Attachments</h1>
+          <h1 className="text-xl font-semibold mb-4">Attachments</h1>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -657,13 +765,15 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="partDrawing"
-              value={partDrawing}
-              onChange={handlePackageChange}
-            />
+            <Button
+              component="label"
+              variant="contained"
+              className="text-form mb-2"
+              startIcon={<FaCloudUploadAlt />}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
             {errors.partDrawing && (
               <div className="error-text">{errors.partDrawing}</div>
             )}
@@ -680,13 +790,15 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="approvedPackingTechnicalDrawing"
-              value={approvedPackingTechnicalDrawing}
-              onChange={handlePackageChange}
-            />
+            <Button
+              component="label"
+              variant="contained"
+              className="text-form mb-2"
+              startIcon={<FaCloudUploadAlt />}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
             {errors.approvedPackingTechnicalDrawing && (
               <div className="error-text">
                 {errors.approvedPackingTechnicalDrawing}
@@ -705,13 +817,15 @@ function AddPackage({ addPackage }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="approvedCommercialContract"
-              value={approvedCommercialContract}
-              onChange={handlePackageChange}
-            />
+            <Button
+              component="label"
+              variant="contained"
+              className="text-form mb-2"
+              startIcon={<FaCloudUploadAlt />}
+            >
+              Upload file
+              <VisuallyHiddenInput type="file" />
+            </Button>
             {errors.approvedCommercialContract && (
               <div className="error-text">
                 {errors.approvedCommercialContract}
@@ -719,20 +833,20 @@ function AddPackage({ addPackage }) {
             )}
           </div>
         </div>
-        <div className="d-flex flex-row mt-3">
+        <div className="d-flex justify-content-between mt-3">
           <button
             type="button"
-            onClick={handlePackage}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={handleBack}
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Save
+            Back
           </button>
           <button
             type="button"
-            onClick={handleClosePackage}
+            onClick={handleNext}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Cancel
+            Save & Next
           </button>
         </div>
       </div>

@@ -68,7 +68,7 @@ function AddItemSpecification({ addItemSpecification }) {
   const [length, setLength] = useState();
   const [breath, setBreath] = useState();
   const [height, setHeight] = useState();
-  const [dimUnit, setDimUnit] = useState("");
+  const [dimUnit, setDimUnit] = useState("1");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
@@ -76,9 +76,9 @@ function AddItemSpecification({ addItemSpecification }) {
   const handleSelectChange = (e) => {
     setAssetCategory(e.target.value);
   };
-  const handleUnitChange = (e) => {
-    setDimUnit(e.target.value);
-  };
+  // const handleUnitChange = (e) => {
+  //   setDimUnit(e.target.value);
+  // };
 
   useEffect(() => {
     getAllAssetCategory();
@@ -120,9 +120,9 @@ function AddItemSpecification({ addItemSpecification }) {
       case "height":
         setHeight(value);
         break;
-      case "dimUnit":
-        setDimUnit(value);
-        break;
+      // case "dimUnit":
+      //   setDimUnit(value);
+      //   break;
       // default:
       //   break;
     }
@@ -145,9 +145,9 @@ function AddItemSpecification({ addItemSpecification }) {
     if (!height) {
       errors.height = "Height is required";
     }
-    if (!dimUnit) {
-      errors.dimUnit = "Unit is required";
-    }
+    // if (!dimUnit) {
+    //   errors.dimUnit = "Unit is required";
+    // }
     if (Object.keys(errors).length === 0) {
       const formData = {
         assetCategory,

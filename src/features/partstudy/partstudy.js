@@ -29,6 +29,10 @@ import AddPartStudy from "./AddPartStudy";
 import PackageDesign from "./PackageDesign";
 import Logistics from "./Logistics";
 import StockDetails from "./StockDetails";
+import AddPackage from "./AddPackage";
+import AddLogistics from "./AddLogistics";
+import AddStockKeeping from "./AddStockKeeping";
+import NewPartStudy from "./NewPartStudy";
 
 const statsData = [
   {
@@ -63,43 +67,43 @@ function Partstudy() {
   const [data, setData] = React.useState([]);
   const [value, setValue] = React.useState(0);
 
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-    setAdd(false);
-  };
+  // const handleChange = (event, newValue) => {
+  //   setValue(newValue);
+  //   setAdd(false);
+  // };
 
-  function CustomTabPanel(props) {
-    const { children, value, index, ...other } = props;
+  // function CustomTabPanel(props) {
+  //   const { children, value, index, ...other } = props;
 
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            <Typography>{children}</Typography>
-          </Box>
-        )}
-      </div>
-    );
-  }
+  //   return (
+  //     <div
+  //       role="tabpanel"
+  //       hidden={value !== index}
+  //       id={`simple-tabpanel-${index}`}
+  //       aria-labelledby={`simple-tab-${index}`}
+  //       {...other}
+  //     >
+  //       {value === index && (
+  //         <Box sx={{ p: 3 }}>
+  //           <Typography>{children}</Typography>
+  //         </Box>
+  //       )}
+  //     </div>
+  //   );
+  // }
 
-  CustomTabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-  };
+  // CustomTabPanel.propTypes = {
+  //   children: PropTypes.node,
+  //   index: PropTypes.number.isRequired,
+  //   value: PropTypes.number.isRequired,
+  // };
 
-  function a11yProps(index) {
-    return {
-      id: `simple-tab-${index}`,
-      "aria-controls": `simple-tabpanel-${index}`,
-    };
-  }
+  // function a11yProps(index) {
+  //   return {
+  //     id: `simple-tab-${index}`,
+  //     "aria-controls": `simple-tabpanel-${index}`,
+  //   };
+  // }
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -150,17 +154,6 @@ function Partstudy() {
 
   const columns = useMemo(
     () => [
-      {
-        accessorKey: "id",
-        header: "ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "left",
-        },
-        muiTableBodyCellProps: {
-          align: "left",
-        },
-      },
       {
         accessorKey: "partStudyId",
         header: "Part Study Id",
@@ -291,15 +284,38 @@ function Partstudy() {
     columns,
   });
 
+  const handleNext = () => {
+    if (value < 4) {
+      setValue(value + 1);
+    }
+  };
+
+  const handlePrev = () => {
+    if (value > 0) {
+      setValue(value - 1);
+    }
+  };
+
   return (
     <>
-      <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div> */}
-        <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      {add ? (
+        <NewPartStudy />
+      ) : (
+        <>
+          <div className="card w-full p-6 bg-base-100 shadow-xl">
+            <div className="d-flex justify-content-end mb-2">
+              <button
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
+                style={{ color: "blue" }}
+                onClick={handleAddOpen}
+              >
+                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+                <span className="text-form text-base">Part Study</span>
+              </button>
+            </div>
+            <MaterialReactTable table={table} />
+
+            {/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           <Tabs
             value={value}
             onChange={handleChange}
@@ -307,6 +323,16 @@ function Partstudy() {
             variant="scrollable"
             scrollButtons="auto"
           >
+            <Tab
+              label="PART STUDY INFO"
+              icon={<TbListDetails className="w-16 h-6" />}
+              {...a11yProps(0)}
+            />
+            <Tab
+              label="NEW PART STUDY"
+              icon={<TbListDetails className="w-16 h-6" />}
+              {...a11yProps(0)}
+            />
             <Tab
               label="BASIC DETAILS"
               icon={<TbListDetails className="w-16 h-6" />}
@@ -330,94 +356,71 @@ function Partstudy() {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={1}>
-          <PackageDesign />
+          <AddPartStudy handleBack={handlePrev} handleNext={handleNext} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={2}>
-          <Logistics />
+          <AddPackage handleBack={handlePrev} handleNext={handleNext} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={3}>
-          <StockDetails />
+          <AddLogistics handleBack={handlePrev} handleNext={handleNext} />
+        </CustomTabPanel>
+        <CustomTabPanel value={value} index={4}>
+          <AddStockKeeping handleBack={handlePrev} handleNext={handleNext} />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={0}>
-          {add ? (
-            <AddPartStudy addPartStudy={handleBack} />
-          ) : (
-            <>
-              <div className="">
-                <div className="flex justify-between">
-                  <button
-                    className="btn btn-ghost btn-lg text-sm col-xs-1 p-0 pe-2"
-                    style={{ color: "blue" }}
-                    onClick={handleClickOpen}
-                  >
-                    <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                    <span className="text-form text-base">Upload</span>
-                  </button>
-                  <button
-                    className="btn btn-ghost btn-lg text-sm col-xs-1 p-0 pe-2"
-                    style={{ color: "blue" }}
-                    onClick={handleAddOpen}
-                  >
-                    <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                    <span className="text-form text-base">Part Study</span>
-                  </button>
+          <div className=""></div>
+          <Dialog
+            fullWidth={true}
+            maxWidth={"sm"}
+            open={open}
+            onClose={handleClose}
+          >
+            <div className="d-flex justify-content-between">
+              <DialogTitle>Upload File</DialogTitle>
+              <IoMdClose
+                onClick={handleClose}
+                className="cursor-pointer w-8 h-8 mt-3 me-3"
+              />
+            </div>
+            <DialogContent>
+              <DialogContentText className="d-flex flex-column">
+                Choose a file to upload
+                <div className="d-flex justify-content-center">
+                  <div className="col-lg-4 text-center my-3">
+                    <Button
+                      component="label"
+                      variant="contained"
+                      startIcon={<FaCloudUploadAlt />}
+                    >
+                      Upload file
+                      <VisuallyHiddenInput type="file" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-              <div className="mt-4">
-                <MaterialReactTable table={table} />
-              </div>
-              <Dialog
-                fullWidth={true}
-                maxWidth={"sm"}
-                open={open}
-                onClose={handleClose}
-              >
-                <div className="d-flex justify-content-between">
-                  <DialogTitle>Upload File</DialogTitle>
-                  <IoMdClose
-                    onClick={handleClose}
-                    className="cursor-pointer w-8 h-8 mt-3 me-3"
-                  />
-                </div>
-                <DialogContent>
-                  <DialogContentText className="d-flex flex-column">
-                    Choose a file to upload
-                    <div className="d-flex justify-content-center">
-                      <div className="col-lg-4 text-center my-3">
-                        <Button
-                          component="label"
-                          variant="contained"
-                          startIcon={<FaCloudUploadAlt />}
-                        >
-                          Upload file
-                          <VisuallyHiddenInput type="file" />
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="col-lg-4 mt-3">
-                      <Button
-                        size="small"
-                        component="label"
-                        className="text-form"
-                        variant="contained"
-                        startIcon={<FiDownload />}
-                      >
-                        Download Sample File
-                      </Button>
-                    </div>
-                  </DialogContentText>
-                </DialogContent>
-                <DialogActions className="mb-2 me-2">
-                  <Button onClick={handleClose}>Cancel</Button>
-                  <Button component="label" variant="contained">
-                    Submit
+                <div className="col-lg-4 mt-3">
+                  <Button
+                    size="small"
+                    component="label"
+                    className="text-form"
+                    variant="contained"
+                    startIcon={<FiDownload />}
+                  >
+                    Download Sample File
                   </Button>
-                </DialogActions>
-              </Dialog>
-            </>
-          )}
-        </CustomTabPanel>
-      </div>
+                </div>
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions className="mb-2 me-2">
+              <Button onClick={handleClose}>Cancel</Button>
+              <Button component="label" variant="contained">
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
+        </CustomTabPanel> */}
+          </div>
+        </>
+      )}
     </>
   );
 }

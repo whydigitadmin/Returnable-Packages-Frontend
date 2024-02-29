@@ -95,10 +95,14 @@ function IssueManifest() {
   const [isIssuedPopupOpen, setIssuedPopupOpen] = useState(false);
   const [selectedIssueRequest, setSelectedIssueRequest] = useState(null);
   const [selectedSubIndex, setSelectedSubIndex] = useState(null);
+  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [emitter, setEmitter] = useState("");
   const [qty, setQty] = React.useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
   useEffect(() => {
     getIssueRequest();
+    getCustomersList();
   }, []);
 
   const handleQtyChange = (e) => {
@@ -288,6 +292,26 @@ function IssueManifest() {
     setDateValue(newValue);
   };
 
+  const handleEmitterChange = (event) => {
+    setEmitter(event.target.value);
+  };
+
+  const getCustomersList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setEmitterCustomersVO(
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const getIssueRequest = async () => {
     try {
       const response = await axios.get(
@@ -348,12 +372,27 @@ function IssueManifest() {
                     Issued To
                   </h4>
                 </div>
-                <select className="form-select w-11/12 mb-2">
+                <select
+                  className="form-select form-sz w-full mb-2"
+                  onChange={handleEmitterChange}
+                  value={emitter}
+                >
+                  <option value="" disabled>
+                    Select an Emitter
+                  </option>
+                  {emitterCustomersVO.length > 0 &&
+                    emitterCustomersVO.map((list) => (
+                      <option key={list.id} value={list.displayName}>
+                        {list.displayName}
+                      </option>
+                    ))}
+                </select>
+                {/* <select className="form-select w-11/12 mb-2">
                   <option value="Gabriel India Ltd-Pune">
                     Gabriel India Ltd-Pune
                   </option>
                   <option value="Denso-Bangalore">Denso-Bangalore</option>
-                </select>
+                </select> */}
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   Gabriel India Ltd
                 </h4>

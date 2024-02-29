@@ -1,13 +1,18 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Axios from "axios";
+import axios from "axios";
 import Datepicker from "react-tailwindcss-datepicker";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
-function AddPartStudy({ addPartStudy }) {
+function AddPartStudy({ addPartStudy, handleBack, handleNext }) {
   const [id, setId] = useState();
   const [partStudyId, setPartStudyId] = useState();
+  const [showPartStudyId, setShowPartStudyId] = useState(false);
+  const [selectPartStudy, setSelectPartStudy] = useState();
+  const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
+  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [partStudyDate, setPartStudyDate] = useState({
     startDate: null,
     endDate: null,
@@ -63,8 +68,19 @@ function AddPartStudy({ addPartStudy }) {
     }
   };
 
+  const handleSelectPartChange = (event) => {
+    setSelectPartStudy(event.target.value);
+    if (event.target.value === "ExistingPartStudy") {
+      setShowPartStudyId(true);
+    } else {
+      setShowPartStudyId(false);
+    }
+  };
   const handleCloseAddPartStudy = () => {
     addPartStudy(false);
+  };
+  const handleBackPartStudy = () => {
+    window.location.reload();
   };
 
   const handleWeightChange = (e) => {
@@ -73,6 +89,39 @@ function AddPartStudy({ addPartStudy }) {
 
   const handleValueChange = (newValue) => {
     setPartStudyDate(newValue);
+  };
+
+  const handleEmitterChange = (event) => {
+    setEmitterId(event.target.value);
+  };
+  const handleReceiverChange = (event) => {
+    setReceiverId(event.target.value);
+  };
+  useEffect(() => {
+    getCustomersList();
+  }, []);
+
+  const getCustomersList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setReceiverCustomersVO(
+          response.data.paramObjectsMap.customersVO.receiverCustomersVO
+        );
+        setEmitterCustomersVO(
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+        console.log(
+          "Emitter",
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handlePartStudy = () => {
@@ -146,39 +195,76 @@ function AddPartStudy({ addPartStudy }) {
     <>
       <div className="partstudy-font">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-4 ms-4">
+          {/* <h1 className="text-xl font-semibold mb-4">
             Basic Part Details & Geography
-          </h1>
-          <IoMdClose
+          </h1> */}
+          <h1 className="text-xl font-semibold mb-2">Basic Details</h1>
+          {/* <IoMdClose
             onClick={handleCloseAddPartStudy}
             className="cursor-pointer w-8 h-8 mb-3"
-          />
+          /> */}
+          {/* <h1 className="text-xl font-semibold my-2">Basic Details</h1> */}
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Part Study ID
+                Select Part Study
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="partStudyId"
-              value={partStudyId}
-              onChange={handlePartChange}
-            />
+            <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 w-full input-bordered ps-2"
+              value={selectPartStudy}
+              onChange={handleSelectPartChange}
+            >
+              <option value="">Select an option</option>
+              <option value="NewPartStudy">New Part Study</option>
+              <option value="ExistingPartStudy">Incomplete Part Study</option>
+            </select>
             {errors.partStudyId && (
               <span className="error-text">{errors.partStudyId}</span>
             )}
           </div>
+          {showPartStudyId && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    PS ID
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <select
+                  style={{ height: 40, fontSize: "0.800rem" }}
+                  className="input mb-2 w-full input-bordered ps-2"
+                  value={partStudyId}
+                  // onChange={handleInputChange}
+                >
+                  <option value="">Select an option</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                </select>
+                {errors.partStudyId && (
+                  <span className="error-text">{errors.partStudyId}</span>
+                )}
+              </div>
+            </>
+          )} */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -218,43 +304,28 @@ function AddPartStudy({ addPartStudy }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="emitterId"
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleEmitterChange}
               value={emitterId}
-              onChange={handlePartChange}
-            />
+            >
+              <option value="" disabled>
+                Select an Type
+              </option>
+              {emitterCustomersVO.length > 0 &&
+                emitterCustomersVO.map((list) => (
+                  <option key={list.id} value={list.displayName}>
+                    {list.displayName}
+                  </option>
+                ))}
+            </select>
             {errors.emitterId && (
               <span className="error-text">{errors.emitterId}</span>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Receiver ID
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="receiverId"
-              value={receiverId}
-              onChange={handlePartChange}
-            />
-            {errors.receiverId && (
-              <span className="error-text">{errors.receiverId}</span>
-            )}
-          </div>
         </div>
-        <h1 className="text-xl font-semibold my-2">Part Basic Details</h1>
+
+        {/* <h1 className="text-xl font-semibold my-2">Basic Details</h1> */}
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -304,6 +375,7 @@ function AddPartStudy({ addPartStudy }) {
               <span className="error-text">{errors.partNumber}</span>
             )}
           </div>
+          <h1 className="text-xl font-semibold my-2">Volume Details</h1>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -325,7 +397,7 @@ function AddPartStudy({ addPartStudy }) {
                 value={weight}
                 onChange={handlePartChange}
               />
-              <select
+              {/* <select
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
                 className="input mb-2 p-1 input-bordered ms-1"
                 value={weightUnit}
@@ -335,15 +407,15 @@ function AddPartStudy({ addPartStudy }) {
                 <option value="kg">kg</option>
                 <option value="ton">ton</option>
                 <option value="gm">gm</option>
-              </select>
+              </select> */}
             </div>
             <div className="d-flex flex-column">
               {errors.weight && (
                 <span className="error-text">{errors.weight}</span>
               )}
-              {errors.weightUnit && (
+              {/* {errors.weightUnit && (
                 <span className="error-text">{errors.weightUnit}</span>
-              )}
+              )} */}
             </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -353,7 +425,7 @@ function AddPartStudy({ addPartStudy }) {
                   "label-text label-font-size text-base-content d-flex "
                 }
               >
-                Part Volume
+                Average Volume
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -411,20 +483,20 @@ function AddPartStudy({ addPartStudy }) {
             )}
           </div>
         </div>
-        <div className="d-flex flex-row mt-3">
+        <div className="d-flex justify-content-between mt-3">
           <button
             type="button"
-            onClick={handlePartStudy}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={handleBackPartStudy}
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Save
+            Back
           </button>
           <button
             type="button"
-            onClick={handleCloseAddPartStudy}
+            onClick={handleNext}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Cancel
+            Save & Next
           </button>
         </div>
       </div>

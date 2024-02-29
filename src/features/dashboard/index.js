@@ -18,7 +18,7 @@ import { useState } from "react";
 const statsData = [
   {
     title: "New Users",
-    value: "34.7k",
+    value: "34700",
     icon: <UserGroupIcon className="w-8 h-8" />,
     description: "↗︎ 2300 (22%)",
   },
@@ -36,7 +36,7 @@ const statsData = [
   },
   {
     title: "Active Users",
-    value: "5.6k",
+    value: "5600",
     icon: <UsersIcon className="w-8 h-8" />,
     description: "↙ 300 (18%)",
   },
@@ -74,11 +74,12 @@ function Dashboard() {
       </div>
 
       {/** ---------------------- Different stats content 2 ------------------------- */}
-
-      <div className="grid lg:grid-cols-2 mt-10 grid-cols-1 gap-6">
-        <AmountStats />
-        <PageStats />
-      </div>
+      {localStorage.getItem("userDetails") === "ROLE_EMITTER" && (
+        <div className="grid lg:grid-cols-2 mt-10 grid-cols-1 gap-6">
+          <AmountStats />
+          <PageStats />
+        </div>
+      )}
 
       {/** ---------------------- User source channels table  ------------------------- */}
 

@@ -65,7 +65,7 @@ function AddItem({ addItem }) {
   const [assetName, setAssetName] = useState([]);
   const [assetNameVO, setAssetNameVO] = useState([]);
   const [assetQty, setAssetQty] = useState();
-  const [brand, setBrand] = useState([]);
+  const [brand, setBrand] = useState("");
   const [brandVO, setBrandVO] = useState([]);
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
@@ -78,7 +78,7 @@ function AddItem({ addItem }) {
   const [hsnCode, setHsnCode] = useState("");
   const [id, setId] = useState();
   const [maintanencePeriod, setMaintanencePeriod] = useState("");
-  const [manufacturer, setManufacturer] = useState([]);
+  const [manufacturer, setManufacturer] = useState("");
   const [manufacturerVO, setManufacturerVO] = useState([]);
   const [scrapValue, setScrapValue] = useState("");
   const [sellPrice, setSellPrice] = useState("");
@@ -210,7 +210,7 @@ function AddItem({ addItem }) {
           setLength(units[0].length);
           setBreath(units[0].breath);
           setHeight(units[0].height);
-          setDimUnit(units[0].dimUnit);
+          // setDimUnit(units[0].dimUnit);
         }
       }
     } catch (error) {
@@ -249,9 +249,9 @@ function AddItem({ addItem }) {
       case "height":
         setHeight(value);
         break;
-      case "dimUnit":
-        setDimUnit(value);
-        break;
+      // case "dimUnit":
+      //   setDimUnit(value);
+      //   break;
       case "costPrice":
         setCostPrice(value);
         break;
@@ -298,9 +298,9 @@ function AddItem({ addItem }) {
 
   const handleAsset = () => {
     const errors = {};
-    if (!weight) {
-      errors.weight = "Weight Name is required";
-    }
+    // if (!weight) {
+    //   errors.weight = "Weight Name is required";
+    // }
     if (!taxRate) {
       errors.taxRate = "Tax Rate is required";
     }

@@ -1,7 +1,7 @@
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Axios from "axios";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -65,23 +65,29 @@ function AddFlows({ addFlows }) {
   const [destination, setDestination] = useState("");
   const [active, setActive] = useState(true);
   const [id, setId] = useState();
-  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-
   const [kitName, setKitName] = useState("");
   const [partName, setPartName] = useState("");
   const [partNumber, setPartNumber] = useState();
-  const [subReceiver, setSubReceiver] = useState("");
   const [cycleTime, setCycleTime] = useState("");
   const [errors, setErrors] = useState("");
+  const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
+  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [getkit, setGetKit] = React.useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+
+  useEffect(() => {
+    getCustomersList();
+    getAllKitData();
+  }, []);
 
   const handleFlows = () => {
     addFlows(false);
   };
 
-  const handleSelectEmitter = (event) => {
+  const handleEmitterChange = (event) => {
     setEmitter(event.target.value);
   };
-  const handleSelectReceiver = (event) => {
+  const handleReceiverChange = (event) => {
     setReceiver(event.target.value);
   };
   const handleSelectKitName = (event) => {
@@ -90,8 +96,39 @@ function AddFlows({ addFlows }) {
   const handleSelectPartName = (event) => {
     setPartName(event.target.value);
   };
-  const handleSubReceiver = (event) => {
-    setSubReceiver(event.target.value);
+
+  const getCustomersList = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setReceiverCustomersVO(
+          response.data.paramObjectsMap.customersVO.receiverCustomersVO
+        );
+        setEmitterCustomersVO(
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAllKitData = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit`
+      );
+
+      if (response.status === 200) {
+        setGetKit(response.data.paramObjectsMap.KitVO);
+        console.log("kit", response.data.paramObjectsMap.KitVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handleInputChange = (event) => {
@@ -143,9 +180,6 @@ function AddFlows({ addFlows }) {
     if (!partNumber) {
       errors.partNumber = "Part number is required";
     }
-    if (!subReceiver) {
-      errors.subReceiver = "Sub Receiver is required";
-    }
     if (!cycleTime) {
       errors.cycleTime = "Cycle Time is required";
     }
@@ -166,7 +200,6 @@ function AddFlows({ addFlows }) {
             emitter,
             partName,
             cycleTime,
-            subReceiver,
             active,
           },
         ],
@@ -237,17 +270,19 @@ function AddFlows({ addFlows }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
+              className="form-select form-sz w-full mb-2"
+              onChange={handleEmitterChange}
               value={emitter}
-              onChange={handleSelectEmitter}
             >
               <option value="" disabled>
                 Select an Emitter
               </option>
-              <option value="Denso">Denso</option>
-              <option value="Gabriel">Gabriel</option>
+              {emitterCustomersVO.length > 0 &&
+                emitterCustomersVO.map((list) => (
+                  <option key={list.id} value={list.displayName}>
+                    {list.displayName}
+                  </option>
+                ))}
             </select>
           </div>
           {/* receiver field */}
@@ -265,17 +300,19 @@ function AddFlows({ addFlows }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
+              className="form-select form-sz w-full mb-2"
+              onChange={handleReceiverChange}
               value={receiver}
-              onChange={handleSelectReceiver}
             >
               <option value="" disabled>
                 Select an Receiver
               </option>
-              <option value="Tata Motors">Tata Motors</option>
-              <option value="Mahindra">Mahindra</option>
+              {receiverCustomersVO.length > 0 &&
+                receiverCustomersVO.map((list) => (
+                  <option key={list.id} value={list.displayName}>
+                    {list.displayName}
+                  </option>
+                ))}
             </select>
           </div>
 
@@ -365,18 +402,16 @@ function AddFlows({ addFlows }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
+              className="form-select form-sz w-full"
               value={kitName}
               onChange={handleSelectKitName}
             >
-              <option value="" disabled>
-                Select an Kit
-              </option>
-              <option value="Kit1">Kit1</option>
-              <option value="Kit2">Kit2</option>
-              <option value="Kit3">Kit3</option>
+              <option value="">Select a Kit</option>
+              {getkit.map((kitId) => (
+                <option key={kitId.id} value={kitId.id}>
+                  {kitId.id}
+                </option>
+              ))}
             </select>
           </div>
           {/* Part Name */}

@@ -1,9 +1,9 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
-function AddStockKeeping({ addStockKeeping }) {
+function AddStockKeeping({ addStockKeeping, handleBack, handleNext }) {
   const [emitterStoreDays, setEmitterStoreDays] = useState("");
   const [emitterLineDays, setEmitterLineDays] = useState("");
   const [inTransitDays, setInTransitDays] = useState("");
@@ -15,6 +15,11 @@ function AddStockKeeping({ addStockKeeping }) {
   const [emptyPackagingReverseDays, setEmptyPackagingReverseDays] =
     useState("");
   const [errors, setErrors] = useState({});
+  const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
+  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [emitterId, setEmitterId] = useState();
+  const [receiverId, setReceiverId] = useState();
+  const [partStudyId, setPartStudyId] = useState();
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
 
   const handleInputChange = (event) => {
@@ -53,6 +58,39 @@ function AddStockKeeping({ addStockKeeping }) {
   };
   const handleCloseAddStockKeeping = () => {
     addStockKeeping(false);
+  };
+
+  const handleEmitterChange = (event) => {
+    setEmitterId(event.target.value);
+  };
+  const handleReceiverChange = (event) => {
+    setReceiverId(event.target.value);
+  };
+  useEffect(() => {
+    getCustomersList();
+  }, []);
+
+  const getCustomersList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setReceiverCustomersVO(
+          response.data.paramObjectsMap.customersVO.receiverCustomersVO
+        );
+        setEmitterCustomersVO(
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+        console.log(
+          "Emitter",
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handleStock = () => {
@@ -119,13 +157,12 @@ function AddStockKeeping({ addStockKeeping }) {
     <>
       <div className="partstudy-font">
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-4 ms-4">
-            Stock Keeping (In Days)
-          </h1>
-          <IoMdClose
+          <h1 className="text-xl font-semibold mb-4">Basic Details</h1>
+
+          {/* <IoMdClose
             onClick={handleCloseAddStockKeeping}
             className="cursor-pointer w-8 h-8 mb-3"
-          />
+          /> */}
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
@@ -135,7 +172,78 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Emitter Store Days
+                PS ID
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            {/* <select
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 w-full input-bordered ps-2"
+              value={partStudyId}
+              // onChange={handleInputChange}
+            >
+              <option value="">Select an option</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+            </select> */}
+            <input
+              className="form-control form-sz mb-2"
+              disabled
+              placeholder={"1"}
+              name="partStudyId"
+              value={partStudyId}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Emitter ID
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleEmitterChange}
+              value={emitterId}
+              disabled
+            >
+              <option value="" disabled>
+                Select an Type
+              </option>
+              {emitterCustomersVO.length > 0 &&
+                emitterCustomersVO.map((list) => (
+                  <option key={list.id} value={list.displayName}>
+                    {list.displayName}
+                  </option>
+                ))}
+            </select>
+            {errors.emitterId && (
+              <span className="error-text">{errors.emitterId}</span>
+            )}
+          </div>
+        </div>
+
+        <div className="row">
+          <h1 className="text-xl font-semibold mb-4">
+            Stock Keeping (In Days)
+          </h1>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Emitter Store
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -160,7 +268,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Emitter Line Days
+                Emitter Line
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -185,7 +293,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                InTransit Days
+                InTransit
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -210,7 +318,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Receiver Line Storage Days
+                Receiver Line Storage
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -237,7 +345,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Receiver Manufacturing Line Days
+                Receiver Manufacturing Line
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -264,7 +372,7 @@ function AddStockKeeping({ addStockKeeping }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Other Storage Days
+                Other Storage
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -285,31 +393,6 @@ function AddStockKeeping({ addStockKeeping }) {
         </div>
         {/* <h1 className="text-xl font-semibold my-2"></h1> */}
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size d-flex text-base-content "
-                }
-              >
-                Total Cycle Time
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mt-2"
-              type={"text"}
-              placeholder={""}
-              name="totalCycleTime"
-              value={totalCycleTime}
-              onChange={handleInputChange}
-            />
-            {errors.totalCycleTime && (
-              <span className="error-text">{errors.totalCycleTime}</span>
-            )}
-          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -337,21 +420,46 @@ function AddStockKeeping({ addStockKeeping }) {
               </span>
             )}
           </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size d-flex text-base-content "
+                }
+              >
+                Total Cycle Time
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mt-2"
+              type={"text"}
+              placeholder={""}
+              name="totalCycleTime"
+              value={totalCycleTime}
+              onChange={handleInputChange}
+            />
+            {errors.totalCycleTime && (
+              <span className="error-text">{errors.totalCycleTime}</span>
+            )}
+          </div>
         </div>
-        <div className="d-flex flex-row mt-3">
+        <div className="d-flex justify-content-between mt-3">
           <button
             type="button"
-            onClick={handleStock}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={handleBack}
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Save
+            Back
           </button>
           <button
             type="button"
-            onClick={handleCloseAddStockKeeping}
+            onClick={handleNext}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Cancel
+            Submit
           </button>
         </div>
       </div>
