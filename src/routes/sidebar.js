@@ -119,6 +119,11 @@ const routes = [
     name: "IssueManifest", // name that appear in Sidebar
   },
   {
+    path: "/app/inwardmanifest", //no url needed as this has submenu
+    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+    name: "InwardManifest", // name that appear in Sidebar
+  },
+  {
     path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
     name: "EmptyRetrievalManifest", // name that appear in Sidebar
