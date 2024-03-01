@@ -4,36 +4,27 @@ import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
 import { TbListDetails } from "react-icons/tb";
 import { LuPackageOpen } from "react-icons/lu";
 import { FiTruck } from "react-icons/fi";
 import { TbBuildingWarehouse } from "react-icons/tb";
-import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
-import { FiDownload } from "react-icons/fi";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
 import AddPartStudy from "./AddPartStudy";
 import AddPackage from "./AddPackage";
 import AddLogistics from "./AddLogistics";
 import AddStockKeeping from "./AddStockKeeping";
+import Checkbox from "@mui/material/Checkbox";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import SelectPartStudy from "./SelectPartStudy";
 
 function NewPartStudy() {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [add, setAdd] = React.useState(false);
+  const [ps, setPs] = React.useState(true);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
   const handleClickOpen = () => {
@@ -111,6 +102,10 @@ function NewPartStudy() {
     if (value > 0) {
       setValue(value - 1);
     }
+  };
+  const handlePs = () => {
+    setPs(!ps);
+    setValue(0);
   };
 
   const handleChange = (event, newValue) => {
@@ -231,48 +226,141 @@ function NewPartStudy() {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
+        {/* <div className="border rounded w-50 mb-3"> */}
+        <div className="d-flex justify-content-center mb-3">
+          <FormGroup className="d-flex flex-row my-2">
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={ps}
+                  onChange={handlePs}
+                  inputProps={{ "aria-label": "primary checkbox" }}
+                />
+              }
+              label="New Part Study"
+              className="pe-2"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={!ps}
+                  onChange={handlePs}
+                  inputProps={{ "aria-label": "secondary checkbox" }}
+                />
+              }
+              label="Incomplete Part Study"
+            />
+          </FormGroup>
+        </div>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-            variant="scrollable"
-            scrollButtons="auto"
-          >
-            <Tab
-              label="BASIC DETAILS"
-              icon={<TbListDetails className="w-16 h-6" />}
-              {...a11yProps(0)}
-            />
-            <Tab
-              label="PACKAGING DESIGN"
-              icon={<LuPackageOpen className="w-16 h-6" />}
-              {...a11yProps(1)}
-            />
-            <Tab
-              label="LOGISTICS DETAILS"
-              icon={<FiTruck className="w-16 h-6" />}
-              {...a11yProps(2)}
-            />
-            <Tab
-              label="STOCK KEEPING DAYS"
-              icon={<TbBuildingWarehouse className="w-16 h-6" />}
-              {...a11yProps(3)}
-            />
-          </Tabs>
+          {ps ? (
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab
+                label="BASIC DETAILS"
+                icon={<TbListDetails className="w-16 h-6" />}
+                {...a11yProps(0)}
+              />
+              <Tab
+                label="PACKAGING DESIGN"
+                icon={<LuPackageOpen className="w-16 h-6" />}
+                {...a11yProps(1)}
+              />
+              <Tab
+                label="LOGISTICS DETAILS"
+                icon={<FiTruck className="w-16 h-6" />}
+                {...a11yProps(2)}
+              />
+              <Tab
+                label="STOCK KEEPING DAYS"
+                icon={<TbBuildingWarehouse className="w-16 h-6" />}
+                {...a11yProps(3)}
+              />
+            </Tabs>
+          ) : (
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
+              variant="scrollable"
+              scrollButtons="auto"
+            >
+              <Tab
+                label="PART STUDY"
+                icon={<TbListDetails className="w-16 h-6" />}
+                {...a11yProps(0)}
+              />
+              <Tab
+                label="BASIC DETAILS"
+                icon={<TbListDetails className="w-16 h-6" />}
+                {...a11yProps(1)}
+              />
+              <Tab
+                label="PACKAGING DESIGN"
+                icon={<LuPackageOpen className="w-16 h-6" />}
+                {...a11yProps(2)}
+              />
+              <Tab
+                label="LOGISTICS DETAILS"
+                icon={<FiTruck className="w-16 h-6" />}
+                {...a11yProps(3)}
+              />
+              <Tab
+                label="STOCK KEEPING DAYS"
+                icon={<TbBuildingWarehouse className="w-16 h-6" />}
+                {...a11yProps(4)}
+              />
+            </Tabs>
+          )}
         </Box>
-        <CustomTabPanel value={value} index={0}>
-          <AddPartStudy handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={1}>
-          <AddPackage handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          <AddLogistics handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={3}>
-          <AddStockKeeping handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
+        {ps ? (
+          <>
+            <CustomTabPanel value={value} index={0}>
+              <AddPartStudy handleBack={handlePrev} handleNext={handleNext} />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+              <AddPackage handleBack={handlePrev} handleNext={handleNext} />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={2}>
+              <AddLogistics handleBack={handlePrev} handleNext={handleNext} />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={3}>
+              <AddStockKeeping
+                handleBack={handlePrev}
+                handleNext={handleNext}
+              />
+            </CustomTabPanel>
+          </>
+        ) : (
+          <>
+            <CustomTabPanel value={value} index={0}>
+              <SelectPartStudy
+                handleBack={handlePrev}
+                handleNext={handleNext}
+              />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+              <AddPartStudy handleBack={handlePrev} handleNext={handleNext} />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={2}>
+              <AddPackage handleBack={handlePrev} handleNext={handleNext} />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={3}>
+              <AddLogistics handleBack={handlePrev} handleNext={handleNext} />
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={4}>
+              <AddStockKeeping
+                handleBack={handlePrev}
+                handleNext={handleNext}
+              />
+            </CustomTabPanel>
+          </>
+        )}
       </div>
     </>
   );

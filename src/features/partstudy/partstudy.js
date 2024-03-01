@@ -324,7 +324,7 @@ function Partstudy() {
       {/* Modal to display selected row data */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
-          <Typography variant="h6">View Particular Data</Typography>
+          <Typography variant="h6">Part Study Details</Typography>
         </DialogTitle>
         <DialogContent>
           {selectedRowData && (
