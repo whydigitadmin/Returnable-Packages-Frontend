@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
@@ -33,6 +33,18 @@ import AddPackage from "./AddPackage";
 import AddLogistics from "./AddLogistics";
 import AddStockKeeping from "./AddStockKeeping";
 import NewPartStudy from "./NewPartStudy";
+import EditIcon from "@mui/icons-material/Edit";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from "@mui/material";
 
 const statsData = [
   {
@@ -66,44 +78,8 @@ function Partstudy() {
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [value, setValue] = React.useState(0);
-
-  // const handleChange = (event, newValue) => {
-  //   setValue(newValue);
-  //   setAdd(false);
-  // };
-
-  // function CustomTabPanel(props) {
-  //   const { children, value, index, ...other } = props;
-
-  //   return (
-  //     <div
-  //       role="tabpanel"
-  //       hidden={value !== index}
-  //       id={`simple-tabpanel-${index}`}
-  //       aria-labelledby={`simple-tab-${index}`}
-  //       {...other}
-  //     >
-  //       {value === index && (
-  //         <Box sx={{ p: 3 }}>
-  //           <Typography>{children}</Typography>
-  //         </Box>
-  //       )}
-  //     </div>
-  //   );
-  // }
-
-  // CustomTabPanel.propTypes = {
-  //   children: PropTypes.node,
-  //   index: PropTypes.number.isRequired,
-  //   value: PropTypes.number.isRequired,
-  // };
-
-  // function a11yProps(index) {
-  //   return {
-  //     id: `simple-tab-${index}`,
-  //     "aria-controls": `simple-tabpanel-${index}`,
-  //   };
-  // }
+  const [tableData, setTableData] = useState([]);
+  const [selectedRowData, setSelectedRowData] = useState(null); // State to store selected row data
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -155,6 +131,25 @@ function Partstudy() {
   const columns = useMemo(
     () => [
       {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <IconButton onClick={() => handleViewRow(row)}>
+            <VisibilityIcon />
+          </IconButton>
+        ),
+      },
+      {
         accessorKey: "partStudyId",
         header: "Part Study Id",
         size: 50,
@@ -164,6 +159,9 @@ function Partstudy() {
         muiTableBodyCellProps: {
           align: "center",
         },
+        enableColumnOrdering: false,
+        enableEditing: false, //disable editing on this column
+        enableSorting: false,
       },
       {
         accessorKey: "partStudyDate",
@@ -296,6 +294,11 @@ function Partstudy() {
     }
   };
 
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    setOpen(true);
+  };
+
   return (
     <>
       {add ? (
@@ -314,115 +317,233 @@ function Partstudy() {
               </button>
             </div>
             <MaterialReactTable table={table} />
-
-            {/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-          <Tabs
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example"
-            variant="scrollable"
-            scrollButtons="auto"
-          >
-            <Tab
-              label="PART STUDY INFO"
-              icon={<TbListDetails className="w-16 h-6" />}
-              {...a11yProps(0)}
-            />
-            <Tab
-              label="NEW PART STUDY"
-              icon={<TbListDetails className="w-16 h-6" />}
-              {...a11yProps(0)}
-            />
-            <Tab
-              label="BASIC DETAILS"
-              icon={<TbListDetails className="w-16 h-6" />}
-              {...a11yProps(0)}
-            />
-            <Tab
-              label="PACKAGING DESIGN"
-              icon={<LuPackageOpen className="w-16 h-6" />}
-              {...a11yProps(1)}
-            />
-            <Tab
-              label="LOGISTICS DETAILS"
-              icon={<FiTruck className="w-16 h-6" />}
-              {...a11yProps(2)}
-            />
-            <Tab
-              label="STOCK KEEPING DAYS"
-              icon={<TbBuildingWarehouse className="w-16 h-6" />}
-              {...a11yProps(3)}
-            />
-          </Tabs>
-        </Box>
-        <CustomTabPanel value={value} index={1}>
-          <AddPartStudy handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={2}>
-          <AddPackage handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={3}>
-          <AddLogistics handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={4}>
-          <AddStockKeeping handleBack={handlePrev} handleNext={handleNext} />
-        </CustomTabPanel>
-        <CustomTabPanel value={value} index={0}>
-          <div className=""></div>
-          <Dialog
-            fullWidth={true}
-            maxWidth={"sm"}
-            open={open}
-            onClose={handleClose}
-          >
-            <div className="d-flex justify-content-between">
-              <DialogTitle>Upload File</DialogTitle>
-              <IoMdClose
-                onClick={handleClose}
-                className="cursor-pointer w-8 h-8 mt-3 me-3"
-              />
-            </div>
-            <DialogContent>
-              <DialogContentText className="d-flex flex-column">
-                Choose a file to upload
-                <div className="d-flex justify-content-center">
-                  <div className="col-lg-4 text-center my-3">
-                    <Button
-                      component="label"
-                      variant="contained"
-                      startIcon={<FaCloudUploadAlt />}
-                    >
-                      Upload file
-                      <VisuallyHiddenInput type="file" />
-                    </Button>
-                  </div>
-                </div>
-                <div className="col-lg-4 mt-3">
-                  <Button
-                    size="small"
-                    component="label"
-                    className="text-form"
-                    variant="contained"
-                    startIcon={<FiDownload />}
-                  >
-                    Download Sample File
-                  </Button>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions className="mb-2 me-2">
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button component="label" variant="contained">
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </CustomTabPanel> */}
           </div>
         </>
       )}
+
+      {/* Modal to display selected row data */}
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+          <Typography variant="h6">View Particular Data</Typography>
+        </DialogTitle>
+        <DialogContent>
+          {selectedRowData && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Part Study Id</TableCell>
+                    <TableCell>{selectedRowData.partStudyId}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Part Study Date</TableCell>
+                    <TableCell>{selectedRowData.partStudyDate}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Emitter ID</TableCell>
+                    <TableCell>{selectedRowData.emitterId}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Receiver ID</TableCell>
+                    <TableCell>{selectedRowData.receiverId}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Part Name</TableCell>
+                    <TableCell>{selectedRowData.partName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Part No</TableCell>
+                    <TableCell>{selectedRowData.partNumber}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Weight</TableCell>
+                    <TableCell>{selectedRowData.weight}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Weight Unit</TableCell>
+                    <TableCell>{selectedRowData.weightUnit}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Part Volume</TableCell>
+                    <TableCell>{selectedRowData.partVolume}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Highest Volume</TableCell>
+                    <TableCell>{selectedRowData.highestVolume}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Lowest Volume</TableCell>
+                    <TableCell>{selectedRowData.lowestVolume}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
 
 export default Partstudy;
+
+// import React, { useMemo, useState, useEffect } from "react";
+// import { IconButton, Tooltip, Box } from "@mui/material";
+// import { Delete, Archive, QrCode2 } from "@mui/icons-material";
+// import {
+//   MaterialReactTable,
+//   useMaterialReactTable,
+// } from "material-react-table";
+// import axios from "axios";
+// import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
+// import { LuWarehouse } from "react-icons/lu";
+// import { TbWeight } from "react-icons/tb";
+// import EditIcon from "@mui/icons-material/Edit";
+
+// const statsData = [
+//   {
+//     title: "No of warehouse",
+//     value: "0",
+//     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+//     description: "",
+//   },
+//   {
+//     title: "Active warehouse",
+//     value: "0",
+//     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+//     description: "",
+//   },
+//   {
+//     title: "Low stock warehouses",
+//     value: "0",
+//     icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
+//     description: "",
+//   },
+//   {
+//     title: "Average Transaction",
+//     value: "0",
+//     icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
+//     description: "",
+//   },
+// ];
+
+// const Partstudy = () => {
+//   const [tableData, setTableData] = useState([]);
+//   const [data, setData] = React.useState([]);
+//   const [open, setOpen] = React.useState(false);
+//   const [add, setAdd] = React.useState(false);
+//   // const [data, setData] = React.useState([]);
+//   const [value, setValue] = React.useState(0);
+
+//   useEffect(() => {
+//     getAllBasicDetail();
+//   }, []);
+
+//   // Define columns for the table
+//   const columns = useMemo(() => [
+//     {
+//       accessorKey: "partStudyId",
+//       header: "Part Study Id",
+//       enableColumnOrdering: false,
+//       enableEditing: true,
+//       enableSorting: false,
+//       size: 80,
+//     },
+//     { accessorKey: "partStudyDate", header: "Part Study Date", size: 140 },
+//     {
+//       accessorKey: "emitterId",
+//       header: "Emitter ID",
+//       size: 140,
+//     },
+//     { accessorKey: "receiverId", header: "Receiver ID", size: 80 },
+//     { accessorKey: "partName", header: "Part Name", size: 80 },
+//     { accessorKey: "weight", header: "Weight", size: 80 },
+//     { accessorKey: "weightUnit", header: "Weight Unit", size: 80 },
+//     { accessorKey: "partVolume", header: "Part Volume", size: 80 },
+//     { accessorKey: "highestVolume", header: "Highest Volume", size: 80 },
+//     { accessorKey: "lowestVolume", header: "Lowest Volume", size: 80 },
+//   ]);
+
+//   const getAllBasicDetail = async () => {
+//     try {
+//       const response = await axios.get(
+//         `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails`
+//       );
+
+//       if (response.status === 200) {
+//         setTableData(response.data.paramObjectsMap.basicDetailVO);
+//       }
+//     } catch (error) {
+//       console.error("Error fetching data:", error);
+//     }
+//   };
+
+//   const table = useMaterialReactTable({
+//     data,
+//     columns,
+//   });
+
+//   // Function to handle saving row edits
+//   const handleSaveRowEdits = ({ exitEditingMode, row, values }) => {
+//     tableData[row.index] = values;
+//     setTableData([...tableData]);
+//     exitEditingMode();
+//   };
+
+//   // Function to handle cancelling row edits
+//   const handleCancelRowEdits = () => {
+//     // Any cleanup needed when cancelling row edits
+//   };
+
+//   // Function to handle deleting a row
+//   const handleDeleteRow = (row) => {
+//     tableData.splice(row.index, 1);
+//     setTableData([...tableData]);
+//   };
+
+//   // Function to handle accepting a row
+//   const handleAcceptRow = (row) => {
+//     // Any action needed when accepting a row
+//   };
+
+//   // Render actions for each row
+//   const renderRowActions = ({ row }) => (
+//     <Box sx={{ display: "flex", gap: "1rem", justifyContent: "flex-end" }}>
+//       {/* <Tooltip arrow placement="left" title="Delete">
+//         <IconButton color="error" onClick={() => handleDeleteRow(row)}>
+//           <Delete />
+//         </IconButton>
+//       </Tooltip>
+//       <Tooltip arrow placement="bottom" title="Print QR Code">
+//         <IconButton>
+//           <QrCode2 />
+//         </IconButton>
+//       </Tooltip> */}
+//       <Tooltip arrow placement="right" title="Accept">
+//         <IconButton onClick={() => handleSaveRowEdits(row)}>
+//           <EditIcon />
+//         </IconButton>
+//       </Tooltip>
+//     </Box>
+//   );
+
+//   return (
+//     <MaterialReactTable
+//       columns={columns}
+//       data={tableData}
+//       enableEditing
+//       editingMode="modal"
+//       enableColumnOrdering
+//       onEditingRowSave={handleSaveRowEdits}
+//       onEditingRowCancel={handleCancelRowEdits}
+//       renderRowActions={renderRowActions}
+//     />
+//   );
+// };
+
+// export default Partstudy;
