@@ -37,6 +37,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+
 import {
   Table,
   TableBody,
@@ -324,9 +325,18 @@ function Partstudy() {
       {/* Modal to display selected row data */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
-          <Typography variant="h6">Part Study Details</Typography>
+          <div className="row">
+            <div className="col-md-11">
+              <Typography variant="h6">Part Study Details</Typography>
+            </div>
+            <div className="col-md-1">
+              <IconButton onClick={handleClose} aria-label="close">
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </div>
         </DialogTitle>
-        <DialogContent>
+        <DialogContent className="mt-4">
           {selectedRowData && (
             <TableContainer component={Paper}>
               <Table>

@@ -32,7 +32,7 @@ export const InwardManifest = () => {
   const [qty, setQty] = React.useState("");
 
   useEffect(() => {
-    getIssueRequest();
+    // getIssueRequest();
   }, []);
 
   const handleQtyChange = (e) => {
@@ -222,23 +222,23 @@ export const InwardManifest = () => {
     setDateValue(newValue);
   };
 
-  const getIssueRequest = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest`
-      );
+  //   const getIssueRequest = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest`
+  //       );
 
-      if (response.status === 200) {
-        setBills(response.data.paramObjectsMap.issueRequestVO);
-        console.log(
-          "getIssueRequest",
-          response.data.paramObjectsMap.issueRequestVO
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //       if (response.status === 200) {
+  //         setBills(response.data.paramObjectsMap.issueRequestVO);
+  //         console.log(
+  //           "getIssueRequest",
+  //           response.data.paramObjectsMap.issueRequestVO
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
   return (
     <>
       <div className="container-sm">
@@ -299,9 +299,8 @@ export const InwardManifest = () => {
                 <table className="table w-full">
                   <thead>
                     <tr>
-                      <th>Retrieval Manifest No. (RM)</th>
+                      <th>RM No</th>
                       <th>RM Date</th>
-                      <th>KIT No</th>
                       <th>Flow Name</th>
                       <th>Transporter</th>
                       <th>Wat Bill No</th>

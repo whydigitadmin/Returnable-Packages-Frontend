@@ -95,11 +95,11 @@ const routes = [
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Unit",
       },
-      {
-        path: "/app/warehouseLocation",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Warehouse Location",
-      },
+      // {
+      //   path: "/app/warehouseLocation",
+      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+      //   name: "Warehouse Location",
+      // },
     ],
   },
 

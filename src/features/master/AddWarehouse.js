@@ -80,6 +80,8 @@ function AddWarehouse({ addWarehouse }) {
   const [personName, setPersonName] = React.useState([]);
   const [warehouseCode, setWarehouseCode] = useState();
   const [warehouseName, setWarehouseName] = useState("");
+  const [warehouseLocation, setWarehouseLocation] = useState("");
+  const [locationName, setLocationName] = useState("");
   const [storageMapping, setStorageMapping] = useState(null);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
@@ -104,6 +106,8 @@ function AddWarehouse({ addWarehouse }) {
     width: 1,
   });
 
+  const warehouseOptions = ["Chennai", "Bangalore"];
+
   const handleChangeChip = (event) => {
     const {
       target: { value },
@@ -125,6 +129,12 @@ function AddWarehouse({ addWarehouse }) {
         break;
       case "warehouseName":
         setWarehouseName(value);
+        break;
+      case "warehouseLocation":
+        setWarehouseLocation(value);
+        break;
+      case "locationName":
+        setLocationName(value);
         break;
       case "storageMapping":
         setStorageMapping(value);
@@ -157,6 +167,12 @@ function AddWarehouse({ addWarehouse }) {
     if (!warehouseName) {
       errors.warehouseName = "Warehouse Name is required";
     }
+    if (!locationName) {
+      errors.locationName = "Location Name Name is required";
+    }
+    if (!warehouseLocation) {
+      errors.warehouseLocation = "Warehouse Location Name Name is required";
+    }
     if (!country) {
       errors.country = "Country is required";
     }
@@ -176,6 +192,8 @@ function AddWarehouse({ addWarehouse }) {
       const formData = {
         warehouseCode,
         warehouseName,
+        warehouseLocation,
+        locationName,
         country,
         state,
         city,
@@ -222,7 +240,32 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Warehouse Name
+                Location Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="locationName"
+              value={locationName}
+              onChange={handleInputChange}
+            />
+            {errors.locationName && (
+              <span className="error-text">{errors.locationName}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Name
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -247,7 +290,7 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Warehouse code
+                code
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -265,6 +308,39 @@ function AddWarehouse({ addWarehouse }) {
               <span className="error-text">{errors.warehouseCode}</span>
             )}
           </div>
+
+          {/* <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Warehouse Location
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              name="warehouseLocation"
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-4 w-full input-bordered ps-2"
+              value={warehouseLocation}
+              onChange={handleInputChange}
+            >
+              <option value="">Select a warehouse</option>
+              {warehouseOptions.map((warehouseLocation) => (
+                <option key={warehouseLocation} value={warehouseLocation}>
+                  {warehouseLocation}
+                </option>
+              ))}
+            </select>
+            {errors.warehouseLocation && (
+              <span className="error-text">{errors.warehouseLocation}</span>
+            )}
+          </div> */}
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span

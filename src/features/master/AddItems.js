@@ -91,6 +91,7 @@ function AddItem({ addItem }) {
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
   const [showAssetQtyInput, setShowAssetQtyInput] = useState(false);
+  const [showQuantity, setShowQuantity] = useState(true);
 
   const handleAssetCategoryChange = (event) => {
     setAssetCategory(event.target.value);
@@ -109,10 +110,16 @@ function AddItem({ addItem }) {
     setAssetCodeId(selectedAssetCodeId);
 
     // Check if a valid Asset Code is selected
+    // if (selectedAssetCodeId) {
+    //   setShowAssetQtyInput(true); // Show Asset Qty input
+    // } else {
+    //   setShowAssetQtyInput(false); // Hide Asset Qty input
+    // }
+
     if (selectedAssetCodeId) {
-      setShowAssetQtyInput(true); // Show Asset Qty input
+      setShowQuantity(false); // Show Asset Qty input
     } else {
-      setShowAssetQtyInput(false); // Hide Asset Qty input
+      setShowQuantity(true); // Hide Asset Qty input
     }
     // Call function to fetch asset names based on the selected category
     getAssetDimById(selectedAssetCodeId);
@@ -375,7 +382,26 @@ function AddItem({ addItem }) {
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
-
+        <div className="row">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Warehouse Location
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              // onChange={handleAsseCodeChange}
+              // value={assetCodeId}
+            >
+              <option value="">Select a Location</option>
+              <option value="ch">Chennai</option>
+              <option value="Ba">Bangalore</option>
+            </select>
+          </div>
+        </div>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -458,29 +484,28 @@ function AddItem({ addItem }) {
                 ))}
             </select>
           </div>
-          {showAssetQtyInput && (
-            <>
-              <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Quantity
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
-                <input
-                  className="form-control form-sz mb-2"
-                  name="assetQty"
-                  value={assetQty}
-                  onChange={handleCategoryChange}
-                />
-              </div>
-            </>
-          )}
+          <>
+            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+              <label className="label">
+                <span
+                  className={
+                    "label-text label-font-size text-base-content d-flex flex-row"
+                  }
+                >
+                  Quantity
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
+              <input
+                className="form-control form-sz mb-2"
+                name="assetQty"
+                value={assetQty}
+                onChange={handleCategoryChange}
+                disabled={showQuantity}
+              />
+            </div>
+          </>
         </div>
 
         <div className="row">

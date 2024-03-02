@@ -9,6 +9,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { FaStarOfLife } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
+import { FaEdit, FaSave } from "react-icons/fa";
 
 function AddItemGroups({ addItem }) {
   const [openAssetModal, setOpenAssetModal] = React.useState(false);
@@ -80,6 +81,21 @@ function AddItemGroups({ addItem }) {
   const handleKitId = (event) => {
     setId(event.target.value);
   };
+
+  const handleQuantityEditChange = (event, index) => {
+    const { value } = event.target;
+    const updatedKitAssetDTO = [...kitAssetDTO];
+    updatedKitAssetDTO[index].quantity = value;
+    setKitAssetDTO(updatedKitAssetDTO);
+  };
+
+  const handlePartQuantityEditChange = (event, index) => {
+    const { value } = event.target;
+    const updatedKitAssetDTO = [...kitAssetDTO];
+    updatedKitAssetDTO[index].partQuantity = value;
+    setKitAssetDTO(updatedKitAssetDTO);
+  };
+
   const handleQuantityChange = (event) => {
     setAssetQty(event.target.value);
   };
@@ -213,6 +229,20 @@ function AddItemGroups({ addItem }) {
     setKitAssetDTO(updatedKitAssetDTO);
   };
 
+  const handleToggleEdit = (index) => {
+    const updatedKitAssets = [...kitAssetDTO];
+    updatedKitAssets[index].isEditable = true; // Set isEditable to true for the clicked row
+    setKitAssetDTO(updatedKitAssets); // Update the state
+  };
+
+  // Function to save changes made in the input fields for a specific row
+  const handleSaveRow = (index) => {
+    const updatedKitAssets = [...kitAssetDTO];
+    updatedKitAssets[index].isEditable = false; // Set isEditable to false for the clicked row
+    setKitAssetDTO(updatedKitAssets); // Update the state
+    // You may also want to handle saving the changes to the backend here
+  };
+
   // const handleEditRow = (index) => {
   //   // Get the data of the selected row from kitAssetDTO
   //   const selectedAsset = kitAssetDTO[index];
@@ -303,19 +333,61 @@ function AddItemGroups({ addItem }) {
                       <td className="text-center">{asset.assetCategory}</td>
                       <td className="text-center">{asset.assetName}</td>
                       <td className="text-center">{asset.assetCodeId}</td>
-                      <td className="text-center">{asset.quantity}</td>
-                      <td className="text-center">{asset.partQuantity}</td>
                       <td className="text-center">
-                        {/* <button
-                          onClick={() => handleEditRow(index)}
-                          className="btn btn-primary btn-sm me-2"
-                        >
-                          Edit
-                        </button> */}
+                        {asset.isEditable ? (
+                          <input
+                            type="number"
+                            value={asset.quantity}
+                            onChange={(e) => handleQuantityEditChange(e, index)}
+                            className="form-control"
+                            style={{
+                              width: "100px",
+                              padding: "6px",
+                              textAlign: "center",
+                            }}
+                          />
+                        ) : (
+                          asset.quantity
+                        )}
+                      </td>
+                      <td className="text-center">
+                        {asset.isEditable ? (
+                          <input
+                            type="number"
+                            value={asset.partQuantity}
+                            onChange={(e) =>
+                              handlePartQuantityEditChange(e, index)
+                            }
+                            className="form-control"
+                            style={{
+                              width: "100px",
+                              padding: "6px",
+                              textAlign: "center",
+                            }}
+                          />
+                        ) : (
+                          asset.partQuantity
+                        )}
+                      </td>
+                      <td className="text-center">
+                        {asset.isEditable ? (
+                          <FaSave
+                            onClick={() => handleSaveRow(index)}
+                            className="cursor-pointer w-6 h-6"
+                            style={{ marginLeft: 10 }}
+                          />
+                        ) : (
+                          <FaEdit
+                            onClick={() => handleToggleEdit(index)}
+                            className="cursor-pointer w-6 h-6"
+                            style={{ marginLeft: 10 }}
+                          />
+                        )}
+                        <br />
                         <FaTrash
                           onClick={() => handleDeleteRow(index)}
                           className="cursor-pointer w-6 h-6"
-                          style={{ marginLeft: 70 }}
+                          style={{ marginLeft: 10 }}
                         />
                       </td>
                     </tr>

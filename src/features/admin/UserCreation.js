@@ -8,6 +8,24 @@ import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
+import Box from "@mui/material/Box";
+import Chip from "@mui/material/Chip";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import Select from "@mui/material/Select";
+import OutlinedInput from "@mui/material/OutlinedInput";
+
+const ITEM_HEIGHT = 35;
+const ITEM_PADDING_TOP = 5;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -59,8 +77,9 @@ const IOSSwitch = styled((props) => (
     }),
   },
 }));
-
 const roleOptions = ["ROLE_USER", "ROLE_EMITTER"];
+
+const warehouseOptions = ["Chennai", "Bangalore"];
 
 function UserCreation() {
   const [userData, setUserData] = useState({
@@ -78,6 +97,8 @@ function UserCreation() {
     orgId: localStorage.getItem("orgId"),
     userName: localStorage.getItem("userName"),
   });
+
+  const [warehouse, setWarehouse] = React.useState([]);
 
   const [errors, setErrors] = useState({});
   useEffect(() => {
@@ -122,6 +143,16 @@ function UserCreation() {
     setUserData({ ...userData, [name]: value });
   };
 
+  const handleChangeChip = (event) => {
+    const {
+      target: { value },
+    } = event;
+    setWarehouse(
+      // On autofill we get a stringified value.
+      typeof value === "string" ? value.split(",") : value
+    );
+  };
+
   const handleUserCreation = () => {
     const errors = {};
     if (!userData.firstName) {
@@ -154,6 +185,9 @@ function UserCreation() {
     if (!userData.role) {
       errors.role = "Role is required";
     }
+    if (!userData.warehouse) {
+      errors.warehouse = "Warehouse is required";
+    }
 
     const token = localStorage.getItem("token");
     let headers = {
@@ -176,6 +210,7 @@ function UserCreation() {
       lastName: userData.lastName || "", // You may need to provide a default value
       orgId: userData.orgId, // You may need to provide a default value
       role: userData.role,
+      warehouse: userData.warehouse,
       userAddressDTO: {
         address1: userData.address,
         address2: "", // You may need to provide a default value
@@ -217,6 +252,7 @@ function UserCreation() {
             role: "",
             orgId: "",
             userName: "",
+            warehouse: "",
           });
         })
         .catch((error) => {
@@ -236,6 +272,88 @@ function UserCreation() {
         <IoMdClose onClick={""} className="cursor-pointer w-8 h-8 mb-3" />
       </div>
       <div className="row">
+        <div className="col-lg-3 col-md-6 mb-2">
+          <label className="label">
+            <span
+              className={"label-text label-font-size text-base-content d-flex"}
+            >
+              Warehouse Location
+              <FaStarOfLife className="must" />
+            </span>
+          </label>
+        </div>
+        <div className="col-lg-3 col-md-6 mb-2">
+          <FormControl sx={{ m: 1, width: "100%" }} size="small">
+            <InputLabel id="demo-multiple-chip-label">
+              Warehouse Location
+            </InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip-label"
+              multiple
+              value={warehouse}
+              onChange={handleChangeChip}
+              input={
+                <OutlinedInput
+                  id="select-multiple-chip"
+                  label="Warehouse Type"
+                />
+              }
+              renderValue={(selected) => (
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 0.5,
+                  }}
+                >
+                  {selected.map((value) => (
+                    <Chip key={value} label={value} />
+                  ))}
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              <MenuItem value={"Chennai"}>Chennai</MenuItem>
+              <MenuItem value={"Bangalore"}>Bangalore</MenuItem>
+              <MenuItem value={"Dubai"}>Dubai</MenuItem>
+              <MenuItem value={"Delhi"}>Delhi</MenuItem>
+            </Select>
+          </FormControl>
+        </div>
+      </div>
+      <div className="row">
+        {/* <div className="col-lg-3 col-md-6 mb-2">
+          <label className="label">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row"
+              }
+            >
+              Warehouse Location
+              <FaStarOfLife className="must" />
+            </span>
+          </label>
+        </div>
+        <div className="col-lg-3 col-md-6">
+          <select
+            name="warehouse"
+            style={{ height: 40, fontSize: "0.800rem" }}
+            className="input mb-4 w-full input-bordered ps-2"
+            value={userData.warehouse}
+            onChange={handleInputChange}
+          >
+            <option value="">Select a warehouse</option>
+            {warehouseOptions.map((warehouse) => (
+              <option key={warehouse} value={warehouse}>
+                {warehouse}
+              </option>
+            ))}
+          </select>
+          {errors.warehouse && (
+            <span className="error-text">{errors.warehouse}</span>
+          )}
+        </div> */}
         <div className="col-lg-3 col-md-6 mb-2">
           <label className="label">
             <span
@@ -309,7 +427,38 @@ function UserCreation() {
             <span className="error-text">{errors.password}</span>
           )}
         </div>
-        <div className="col-lg-3 col-md-6 mb-2">
+        {/* <div className="col-lg-3 col-md-6">
+          <Select
+            multiple
+            defaultValue={["dog", "cat"]}
+            renderValue={(selected) => (
+              <Box sx={{ display: "flex", gap: "0.25rem" }}>
+                {selected.map((selectedOption) => (
+                  <Chip variant="soft" color="primary">
+                    {selectedOption.label}
+                  </Chip>
+                ))}
+              </Box>
+            )}
+            sx={{
+              minWidth: "15rem",
+            }}
+            slotProps={{
+              listbox: {
+                sx: {
+                  width: "100%",
+                },
+              },
+            }}
+          >
+            <Option value="dog">Dog</Option>
+            <Option value="cat">Cat</Option>
+            <Option value="fish">Fish</Option>
+            <Option value="bird">Bird</Option>
+          </Select>
+        </div> */}
+
+        <div className="col-lg-3 col-md-6">
           <label className="label">
             <span
               className={
@@ -321,7 +470,7 @@ function UserCreation() {
             </span>
           </label>
         </div>
-        <div className="col-lg-3 col-md-6 mb-2">
+        <div className="col-lg-3 col-md-6">
           <select
             name="role"
             style={{ height: 40, fontSize: "0.800rem" }}
@@ -363,7 +512,6 @@ function UserCreation() {
             <span className="error-text">{errors.address}</span>
           )}
         </div>
-
         <div className="col-lg-3 col-md-6 mb-2">
           <label className="label">
             <span
