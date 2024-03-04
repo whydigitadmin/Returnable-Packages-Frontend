@@ -369,27 +369,35 @@ function AddItemGroups({ addItem }) {
                           asset.partQuantity
                         )}
                       </td>
-                      <td className="text-center">
-                        {asset.isEditable ? (
-                          <FaSave
-                            onClick={() => handleSaveRow(index)}
-                            className="cursor-pointer w-6 h-6"
-                            style={{ marginLeft: 10 }}
-                          />
-                        ) : (
-                          <FaEdit
-                            onClick={() => handleToggleEdit(index)}
-                            className="cursor-pointer w-6 h-6"
-                            style={{ marginLeft: 10 }}
-                          />
-                        )}
-                        <br />
-                        <FaTrash
-                          onClick={() => handleDeleteRow(index)}
-                          className="cursor-pointer w-6 h-6"
-                          style={{ marginLeft: 10 }}
-                        />
-                      </td>
+                      <div className="d-flex">
+                        <div className="col-4 text-center">
+                          <td>
+                            {asset.isEditable ? (
+                              <FaSave
+                                onClick={() => handleSaveRow(index)}
+                                className="cursor-pointer w-6 h-6"
+                                style={{ marginLeft: 10 }}
+                              />
+                            ) : (
+                              <FaEdit
+                                onClick={() => handleToggleEdit(index)}
+                                className="cursor-pointer w-6 h-6"
+                                style={{ marginLeft: 10 }}
+                              />
+                            )}
+                            {/* <br /> */}
+                          </td>
+                        </div>
+                        <div className="col-8 text-center">
+                          <td>
+                            <FaTrash
+                              onClick={() => handleDeleteRow(index)}
+                              className="cursor-pointer w-6 h-6"
+                              style={{ marginLeft: 10 }}
+                            />
+                          </td>
+                        </div>
+                      </div>
                     </tr>
                   ))}
                 </tbody>
