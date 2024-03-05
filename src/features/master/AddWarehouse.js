@@ -79,6 +79,7 @@ const IOSSwitch = styled((props) => (
 function AddWarehouse({ addWarehouse }) {
   const [personName, setPersonName] = React.useState([]);
   const [warehouseCode, setWarehouseCode] = useState();
+  const [unit, setUnit] = useState("");
   const [warehouseName, setWarehouseName] = useState("");
   const [warehouseLocation, setWarehouseLocation] = useState("");
   const [locationName, setLocationName] = useState("");
@@ -132,6 +133,9 @@ function AddWarehouse({ addWarehouse }) {
         break;
       case "warehouseLocation":
         setWarehouseLocation(value);
+        break;
+      case "unit":
+        setUnit(value);
         break;
       case "locationName":
         setLocationName(value);
@@ -265,6 +269,28 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
+                Unit <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              type={"text"}
+              placeholder={"Enter"}
+              name="unit"
+              value={unit}
+              onChange={handleInputChange}
+            />
+            {errors.unit && <span className="error-text">{errors.unit}</span>}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Name
                 <FaStarOfLife className="must" />
               </span>
@@ -290,7 +316,7 @@ function AddWarehouse({ addWarehouse }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                code
+                Code
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -341,7 +367,7 @@ function AddWarehouse({ addWarehouse }) {
             )}
           </div> */}
 
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -365,7 +391,7 @@ function AddWarehouse({ addWarehouse }) {
             {errors.storageMapping && (
               <span className="error-text">{errors.storageMapping}</span>
             )}
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -505,7 +531,7 @@ function AddWarehouse({ addWarehouse }) {
             />
             {errors.gst && <span className="error-text">{errors.gst}</span>}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Document
@@ -522,7 +548,7 @@ function AddWarehouse({ addWarehouse }) {
               Upload file
               <VisuallyHiddenInput type="file" />
             </Button>
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -535,7 +561,7 @@ function AddWarehouse({ addWarehouse }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -589,7 +615,7 @@ function AddWarehouse({ addWarehouse }) {
                 </MenuItem>
               </Select>
             </FormControl>
-          </div>
+          </div> */}
         </div>
         <div className="d-flex flex-row mt-3">
           <button
