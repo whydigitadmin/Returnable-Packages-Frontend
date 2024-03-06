@@ -103,49 +103,29 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddCustomer({ addcustomer }) {
-  const [id, setId] = React.useState("");
+  const [id, setId] = React.useState();
   const [value, setValue] = React.useState(0);
-  const [openBillingModal, setOpenBillingModal] = React.useState(false);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [openBankModal, setOpenBankModal] = React.useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [accountNO, setAccountNO] = React.useState("");
-  const [accountName, setAccountName] = React.useState("");
-  const [bankName, setBankName] = React.useState("");
-  const [branch, setBranch] = React.useState("");
   const [customerActivatePortal, setCustomerActivatePortal] =
     React.useState(true);
   const [customerCode, setCustomerCode] = React.useState("");
-  const [customerOrgName, setCustomerOrgName] = React.useState("");
+  const [entityLegalName, setEntityLegalName] = React.useState("");
   const [customerType, setCustomerType] = React.useState("");
   const [displayName, setDisplayName] = React.useState("");
-  const [document, setDocument] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [firstName, setFirstName] = React.useState("");
-  const [ifscCode, setIfscCode] = React.useState("");
-  const [lastName, setLastName] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [sop, setSop] = React.useState("1");
-  const [gstRegStatus, setGstRegStatus] = React.useState("");
-  const [gstNo, setGstNo] = React.useState("");
-  const [street1, setStreet1] = React.useState("");
-  const [street2, setStreet2] = React.useState("");
-  const [state, setState] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [pincode, setPincode] = React.useState("");
-  const [contactName, setContactName] = React.useState("");
-  const [desination, setDesination] = React.useState("");
-  const [emailAddress, setEmailAddress] = React.useState("");
-  const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [phoneNumber, setPhoneNumber] = React.useState();
   const [isPrimary, setIsPrimary] = useState(false);
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = React.useState({});
-  const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [submittedData, setSubmittedData] = useState(null);
+  const [addressShow, setAddressShow] = React.useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [customerId, setCustomerId] = useState(null);
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [newAddress, setNewAddress] = useState({
-    gstRegStatus: "",
-    gstNo: "",
+    gstRegistrationStatus: "",
+    gstNumber: "",
     street1: "",
     street2: "",
     state: "",
@@ -153,22 +133,36 @@ function AddCustomer({ addcustomer }) {
     pincode: "",
     contactName: "",
     phoneNumber: "",
-    desination: "",
+    designation: "",
     emailAddress: "",
     isPrimary: false,
   });
-
   const [errors1, setErrors1] = useState({
-    gstRegStatus: false,
+    gstRegistrationStatus: false,
     street1: false,
     state: false,
     city: false,
     pincode: false,
   });
+  const [bankAddresses, setBankAddresses] = useState([]);
+  const [newBankAddress, setNewBankAddress] = useState({
+    bank: "",
+    accountNo: "",
+    accountName: "",
+    branch: "",
+    ifscCode: "",
+  });
+  const [errors2, setErrors2] = useState({
+    bank: false,
+    accountNo: false,
+    accountName: false,
+    branch: false,
+    ifscCode: false,
+  });
 
   const isValidAddress = () => {
     return (
-      newAddress.gstRegStatus.trim() !== "" &&
+      newAddress.gstRegistrationStatus.trim() !== "" &&
       newAddress.street1.trim() !== "" &&
       newAddress.state.trim() !== "" &&
       newAddress.city.trim() !== "" &&
@@ -192,8 +186,8 @@ function AddCustomer({ addcustomer }) {
   const handleCancel = () => {
     // Clear form fields
     setNewAddress({
-      gstRegStatus: "",
-      gstNo: "",
+      gstRegistrationStatus: "",
+      gstNumber: "",
       street1: "",
       street2: "",
       state: "",
@@ -201,13 +195,13 @@ function AddCustomer({ addcustomer }) {
       pincode: "",
       contactName: "",
       phoneNumber: "",
-      desination: "",
+      designation: "",
       emailAddress: "",
       isPrimary: false,
     });
     // Clear all error messages
     setErrors({
-      gstRegStatus: false,
+      gstRegistrationStatus: false,
       street1: false,
       state: false,
       city: false,
@@ -217,26 +211,89 @@ function AddCustomer({ addcustomer }) {
     handleShippingClickClose();
   };
 
-  // const handleAddressSubmit = () => {
+  const handleAddShippingAddress = () => {
+    const addressWithCustomerId = { ...newAddress, customerId: customerId };
+    setShippingAddresses([...shippingAddresses, addressWithCustomerId]);
+    setNewAddress({
+      gstRegistrationStatus: "",
+      gstNumber: "",
+      street1: "",
+      street2: "",
+      state: "",
+      city: "",
+      pincode: "",
+      contactName: "",
+      phoneNumber: "",
+      designation: "",
+      emailAddress: "",
+      isPrimary: false,
+    });
+    setOpenShippingModal(false);
+  };
+
+  // const handleAddressSubmit = async () => {
+  //   const addressWithCustomerId = { ...newAddress, customerId: customerId };
   //   if (isValidAddress()) {
-  //     handleAddShippingAddress();
-  //   } else {
-  //     // Set errors for invalid or empty fields
-  //     const updatedErrors = {};
-  //     for (const field in newAddress) {
-  //       if (!newAddress[field]?.trim()) {
-  //         updatedErrors[field] = true;
+  //     try {
+  //       const response = await axios.post(
+  //         "/api/master/customersAddress",
+  //         addressWithCustomerId
+  //       );
+  //       console.log("Response:", response.data);
+  //       setErrors1({}); // Clear any previous errors on successful submission
+  //       handleAddShippingAddress();
+  //     } catch (error) {
+  //       console.error("Error:", error);
+  //       if (error.response && error.response.data) {
+  //         // Handle errors from the server
+  //         const serverErrors = error.response.data;
+  //         setErrors1(serverErrors);
+  //       } else {
+  //         // Handle other errors
+  //         setErrors1({ unexpectedError: true });
   //       }
   //     }
-  //     setErrors1(updatedErrors);
+  //   } else {
+  //     const updatedErrors = {};
+  //     for (const field in newAddress) {
+  //       if (
+  //         field !== "street2" &&
+  //         field !== "contactName" &&
+  //         field !== "phoneNumber" &&
+  //         field !== "isPrimary"
+  //       ) {
+  //         if (!newAddress[field].trim()) {
+  //           updatedErrors[field] = true;
+  //         }
+  //       }
+  //     }
+  //     setErrors1(updatedErrors); // Update errors for invalid fields
   //   }
   // };
 
-  const handleAddressSubmit = () => {
+  const handleAddressSubmit = async () => {
+    const addressWithCustomerId = { ...newAddress, customerId: customerId };
     if (isValidAddress()) {
-      handleAddShippingAddress();
+      try {
+        const response = await axios.post(
+          "/api/master/customersAddress",
+          addressWithCustomerId
+        );
+        console.log("Response:", response.data);
+        setErrors1({}); // Clear any previous errors on successful submission
+        handleAddShippingAddress();
+      } catch (errors1) {
+        console.error("Error:", errors1);
+        if (errors1.response && errors1.response.data) {
+          // Handle errors from the server
+          const serverErrors = errors1.response.data;
+          setErrors1(serverErrors);
+        } else {
+          // Handle other errors
+          setErrors1({ unexpectedError: true });
+        }
+      }
     } else {
-      // Set errors for invalid or empty fields
       const updatedErrors = {};
       for (const field in newAddress) {
         if (
@@ -250,31 +307,14 @@ function AddCustomer({ addcustomer }) {
           }
         }
       }
-      setErrors1(updatedErrors);
+      setErrors1(updatedErrors); // Update errors for invalid fields
     }
   };
 
-  const [bankAddresses, setBankAddresses] = useState([]);
-  const [newBankAddress, setNewBankAddress] = useState({
-    bankName: "",
-    accountNO: "",
-    accountName: "",
-    branch: "",
-    ifscCode: "",
-  });
-
-  const [errors2, setErrors2] = useState({
-    bankName: false,
-    accountNO: false,
-    accountName: false,
-    branch: false,
-    ifscCode: false,
-  });
-
   const isValidBankAddress = () => {
     return (
-      newBankAddress?.bankName?.trim() !== "" &&
-      newBankAddress?.accountNO?.trim() !== "" &&
+      newBankAddress?.bank?.trim() !== "" &&
+      newBankAddress?.accountNo?.trim() !== "" &&
       newBankAddress?.accountName?.trim() !== "" &&
       newBankAddress?.branch?.trim() !== "" &&
       newBankAddress?.ifscCode?.trim() !== ""
@@ -294,51 +334,88 @@ function AddCustomer({ addcustomer }) {
     }));
   };
 
-  const handleBankSubmit = () => {
+  const handleBankSubmit = async () => {
+    const bankAddressWithCustomerId = {
+      ...newBankAddress,
+      customerId: customerId,
+    };
+
+    // Check if all fields are filled
     if (isValidBankAddress()) {
-      handleAddBankAddress();
-    } else {
-      // Set errors for invalid or empty fields
-      const updatedErrors = {};
-      for (const field in newBankAddress) {
-        if (!newBankAddress[field]?.trim()) {
-          updatedErrors[field] = true;
+      try {
+        const response = await axios.post(
+          "/api/master/customersBankDetails",
+          bankAddressWithCustomerId
+        );
+        console.log("Response:", response.data);
+        setErrors2({}); // Clear any previous errors on successful submission
+        handleAddBankAddress();
+      } catch (error) {
+        console.error("Error:", error);
+        if (error.response && error.response.data) {
+          // Handle errors from the server
+          const serverErrors = error.response.data;
+          setErrors2(serverErrors);
+        } else {
+          // Handle other errors
+          setErrors2({ unexpectedError: true });
         }
       }
+    } else {
+      // If any required field is empty, set errors for all fields
+      const updatedErrors = {
+        bank: !newBankAddress.bank.trim(),
+        accountNo: !newBankAddress.accountNo.trim(),
+        accountName: !newBankAddress.accountName.trim(),
+        branch: !newBankAddress.branch.trim(),
+        ifscCode: !newBankAddress.ifscCode.trim(),
+      };
       setErrors2(updatedErrors);
     }
   };
 
-  // const [errors1, setErrors1] = useState({});
-
-  // const handleSubmit = (e) => {
-  //   e.preventDefault();
-  //   // Your form submission logic goes here
-  // };
-
-  // const handleClose = () => {
-  //   setModalIsOpen(false);
-  // };
-
-  // const labelStyle = {
-  //   marginBottom: "5px",
-  //   display: "block",
-  //   fontSize: "16px",
-  //   color: "#333",
-  //   fontWeight: "400",
-  // };
-
-  // const inputStyle = {
-  //   width: "100%",
-  //   height: "40px",
-  //   fontSize: "16px",
-  //   border: "1px solid #ccc",
-  //   borderRadius: "4px",
-  //   padding: "8px",
-  // };
-
-  // const errorStyle = {
-  //   color: "red",
+  // const handleBankSubmit = async () => {
+  //   const bankAddressWithCustomerId = {
+  //     ...newBankAddress,
+  //     customerId: customerId,
+  //   };
+  //   if (isValidBankAddress()) {
+  //     try {
+  //       const response = await axios.post(
+  //         "api/master/customersBankDetails",
+  //         bankAddressWithCustomerId
+  //       );
+  //       console.log("Response:", response.data);
+  //       setErrors2({}); // Clear any previous errors on successful submission
+  //       handleAddBankAddress();
+  //     } catch (errors2) {
+  //       console.error("Error:", errors2);
+  //       if (errors2.response && errors2.response.data) {
+  //         // Handle errors from the server
+  //         const serverErrors = errors2.response.data;
+  //         setErrors2(serverErrors);
+  //       } else {
+  //         // Handle other errors
+  //         setErrors2({ unexpectedError: true });
+  //       }
+  //     }
+  //   } else {
+  //     const updatedErrors = {};
+  //     for (const field in newBankAddress) {
+  //       if (
+  //         field !== "accountName" &&
+  //         field !== "accountNo" &&
+  //         field !== "bank" &&
+  //         field !== "ifscCode" &&
+  //         field !== "branch"
+  //       ) {
+  //         if (!newBankAddress[field].trim()) {
+  //           updatedErrors[field] = true;
+  //         }
+  //       }
+  //     }
+  //     setErrors2(updatedErrors); // Update errors for invalid fields
+  //   }
   // };
 
   const handleShippingClickOpen = () => {
@@ -355,29 +432,16 @@ function AddCustomer({ addcustomer }) {
     setOpenBankModal(false);
   };
 
-  const handleAddShippingAddress = () => {
-    setShippingAddresses([...shippingAddresses, newAddress]);
-    setNewAddress({
-      gstRegStatus: "",
-      gstNo: "",
-      street1: "",
-      street2: "",
-      state: "",
-      city: "",
-      pincode: "",
-      contactName: "",
-      phoneNumber: "",
-      desination: "",
-      emailAddress: "",
-      isPrimary: false,
-    });
-    setOpenShippingModal(false);
-  };
   const handleAddBankAddress = () => {
-    setBankAddresses([...bankAddresses, newBankAddress]);
+    const bankAddressWithCustomerId = {
+      ...newBankAddress,
+      customerId: customerId,
+    };
+    setBankAddresses([...bankAddresses, bankAddressWithCustomerId]);
     setNewBankAddress({
-      bankName: "",
-      accountNO: "",
+      // customerId: customerId,
+      bank: "",
+      accountNo: "",
       accountName: "",
       branch: "",
       ifscCode: "",
@@ -423,17 +487,15 @@ function AddCustomer({ addcustomer }) {
 
   const clearForm = () => {
     // Clear form fields
-    setGstRegStatus("");
-    setGstNo("");
+    setGstRegistrationStatus("");
+    setGstNumber("");
     setStreet1("");
     setStreet2("");
-    setState("");
     setCity("");
     setPincode("");
     setContactName("");
     setPhoneNumber("");
-    setDesination("");
-    setEmailAddress("");
+    setDesignation("");
     setIsPrimary(false);
   };
 
@@ -456,26 +518,14 @@ function AddCustomer({ addcustomer }) {
   const handleCustomerChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
-      case "accountNO":
-        setAccountNO(value);
-        break;
-      case "accountName":
-        setAccountName(value);
-        break;
-      case "bankName":
-        setBankName(value);
-        break;
-      case "branch":
-        setBranch(value);
-        break;
       case "customerActivatePortal":
         setCustomerActivatePortal(value);
         break;
       case "customerCode":
         setCustomerCode(value);
         break;
-      case "customerOrgName":
-        setCustomerOrgName(value);
+      case "entityLegalName":
+        setEntityLegalName(value);
         break;
       case "customerType":
         setCustomerType(value);
@@ -486,26 +536,14 @@ function AddCustomer({ addcustomer }) {
       case "email":
         setEmail(value);
         break;
-      case "firstName":
-        setFirstName(value);
+      case "phoneNumber":
+        setPhoneNumber(value);
         break;
-      case "ifscCode":
-        setIfscCode(value);
+      case "gstNumber":
+        setGstNumber(value);
         break;
-      case "lastName":
-        setLastName(value);
-        break;
-      case "phone":
-        setPhone(value);
-        break;
-      // case "sop":
-      //   setSop(value);
-      //   break;
-      case "gstNo":
-        setGstNo(value);
-        break;
-      case "gstRegStatus":
-        setGstRegStatus(value);
+      case "gstRegistrationStatus":
+        setGstRegistrationStatus(value);
         break;
       case "street1":
         setStreet1(value);
@@ -525,26 +563,18 @@ function AddCustomer({ addcustomer }) {
       case "contactName":
         setContactName(value);
         break;
-      case "phoneNumber":
-        setPhoneNumber(value);
-        break;
     }
   };
 
   const handleCustomer = () => {
+    setIsSubmitting(true);
     console.log("click");
     const errors = {};
-    if (!firstName) {
-      errors.firstName = "First Name is required";
-    }
-    if (!lastName) {
-      errors.lastName = "Last Name is required";
-    }
     if (!customerCode) {
       errors.customerCode = "Customer Code is required";
     }
-    if (!customerOrgName) {
-      errors.customerOrgName = "Customer Org Name is required";
+    if (!entityLegalName) {
+      errors.entityLegalName = "Customer Org Name is required";
     }
     if (!customerType) {
       errors.customerType = "Customer Type is required";
@@ -555,62 +585,19 @@ function AddCustomer({ addcustomer }) {
     if (!email) {
       errors.email = "Email is required";
     }
-    if (!phone) {
-      errors.phone = "Phone Number is required";
-    }
-    if (!gstRegStatus) {
-      errors.gstRegStatus = "GST Reg Status is required";
-    }
-    if (!gstNo) {
-      errors.gstNo = "GST Number is required";
-    }
-    if (!street1) {
-      errors.street1 = "Address is required";
-    }
-    if (!state) {
-      errors.state = "State is required";
-    }
-    if (!city) {
-      errors.city = "City is required";
-    }
-    if (!pincode) {
-      errors.pincode = "Pincode is required";
-    }
-    if (!contactName) {
-      errors.contactName = "Contact Person is required";
-    }
     if (!phoneNumber) {
       errors.phoneNumber = "Phone Number is required";
     }
+
     if (Object.keys(errors).length === 0) {
       const formData = {
         id,
-        accountNO,
-        accountName,
-        bankName,
-        branch,
+        phoneNumber,
         customerActivatePortal,
         customerCode,
-        customerOrgName,
+        entityLegalName,
         customerType: customerType,
         displayName,
-        document,
-        email,
-        firstName,
-        ifscCode,
-        lastName,
-        phone,
-        sop,
-        gstRegStatus,
-        gstNo,
-        street1,
-        street2,
-        city,
-        state,
-        pincode,
-        contactName,
-        phoneNumber,
-        desination,
         email,
         active,
         orgId,
@@ -618,14 +605,22 @@ function AddCustomer({ addcustomer }) {
       axios
         .post(`${process.env.REACT_APP_API_URL}/api/master/customers`, formData)
         .then((response) => {
+          setCustomerId(response.data.paramObjectsMap.customersVO.id);
           console.log("Response:", response.data);
-          addcustomer(true);
+          console.log(
+            "CustomerId:",
+            response.data.paramObjectsMap.customersVO.id
+          );
+          // addcustomer(true);
+          setAddressShow(true);
+          setErrors({});
         })
         .catch((error) => {
           console.error("Error:", error);
         });
     } else {
       setErrors(errors);
+      setIsSubmitting(false);
     }
   };
 
@@ -636,24 +631,11 @@ function AddCustomer({ addcustomer }) {
   const handleCustomerClose = () => {
     addcustomer(false);
   };
-  const handleBillingOpen = () => {
-    setOpenBillingModal(true);
-  };
-  const handleBillingClose = () => {
-    setOpenBillingModal(false);
-  };
-  const handleShippingOpen = () => {
-    setOpenShippingModal(true);
-  };
-  const handleShippingClose = () => {
-    setOpenShippingModal(false);
-  };
 
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
-          {/* <h1 className="text-xl font-semibold mb-3">Customer Details</h1> */}
           <IoMdClose
             onClick={handleCustomerClose}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -678,6 +660,7 @@ function AddCustomer({ addcustomer }) {
               className="form-select form-sz w-full"
               onChange={handleCustomerTypeChange}
               value={customerType}
+              disabled={isSubmitting}
             >
               <option value="" disabled>
                 Select a Customer
@@ -708,6 +691,7 @@ function AddCustomer({ addcustomer }) {
               className="form-control form-sz"
               name="customerCode"
               onChange={handleCustomerChange}
+              disabled={isSubmitting}
             />
             {errors.customerCode && (
               <div className="error-text">{errors.customerCode}</div>
@@ -728,13 +712,14 @@ function AddCustomer({ addcustomer }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               placeholder=""
-              value={customerOrgName}
+              value={entityLegalName}
               className="form-control form-sz"
-              name="customerOrgName"
+              name="entityLegalName"
               onChange={handleCustomerChange}
+              disabled={isSubmitting}
             />
-            {errors.customerOrgName && (
-              <div className="error-text">{errors.customerOrgName}</div>
+            {errors.entityLegalName && (
+              <div className="error-text">{errors.entityLegalName}</div>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -756,6 +741,7 @@ function AddCustomer({ addcustomer }) {
               className="form-control form-sz"
               name="displayName"
               onChange={handleCustomerChange}
+              disabled={isSubmitting}
             />
             {errors.displayName && (
               <div className="error-text">{errors.displayName}</div>
@@ -780,6 +766,7 @@ function AddCustomer({ addcustomer }) {
               value={email}
               name="email"
               onChange={handleCustomerChange}
+              disabled={isSubmitting}
             />
             {errors.email && <div className="error-text">{errors.email}</div>}
           </div>
@@ -799,11 +786,70 @@ function AddCustomer({ addcustomer }) {
             <input
               className="form-control form-sz"
               placeholder=""
-              value={phone}
-              name="phone"
+              value={phoneNumber}
+              name="phoneNumber"
+              type="number"
               onChange={handleCustomerChange}
+              disabled={isSubmitting}
             />
-            {errors.phone && <div className="error-text">{errors.phone}</div>}
+            {errors.phoneNumber && (
+              <div className="error-text">{errors.phoneNumber}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 mb-2">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Customer Activate Portal
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <FormControlLabel
+              control={
+                <IOSSwitch
+                  disabled={isSubmitting}
+                  sx={{ m: 1 }}
+                  defaultChecked
+                />
+              }
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label mb-1">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Active
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <FormControlLabel
+              disabled={isSubmitting}
+              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            />
+          </div>
+          <div className="d-flex flex-row mb-5 mt-2">
+            <button
+              type="button"
+              onClick={handleCustomer}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleCustomerClose}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
@@ -845,325 +891,183 @@ function AddCustomer({ addcustomer }) {
               <VisuallyHiddenInput type="file" />
             </Button>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2 mb-2">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Customer Activate Portal
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <FormControlLabel
-              control={<IOSSwitch disabled sx={{ m: 1 }} defaultChecked />}
-            />
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Active
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-            />
-          </div>
-          <div className="d-flex flex-row">
-            <button
-              type="button"
-              onClick={handleCustomer}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={handleCustomerClose}
-              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Cancel
-            </button>
-          </div>
         </div>
-        <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              <Tab className="text-form" label="Address" {...a11yProps(1)} />
-              <Tab
-                className="text-form"
-                label="Bank Details"
-                {...a11yProps(0)}
-              />
-            </Tabs>
-          </Box>
-          <CustomTabPanel value={value} index={0}>
-            <div className="row d-flex justify-content-center">
-              <div className="col-md-12">
-                <button
-                  type="button"
-                  onClick={handleShippingClickOpen}
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                >
-                  + Add Address
-                </button>
+        {addressShow && (
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab className="text-form" label="Address" {...a11yProps(1)} />
+                <Tab
+                  className="text-form"
+                  label="Bank Details"
+                  {...a11yProps(0)}
+                />
+              </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={0}>
+              <div className="row d-flex justify-content-center">
+                <div className="col-md-12">
+                  <button
+                    type="button"
+                    onClick={handleShippingClickOpen}
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  >
+                    + Add Address
+                  </button>
+                </div>
               </div>
-            </div>
-            <div className="d-flex align-items-center justify-content-center flex-wrap">
-              {shippingAddresses.map((address, index) => (
-                <div
-                  className="col-md-5 mt-3"
-                  key={index}
-                  style={styles.submittedDataContainer}
-                >
-                  <div className="row">
-                    <div className="col-md-10">
-                      <h2 style={styles.submittedDataTitle}>
-                        Address {index + 1}
-                      </h2>
+              <div className="d-flex align-items-center justify-content-center flex-wrap">
+                {shippingAddresses.map((address, index) => (
+                  <div
+                    className="col-md-5 mt-3"
+                    key={index}
+                    style={styles.submittedDataContainer}
+                  >
+                    <div className="row">
+                      <div className="col-md-10">
+                        <h2 style={styles.submittedDataTitle}>
+                          Address {index + 1}
+                        </h2>
+                      </div>
+                      <div className="col-md-2">
+                        <FaTrash
+                          className="cursor-pointer w-4 h-8 me-3"
+                          onClick={() => handleDeleteAddress(index)}
+                        />
+                      </div>
                     </div>
-                    <div className="col-md-2">
-                      <FaTrash
-                        className="cursor-pointer w-4 h-8 me-3"
-                        onClick={() => handleDeleteAddress(index)}
-                      />
-                    </div>
-                  </div>
 
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>
-                      GST Registration Status:
-                    </span>
-                    <span>{address.gstRegStatus}</span>
-                  </div>
-                  {address.gstRegStatus === "Registered" && (
                     <div style={styles.submittedDataItem}>
-                      <span style={styles.submittedDataLabel}>GST Number:</span>
-                      <span>{address.gstNo}</span>
+                      <span style={styles.submittedDataLabel}>
+                        GST Registration Status:
+                      </span>
+                      <span>{address.gstRegistrationStatus}</span>
                     </div>
-                  )}
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Street 1:</span>
-                    <span>{address.street1}</span>
+                    {address.gstRegistrationStatus === "Registered" && (
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>
+                          GST Number:
+                        </span>
+                        <span>{address.gstNumber}</span>
+                      </div>
+                    )}
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Street 1:</span>
+                      <span>{address.street1}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Street 2:</span>
+                      <span>{address.street2}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>State:</span>
+                      <span>{address.state}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>City:</span>
+                      <span>{address.city}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Pin Code:</span>
+                      <span>{address.pincode}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Contact Person:
+                      </span>
+                      <span>{address.contactName}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Phone Number:
+                      </span>
+                      <span>{address.phoneNumber}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Destination:
+                      </span>
+                      <span>{address.designation}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Email:</span>
+                      <span>{address.emailAddress}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Primary:</span>
+                      <span>{address.isPrimary ? "Yes" : "No"}</span>
+                    </div>
                   </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Street 2:</span>
-                    <span>{address.street2}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>State:</span>
-                    <span>{address.state}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>City:</span>
-                    <span>{address.city}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Pin Code:</span>
-                    <span>{address.pincode}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>
-                      Contact Person:
-                    </span>
-                    <span>{address.contactName}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Phone Number:</span>
-                    <span>{address.phoneNumber}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Destination:</span>
-                    <span>{address.desination}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Email:</span>
-                    <span>{address.emailAddress}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Primary:</span>
-                    <span>{address.isPrimary ? "Yes" : "No"}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={1}>
-            <div className="row d-flex justify-content-center">
-              <div className="col-md-12">
-                <button
-                  type="button"
-                  onClick={handleBankClickOpen}
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                >
-                  + Add Bank
-                </button>
+                ))}
               </div>
-            </div>
-            <div className="d-flex align-items-center justify-content-center flex-wrap">
-              {bankAddresses.map((bank, index) => (
-                <div
-                  className="col-md-5 mt-3"
-                  key={index}
-                  style={styles.submittedDataContainer}
-                >
-                  <div className="row">
-                    <div className="col-md-10">
-                      <h2 style={styles.submittedDataTitle}>
-                        Bank {index + 1}
-                      </h2>
-                    </div>
-                    <div className="col-md-2">
-                      <FaTrash
-                        className="cursor-pointer w-4 h-8 me-3"
-                        onClick={() => handleDeleteBank(index)}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Bank:</span>
-                    <span>{bank.bankName}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>
-                      Account Number:
-                    </span>
-                    <span>{bank.accountNO}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Account Name:</span>
-                    <span>{bank.accountName}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Branch:</span>
-                    <span>{bank.branch}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>IFSC Code:</span>
-                    <span>{bank.ifscCode}</span>
-                  </div>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={1}>
+              <div className="row d-flex justify-content-center">
+                <div className="col-md-12">
+                  <button
+                    type="button"
+                    onClick={handleBankClickOpen}
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  >
+                    + Add Bank
+                  </button>
                 </div>
-              ))}
-            </div>
-            {/* <div className="row"> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
+              </div>
+              <div className="d-flex align-items-center justify-content-center flex-wrap">
+                {bankAddresses.map((bank, index) => (
+                  <div
+                    className="col-md-5 mt-3"
+                    key={index}
+                    style={styles.submittedDataContainer}
                   >
-                    Bank
-                  </span>
-                </label>
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  className="form-control form-sz"
-                  placeholder=""
-                  value={bankName}
-                  name="bankName"
-                  onChange={handleCustomerChange}
-                />
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Account No
-                  </span>
-                </label>
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  className="form-control form-sz"
-                  placeholder=""
-                  value={accountNO}
-                  name="accountNO"
-                  onChange={handleCustomerChange}
-                />
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Account Name
-                  </span>
-                </label>
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  className="form-control form-sz"
-                  placeholder=""
-                  value={accountName}
-                  name="accountName"
-                  onChange={handleCustomerChange}
-                />
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Branch
-                  </span>
-                </label>
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  type="text"
-                  className="form-control form-sz"
-                  placeholder=""
-                  value={branch}
-                  name="branch"
-                  onChange={handleCustomerChange}
-                />
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    IFSC Code
-                  </span>
-                </label>
-              </div> */}
-            {/* <div className="col-lg-3 col-md-6">
-                <input
-                  type="text"
-                  className="form-control form-sz"
-                  placeholder=""
-                  value={ifscCode}
-                  name="ifscCode"
-                  onChange={handleCustomerChange}
-                />
-              </div> */}
-            {/* </div> */}
-          </CustomTabPanel>
-        </Box>
+                    <div className="row">
+                      <div className="col-md-10">
+                        <h2 style={styles.submittedDataTitle}>
+                          Bank {index + 1}
+                        </h2>
+                      </div>
+                      <div className="col-md-2">
+                        <FaTrash
+                          className="cursor-pointer w-4 h-8 me-3"
+                          onClick={() => handleDeleteBank(index)}
+                        />
+                      </div>
+                    </div>
+
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Bank:</span>
+                      <span>{bank.bank}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Account Number:
+                      </span>
+                      <span>{bank.accountNo}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Account Name:
+                      </span>
+                      <span>{bank.accountName}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Branch:</span>
+                      <span>{bank.branch}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>IFSC Code:</span>
+                      <span>{bank.ifscCode}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CustomTabPanel>
+          </Box>
+        )}
       </div>
       <Dialog
         fullWidth={true}
@@ -1202,19 +1106,19 @@ function AddCustomer({ addcustomer }) {
                       height: 40,
                       fontSize: "0.800rem",
                       width: "100%",
-                      borderColor: errors1.gstRegStatus ? "red" : "",
+                      borderColor: errors1.gstRegistrationStatus ? "red" : "",
                     }}
                     className="input input-bordered ps-2"
-                    value={newAddress.gstRegStatus}
+                    value={newAddress.gstRegistrationStatus}
                     onChange={(e) =>
-                      handleAddressInputChange(e, "gstRegStatus")
+                      handleAddressInputChange(e, "gstRegistrationStatus")
                     }
                   >
                     <option value="">Select</option>
                     <option value="Registered">Registered</option>
                     <option value="Unregistered">Unregistered</option>
                   </select>
-                  {errors1.gstRegStatus && (
+                  {errors1.gstRegistrationStatus && (
                     <span style={{ color: "red", fontSize: "12px" }}>
                       GST Registration Status is required
                     </span>
@@ -1223,7 +1127,7 @@ function AddCustomer({ addcustomer }) {
               </div>
 
               {/* Show GST Number input field only when "Registered" is selected */}
-              {newAddress.gstRegStatus === "Registered" && (
+              {newAddress.gstRegistrationStatus === "Registered" && (
                 <div className="row mb-3">
                   <div className="col-lg-6 col-md-6">
                     <label className="label label-text label-font-size text-base-content">
@@ -1238,8 +1142,8 @@ function AddCustomer({ addcustomer }) {
                         width: "100%",
                       }}
                       type={"number"}
-                      value={newAddress.gstNo}
-                      onChange={(e) => handleAddressInputChange(e, "gstNo")}
+                      value={newAddress.gstNumber}
+                      onChange={(e) => handleAddressInputChange(e, "gstNumber")}
                       className="input input-bordered p-2"
                     />
                   </div>
@@ -1454,9 +1358,9 @@ function AddCustomer({ addcustomer }) {
                     fontSize: "0.800rem",
                     width: "100%",
                   }}
-                  type={"number"}
-                  value={newAddress.desination}
-                  onChange={(e) => handleAddressInputChange(e, "desination")}
+                  type={"text"}
+                  value={newAddress.designation}
+                  onChange={(e) => handleAddressInputChange(e, "designation")}
                   className="input input-bordered p-2"
                 />
               </div>
@@ -1474,7 +1378,7 @@ function AddCustomer({ addcustomer }) {
                     fontSize: "0.800rem",
                     width: "100%",
                   }}
-                  type={"number"}
+                  type={"email"}
                   value={newAddress.emailAddress}
                   onChange={(e) => handleAddressInputChange(e, "emailAddress")}
                   className="input input-bordered p-2"
@@ -1550,14 +1454,14 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
-                    borderColor: errors2.bankName ? "red" : "",
+                    borderColor: errors2.bank ? "red" : "",
                   }}
                   type={"text"}
-                  value={newBankAddress.bankName}
-                  onChange={(e) => handleBankInputChange(e, "bankName")}
+                  value={newBankAddress.bank}
+                  onChange={(e) => handleBankInputChange(e, "bank")}
                   className="input input-bordered p-2"
                 />
-                {errors2.bankName && (
+                {errors2.bank && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     Bank is required
                   </span>
@@ -1583,14 +1487,14 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
-                    borderColor: errors2.accountNO ? "red" : "",
+                    borderColor: errors2.accountNo ? "red" : "",
                   }}
                   type={"text"}
-                  value={newBankAddress.accountNO}
-                  onChange={(e) => handleBankInputChange(e, "accountNO")}
+                  value={newBankAddress.accountNo}
+                  onChange={(e) => handleBankInputChange(e, "accountNo")}
                   className="input input-bordered p-2"
                 />
-                {errors2.accountNO && (
+                {errors2.accountNo && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     Account number is required
                   </span>
