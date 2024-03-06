@@ -92,6 +92,8 @@ function AddItem({ addItem }) {
   const [errors, setErrors] = useState({});
   const [showAssetQtyInput, setShowAssetQtyInput] = useState(false);
   const [showQuantity, setShowQuantity] = useState(true);
+  const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
+  const [warehouse, setWarehouse] = useState("");
 
   const handleAssetCategoryChange = (event) => {
     setAssetCategory(event.target.value);
@@ -127,7 +129,23 @@ function AddItem({ addItem }) {
 
   useEffect(() => {
     getAllAssetCategory();
+    getWarehouseLocationList();
   }, []);
+
+  const getWarehouseLocationList = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
+      }
+      // console.log("list", response.data.paramObjectsMap.WarehouseLocation);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getAllAssetCategory = async () => {
     try {
@@ -352,6 +370,10 @@ function AddItem({ addItem }) {
     }
   };
 
+  const handleWarehouseChange = (event) => {
+    setWarehouse(event.target.value);
+  };
+
   const handleUnitChange = (e) => {
     setDimUnit(e.target.value);
   };
@@ -390,15 +412,21 @@ function AddItem({ addItem }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6">
             <select
               className="form-select form-sz w-full mb-2"
-              // onChange={handleAsseCodeChange}
-              // value={assetCodeId}
+              onChange={handleWarehouseChange}
+              value={warehouse}
             >
-              <option value="">Select a Location</option>
-              <option value="ch">Chennai</option>
-              <option value="Ba">Bangalore</option>
+              <option value="" disabled>
+                Select an Emitter
+              </option>
+              {warehouseLocationVO.length > 0 &&
+                warehouseLocationVO.map((list) => (
+                  <option key={list.warehouseId} value={list.warehouseLocation}>
+                    {list.warehouseLocation}
+                  </option>
+                ))}
             </select>
           </div>
         </div>

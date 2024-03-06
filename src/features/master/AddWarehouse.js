@@ -1,17 +1,9 @@
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Chip from "@mui/material/Chip";
-import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import OutlinedInput from "@mui/material/OutlinedInput";
-import Select from "@mui/material/Select";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import Axios from "axios";
 import React, { useState } from "react";
-import { FaCloudUploadAlt, FaStarOfLife } from "react-icons/fa";
+import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
 const ITEM_HEIGHT = 35;
@@ -78,22 +70,19 @@ const IOSSwitch = styled((props) => (
 
 function AddWarehouse({ addWarehouse }) {
   const [personName, setPersonName] = React.useState([]);
-  const [warehouseCode, setWarehouseCode] = useState();
+  const [code, setCode] = useState();
   const [unit, setUnit] = useState("");
-  const [warehouseName, setWarehouseName] = useState("");
-  const [warehouseLocation, setWarehouseLocation] = useState("");
+  const [name, setName] = useState("");
   const [locationName, setLocationName] = useState("");
-  const [storageMapping, setStorageMapping] = useState(null);
   const [address, setAddress] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
   const [pincode, setPincode] = useState("");
   const [gst, setGst] = useState("");
-  const [document, setDocument] = useState(null);
-  const [locationType, setlocationType] = useState(null);
   const [active, setActive] = useState(true);
   const [errors, setErrors] = useState({});
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -125,23 +114,17 @@ function AddWarehouse({ addWarehouse }) {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
-      case "warehouseCode":
-        setWarehouseCode(value);
+      case "code":
+        setCode(value);
         break;
-      case "warehouseName":
-        setWarehouseName(value);
-        break;
-      case "warehouseLocation":
-        setWarehouseLocation(value);
+      case "name":
+        setName(value);
         break;
       case "unit":
         setUnit(value);
         break;
       case "locationName":
         setLocationName(value);
-        break;
-      case "storageMapping":
-        setStorageMapping(value);
         break;
       case "address":
         setAddress(value);
@@ -168,14 +151,11 @@ function AddWarehouse({ addWarehouse }) {
 
   const handleWarehouse = () => {
     const errors = {};
-    if (!warehouseName) {
-      errors.warehouseName = "Warehouse Name is required";
+    if (!name) {
+      errors.name = "Warehouse Name is required";
     }
     if (!locationName) {
       errors.locationName = "Location Name Name is required";
-    }
-    if (!warehouseLocation) {
-      errors.warehouseLocation = "Warehouse Location Name Name is required";
     }
     if (!country) {
       errors.country = "Country is required";
@@ -194,9 +174,8 @@ function AddWarehouse({ addWarehouse }) {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        warehouseCode,
-        warehouseName,
-        warehouseLocation,
+        code,
+        name,
         locationName,
         country,
         state,
@@ -204,21 +183,26 @@ function AddWarehouse({ addWarehouse }) {
         address,
         pincode,
         gst,
-        document,
-        locationType,
-        storageMapping,
+        unit,
+        orgId,
         active,
       };
-      Axios.post(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/view`,
+      Axios.put(
+        `${process.env.REACT_APP_API_URL}/api/warehouse/updateCreateWarehouse`,
         formData
       )
         .then((response) => {
-          console.log("Response:", response.data);
+          console.log("Response status:", response.status);
+          console.log("Response data:", response.data);
           addWarehouse(true);
         })
         .catch((error) => {
           console.error("Error:", error);
+          // Handle error response
+          if (error.response) {
+            console.log("Response status:", error.response.status);
+            console.log("Response data:", error.response.data);
+          }
         });
     } else {
       // If there are errors, update the state to display them
@@ -301,13 +285,11 @@ function AddWarehouse({ addWarehouse }) {
               className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
-              name="warehouseName"
-              value={warehouseName}
+              name="name"
+              value={name}
               onChange={handleInputChange}
             />
-            {errors.warehouseName && (
-              <span className="error-text">{errors.warehouseName}</span>
-            )}
+            {errors.name && <span className="error-text">{errors.name}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -324,74 +306,15 @@ function AddWarehouse({ addWarehouse }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"number"}
-              placeholder={"Enter"}
-              name="warehouseCode"
-              value={warehouseCode}
-              onChange={handleInputChange}
-            />
-            {errors.warehouseCode && (
-              <span className="error-text">{errors.warehouseCode}</span>
-            )}
-          </div>
-
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Warehouse Location
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <select
-              name="warehouseLocation"
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-4 w-full input-bordered ps-2"
-              value={warehouseLocation}
-              onChange={handleInputChange}
-            >
-              <option value="">Select a warehouse</option>
-              {warehouseOptions.map((warehouseLocation) => (
-                <option key={warehouseLocation} value={warehouseLocation}>
-                  {warehouseLocation}
-                </option>
-              ))}
-            </select>
-            {errors.warehouseLocation && (
-              <span className="error-text">{errors.warehouseLocation}</span>
-            )}
-          </div> */}
-
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Storage Mapping
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
               type={"text"}
               placeholder={"Enter"}
-              name="storageMapping"
-              value={storageMapping}
+              name="code"
+              value={code}
               onChange={handleInputChange}
             />
-            {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )}
-          </div> */}
+            {errors.code && <span className="error-text">{errors.code}</span>}
+          </div>
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -531,24 +454,7 @@ function AddWarehouse({ addWarehouse }) {
             />
             {errors.gst && <span className="error-text">{errors.gst}</span>}
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Document
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
-          </div> */}
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -561,61 +467,6 @@ function AddWarehouse({ addWarehouse }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex"
-                }
-              >
-                Warehouse Type
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <FormControl sx={{ m: 1, width: "100%" }} size="small">
-              <InputLabel id="demo-multiple-chip-label">
-                Warehouse Type
-              </InputLabel>
-              <Select
-                labelId="demo-multiple-chip-label"
-                id="demo-multiple-chip-label"
-                multiple
-                value={personName}
-                onChange={handleChangeChip}
-                input={
-                  <OutlinedInput
-                    id="select-multiple-chip"
-                    label="Warehouse Type"
-                  />
-                }
-                renderValue={(selected) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: 0.5,
-                    }}
-                  >
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-              >
-                <MenuItem value={"Open WareHouse"}>Open WareHouse</MenuItem>
-                <MenuItem value={"Bounded WareHouse"}>
-                  Bounded WareHouse
-                </MenuItem>
-                <MenuItem value={"Racked WareHouse"}>Racked WareHouse</MenuItem>
-                <MenuItem value={"Temperature WareHouse"}>
-                  Temperature WareHouse
-                </MenuItem>
-              </Select>
-            </FormControl>
-          </div> */}
         </div>
         <div className="d-flex flex-row mt-3">
           <button
