@@ -23,6 +23,7 @@ import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
+import Datepicker from "react-tailwindcss-datepicker";
 
 function IssueReq() {
   const [value, setValue] = React.useState(0);
@@ -44,6 +45,16 @@ function IssueReq() {
   const [bills, setBills] = useState([]);
   const [selectedIssueRequest, setSelectedIssueRequest] = useState(null);
   const [selectedSubIndex, setSelectedSubIndex] = useState(null);
+
+  const [dateValue, setDateValue] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+  });
+
+  const handleDatePickerValueChange = (newValue) => {
+    console.log("newValue:", newValue);
+    setDateValue(newValue);
+  };
 
   useEffect(() => {
     getAllKitData();
@@ -435,7 +446,7 @@ function IssueReq() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
+            {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -458,8 +469,8 @@ function IssueReq() {
                 className="text-xl font-semibold w-16  h-16 "
                 style={{ marginTop: 70 }}
               />
-            </div>
-            <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3">
+            </div> */}
+            <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3 h-fit">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -493,24 +504,28 @@ function IssueReq() {
                 </p>
               </div>
             </div>
-          </div>
-          <div className="row">
-            <div className="col-lg-4 card bg-base-100 shadow-xl m-4 h-fit">
-              {errors.demandDate && (
-                <span className="error-text">{errors.demandDate}</span>
-              )}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer components={["StaticDatePicker"]}>
-                  <StaticDatePicker
-                    disablePast
-                    minDate={dayjs().add(2, "day")}
-                    value={demandDate} // Set the selected date
-                    onChange={(newDate) => handleDateChange(newDate)} // Handle date change
-                  />
-                </DemoContainer>
-              </LocalizationProvider>
+            <div className="col-lg-4 d-flex justify-content-center">
+              <div className="mt-4">
+                <div className="text-xl font-semibold mb-3">
+                  Select Date Range
+                </div>
+                <Datepicker
+                  containerClassName="w-64"
+                  useRange={false}
+                  value={dateValue}
+                  theme={"light"}
+                  inputClassName="input input-bordered w-72"
+                  popoverDirection="down"
+                  toggleClassName="invisible"
+                  onChange={handleDatePickerValueChange}
+                  showShortcuts={true}
+                  primaryColor={"green"}
+                />
+              </div>
             </div>
-            <div className="col-lg-7 mt-4">
+          </div>
+          <div className="row pt-4 pl-5 pr-5 pb-10">
+            <div className="col-lg-12">
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                   value={value}
@@ -536,197 +551,208 @@ function IssueReq() {
                   />
                 </Tabs>
               </Box>
-              <CustomTabPanel value={value} index={0}>
-                {kitFields.map((field, index) => (
-                  <>
+              <div
+                className="scrollable-container"
+                style={{ maxHeight: "200px", overflowY: "auto" }}
+              >
+                <CustomTabPanel value={value} index={0}>
+                  {kitFields.map((field, index) => (
+                    <>
+                      <div className="row" key={index}>
+                        <div className="col-lg-4 col-md-6 mb-2">
+                          <label className="label">
+                            <span className="label-text label-font-size text-base-content">
+                              KIT :
+                            </span>
+                          </label>
+                          <select
+                            className="form-select form-sz w-full"
+                            value={field.kitNo}
+                            onChange={(e) => handleKitNoChange(e, index)}
+                          >
+                            <option value="">Select a Kit</option>
+                            {getKitIds.map((kitId) => (
+                              <option key={kitId} value={kitId}>
+                                {kitId}
+                              </option>
+                            ))}
+                          </select>
+                          {errors.kitNo && (
+                            <span className="error-text">{errors.kitNo}</span>
+                          )}
+                        </div>
+
+                        <div className="col-lg-4 col-md-6 mb-2">
+                          <label className="label">
+                            <span className="label-text label-font-size text-base-content">
+                              QTY :
+                            </span>
+                          </label>
+                          <input
+                            className="form-control form-sz mb-2"
+                            type="text"
+                            value={field.qty}
+                            onChange={(e) => handleQtyChange(e, index)}
+                          />
+                          {errors.kitQty && (
+                            <span className="error-text">{errors.kitQty}</span>
+                          )}
+                        </div>
+
+                        <div className="col-lg-1 col-md-2 mb-2">
+                          {index === 0 ? (
+                            <div
+                              onClick={handleAddField}
+                              style={{ marginTop: "42px" }}
+                            >
+                              <AddCircleOutlineIcon className="cursor-pointer" />
+                            </div>
+                          ) : (
+                            <div
+                              onClick={() => handleRemoveField(index)}
+                              style={{ marginTop: "42px" }}
+                            >
+                              <HighlightOffIcon className="cursor-pointer" />
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Display the static kit image */}
+                        {selectedKitNumbers[index] && (
+                          <div className="col-lg-3 col-md-2 mb-2">
+                            <img
+                              src={getKitImageByNumber(
+                                selectedKitNumbers[index]
+                              )}
+                              alt={`Kit ${selectedKitNumbers[index]} Image`}
+                              style={{ width: "90px", height: "90px" }}
+                            />
+                            <span
+                              className="pt-1 ms-4"
+                              style={{ fontSize: "12px" }}
+                            >
+                              PA00341
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleIssueReq}
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  >
+                    Submit
+                  </button>
+                </CustomTabPanel>
+              </div>
+              <div
+                className="scrollable-container"
+                style={{ maxHeight: "200px", overflowY: "auto" }}
+              >
+                <CustomTabPanel value={value} index={1}>
+                  {partFields.map((field, index) => (
                     <div className="row" key={index}>
-                      <div className="col-lg-4 col-md-6 mb-2">
+                      <div className="col-lg-4 col-md-8 mb-2">
                         <label className="label">
-                          <span className="label-text label-font-size text-base-content">
-                            KIT :
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content"
+                            }
+                          >
+                            Part :
                           </span>
                         </label>
                         <select
                           className="form-select form-sz w-full"
-                          value={field.kitNo}
-                          onChange={(e) => handleKitNoChange(e, index)}
+                          value={field.partNo}
+                          onChange={(e) => {
+                            handlePartNoChange(e, index);
+                          }}
                         >
-                          <option value="">Select a Kit</option>
-                          {getKitIds.map((kitId) => (
-                            <option key={kitId} value={kitId}>
-                              {kitId}
-                            </option>
-                          ))}
+                          <option value="">Select a Part</option>
+                          <option value="Part0025">Part0025</option>
+                          <option value="Part0078">Part0078</option>
+                          <option value="Part0043">Part0043</option>
+                          <option value="Part0157">Part0157</option>
                         </select>
-                        {errors.kitNo && (
-                          <span className="error-text">{errors.kitNo}</span>
-                        )}
                       </div>
-
-                      <div className="col-lg-4 col-md-6 mb-2">
+                      {errors.partNo && (
+                        <span className="error-text">{errors.partNo}</span>
+                      )}
+                      <div className="col-lg-4 col-md-8">
                         <label className="label">
-                          <span className="label-text label-font-size text-base-content">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content"
+                            }
+                          >
                             QTY :
                           </span>
                         </label>
                         <input
-                          className="form-control form-sz mb-2"
-                          type="text"
+                          className="form-control form-sz"
+                          type={"number"}
+                          placeholder={""}
                           value={field.qty}
-                          onChange={(e) => handleQtyChange(e, index)}
+                          onChange={(e) => handlePartQtyChange(e, index)}
                         />
-                        {errors.kitQty && (
-                          <span className="error-text">{errors.kitQty}</span>
+                        {errors.partQty && (
+                          <span className="error-text">{errors.partQty}</span>
                         )}
                       </div>
-
-                      <div className="col-lg-1 col-md-2 mb-2">
+                      <div className="col-lg-1 col-md-2">
                         {index === 0 ? (
                           <div
-                            onClick={handleAddField}
+                            onClick={handleAddPartField}
                             style={{ marginTop: "42px" }}
                           >
                             <AddCircleOutlineIcon className="cursor-pointer" />
                           </div>
                         ) : (
                           <div
-                            onClick={() => handleRemoveField(index)}
+                            onClick={() => handleRemovePartField(index)}
                             style={{ marginTop: "42px" }}
                           >
                             <HighlightOffIcon className="cursor-pointer" />
                           </div>
                         )}
                       </div>
-
-                      {/* Display the static kit image */}
-                      {selectedKitNumbers[index] && (
-                        <div className="col-lg-3 col-md-2 mb-2">
-                          <img
-                            src={getKitImageByNumber(selectedKitNumbers[index])}
-                            alt={`Kit ${selectedKitNumbers[index]} Image`}
-                            style={{ width: "90px", height: "90px" }}
+                      {selectedPartNumbers[index] && (
+                        <>
+                          <div className="col-lg-3 col-md-2">
+                            <img
+                              src={getPartImageByNumber(
+                                selectedPartNumbers[index]
+                              )}
+                              alt={`Kit ${selectedPartNumbers[index]} Image`}
+                              style={{ width: "90px", height: "90px" }}
+                            />
+                            <span
+                              className="pt-1 ms-4"
+                              style={{ fontSize: "12px" }}
+                            >
+                              PA00341
+                            </span>
+                          </div>
+                          <DisplaySelectedPartInfo
+                            selectedPartNo={selectedPartNumbers[index]}
                           />
-                          <span
-                            className="pt-1 ms-4"
-                            style={{ fontSize: "12px" }}
-                          >
-                            PA00341
-                          </span>
-                        </div>
+                        </>
                       )}
                     </div>
-                  </>
-                ))}
-                <button
-                  type="button"
-                  onClick={handleIssueReq}
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                >
-                  Submit
-                </button>
-              </CustomTabPanel>
-
-              <CustomTabPanel value={value} index={1}>
-                {partFields.map((field, index) => (
-                  <div className="row" key={index}>
-                    <div className="col-lg-4 col-md-8 mb-2">
-                      <label className="label">
-                        <span
-                          className={
-                            "label-text label-font-size text-base-content"
-                          }
-                        >
-                          Part :
-                        </span>
-                      </label>
-                      <select
-                        className="form-select form-sz w-full"
-                        value={field.partNo}
-                        onChange={(e) => {
-                          handlePartNoChange(e, index);
-                        }}
-                      >
-                        <option value="">Select a Part</option>
-                        <option value="Part0025">Part0025</option>
-                        <option value="Part0078">Part0078</option>
-                        <option value="Part0043">Part0043</option>
-                        <option value="Part0157">Part0157</option>
-                      </select>
-                    </div>
-                    {errors.partNo && (
-                      <span className="error-text">{errors.partNo}</span>
-                    )}
-                    <div className="col-lg-4 col-md-8">
-                      <label className="label">
-                        <span
-                          className={
-                            "label-text label-font-size text-base-content"
-                          }
-                        >
-                          QTY :
-                        </span>
-                      </label>
-                      <input
-                        className="form-control form-sz"
-                        type={"number"}
-                        placeholder={""}
-                        value={field.qty}
-                        onChange={(e) => handlePartQtyChange(e, index)}
-                      />
-                      {errors.partQty && (
-                        <span className="error-text">{errors.partQty}</span>
-                      )}
-                    </div>
-                    <div className="col-lg-1 col-md-2">
-                      {index === 0 ? (
-                        <div
-                          onClick={handleAddPartField}
-                          style={{ marginTop: "42px" }}
-                        >
-                          <AddCircleOutlineIcon className="cursor-pointer" />
-                        </div>
-                      ) : (
-                        <div
-                          onClick={() => handleRemovePartField(index)}
-                          style={{ marginTop: "42px" }}
-                        >
-                          <HighlightOffIcon className="cursor-pointer" />
-                        </div>
-                      )}
-                    </div>
-                    {selectedPartNumbers[index] && (
-                      <>
-                        <div className="col-lg-3 col-md-2">
-                          <img
-                            src={getPartImageByNumber(
-                              selectedPartNumbers[index]
-                            )}
-                            alt={`Kit ${selectedPartNumbers[index]} Image`}
-                            style={{ width: "90px", height: "90px" }}
-                          />
-                          <span
-                            className="pt-1 ms-4"
-                            style={{ fontSize: "12px" }}
-                          >
-                            PA00341
-                          </span>
-                        </div>
-                        <DisplaySelectedPartInfo
-                          selectedPartNo={selectedPartNumbers[index]}
-                        />
-                      </>
-                    )}
-                  </div>
-                ))}
-                <button
-                  type="button"
-                  onClick={handlePartReq}
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                >
-                  Submit
-                </button>
-              </CustomTabPanel>
-
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handlePartReq}
+                    style={{ marginTop: "5px" }}
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  >
+                    Submit
+                  </button>
+                </CustomTabPanel>
+              </div>
               <CustomTabPanel value={value} index={2}>
                 <>
                   <div
