@@ -6,83 +6,40 @@ import Datepicker from "react-tailwindcss-datepicker";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
-function SelectPartStudy({ addPartStudy, handleBack, handleNext }) {
+function SelectPartStudy({ setRefPsId, setEmitter, handleBack, handleNext }) {
   const currentDate = new Date();
-  const [refPsId, setRefPsId] = useState();
-  const [partStudyId, setPartStudyId] = useState();
-  const [showPartStudyId, setShowPartStudyId] = useState(false);
-  const [selectPartStudy, setSelectPartStudy] = useState();
-  // const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
+  //   const [refPsId, setRefPsId] = useState();
+  const [partStudyId, setPartStudyId] = useState("");
+  const [partStudyIdVO, setPartStudyIdVO] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [partStudyDate, setPartStudyDate] = useState({
     startDate: currentDate,
     endDate: currentDate,
   });
-  const [emitterId, setEmitterId] = useState();
-  const [partName, setPartName] = useState();
-  const [partNumber, setPartNumber] = useState();
-  const [weight, setWeight] = useState();
-  const [partVolume, setPartVolume] = useState();
-  const [highestVolume, setHighestVolume] = useState();
-  const [lowestVolume, setLowestVolume] = useState();
+  const [emitterId, setEmitterId] = useState("");
+  const [partName, setPartName] = useState("");
+  const [partNumber, setPartNumber] = useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
 
-  const handlePartChange = (event) => {
-    const { name, value } = event.target;
-    switch (name) {
-      // case "partStudyId":
-      //   setPartStudyId(value);
-      //   break;
-      // case "partStudyDate":
-      //   setPartStudyDate(value);
-      //   break;
-      case "emitterId":
-        setEmitterId(value);
-        break;
-      case "partName":
-        setPartName(value);
-        break;
-      case "partNumber":
-        setPartNumber(value);
-        break;
-      case "weight":
-        setWeight(value);
-        break;
-        break;
-      case "partVolume":
-        setPartVolume(value);
-        break;
-      case "highestVolume":
-        setHighestVolume(value);
-        break;
-      case "lowestVolume":
-        setLowestVolume(value);
-        break;
-    }
-  };
-
-  const handleSelectPartChange = (event) => {
-    setSelectPartStudy(event.target.value);
-    if (event.target.value === "ExistingPartStudy") {
-      setShowPartStudyId(true);
-    } else {
-      setShowPartStudyId(false);
-    }
-  };
   const handleCloseAddPartStudy = () => {
-    addPartStudy(false);
+    // addPartStudy(false);
   };
   const handleBackPartStudy = () => {
     window.location.reload();
   };
 
-  const handleValueChange = (newValue) => {
-    setPartStudyDate(newValue);
-  };
+  //   const handleValueChange = (newValue) => {
+  //     setPartStudyDate(newValue);
+  //   };
 
   const handleEmitterChange = (event) => {
     setEmitterId(event.target.value);
+    getPartStudyId(event.target.value);
+  };
+  const handlePsIdChange = (event) => {
+    setPartStudyId(event.target.value);
+    getPartStudyName(event.target.value);
   };
 
   useEffect(() => {
@@ -94,16 +51,8 @@ function SelectPartStudy({ addPartStudy, handleBack, handleNext }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
       );
-
       if (response.status === 200) {
-        // setReceiverCustomersVO(
-        //   response.data.paramObjectsMap.customersVO.receiverCustomersVO
-        // );
         setEmitterCustomersVO(
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
-        );
-        console.log(
-          "Emitter",
           response.data.paramObjectsMap.customersVO.emitterCustomersVO
         );
       }
@@ -112,61 +61,59 @@ function SelectPartStudy({ addPartStudy, handleBack, handleNext }) {
     }
   };
 
+  const getPartStudyId = async (emitterId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/searchPartStudyById`,
+        {
+          params: {
+            orgId: orgId,
+            emitterId: emitterId,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setPartStudyIdVO(
+          response.data.paramObjectsMap.basicDetailVO.partStudyId
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getPartStudyName = async (partStudyId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/searchPartStudyById`,
+        {
+          params: {
+            orgId: orgId,
+            emitterId: emitterId,
+            refPsId: partStudyId,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setPartNumber(response.data.paramObjectsMap.basicDetailVO.partNumber);
+        setPartName(response.data.paramObjectsMap.basicDetailVO.partName);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handlePartStudy = () => {
     const errors = {};
-    // if (!partStudyId) {
-    //   errors.partStudyId = "Part Study Number is required";
-    // }
-    // if (!partStudyDate.startDate) {
-    //   errors.partStudyDate = "Part Study Date is required";
-    // }
+    if (!partStudyId) {
+      errors.partStudyId = "Part Study ID is required";
+    }
     if (!emitterId) {
-      errors.emitterId = "Emitter Id is required";
-    }
-    if (!partName) {
-      errors.partName = "Part Name is required";
-    }
-    if (!partNumber) {
-      errors.partNumber = "Part Number is required";
-    }
-    if (!weight) {
-      errors.weight = "Weight is required";
-    }
-    if (!partVolume) {
-      errors.partVolume = "Part Volume is required";
-    }
-    if (!highestVolume) {
-      errors.highestVolume = "Highest Volume is required";
-    }
-    if (!lowestVolume) {
-      errors.lowestVolume = "Lowest Volume is required";
+      errors.emitterId = "Emitter is required";
     }
     if (Object.keys(errors).length === 0) {
-      const formData = {
-        refPsId,
-        // partStudyId,
-        partStudyDate: partStudyDate.startDate,
-        emitterId,
-        partName,
-        partNumber,
-        weight,
-        partVolume,
-        highestVolume,
-        lowestVolume,
-        orgId,
-      };
-      Axios.post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails`,
-        formData
-      )
-        .then((response) => {
-          console.log("Response:", response.data);
-          addPartStudy(false);
-          handleNext();
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
+      handleNext();
+      setRefPsId(partStudyId);
+      setEmitter(emitterId);
     } else {
       setErrors(errors);
     }
@@ -186,7 +133,7 @@ function SelectPartStudy({ addPartStudy, handleBack, handleNext }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Emitter ID
+                Emitter
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -198,70 +145,17 @@ function SelectPartStudy({ addPartStudy, handleBack, handleNext }) {
               value={emitterId}
             >
               <option value="" disabled>
-                Select an Type
+                Select an Emitter
               </option>
               {emitterCustomersVO.length > 0 &&
                 emitterCustomersVO.map((list) => (
-                  <option key={list.id} value={list.displayName}>
+                  <option key={list.id} value={list.id}>
                     {list.displayName}
                   </option>
                 ))}
             </select>
             {errors.emitterId && (
               <span className="error-text">{errors.emitterId}</span>
-            )}
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex "
-                }
-              >
-                Part No
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <select
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 w-full input-bordered ps-2"
-              value={partNumber}
-              // onChange={handleInputChange}
-            >
-              <option value="">Select a part number</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select>
-            {errors.partNumber && (
-              <span className="error-text">{errors.partNumber}</span>
-            )}
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size d-flex text-base-content "
-                }
-              >
-                Part Name
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="partName"
-              value={partName}
-              disabled
-              onChange={handlePartChange}
-            />
-            {errors.partName && (
-              <span className="error-text">{errors.partName}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -280,16 +174,65 @@ function SelectPartStudy({ addPartStudy, handleBack, handleNext }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 w-full input-bordered ps-2"
+              onChange={handlePsIdChange}
               value={partStudyId}
-              // onChange={handleInputChange}
             >
-              <option value="">Select a PS ID</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
+              <option value="" disabled>
+                Select a Part Study Id
+              </option>
+              {partStudyIdVO.length > 0 &&
+                partStudyIdVO.map((list) => (
+                  <option key={list.id} value={list}>
+                    {list}
+                  </option>
+                ))}
             </select>
             {errors.partStudyId && (
               <span className="error-text">{errors.partStudyId}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size d-flex text-base-content "
+                }
+              >
+                Part Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              value={partName}
+              disabled
+            />
+            {errors.partName && (
+              <span className="error-text">{errors.partName}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex "
+                }
+              >
+                Part No
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              value={partNumber}
+              disabled
+            />
+            {errors.partNumber && (
+              <span className="error-text">{errors.partNumber}</span>
             )}
           </div>
           {/* <div className="col-lg-3 col-md-6 mb-2">

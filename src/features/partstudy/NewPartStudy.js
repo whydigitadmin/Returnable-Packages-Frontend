@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import Tabs from "@mui/material/Tabs";
@@ -26,6 +26,9 @@ function NewPartStudy() {
   const [add, setAdd] = React.useState(false);
   const [ps, setPs] = React.useState(true);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [refPsId, setRefPsId] = useState(null);
+  const [emitter, setEmitter] = useState(null);
+  const [emitterName, setEmitterName] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -93,7 +96,7 @@ function NewPartStudy() {
   }
 
   const handleNext = () => {
-    if (value < 4) {
+    if (value < (ps ? 3 : 4)) {
       setValue(value + 1);
     }
   };
@@ -321,18 +324,38 @@ function NewPartStudy() {
         {ps ? (
           <>
             <CustomTabPanel value={value} index={0}>
-              <AddPartStudy handleBack={handlePrev} handleNext={handleNext} />
+              <AddPartStudy
+                handleBack={handlePrev}
+                handleNext={handleNext}
+                setRefPsId={setRefPsId}
+                setEmitter={setEmitter}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <AddPackage handleBack={handlePrev} handleNext={handleNext} />
+              <AddPackage
+                handleBack={handlePrev}
+                handleNext={handleNext}
+                refPsId={refPsId}
+                emitter={emitter}
+                setEmitterName={setEmitterName}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-              <AddLogistics handleBack={handlePrev} handleNext={handleNext} />
+              <AddLogistics
+                handleBack={handlePrev}
+                handleNext={handleNext}
+                refPsId={refPsId}
+                emitter={emitter}
+                emitterName={emitterName}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
               <AddStockKeeping
                 handleBack={handlePrev}
                 handleNext={handleNext}
+                refPsId={refPsId}
+                emitter={emitter}
+                emitterName={emitterName}
               />
             </CustomTabPanel>
           </>
@@ -342,21 +365,43 @@ function NewPartStudy() {
               <SelectPartStudy
                 handleBack={handlePrev}
                 handleNext={handleNext}
+                setRefPsId={setRefPsId}
+                setEmitter={setEmitter}
               />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <AddPartStudy handleBack={handlePrev} handleNext={handleNext} />
+              <AddPartStudy
+                handleBack={handlePrev}
+                handleNext={handleNext}
+                refPsId={refPsId}
+                emitter={emitter}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={2}>
-              <AddPackage handleBack={handlePrev} handleNext={handleNext} />
+              <AddPackage
+                handleBack={handlePrev}
+                handleNext={handleNext}
+                emitter={emitter}
+                refPsId={refPsId}
+                setEmitterName={setEmitterName}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={3}>
-              <AddLogistics handleBack={handlePrev} handleNext={handleNext} />
+              <AddLogistics
+                handleBack={handlePrev}
+                handleNext={handleNext}
+                emitter={emitter}
+                refPsId={refPsId}
+                emitterName={emitterName}
+              />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={4}>
               <AddStockKeeping
                 handleBack={handlePrev}
                 handleNext={handleNext}
+                emitter={emitter}
+                refPsId={refPsId}
+                emitterName={emitterName}
               />
             </CustomTabPanel>
           </>

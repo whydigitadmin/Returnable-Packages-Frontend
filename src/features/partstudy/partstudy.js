@@ -151,7 +151,7 @@ function Partstudy() {
         ),
       },
       {
-        accessorKey: "partStudyId",
+        accessorKey: "refPsId",
         header: "Part Study Id",
         size: 50,
         muiTableHeadCellProps: {
@@ -187,17 +187,6 @@ function Partstudy() {
         },
       },
       {
-        accessorKey: "receiverId",
-        header: "Receiver ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
         accessorKey: "partName",
         header: "Part Name",
         size: 50,
@@ -222,17 +211,6 @@ function Partstudy() {
       {
         accessorKey: "weight",
         header: "Weight",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "weightUnit",
-        header: "Weight Unit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -343,7 +321,7 @@ function Partstudy() {
                 <TableBody>
                   <TableRow>
                     <TableCell>Part Study Id</TableCell>
-                    <TableCell>{selectedRowData.partStudyId}</TableCell>
+                    <TableCell>{selectedRowData.refPsId}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Part Study Date</TableCell>
@@ -352,10 +330,6 @@ function Partstudy() {
                   <TableRow>
                     <TableCell>Emitter ID</TableCell>
                     <TableCell>{selectedRowData.emitterId}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Receiver ID</TableCell>
-                    <TableCell>{selectedRowData.receiverId}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Part Name</TableCell>
@@ -368,10 +342,6 @@ function Partstudy() {
                   <TableRow>
                     <TableCell>Weight</TableCell>
                     <TableCell>{selectedRowData.weight}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Weight Unit</TableCell>
-                    <TableCell>{selectedRowData.weightUnit}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Part Volume</TableCell>

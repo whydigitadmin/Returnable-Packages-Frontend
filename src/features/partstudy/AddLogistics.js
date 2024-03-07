@@ -3,54 +3,32 @@ import React, { useState, useEffect } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
-function AddLogistics({ addlogistics, handleBack, handleNext }) {
-  const updateFormValue = ({ updateType, value }) => {
-    console.log(updateType);
-  };
-
+function AddLogistics({ refPsId, emitterName, handleBack, handleNext }) {
   const [avgLotSize, setAvgLotSize] = useState("");
   const [dispatchFrequency, setDispatchFrequency] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
-  const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
-  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
-  const [emitterId, setEmitterId] = useState();
-  const [receiverId, setReceiverId] = useState();
-  const [partStudyId, setPartStudyId] = useState();
-  const [diapatchTo, setDispatchTo] = useState(""); // Added state for Dispatch To
-  const [transpotationTo, setTransportationTo] = useState(""); // Added state for Transportation To
+  const [diapatchTo, setDispatchTo] = useState("");
 
-  const handleCloseLogistics = () => {
-    addlogistics(false);
-  };
-
-  const handleEmitterChange = (event) => {
-    setEmitterId(event.target.value);
-  };
-  const handleReceiverChange = (event) => {
-    setReceiverId(event.target.value);
-  };
   useEffect(() => {
-    getCustomersList();
-  }, []);
+    if (refPsId) {
+      fetchLogisiticDetails(refPsId);
+    }
+  }, [refPsId]);
 
-  const getCustomersList = async () => {
+  const fetchLogisiticDetails = async (refPsId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/partStudy/logistics/${refPsId}`
       );
 
       if (response.status === 200) {
-        setReceiverCustomersVO(
-          response.data.paramObjectsMap.customersVO.receiverCustomersVO
-        );
-        setEmitterCustomersVO(
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
-        );
-        console.log(
-          "Emitter",
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
-        );
+        console.log("logisticsVO", response.data);
+        const logisticsVO = response.data.paramObjectsMap.logisticsVO;
+        setAvgLotSize(logisticsVO.avgLotSize);
+        setDispatchFrequency(logisticsVO.dispatchFrequency);
+        setDispatchTo(logisticsVO.diapatchTo);
+        // setPartStudyDate({ startDate: new Date(basicDetailVO.partStudyDate) });
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -59,8 +37,6 @@ function AddLogistics({ addlogistics, handleBack, handleNext }) {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log("test", value);
-
     switch (name) {
       case "avgLotSize":
         setAvgLotSize(value);
@@ -68,11 +44,8 @@ function AddLogistics({ addlogistics, handleBack, handleNext }) {
       case "dispatchFrequency":
         setDispatchFrequency(value);
         break;
-      case "diapatchTo": // Added case for Dispatch To
+      case "diapatchTo":
         setDispatchTo(value);
-        break;
-      case "transpotationTo": // Added case for Transportation To
-        setTransportationTo(value);
         break;
       default:
         break;
@@ -94,22 +67,18 @@ function AddLogistics({ addlogistics, handleBack, handleNext }) {
         avgLotSize,
         dispatchFrequency,
         orgId,
-        diapatchTo, // Include Dispatch To in the formData
-        transpotationTo,
+        diapatchTo,
+        refPsId: refPsId ? refPsId : "",
       };
       console.log("test", formData);
       axios
-        .post(
+        .put(
           `${process.env.REACT_APP_API_URL}/api/partStudy/logistics`,
           formData
         )
         .then((response) => {
           console.log("Response:", response.data);
-          setAvgLotSize("");
-          setDispatchFrequency("");
-          setErrors({});
-          setDispatchTo(""); // Reset Dispatch To after successful submission
-          setTransportationTo("");
+          handleNext();
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -143,23 +112,12 @@ function AddLogistics({ addlogistics, handleBack, handleNext }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            {/* <select
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 w-full input-bordered ps-2"
-              value={partStudyId}
-              // onChange={handleInputChange}
-            >
-              <option value="">Select an option</option>
-              <option value="1">1</option>
-              <option value="2">2</option>
-              <option value="3">3</option>
-            </select> */}
             <input
               className="form-control form-sz mb-2"
               disabled
-              placeholder={"1"}
+              placeholder={""}
               name="partStudyId"
-              value={partStudyId}
+              value={refPsId}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -169,31 +127,19 @@ function AddLogistics({ addlogistics, handleBack, handleNext }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Emitter ID
+                Emitter
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleEmitterChange}
-              value={emitterId}
+            <input
+              className="form-control form-sz mb-2"
               disabled
-            >
-              <option value="" disabled>
-                Select an Type
-              </option>
-              {emitterCustomersVO.length > 0 &&
-                emitterCustomersVO.map((list) => (
-                  <option key={list.id} value={list.displayName}>
-                    {list.displayName}
-                  </option>
-                ))}
-            </select>
-            {errors.emitterId && (
-              <span className="error-text">{errors.emitterId}</span>
-            )}
+              placeholder={""}
+              name="emitterName"
+              value={emitterName}
+            />
           </div>
         </div>
         <div className="row">
@@ -313,7 +259,7 @@ function AddLogistics({ addlogistics, handleBack, handleNext }) {
           </button>
           <button
             type="button"
-            onClick={handleNext}
+            onClick={handleLogistic}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save & Next

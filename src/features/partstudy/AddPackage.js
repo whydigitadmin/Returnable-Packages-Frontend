@@ -6,20 +6,28 @@ import { IoMdClose } from "react-icons/io";
 import { styled } from "@mui/material/styles";
 import { FaStarOfLife } from "react-icons/fa";
 
-function AddPackage({ addPackage, handleBack, handleNext }) {
+function AddPackage({
+  refPsId,
+  handleBack,
+  handleNext,
+  emitter,
+  setEmitterName,
+}) {
+  const [displayName, setDisplayName] = useState("");
   const [id, setId] = useState();
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
   const [height, setHeight] = useState("");
-  const [partUnit, setPartUnit] = useState("");
+  // const [partUnit, setPartUnit] = useState("");
   const [existingPart, setExistingPart] = useState("");
+  const [selectPs, setSelectPs] = useState(false);
   const [currentPackingStudy, setCurrentPackingStudy] = useState("");
   const [currentPackingChallenges, setCurrentPackingChallenges] = useState("");
   const [noOfParts, setNoOfParts] = useState("");
-  const [partSensitive, setPartSensitive] = useState("");
-  const [greasy, setGreasy] = useState("");
+  const [partSensitive, setPartSensitive] = useState();
+  const [partGreasy, setPartGreasy] = useState("");
   const [partOrientation, setPartOrientation] = useState("");
-  const [multiPartInSingleUnit, SetMultiPartInSingleUnit] = useState("");
+  const [multiPartInSingleUnit, setMultiPartInSingleUnit] = useState("");
   const [stacking, setStacking] = useState("");
   const [nesting, setNesting] = useState("");
   const [remarks, setRemarks] = useState("");
@@ -30,11 +38,8 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
     useState("");
   const [approvedCommercialContract, setApprovedCommercialContract] =
     useState("");
-  const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
-  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
-  const [emitterId, setEmitterId] = useState();
-  const [receiverId, setReceiverId] = useState();
-  const [partStudyId, setPartStudyId] = useState();
+  const [partStudyId, setPartStudyId] = useState(refPsId);
+  const [emitterStudyId, setEmitterStudyId] = useState(emitter);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
 
@@ -77,14 +82,14 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
       case "partSensitive":
         setPartSensitive(value);
         break;
-      case "greasy":
-        setGreasy(value);
+      case "partGreasy":
+        setPartGreasy(value);
         break;
       case "partOrientation":
         setPartOrientation(value);
         break;
       case "multiPartInSingleUnit":
-        SetMultiPartInSingleUnit(value);
+        setMultiPartInSingleUnit(value);
         break;
       case "stacking":
         setStacking(value);
@@ -114,102 +119,96 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
   };
 
   const handlePackage = () => {
+    console.log("Response handlePackage Click");
     const errors = {};
-    if (!length) {
-      errors.length = "Length is required";
-    }
-    if (!breath) {
-      errors.breath = "Breath is required";
-    }
-    if (!height) {
-      errors.height = "Height is required";
-    }
-    if (!partUnit) {
-      errors.partUnit = "Part Unit is required";
-    }
-    if (!existingPart) {
-      errors.existingPart = "Existing Part is required";
-    }
-    if (!currentPackingStudy) {
-      errors.currentPackingStudy = "Current Packing Study is required";
-    }
-    if (!currentPackingChallenges) {
-      errors.currentPackingChallenges =
-        "Current Packing Challenges is required";
-    }
-    if (!noOfParts) {
-      errors.noOfParts = "Number Of Parts is required";
-    }
-    if (!partSensitive) {
-      errors.partSensitive = "Part Sensitive is required";
-    }
-    if (!greasy) {
-      errors.greasy = "Part greasy is required";
-    }
-    if (!partOrientation) {
-      errors.partOrientation = "Part Orientation is required";
-    }
-    if (!multiPartInSingleUnit) {
-      errors.multiPartInSingleUnit = "Multi Part In Single Pocket is required";
-    }
-    if (!stacking) {
-      errors.stacking = "Stacking is required";
-    }
-    if (!nesting) {
-      errors.nesting = "Nesting is required";
-    }
-    if (!remarks) {
-      errors.remarks = "Remarks is required";
-    }
-    // if (!partImage) {
-    //   errors.partImage = "Part Image is required";
+    // if (!length) {
+    //   errors.length = "Length is required";
     // }
-    // if (!existingPackingImage) {
-    //   errors.existingPackingImage = "Existing Packing Image is required";
+    // if (!breath) {
+    //   errors.breath = "Breath is required";
     // }
-    if (!partDrawing) {
-      errors.partDrawing = "Part Drawing is required";
-    }
-    if (!approvedPackingTechnicalDrawing) {
-      errors.approvedPackingTechnicalDrawing =
-        "Approved Packing Technical Drawing is required";
-    }
-    if (!approvedCommercialContract) {
-      errors.approvedCommercialContract =
-        "Approved Commercial Contract is required";
-    }
+    // if (!height) {
+    //   errors.height = "Height is required";
+    // }
+    // if (!existingPart) {
+    //   errors.existingPart = "Existing Part is required";
+    // }
+    // if (!currentPackingStudy) {
+    //   errors.currentPackingStudy = "Current Packing Study is required";
+    // }
+    // if (!currentPackingChallenges) {
+    //   errors.currentPackingChallenges =
+    //     "Current Packing Challenges is required";
+    // }
+    // if (!noOfParts) {
+    //   errors.noOfParts = "Number Of Parts is required";
+    // }
+    // if (!partSensitive) {
+    //   errors.partSensitive = "Part Sensitive is required";
+    // }
+    // if (!partGreasy) {
+    //   errors.partGreasy = "Part greasy is required";
+    // }
+    // if (!partOrientation) {
+    //   errors.partOrientation = "Part Orientation is required";
+    // }
+    // if (!multiPartInSingleUnit) {
+    //   errors.multiPartInSingleUnit = "Multi Part In Single Pocket is required";
+    // }
+    // if (!stacking) {
+    //   errors.stacking = "Stacking is required";
+    // }
+    // if (!nesting) {
+    //   errors.nesting = "Nesting is required";
+    // }
+    // if (!remarks) {
+    //   errors.remarks = "Remarks is required";
+    // }
+    // if (!partDrawing) {
+    //   errors.partDrawing = "Part Drawing is required";
+    // }
+    // if (!approvedPackingTechnicalDrawing) {
+    //   errors.approvedPackingTechnicalDrawing =
+    //     "Approved Packing Technical Drawing is required";
+    // }
+    // if (!approvedCommercialContract) {
+    //   errors.approvedCommercialContract =
+    //     "Approved Commercial Contract is required";
+    // }
     if (Object.keys(errors).length === 0) {
+      console.log("Response server called Click");
       const formData = {
         id,
         existingPart,
         length,
         breath,
         height,
-        partUnit,
-        currentPackingStudy,
+        // currentPackingStudy,
         currentPackingChallenges,
         noOfParts,
         partSensitive,
-        greasy,
+        partGreasy,
         partOrientation,
         multiPartInSingleUnit,
         stacking,
         nesting,
         remarks,
-        partImage,
-        existingPackingImage,
-        partDrawing,
-        approvedPackingTechnicalDrawing,
-        approvedCommercialContract,
+        refPsId: refPsId ? refPsId : "",
+        // partImage,
+        // existingPackingImage,
+        // partDrawing,
+        // approvedPackingTechnicalDrawing,
+        // approvedCommercialContract,
         orgId,
       };
-      Axios.post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/packageDetail`,
+      Axios.put(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/updatePackingDetail`,
         formData
       )
         .then((response) => {
           console.log("Response:", response.data);
-          addPackage(false);
+          handleNext();
+          // addPackage(false);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -219,53 +218,86 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
     }
   };
 
-  const handleEmitterChange = (event) => {
-    setEmitterId(event.target.value);
-  };
-  const handleReceiverChange = (event) => {
-    setReceiverId(event.target.value);
-  };
   useEffect(() => {
-    getCustomersList();
-  }, []);
+    getDisplayNameById();
+    if (refPsId) {
+      fetchPackageDetails(refPsId);
+    }
+  }, [refPsId]);
 
-  const getCustomersList = async () => {
+  const getDisplayNameById = async () => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/customers/${emitterStudyId}`
       );
 
       if (response.status === 200) {
-        setReceiverCustomersVO(
-          response.data.paramObjectsMap.customersVO.receiverCustomersVO
-        );
-        setEmitterCustomersVO(
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
-        );
-        console.log(
-          "Emitter",
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
-        );
+        const customer = response.data.paramObjectsMap.customersVO;
+        if (customer) {
+          const displayName = customer.displayName;
+          console.log("customer.displayName", displayName);
+          setDisplayName(displayName);
+          setEmitterName(displayName);
+        } else {
+          setDisplayName("Customer not found");
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const handleUnitChange = (e) => {
-    setPartUnit(e.target.value);
+  const fetchPackageDetails = async (refPsId) => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/packageDetail/${refPsId}`
+      );
+
+      if (response.status === 200) {
+        console.log("packageDetail", response.data);
+        const packingDetailVO = response.data.paramObjectsMap.packingDetailVO;
+        setPartStudyId(packingDetailVO.refPsId);
+        setLength(packingDetailVO.length);
+        setBreath(packingDetailVO.breath);
+        setHeight(packingDetailVO.height);
+        setExistingPart(packingDetailVO.existingPart);
+        // currentPackingStudy(packingDetailVO.currentPackingStudy);
+        setCurrentPackingChallenges(packingDetailVO.currentPackingChallenges);
+        setNoOfParts(packingDetailVO.noOfParts);
+        setPartSensitive(packingDetailVO.partSensitive);
+        setPartGreasy(packingDetailVO.partGreasy);
+        setPartOrientation(packingDetailVO.partOrientation);
+        setMultiPartInSingleUnit(packingDetailVO.multiPartInSingleUnit);
+        setStacking(packingDetailVO.stacking);
+        setNesting(packingDetailVO.nesting);
+        setRemarks(packingDetailVO.remarks);
+        // setPartStudyDate({ startDate: new Date(basicDetailVO.partStudyDate) });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
-  const handlePart = (e) => {
-    setExistingPart(e.target.value);
+
+  const handlePart = (event) => {
+    setExistingPart(event.target.value);
+    if (event.target.value === "Yes") {
+      setSelectPs(true);
+    } else {
+      setSelectPs(false);
+    }
   };
+
+  // const handleUnitChange = (e) => {
+  //   setPartUnit(e.target.value);
+  // };
   const handlePartGreasy = (e) => {
-    setGreasy(e.target.value);
+    setPartGreasy(e.target.value);
   };
   const handlePartOrientation = (e) => {
     setPartOrientation(e.target.value);
   };
   const handleMultiPart = (e) => {
-    SetMultiPartInSingleUnit(e.target.value);
+    setMultiPartInSingleUnit(e.target.value);
   };
   const handleStacking = (e) => {
     setStacking(e.target.value);
@@ -278,7 +310,7 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
   };
 
   const handleClosePackage = () => {
-    addPackage(false);
+    // addPackage(false);
   };
 
   return (
@@ -319,9 +351,9 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
             <input
               className="form-control form-sz mb-2"
               disabled
-              placeholder={"1"}
+              placeholder={""}
               name="partStudyId"
-              value={partStudyId}
+              value={refPsId}
             />
             {errors.partStudyId && (
               <span className="error-text">{errors.partStudyId}</span>
@@ -334,31 +366,19 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Emitter ID
+                Emitter
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleEmitterChange}
-              value={emitterId}
+            <input
+              className="form-control form-sz mb-2"
               disabled
-            >
-              <option value="" disabled>
-                Select an Type
-              </option>
-              {emitterCustomersVO.length > 0 &&
-                emitterCustomersVO.map((list) => (
-                  <option key={list.id} value={list.displayName}>
-                    {list.displayName}
-                  </option>
-                ))}
-            </select>
-            {errors.emitterId && (
-              <span className="error-text">{errors.emitterId}</span>
-            )}
+              placeholder={""}
+              name="displayName"
+              value={displayName}
+            />
           </div>
         </div>
         <div className="row">
@@ -378,7 +398,7 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 68 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 69 }}
                 name="length"
                 value={length}
                 placeholder={"L"}
@@ -393,7 +413,7 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
                 />
               </span> */}
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 68 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 69 }}
                 name="breath"
                 value={breath}
                 placeholder={"B"}
@@ -408,7 +428,7 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
                 />
               </span> */}
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 68 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 69 }}
                 name="height"
                 value={height}
                 placeholder={"H"}
@@ -463,13 +483,67 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
               onChange={handlePart}
             >
               <option value="">Select an option</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
             {errors.existingPart && (
               <div className="error-text">{errors.existingPart}</div>
             )}
           </div>
+          {selectPs && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Current Packaging Challenges
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <textarea
+                  style={{ fontSize: "0.800rem" }}
+                  className="form-control label label-text label-font-size text-base-content"
+                  name="currentPackingChallenges"
+                  value={currentPackingChallenges}
+                  onChange={handlePackageChange}
+                />
+                {errors.currentPackingChallenges && (
+                  <div className="error-text">
+                    {errors.currentPackingChallenges}
+                  </div>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Parts Per Packaging
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder={""}
+                  name="noOfParts"
+                  value={noOfParts}
+                  onChange={handlePackageChange}
+                />
+                {errors.noOfParts && (
+                  <div className="error-text">{errors.noOfParts}</div>
+                )}
+              </div>
+            </>
+          )}
           {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -494,56 +568,7 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
               <div className="error-text">{errors.currentPackingStudy}</div>
             )}
           </div> */}
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Current Packaging Challenges
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <textarea
-              style={{ fontSize: "0.800rem" }}
-              className="form-control label label-text label-font-size text-base-content"
-              name="currentPackingChallenges"
-              value={currentPackingChallenges}
-              onChange={handlePackageChange}
-            />
-            {errors.currentPackingChallenges && (
-              <div className="error-text">
-                {errors.currentPackingChallenges}
-              </div>
-            )}
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Parts Per Packaging
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="noOfParts"
-              value={noOfParts}
-              onChange={handlePackageChange}
-            />
-            {errors.noOfParts && (
-              <div className="error-text">{errors.noOfParts}</div>
-            )}
-          </div>
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -564,8 +589,8 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
               onChange={handlePartSensitive}
             >
               <option value="">Select an option</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
             {errors.partSensitive && (
               <div className="error-text">{errors.partSensitive}</div>
@@ -587,14 +612,16 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
             <select
               style={{ height: 40, fontSize: "0.800rem" }}
               className="input mb-2 p-1 w-full input-bordered"
-              value={greasy}
+              value={partGreasy}
               onChange={handlePartGreasy}
             >
               <option value="">Select an option</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
-            {errors.greasy && <div className="error-text">{errors.greasy}</div>}
+            {errors.partGreasy && (
+              <div className="error-text">{errors.partGreasy}</div>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -634,8 +661,8 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
               onChange={handleMultiPart}
             >
               <option value="">Select an option</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
             {errors.multiPartInSingleUnit && (
               <div className="error-text">{errors.multiPartInSingleUnit}</div>
@@ -656,8 +683,8 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
               onChange={handleStacking}
             >
               <option value="">Select an option</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
             {errors.stacking && (
               <div className="error-text">{errors.stacking}</div>
@@ -678,8 +705,8 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
               onChange={handleNesting}
             >
               <option value="">Select an option</option>
-              <option value="yes">Yes</option>
-              <option value="no">No</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
             </select>
             {errors.nesting && (
               <div className="error-text">{errors.nesting}</div>
@@ -843,7 +870,7 @@ function AddPackage({ addPackage, handleBack, handleNext }) {
           </button>
           <button
             type="button"
-            onClick={handleNext}
+            onClick={handlePackage}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save & Next
