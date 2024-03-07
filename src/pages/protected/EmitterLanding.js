@@ -7,8 +7,18 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "BIN BEE" }));
-  }, []);
+    dispatch(
+      setPageTitle({
+        title: (
+          <img
+            src="/BIN_BEE.png"
+            alt="BIN BEE"
+            style={{ width: "150px", height: "auto" }}
+          />
+        ),
+      })
+    );
+  }, [dispatch]);
 
   return <EmitterLanding />;
 }

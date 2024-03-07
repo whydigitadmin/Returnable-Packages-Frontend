@@ -62,7 +62,7 @@ export const EmitterLanding = () => {
         <AmountStats />
         <PageStats />
       </div> */}
-      <EmitterTab />
+      {/* <EmitterTab /> */}
       <div className="grid lg:grid-cols-1 mt-10 grid-cols-1 gap-6">
         <Notification />
         {/* <Calendar /> */}
