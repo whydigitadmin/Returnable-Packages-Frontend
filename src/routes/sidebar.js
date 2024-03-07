@@ -23,6 +23,11 @@ const routes = [
         name: "User Creation",
       },
       {
+        path: "/app/EmitterCreation",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Emitter Creation",
+      },
+      {
         path: "/app/Roles",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Roles",
