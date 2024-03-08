@@ -8,6 +8,7 @@ import TitleCard from "../../components/Cards/TitleCard";
 
 const BILLS = [
   {
+    status: "Issued",
     partno: "2001",
     partname: "Mobile",
     partqty: "20",
@@ -104,7 +105,7 @@ function EmitterOutwardDetails() {
 
   return (
     <>
-      <div className="d-flex justify-content-end me-4 mt-4">
+      {/* <div className="d-flex justify-content-end me-4 mt-4">
         <button
           type="button"
           onClick={handlePendingStatusClickIssued}
@@ -112,13 +113,14 @@ function EmitterOutwardDetails() {
         >
           Outward
         </button>
-      </div>
+      </div> */}
       <TitleCard title="Outward Manifest" topMargin="mt-2">
         {/* Invoice list in table format loaded constant */}
         <div className="overflow-x-auto w-full ">
           <table className="table w-full">
             <thead>
               <tr>
+                <th>Update</th>
                 <th>Part No</th>
                 <th>Part name</th>
                 <th>Part Qty</th>
@@ -135,6 +137,7 @@ function EmitterOutwardDetails() {
               {/* {bills.map((l, k) => {
                 return (
                   <tr key={k}>
+                    <td>{getPaymentStatus(l.status)}</td>
                     <td>{l.partno}</td>
                     <td>{l.partname}</td>
                     <td>{l.partqty}</td>
