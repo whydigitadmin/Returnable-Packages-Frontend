@@ -19,18 +19,17 @@ function WelcomeEmitter() {
       <div className="row">
         <div className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2">
           <div className="">
-            <h4 className="text-2xl font-semibold mt-4 ms-2 mb-4">
-              WELCOME TO
-            </h4>
-            <img
+            <h4 className="text-xl font-semibold mt-4 ms-2 mb-2">WELCOME TO</h4>
+            <h4 className="text-4xl font-bold mt-2 ms-2 mb-4">AIPACKS</h4>
+            {/* <img
               src="/logo192.png"
               style={{ width: "100px", margin: "auto" }}
               className="text-center mb-3"
-            />
-            <h4 className="text-md dark:text-slate-300 font-semibold ms-2 mb-1">
+            /> */}
+            <h4 className="text-lg dark:text-slate-300 font-semibold ms-2 mb-1">
               User
             </h4>
-            <p className="text-sm ms-2 mb-2">Last login 12-01-2024 09:43</p>
+            <p className="text-sm ms-2 mb-2">Last login 07-03-2024 11:43am</p>
             {/* <p className="text-2xl ms-2">Tue</p>
             <p className="text-5xl ms-5">Jan</p>
             <p className="text-9xl text-right me-2 mb-3">17</p> */}
