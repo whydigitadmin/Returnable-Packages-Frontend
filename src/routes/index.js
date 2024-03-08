@@ -16,6 +16,9 @@ const StockAdjustment = lazy(() =>
   import("../pages/protected/StockAdjustment")
 );
 const IssueManifest = lazy(() => import("../pages/protected/IssueManifest"));
+const IssueManifestReport = lazy(() =>
+  import("../pages/protected/IssueManifestReport")
+);
 const InwardManifest = lazy(() => import("../pages/protected/InwardManifest"));
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
@@ -113,6 +116,10 @@ const routes = [
   {
     path: "/issuemanifest",
     component: IssueManifest,
+  },
+  {
+    path: "/issuemanifest-report",
+    component: IssueManifestReport,
   },
   {
     path: "/inwardmanifest",
