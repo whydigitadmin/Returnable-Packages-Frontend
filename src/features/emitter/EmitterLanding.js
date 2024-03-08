@@ -18,7 +18,7 @@ import EmitterTab from "./EmitterTab";
 const statsData = [
   {
     title: "New Users",
-    value: "34.7k",
+    value: "34000",
     icon: <UserGroupIcon className="w-8 h-8" />,
     description: "↗︎ 2300 (22%)",
   },
@@ -36,7 +36,7 @@ const statsData = [
   },
   {
     title: "Active Users",
-    value: "5.6k",
+    value: "56000",
     icon: <UsersIcon className="w-8 h-8" />,
     description: "↙ 300 (18%)",
   },

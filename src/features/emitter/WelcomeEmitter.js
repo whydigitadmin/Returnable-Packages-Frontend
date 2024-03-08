@@ -22,7 +22,11 @@ function WelcomeEmitter() {
             <h4 className="text-2xl font-semibold mt-4 ms-2 mb-4">
               WELCOME TO
             </h4>
-            <img src="/BIN_BEE.png" className="mb-3" />
+            <img
+              src="/logo192.png"
+              style={{ width: "100px", margin: "auto" }}
+              className="text-center mb-3"
+            />
             <h4 className="text-md dark:text-slate-300 font-semibold ms-2 mb-1">
               User
             </h4>
@@ -38,16 +42,16 @@ function WelcomeEmitter() {
                 style={{ marginTop: 30 }}
               />
               <h4 className="text-2xl font-semibold mt-4 pt-1 ms-1 mb-4">
-                Location
+                Gabriel
               </h4>
             </div>
-            <h4 className="text-xl dark:text-slate-300 font-semibold ms-2 mb-3">
+            {/* <h4 className="text-xl dark:text-slate-300 font-semibold ms-2 mb-3">
               Gabriel
-            </h4>
-            <p className="ms-2 mb-3">
+            </h4> */}
+            {/* <p className="ms-2 mb-3">
               29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
               Pune, Maharashtra, 410501 India
-            </p>
+            </p> */}
           </div>
         </div>
         <div className="col-lg-9 card bg-base-100 shadow-xl mb-4">

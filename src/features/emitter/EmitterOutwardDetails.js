@@ -132,7 +132,7 @@ function EmitterOutwardDetails() {
               </tr>
             </thead>
             <tbody>
-              {bills.map((l, k) => {
+              {/* {bills.map((l, k) => {
                 return (
                   <tr key={k}>
                     <td>{l.partno}</td>
@@ -147,7 +147,7 @@ function EmitterOutwardDetails() {
                     <td>{l.o2o}</td>
                   </tr>
                 );
-              })}
+              })} */}
             </tbody>
           </table>
         </div>

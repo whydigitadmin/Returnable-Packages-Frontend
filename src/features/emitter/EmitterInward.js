@@ -18,7 +18,7 @@ function EmitterInward() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
+            {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -35,13 +35,13 @@ function EmitterInward() {
                 29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                 Pune, Maharashtra, 410501 India
               </p>
-            </div>
-            <div className="col-lg-1">
+            </div> */}
+            {/* <div className="col-lg-1">
               <MdDoubleArrow
                 className="text-xl font-semibold w-16  h-16 "
                 style={{ marginTop: 70 }}
               />
-            </div>
+            </div> */}
             <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3">
               <div className="p-1">
                 <div className="d-flex flex-row">
@@ -66,10 +66,10 @@ function EmitterInward() {
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   Tata Motors- Pune
                 </h4>
-                <p className="ms-1 mb-2">
+                {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                   Pune, Maharashtra, 410501 India
-                </p>
+                </p> */}
               </div>
             </div>
           </div>

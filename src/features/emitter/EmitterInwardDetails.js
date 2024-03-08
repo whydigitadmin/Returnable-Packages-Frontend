@@ -8,6 +8,7 @@ import TitleCard from "../../components/Cards/TitleCard";
 
 const BILLS = [
   {
+    status: "Issued",
     rmno: "1072",
     rmdate: "16-02-2024",
     ddate: "18-02-2024",
@@ -21,9 +22,9 @@ const BILLS = [
     returnqty: "0",
     tat: "48",
     pname: "PISTON/PS01",
-    status: "Issued",
   },
   {
+    status: "Issued",
     rmno: "1073",
     rmdate: "17-02-2024",
     ddate: "20-02-2024",
@@ -37,9 +38,9 @@ const BILLS = [
     returnqty: "0",
     tat: "48",
     pname: "PISTON/PS01",
-    status: "Issued",
   },
   {
+    status: "Issued",
     rmno: "1074",
     rmdate: "18-02-2024",
     ddate: "21-02-2024",
@@ -53,7 +54,6 @@ const BILLS = [
     returnqty: "0",
     tat: "48",
     pname: "PISTON/PS01",
-    status: "Issued",
   },
 
   // {
@@ -146,6 +146,7 @@ function EmitterInwardDetails() {
           <table className="table w-full">
             <thead>
               <tr>
+                <th>Update</th>
                 <th>RM No.</th>
                 <th>RM Date</th>
                 <th>Demand Date</th>
@@ -159,13 +160,13 @@ function EmitterInwardDetails() {
                 <th>Return</th>
                 <th>TAT (Hrs)</th>
                 <th>Part</th>
-                <th>Status</th>
               </tr>
             </thead>
             <tbody>
-              {bills.map((l, k) => {
+              {/* {bills.map((l, k) => {
                 return (
                   <tr key={k}>
+                    <td>{getPaymentStatus(l.status)}</td>
                     <td>{l.rmno}</td>
                     <td>{l.rmdate}</td>
                     <td>{l.ddate}</td>
@@ -179,10 +180,9 @@ function EmitterInwardDetails() {
                     <td>{l.returnqty}</td>
                     <td>{l.tat}</td>
                     <td>{l.pname}</td>
-                    <td>{getPaymentStatus(l.status)}</td>
                   </tr>
                 );
-              })}
+              })} */}
             </tbody>
           </table>
         </div>

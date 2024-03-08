@@ -8,7 +8,6 @@ import Typography from "@mui/material/Typography";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
-import { DemoContainer } from "@mui/x-date-pickers/internals/demo";
 import axios from "axios";
 import dayjs from "dayjs";
 import moment from "moment";
@@ -23,7 +22,10 @@ import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
-import Datepicker from "react-tailwindcss-datepicker";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 
 function IssueReq() {
   const [value, setValue] = React.useState(0);
@@ -45,15 +47,18 @@ function IssueReq() {
   const [bills, setBills] = useState([]);
   const [selectedIssueRequest, setSelectedIssueRequest] = useState(null);
   const [selectedSubIndex, setSelectedSubIndex] = useState(null);
+  const currentDate = dayjs();
+  const [selectedDate1, setSelectedDate1] = useState(currentDate.add(2, "day")); // Initialize selectedDate with the current date plus 2 days
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const [dateValue, setDateValue] = useState({
-    startDate: new Date(),
-    endDate: new Date(),
-  });
-
-  const handleDatePickerValueChange = (newValue) => {
-    console.log("newValue:", newValue);
-    setDateValue(newValue);
+  const handleIssueDateChange = (date) => {
+    if (date.diff(currentDate, "day") <= 1) {
+      // Check if selected date is current date or tomorrow
+      setErrorMessage("Please select a date after two days.");
+      return;
+    }
+    setSelectedDate1(date);
+    setErrorMessage("");
   };
 
   useEffect(() => {
@@ -498,14 +503,14 @@ function IssueReq() {
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   Tata Motors- Pune
                 </h4>
-                <p className="ms-1 mb-2">
+                {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                   Pune, Maharashtra, 410501 India
-                </p>
+                </p> */}
               </div>
             </div>
             <div className="col-lg-4 d-flex justify-content-center">
-              <div className="mt-4">
+              {/* <div className="mt-4">
                 <div className="text-xl font-semibold mb-3">
                   Select Date Range
                 </div>
@@ -521,6 +526,29 @@ function IssueReq() {
                   showShortcuts={true}
                   primaryColor={"green"}
                 />
+              </div> */}
+              <div className="mt-4">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer
+                    components={[
+                      "DatePicker",
+                      "MobileDatePicker",
+                      "DesktopDatePicker",
+                      "StaticDatePicker",
+                    ]}
+                  >
+                    <DemoItem label="Select Date">
+                      <DesktopDatePicker
+                        value={selectedDate1}
+                        onChange={handleIssueDateChange}
+                        minDate={currentDate.add()} // Minimum selectable date is current date + 2 days
+                      />
+                      {errorMessage && (
+                        <p style={{ color: "red" }}>{errorMessage}</p>
+                      )}
+                    </DemoItem>
+                  </DemoContainer>
+                </LocalizationProvider>
               </div>
             </div>
           </div>
