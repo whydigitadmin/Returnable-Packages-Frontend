@@ -67,8 +67,9 @@ function AddFlows({ addFlows }) {
   const [id, setId] = useState();
   const [kitName, setKitName] = useState("");
   const [partName, setPartName] = useState("");
-  const [partNumber, setPartNumber] = useState();
-  const [cycleTime, setCycleTime] = useState("");
+  const [partNumber, setPartNumber] = useState(null);
+  const [partStudyNameVO, setPartStudyNameVO] = useState([]);
+  const [cycleTime, setCycleTime] = useState(null);
   const [errors, setErrors] = useState("");
   const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
@@ -86,6 +87,11 @@ function AddFlows({ addFlows }) {
 
   const handleEmitterChange = (event) => {
     setEmitter(event.target.value);
+    getPartStudyId(event.target.value);
+  };
+  const handlePartName = (event) => {
+    setPartName(event.target.value);
+    getPartStudyNo(event.target.value);
   };
   const handleReceiverChange = (event) => {
     setReceiver(event.target.value);
@@ -93,8 +99,51 @@ function AddFlows({ addFlows }) {
   const handleSelectKitName = (event) => {
     setKitName(event.target.value);
   };
-  const handleSelectPartName = (event) => {
-    setPartName(event.target.value);
+
+  const getPartStudyId = async (emitterId) => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/searchPartStudyById`,
+        {
+          params: {
+            orgId: orgId,
+            emitterId: emitterId,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setPartStudyNameVO(
+          response.data.paramObjectsMap.basicDetailVO.partName
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getPartStudyNo = async (partName) => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/searchPartStudyById`,
+        {
+          params: {
+            orgId: orgId,
+            emitterId: emitter,
+            partName: partName,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setPartNumber(
+          response.data.paramObjectsMap.basicDetailVO.partNumber[0]
+        );
+        const totalCycleTime =
+          response.data.paramObjectsMap.basicDetailVO.basicDetailVO[0]
+            .stockDetailVO.totalCycleTime;
+        setCycleTime(totalCycleTime);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const getCustomersList = async () => {
@@ -143,14 +192,6 @@ function AddFlows({ addFlows }) {
       case "destination":
         setDestination(value);
         break;
-      case "cycleTime":
-        setCycleTime(value);
-        break;
-      case "partNumber":
-        setPartNumber(value);
-        break;
-      // default:
-      //   break;
     }
   };
 
@@ -188,8 +229,8 @@ function AddFlows({ addFlows }) {
         id,
         orgId,
         flowName,
-        emitter,
-        receiver,
+        emitterId: emitter,
+        receiverId: receiver,
         orgin,
         destination,
         active,
@@ -197,7 +238,6 @@ function AddFlows({ addFlows }) {
           {
             kitName,
             partNumber,
-            emitter,
             partName,
             cycleTime,
             active,
@@ -279,7 +319,7 @@ function AddFlows({ addFlows }) {
               </option>
               {emitterCustomersVO.length > 0 &&
                 emitterCustomersVO.map((list) => (
-                  <option key={list.id} value={list.displayName}>
+                  <option key={list.id} value={list.id}>
                     {list.displayName}
                   </option>
                 ))}
@@ -309,7 +349,7 @@ function AddFlows({ addFlows }) {
               </option>
               {receiverCustomersVO.length > 0 &&
                 receiverCustomersVO.map((list) => (
-                  <option key={list.id} value={list.displayName}>
+                  <option key={list.id} value={list.id}>
                     {list.displayName}
                   </option>
                 ))}
@@ -406,7 +446,7 @@ function AddFlows({ addFlows }) {
               value={kitName}
               onChange={handleSelectKitName}
             >
-              <option value="">Select a Kit</option>
+              <option value="">Select an Kit</option>
               {getkit.map((kitId) => (
                 <option key={kitId.id} value={kitId.id}>
                   {kitId.id}
@@ -429,19 +469,24 @@ function AddFlows({ addFlows }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
+              style={{ height: 40, fontSize: "0.800rem" }}
+              className="input mb-2 w-full input-bordered ps-2"
+              onChange={handlePartName}
               value={partName}
-              onChange={handleSelectPartName}
             >
               <option value="" disabled>
-                Select an Part
+                Select a Part Study Name
               </option>
-              <option value="Part1">Part1</option>
-              <option value="Part2">Part2</option>
-              <option value="Part3">Part3</option>
+              {partStudyNameVO.length > 0 &&
+                partStudyNameVO.map((list) => (
+                  <option key={list.id} value={list}>
+                    {list}
+                  </option>
+                ))}
             </select>
+            {errors.partName && (
+              <span className="error-text">{errors.partName}</span>
+            )}
           </div>
           {/* part no field */}
           <div className="col-lg-3 col-md-6">
@@ -459,15 +504,9 @@ function AddFlows({ addFlows }) {
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz mb-2"
-              placeholder={""}
-              type="number"
-              name="partNumber"
+              disabled
               value={partNumber}
-              onChange={handleInputChange}
             />
-            {errors.partNumber && (
-              <span className="error-text">{errors.partNumber}</span>
-            )}
           </div>
           {/* cycle Time field */}
           <div className="col-lg-3 col-md-6">
@@ -485,69 +524,10 @@ function AddFlows({ addFlows }) {
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz mb-2"
-              placeholder={""}
-              name="cycleTime"
               value={cycleTime}
-              onChange={handleInputChange}
+              disabled
             />
-            {errors.cycleTime && (
-              <span className="error-text">{errors.cycleTime}</span>
-            )}
           </div>
-          {/* emitter field */}
-          {/* <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Emitter
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
-              value={emitter}
-              onChange={handleSelectOEMWarehouse}
-            >
-              <option value="Branch1">Branch1</option>
-              <option value="Branch2">Branch2</option>
-            </select>
-          </div>
-          receiver field
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Receiver
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              name="Select Item"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="input mb-4 input-bordered ps-2"
-              value={subReceiver}
-              onChange={handleSubReceiver}
-            >
-              <option value="" disabled>
-                Select an Receiver
-              </option>
-              <option value="Tata Motors">Tata Motors</option>
-              <option value="Mahindra">Mahindra</option>
-            </select>
-          </div>
-           */}
         </div>
         <div className="d-flex flex-row mt-3">
           <button
