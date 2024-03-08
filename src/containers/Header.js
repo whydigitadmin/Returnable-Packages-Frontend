@@ -7,6 +7,7 @@ import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
 import SunIcon from "@heroicons/react/24/outline/SunIcon";
 import { openRightDrawer } from "../features/common/rightDrawerSlice";
 import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
+import { FaRegUserCircle } from "react-icons/fa";
 
 import { NavLink, Routes, Link, useLocation } from "react-router-dom";
 
@@ -118,7 +119,8 @@ function Header() {
           <div className="dropdown dropdown-end ml-4">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
-                <img src="/logo192.png" alt="profile" />
+                {/* <img src="/logo192.png" alt="profile" /> */}
+                <FaRegUserCircle className="w-10 h-10" />
               </div>
             </label>
             <ul
