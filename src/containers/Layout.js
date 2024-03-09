@@ -37,11 +37,11 @@ function Layout() {
           className="drawer-toggle"
         />
         <PageContent />
-        {localStorage.getItem("userDetails") === "ROLE_EMITTER" ||
+        {localStorage.getItem("userDetails") === "ROLE_ADMIN" ||
         localStorage.getItem("userDetails") === "ROLE_USER" ? (
-          ""
-        ) : (
           <LeftSidebar />
+        ) : (
+          ""
         )}
         {/* <LeftSidebar /> */}
       </div>
