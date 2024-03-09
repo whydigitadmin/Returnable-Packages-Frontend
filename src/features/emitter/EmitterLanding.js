@@ -52,30 +52,30 @@ export const EmitterLanding = () => {
       <div className="">
         <WelcomeEmitter />
       </div>
-      <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6 mb-4">
+      {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6 mb-4">
         {statsData.map((d, k) => {
           return <DashboardStats key={k} {...d} colorIndex={k} />;
         })}
-      </div>
+      </div> */}
 
       {/* <div className="grid lg:grid-cols-2 mt-10 grid-cols-1 gap-6">
         <AmountStats />
         <PageStats />
       </div> */}
       {/* <EmitterTab /> */}
-      <div className="grid lg:grid-cols-1 mt-10 grid-cols-1 gap-6">
-        <Notification />
-        {/* <Calendar /> */}
-      </div>
-      <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
+      {/* <div className="grid lg:grid-cols-1 mt-10 grid-cols-1 gap-6">
+        <Notification /> 
+        <Calendar />
+      </div> */}
+      {/* <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
         <UserChannels />
         <UserChannels1 />
-      </div>
+      </div> */}
 
-      <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
+      {/* <div className="grid lg:grid-cols-2 mt-4 grid-cols-1 gap-6">
         <LineChart />
         <DoughnutChart />
-      </div>
+      </div> */}
     </div>
   );
 };

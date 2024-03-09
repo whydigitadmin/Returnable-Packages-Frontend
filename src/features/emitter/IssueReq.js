@@ -501,7 +501,7 @@ function IssueReq() {
                 </div>
 
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
-                  Tata Motors- Pune
+                  -
                 </h4>
                 {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
@@ -627,6 +627,33 @@ function IssueReq() {
                           )}
                         </div>
 
+                        {/* Display the static kit image */}
+                        {index !== undefined && selectedKitNumbers[index] ? (
+                          <div className="col-lg-3 col-md-2 mb-2 text-center">
+                            <img
+                              src={getKitImageByNumber(
+                                selectedKitNumbers[index]
+                              )}
+                              alt={`Kit ${selectedKitNumbers[index]} Image`}
+                              style={{
+                                width: "90px",
+                                height: "90px",
+                                margin: "auto",
+                              }}
+                            />
+                            <span className="pt-1" style={{ fontSize: "12px" }}>
+                              PA00341
+                            </span>
+                          </div>
+                        ) : (
+                          <div className="col-lg-3 col-md-6 mb-2 text-center">
+                            <img
+                              src="/partImage2.png"
+                              style={{ width: "80px", margin: "auto" }}
+                            />
+                          </div>
+                        )}
+
                         <div className="col-lg-1 col-md-2 mb-2">
                           {index === 0 ? (
                             <div
@@ -644,25 +671,6 @@ function IssueReq() {
                             </div>
                           )}
                         </div>
-
-                        {/* Display the static kit image */}
-                        {selectedKitNumbers[index] && (
-                          <div className="col-lg-3 col-md-2 mb-2">
-                            <img
-                              src={getKitImageByNumber(
-                                selectedKitNumbers[index]
-                              )}
-                              alt={`Kit ${selectedKitNumbers[index]} Image`}
-                              style={{ width: "90px", height: "90px" }}
-                            />
-                            <span
-                              className="pt-1 ms-4"
-                              style={{ fontSize: "12px" }}
-                            >
-                              PA00341
-                            </span>
-                          </div>
-                        )}
                       </div>
                     </>
                   ))}
