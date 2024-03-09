@@ -114,10 +114,12 @@ function Login() {
           </div>
           <div className="py-16 px-10">
             <div className="mb-2 bg-body-secondary login-border d-flex flex-row">
-              <div className="signin-btn">Sign In</div>
-              <a href="/register" className="signup-btn signin-hide">
+              <div className="signin-btn" style={{ width: "98%" }}>
+                Sign In
+              </div>
+              {/* <a href="/register" className="signup-btn signin-hide">
                 SignUp
-              </a>
+              </a> */}
             </div>
             <form onSubmit={(e) => submitForm(e)}>
               <div className="mb-4">
