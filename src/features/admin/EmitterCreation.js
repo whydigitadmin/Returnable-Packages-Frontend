@@ -15,17 +15,6 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 
-const ITEM_HEIGHT = 35;
-const ITEM_PADDING_TOP = 5;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -76,37 +65,25 @@ const IOSSwitch = styled((props) => (
     }),
   },
 }));
-const emitterOptions = ["Emitter 1", "Emitter 2", "Emitter 3"];
-
-const warehouseOptions = ["Chennai", "Bangalore"];
 
 function EmitterCreation() {
-  const [userData, setUserData] = useState({
-    firstName: "",
-    email: "",
-    password: "",
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-    pincode: "",
-    phone: "",
-    isActive: true,
-    emitter: "ROLE_EMITTER",
-    orgId: localStorage.getItem("orgId"),
-    userName: localStorage.getItem("userName"),
-  });
-
-  const [warehouse, setWarehouse] = React.useState([]);
-
+  const [firstName, setFirstName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [city, setCity] = React.useState("");
+  const [state, setState] = React.useState("");
+  const [country, setCountry] = React.useState("");
+  const [pincode, setPincode] = React.useState("");
+  const [phone, setPhone] = React.useState();
+  const [active, setActive] = React.useState(true);
+  const [role, setRole] = React.useState("ROLE_EMITTER");
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
-  const [emitter, setEmitter] = useState("");
+  const [emitter, setEmitter] = useState();
+  const [flow, setFlow] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
-
-  const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [selectedLocations, setSelectedLocations] = useState([]);
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -117,11 +94,31 @@ function EmitterCreation() {
 
   const handleEmitterChange = (event) => {
     setEmitter(event.target.value);
+    getEmitterFlow(event.target.value);
+  };
+
+  const getEmitterFlow = async (emitter) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow`,
+        {
+          params: {
+            orgId: orgId,
+            emitterId: emitter,
+          },
+        }
+      );
+      if (response.status === 200) {
+        setFlow(response.data.paramObjectsMap.flowVO);
+        console.log("flow", response.data.paramObjectsMap.flowVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   useEffect(() => {
     getCustomersList();
-    fetchData(); // Fetch data when the component mounts
   }, []);
 
   const getCustomersList = async () => {
@@ -140,85 +137,72 @@ function EmitterCreation() {
     }
   };
 
-  const notify = () => toast("User Created Successfully");
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/access/getAccessRightByOrgId`,
-        {
-          params: {
-            orgId: localStorage.getItem("orgId"),
-          },
-        }
-      );
-
-      if (response.status === 200) {
-        notify();
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        // Handle 401 Unauthorized error
-      } else {
-        // For other errors, log the error to the console
-        console.error("Error fetching data:", error);
-      }
-    }
-  };
-
-  const updateFormValue = ({ updateType, value }) => {
-    setUserData({ ...userData, [updateType]: value });
-  };
+  // const notify = () => toast("User Created Successfully");
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setUserData({ ...userData, [name]: value });
-  };
-
-  const handleChangeChip = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setWarehouse(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    switch (name) {
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      case "address":
+        setAddress(value);
+        break;
+      case "city":
+        setCity(value);
+        break;
+      case "state":
+        setState(value);
+        break;
+      case "country":
+        setCountry(value);
+        break;
+      case "pincode":
+        setPincode(value);
+        break;
+      case "phone":
+        setPhone(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+    }
   };
 
   const handleUserCreation = () => {
     const errors = {};
-    if (!userData.firstName) {
+    if (!firstName) {
       errors.firstName = "First Name is required";
     }
-    if (!userData.email) {
+    if (!email) {
       errors.email = "Email is required";
     }
-    if (!userData.phone) {
+    if (!phone) {
       errors.phone = "Phone is required";
     }
-    if (!userData.password) {
+    if (!password) {
       errors.password = "Password is required";
     }
-    if (!userData.address) {
-      errors.address = "address is required";
+    if (!address) {
+      errors.address = "Address is required";
     }
-    if (!userData.city) {
+    if (!city) {
       errors.city = "City is required";
     }
-    if (!userData.state) {
+    if (!state) {
       errors.state = "State is required";
     }
-    if (!userData.country) {
+    if (!country) {
       errors.country = "Country is required";
     }
-    if (!userData.pincode) {
+    if (!pincode) {
       errors.pincode = "Pincode is required";
-    }
-    if (!userData.emitter) {
-      errors.emitter = "Emitter is required";
-    }
-    if (!userData.warehouse) {
-      errors.warehouse = "Warehouse is required";
     }
 
     const token = localStorage.getItem("token");
@@ -232,26 +216,31 @@ function EmitterCreation() {
         Authorization: `Bearer ${token}`,
       };
     }
-    const hashedPassword = encryptPassword(userData.password);
+    const hashedPassword = encryptPassword(password);
 
     // Update userData with the hashed password
 
     const userPayload = {
-      email: userData.email,
-      firstName: userData.firstName,
-      lastName: userData.lastName || "", // You may need to provide a default value
-      orgId: userData.orgId, // You may need to provide a default value
-      emitter: userData.emitter,
-      warehouse: userData.warehouse,
+      accessRightsRoleId: 0,
+      // accessWarehouse: warehouse,
+      accessaddId: 0,
+      accessFlowId: 0,
+      active: active,
+      email: email,
+      emitterId: emitter,
+      firstName: firstName,
+      orgId: orgId, // You may need to provide a default value
+      role: role,
+      pno: phone,
       userAddressDTO: {
-        address1: userData.address,
+        address1: address,
         address2: "", // You may need to provide a default value
-        country: userData.country,
-        location: userData.city,
-        pin: userData.pincode,
-        state: userData.state,
+        country: country,
+        location: city,
+        pin: pincode,
+        state: state,
       },
-      userName: userData.email || "", // You may need to provide a default value
+      userName: email || "", // You may need to provide a default value
     };
 
     const userDataWithHashedPassword = {
@@ -269,23 +258,7 @@ function EmitterCreation() {
         )
         .then((response) => {
           console.log("User saved successfully!", response.data);
-          notify();
-          setUserData({
-            firstName: "",
-            email: "",
-            password: "",
-            address: "",
-            city: "",
-            state: "",
-            country: "",
-            pincode: "",
-            phone: "",
-            isActive: true,
-            emitter: "ROLE_EMITTER",
-            orgId: "",
-            userName: "",
-            warehouse: "",
-          });
+          // notify();
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
@@ -328,7 +301,7 @@ function EmitterCreation() {
               </option>
               {emitterCustomersVO.length > 0 &&
                 emitterCustomersVO.map((list) => (
-                  <option key={list.id} value={list.displayName}>
+                  <option key={list.id} value={list.id}>
                     {list.displayName}
                   </option>
                 ))}
@@ -373,7 +346,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="firstName"
-              value={userData.firstName}
+              value={firstName}
               onChange={handleInputChange}
             />
             {errors.firstName && (
@@ -398,7 +371,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="email"
-              value={userData.email}
+              value={email}
               onChange={handleInputChange}
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
@@ -421,7 +394,7 @@ function EmitterCreation() {
               type={"password"}
               placeholder={"Enter"}
               name="password"
-              value={userData.password}
+              value={password}
               onChange={handleInputChange}
             />
             {errors.password && (
@@ -446,7 +419,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="address"
-              value={userData.address}
+              value={address}
               onChange={handleInputChange}
             />
             {errors.address && (
@@ -471,7 +444,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="city"
-              value={userData.city}
+              value={city}
               onChange={handleInputChange}
             />
             {errors.city && <span className="error-text">{errors.city}</span>}
@@ -494,7 +467,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="state"
-              value={userData.state}
+              value={state}
               onChange={handleInputChange}
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
@@ -517,7 +490,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="country"
-              value={userData.country}
+              value={country}
               onChange={handleInputChange}
             />
             {errors.country && (
@@ -542,7 +515,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="pincode"
-              value={userData.pincode}
+              value={pincode}
               onChange={handleInputChange}
             />
             {errors.pincode && (
@@ -567,7 +540,7 @@ function EmitterCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="phone"
-              value={userData.phone}
+              value={phone}
               onChange={handleInputChange}
             />
             {errors.phone && <span className="error-text">{errors.phone}</span>}
@@ -645,14 +618,14 @@ function EmitterCreation() {
                   </div>
                 ))}
               </div> */}
-              <div className="form-check" key={location.warehouseId}>
+              {/* <div className="form-check" key={location.warehouseId}>
                 <input className="form-check-input" type="checkbox" />
                 <label className="form-check-label">Chennai to Bangalore</label>
               </div>
               <div className="form-check" key={location.warehouseId}>
                 <input className="form-check-input" type="checkbox" />
                 <label className="form-check-label">Delhi to Pune</label>
-              </div>
+              </div> */}
             </div>
           </DialogContentText>
         </DialogContent>

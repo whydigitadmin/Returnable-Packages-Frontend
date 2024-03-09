@@ -8,7 +8,7 @@ function LandingIntro() {
           <div className="max-w-md">
             <div className="text-center mb-2">
               <img
-                src="./binbee.png"
+                src="./BIN_BEE.png"
                 alt="Dashwind Admin Template"
                 className="w-48 inline-block"
               ></img>

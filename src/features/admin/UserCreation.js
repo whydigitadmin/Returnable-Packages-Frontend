@@ -8,30 +8,12 @@ import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
-import Box from "@mui/material/Box";
-import Chip from "@mui/material/Chip";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import OutlinedInput from "@mui/material/OutlinedInput";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-
-const ITEM_HEIGHT = 35;
-const ITEM_PADDING_TOP = 5;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -83,33 +65,24 @@ const IOSSwitch = styled((props) => (
     }),
   },
 }));
-const warehouseOptions = ["Chennai", "Bangalore"];
 
 function UserCreation() {
-  const [userData, setUserData] = useState({
-    firstName: "",
-    email: "",
-    password: "",
-    address: "",
-    city: "",
-    state: "",
-    country: "",
-    pincode: "",
-    phone: "",
-    isActive: true,
-    role: "ROLE_USER",
-    // orgId: localStorage.getItem("orgId"),
-    userName: localStorage.getItem("userName"),
-  });
-
+  const [firstName, setFirstName] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [address, setAddress] = React.useState("");
+  const [city, setCity] = React.useState("");
+  const [state, setState] = React.useState("");
+  const [country, setCountry] = React.useState("");
+  const [pincode, setPincode] = React.useState("");
+  const [phone, setPhone] = React.useState();
+  const [active, setActive] = React.useState(true);
+  const [role, setRole] = React.useState("ROLE_USER");
   const [warehouse, setWarehouse] = React.useState([]);
-
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
-
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [selectedLocations, setSelectedLocations] = useState([]);
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -120,8 +93,8 @@ function UserCreation() {
 
   useEffect(() => {
     getWarehouseLocationList();
-    fetchData(); // Fetch data when the component mounts
-  }, [orgId]);
+    // fetchData(); // Fetch data when the component mounts
+  }, []);
 
   const getWarehouseLocationList = async () => {
     try {
@@ -131,98 +104,135 @@ function UserCreation() {
 
       if (response.status === 200) {
         setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
+        console.log(
+          "WarehouseLocation",
+          response.data.paramObjectsMap.WarehouseLocation
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const handleLocationChange = (location, isChecked) => {
+  const handleLocationChange = (warehouseLocation, isChecked) => {
     if (isChecked) {
-      setSelectedLocations([...selectedLocations, location]);
+      if (!warehouse.includes(warehouseLocation)) {
+        setWarehouse((prevWarehouse) => [...prevWarehouse, warehouseLocation]);
+        console.log("isChecked", warehouse);
+      }
     } else {
-      setSelectedLocations(selectedLocations.filter((loc) => loc !== location));
-    }
-  };
-
-  const notify = () => toast("User Created Successfully");
-
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/access/getAccessRightByOrgId`,
-        {
-          params: {
-            orgId: localStorage.getItem("orgId"),
-          },
-        }
+      setWarehouse((prevWarehouse) =>
+        prevWarehouse.filter((wh) => wh !== warehouseLocation)
       );
-
-      if (response.status === 200) {
-        // Update table data with fetched data
-        // Consider updating the component state with the fetched data
-        // For example, setAccessRights(response.data);
-        notify();
-      }
-    } catch (error) {
-      if (error.response && error.response.status === 401) {
-        // Handle 401 Unauthorized error
-      } else {
-        // For other errors, log the error to the console
-        console.error("Error fetching data:", error);
-      }
+      console.log("unchecked", warehouse);
     }
   };
+  // const handleLocationChange = (warehouseLocation, isChecked) => {
+  //   setWarehouse((prevWarehouse) => {
+  //     if (isChecked) {
+  //       return [...prevWarehouse, warehouseLocation];
+  //     } else {
+  //       return prevWarehouse.filter((wh) => wh !== warehouseLocation);
+  //     }
+  //   });
+  //   console.log("isChecked", warehouse);
+  // };
 
-  const updateFormValue = ({ updateType, value }) => {
-    setUserData({ ...userData, [updateType]: value });
-  };
+  // const notify = () => toast("User Created Successfully");
+
+  // const fetchData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/access/getAccessRightByOrgId`,
+  //       {
+  //         params: {
+  //           orgId: localStorage.getItem("orgId"),
+  //         },
+  //       }
+  //     );
+
+  //     if (response.status === 200) {
+  //       // Update table data with fetched data
+  //       // Consider updating the component state with the fetched data
+  //       // For example, setAccessRights(response.data);
+  //       notify();
+  //     }
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 401) {
+  //       // Handle 401 Unauthorized error
+  //     } else {
+  //       // For other errors, log the error to the console
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   }
+  // };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setUserData({ ...userData, [name]: value });
-  };
-
-  const handleChangeChip = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setWarehouse(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
+    switch (name) {
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "email":
+        setEmail(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      case "address":
+        setAddress(value);
+        break;
+      case "city":
+        setCity(value);
+        break;
+      case "state":
+        setState(value);
+        break;
+      case "country":
+        setCountry(value);
+        break;
+      case "pincode":
+        setPincode(value);
+        break;
+      case "phone":
+        setPhone(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+    }
   };
 
   const handleUserCreation = () => {
     const errors = {};
-    if (!userData.firstName) {
+    if (!firstName) {
       errors.firstName = "First Name is required";
     }
-    if (!userData.email) {
+    if (!email) {
       errors.email = "Email is required";
     }
-    if (!userData.phone) {
+    if (!phone) {
       errors.phone = "Phone is required";
     }
-    if (!userData.password) {
+    if (!password) {
       errors.password = "Password is required";
     }
-    if (!userData.address) {
-      errors.address = "address is required";
+    if (!address) {
+      errors.address = "Address is required";
     }
-    if (!userData.city) {
+    if (!city) {
       errors.city = "City is required";
     }
-    if (!userData.state) {
+    if (!state) {
       errors.state = "State is required";
     }
-    if (!userData.country) {
+    if (!country) {
       errors.country = "Country is required";
     }
-    if (!userData.pincode) {
+    if (!pincode) {
       errors.pincode = "Pincode is required";
     }
-    if (!userData.warehouse) {
+    if (!warehouse) {
       errors.warehouse = "Warehouse is required";
     }
 
@@ -237,26 +247,30 @@ function UserCreation() {
         Authorization: `Bearer ${token}`,
       };
     }
-    const hashedPassword = encryptPassword(userData.password);
+    const hashedPassword = encryptPassword(password);
 
     // Update userData with the hashed password
 
     const userPayload = {
-      email: userData.email,
-      firstName: userData.firstName,
-      lastName: userData.lastName || "", // You may need to provide a default value
-      orgId: userData.orgId, // You may need to provide a default value
-      role: userData.role,
-      warehouse: userData.warehouse,
+      accessRightsRoleId: 0,
+      accessWarehouse: warehouse,
+      accessaddId: 0,
+      active: active,
+      email: email,
+      emitterId: 0,
+      firstName: firstName,
+      orgId: orgId, // You may need to provide a default value
+      role: role,
+      pno: phone,
       userAddressDTO: {
-        address1: userData.address,
+        address1: address,
         address2: "", // You may need to provide a default value
-        country: userData.country,
-        location: userData.city,
-        pin: userData.pincode,
-        state: userData.state,
+        country: country,
+        location: city,
+        pin: pincode,
+        state: state,
       },
-      userName: userData.email || "", // You may need to provide a default value
+      userName: email || "", // You may need to provide a default value
     };
 
     const userDataWithHashedPassword = {
@@ -274,23 +288,7 @@ function UserCreation() {
         )
         .then((response) => {
           console.log("User saved successfully!", response.data);
-          notify();
-          setUserData({
-            firstName: "",
-            email: "",
-            password: "",
-            address: "",
-            city: "",
-            state: "",
-            country: "",
-            pincode: "",
-            phone: "",
-            isActive: true,
-            role: "ROLE_USER",
-            orgId: "",
-            userName: "",
-            warehouse: "",
-          });
+          // notify();
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
@@ -347,10 +345,9 @@ function UserCreation() {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={"Enter"}
               name="firstName"
-              value={userData.firstName}
+              value={firstName}
               onChange={handleInputChange}
             />
             {errors.firstName && (
@@ -372,10 +369,9 @@ function UserCreation() {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={"Enter"}
               name="email"
-              value={userData.email}
+              value={email}
               onChange={handleInputChange}
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
@@ -398,7 +394,7 @@ function UserCreation() {
               type={"password"}
               placeholder={"Enter"}
               name="password"
-              value={userData.password}
+              value={password}
               onChange={handleInputChange}
             />
             {errors.password && (
@@ -420,10 +416,9 @@ function UserCreation() {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={"Enter"}
               name="address"
-              value={userData.address}
+              value={address}
               onChange={handleInputChange}
             />
             {errors.address && (
@@ -445,10 +440,9 @@ function UserCreation() {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={"Enter"}
               name="city"
-              value={userData.city}
+              value={city}
               onChange={handleInputChange}
             />
             {errors.city && <span className="error-text">{errors.city}</span>}
@@ -468,10 +462,9 @@ function UserCreation() {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={"Enter"}
               name="state"
-              value={userData.state}
+              value={state}
               onChange={handleInputChange}
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
@@ -491,10 +484,9 @@ function UserCreation() {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={"Enter"}
               name="country"
-              value={userData.country}
+              value={country}
               onChange={handleInputChange}
             />
             {errors.country && (
@@ -516,10 +508,9 @@ function UserCreation() {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              type={"text"}
               placeholder={"Enter"}
               name="pincode"
-              value={userData.pincode}
+              value={pincode}
               onChange={handleInputChange}
             />
             {errors.pincode && (
@@ -544,62 +535,11 @@ function UserCreation() {
               type={"text"}
               placeholder={"Enter"}
               name="phone"
-              value={userData.phone}
+              value={phone}
               onChange={handleInputChange}
             />
             {errors.phone && <span className="error-text">{errors.phone}</span>}
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex"
-                }
-              >
-                Warehouse Location
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <FormControl sx={{ m: 1, width: "100%" }} size="small">
-              <InputLabel id="demo-multiple-chip-label">
-                Warehouse Location
-              </InputLabel>
-              <Select
-                labelId="demo-multiple-chip-label"
-                id="demo-multiple-chip-label"
-                multiple
-                value={warehouse}
-                onChange={handleChangeChip}
-                input={
-                  <OutlinedInput
-                    id="select-multiple-chip"
-                    label="Warehouse Type"
-                  />
-                }
-                renderValue={(selected) => (
-                  <Box
-                    sx={{
-                      display: "flex",
-                      flexWrap: "wrap",
-                      gap: 0.5,
-                    }}
-                  >
-                    {selected.map((value) => (
-                      <Chip key={value} label={value} />
-                    ))}
-                  </Box>
-                )}
-                MenuProps={MenuProps}
-              >
-                <MenuItem value={"Chennai"}>Chennai</MenuItem>
-                <MenuItem value={"Bangalore"}>Bangalore</MenuItem>
-                <MenuItem value={"Dubai"}>Dubai</MenuItem>
-                <MenuItem value={"Delhi"}>Delhi</MenuItem>
-              </Select>
-            </FormControl>
-          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -637,7 +577,7 @@ function UserCreation() {
         onClose={handleShippingClickClose}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Assigned Warehouse</DialogTitle>
+          <DialogTitle>Assign Warehouse</DialogTitle>
           <IoMdClose
             onClick={handleShippingClickClose}
             className="cursor-pointer w-8 h-8 mt-3 me-3"
@@ -645,18 +585,6 @@ function UserCreation() {
         </div>
         <DialogContent>
           <DialogContentText className="d-flex flex-column">
-            {/* Checkbox */}
-            {/* <div className="row mb-3">
-              <div className="col-lg-12 col-md-12">
-                <label className="label">
-                  <span
-                    className={"label-text label-font-size text-base-content"}
-                  >
-                    Warehouse Locations
-                  </span>
-                </label>
-              </div>
-            </div> */}
             <div className="row mb-3">
               <div className="col-lg-12 col-md-12">
                 {warehouseLocationVO.map((location) => (
@@ -666,9 +594,7 @@ function UserCreation() {
                       type="checkbox"
                       id={`location_${location.warehouseId}`}
                       value={location.warehouseLocation}
-                      checked={selectedLocations.includes(
-                        location.warehouseLocation
-                      )}
+                      checked={warehouse.includes(location.warehouseLocation)}
                       onChange={(e) =>
                         handleLocationChange(
                           location.warehouseLocation,

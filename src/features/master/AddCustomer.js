@@ -485,19 +485,19 @@ function AddCustomer({ addcustomer }) {
     },
   };
 
-  const clearForm = () => {
-    // Clear form fields
-    setGstRegistrationStatus("");
-    setGstNumber("");
-    setStreet1("");
-    setStreet2("");
-    setCity("");
-    setPincode("");
-    setContactName("");
-    setPhoneNumber("");
-    setDesignation("");
-    setIsPrimary(false);
-  };
+  // const clearForm = () => {
+  //   // Clear form fields
+  //   setGstRegistrationStatus("");
+  //   setGstNumber("");
+  //   setStreet1("");
+  //   setStreet2("");
+  //   setCity("");
+  //   setPincode("");
+  //   setContactName("");
+  //   setPhoneNumber("");
+  //   setDesignation("");
+  //   setIsPrimary(false);
+  // };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -539,30 +539,30 @@ function AddCustomer({ addcustomer }) {
       case "phoneNumber":
         setPhoneNumber(value);
         break;
-      case "gstNumber":
-        setGstNumber(value);
-        break;
-      case "gstRegistrationStatus":
-        setGstRegistrationStatus(value);
-        break;
-      case "street1":
-        setStreet1(value);
-        break;
-      case "street2":
-        setStreet2(value);
-        break;
-      case "state":
-        setState(value);
-        break;
-      case "city":
-        setCity(value);
-        break;
-      case "pincode":
-        setPincode(value);
-        break;
-      case "contactName":
-        setContactName(value);
-        break;
+      // case "gstNumber":
+      //   setGstNumber(value);
+      //   break;
+      // case "gstRegistrationStatus":
+      //   setGstRegistrationStatus(value);
+      //   break;
+      // case "street1":
+      //   setStreet1(value);
+      //   break;
+      // case "street2":
+      //   setStreet2(value);
+      //   break;
+      // case "state":
+      //   setState(value);
+      //   break;
+      // case "city":
+      //   setCity(value);
+      //   break;
+      // case "pincode":
+      //   setPincode(value);
+      //   break;
+      // case "contactName":
+      //   setContactName(value);
+      //   break;
     }
   };
 
