@@ -602,37 +602,48 @@ function UserCreation() {
           <DialogContentText className="d-flex flex-column">
             <div className="row mb-3">
               <div className="col-lg-12 col-md-12">
-                {warehouseLocationVO.map((location) => (
-                  <div className="form-check" key={location.warehouseId}>
-                    <input
-                      className="form-check-input"
-                      type="checkbox"
-                      id={location.warehouseId}
-                      value={location.warehouseId}
-                      checked={warehouse.includes(location.warehouseId)}
-                      onChange={(e) =>
-                        handleLocationChange(
-                          location.warehouseId,
-                          e.target.checked
-                        )
-                      }
-                    />
+                {warehouseLocationVO ? (
+                  <div>
+                    {" "}
+                    {warehouseLocationVO.map((location) => (
+                      <div className="form-check" key={location.warehouseId}>
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id={location.warehouseId}
+                          value={location.warehouseId}
+                          checked={warehouse.includes(location.warehouseId)}
+                          onChange={(e) =>
+                            handleLocationChange(
+                              location.warehouseId,
+                              e.target.checked
+                            )
+                          }
+                        />
 
-                    <label
-                      className="form-check-label"
-                      htmlFor={location.warehouseId}
-                    >
-                      {location.warehouseLocation}
-                    </label>
+                        <label
+                          className="form-check-label"
+                          htmlFor={location.warehouseId}
+                        >
+                          {location.warehouseLocation}
+                        </label>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                ) : (
+                  <div>
+                    <center>Flow Not Available!</center>{" "}
+                  </div>
+                )}
               </div>
             </div>
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
           <Button onClick={handleShippingClickClose}>Cancel</Button>
-          <Button variant="contained">Submit</Button>
+          <Button variant="contained" onClick={handleShippingClickClose}>
+            Submit
+          </Button>
         </DialogActions>
       </Dialog>
     </>

@@ -631,22 +631,31 @@ function EmitterCreation() {
         <DialogContent>
           <div className="row mb-3">
             <div className="col-lg-12 col-md-12">
-              {flow.map((flowItem) => (
-                <div key={flowItem.id} className="mb-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedFlows.includes(flowItem.id)}
-                    onChange={(e) =>
-                      handleFlowSelection(flowItem.id, e.target.checked)
-                    }
-                    id={flowItem.id}
-                    value={flowItem.id}
-                  />{" "}
-                  <label className="form-check-label" htmlFor={flowItem.id}>
-                    {flowItem.flowName}
-                  </label>
+              {flow.length > 0 ? (
+                <div>
+                  {" "}
+                  {flow.map((flowItem) => (
+                    <div key={flowItem.id} className="mb-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedFlows.includes(flowItem.id)}
+                        onChange={(e) =>
+                          handleFlowSelection(flowItem.id, e.target.checked)
+                        }
+                        id={flowItem.id}
+                        value={flowItem.id}
+                      />{" "}
+                      <label className="form-check-label" htmlFor={flowItem.id}>
+                        {flowItem.flowName}
+                      </label>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              ) : (
+                <div>
+                  <center>Flow Not Available!</center>{" "}
+                </div>
+              )}
             </div>
           </div>
         </DialogContent>
