@@ -579,57 +579,74 @@ function IssueReq() {
                   />
                 </Tabs>
               </Box>
+
               <div
                 className="scrollable-container"
                 style={{ maxHeight: "200px", overflowY: "auto" }}
               >
                 <CustomTabPanel value={value} index={0}>
                   {kitFields.map((field, index) => (
-                    <>
-                      <div className="row" key={index}>
-                        <div className="col-lg-4 col-md-6 mb-2">
-                          <label className="label">
-                            <span className="label-text label-font-size text-base-content">
-                              KIT :
-                            </span>
-                          </label>
-                          <select
-                            className="form-select form-sz w-full"
-                            value={field.kitNo}
-                            onChange={(e) => handleKitNoChange(e, index)}
+                    <div className="row" key={index}>
+                      <div className="col-lg-4 col-md-6 mb-2">
+                        <label className="label">
+                          <span className="label-text label-font-size text-base-content">
+                            KIT :
+                          </span>
+                        </label>
+                        <select
+                          className="form-select form-sz w-full"
+                          value={field.kitNo}
+                          onChange={(e) => handleKitNoChange(e, index)}
+                        >
+                          <option value="">Select a Part</option>
+                          <option value="Part0025">Part0025</option>
+                          <option value="Part0078">Part0078</option>
+                          <option value="Part0043">Part0043</option>
+                          <option value="Part0157">Part0157</option>
+                        </select>
+                      </div>
+                      {errors.kitNo && (
+                        <span className="error-text">{errors.kitNo}</span>
+                      )}
+
+                      <div className="col-lg-4 col-md-6 mb-2">
+                        <label className="label">
+                          <span className="label-text label-font-size text-base-content">
+                            QTY :
+                          </span>
+                        </label>
+                        <input
+                          className="form-control form-sz mb-2"
+                          type="text"
+                          value={field.qty}
+                          onChange={(e) => handleQtyChange(e, index)}
+                        />
+                        {errors.kitQty && (
+                          <span className="error-text">{errors.kitQty}</span>
+                        )}
+                      </div>
+
+                      <div className="col-lg-1 col-md-2 mb-2">
+                        {index === 0 ? (
+                          <div
+                            onClick={handleAddField}
+                            style={{ marginTop: "42px" }}
                           >
-                            <option value="">Select a Kit</option>
-                            {getKitIds.map((kitId) => (
-                              <option key={kitId} value={kitId}>
-                                {kitId}
-                              </option>
-                            ))}
-                          </select>
-                          {errors.kitNo && (
-                            <span className="error-text">{errors.kitNo}</span>
-                          )}
-                        </div>
-
-                        <div className="col-lg-4 col-md-6 mb-2">
-                          <label className="label">
-                            <span className="label-text label-font-size text-base-content">
-                              QTY :
-                            </span>
-                          </label>
-                          <input
-                            className="form-control form-sz mb-2"
-                            type="text"
-                            value={field.qty}
-                            onChange={(e) => handleQtyChange(e, index)}
-                          />
-                          {errors.kitQty && (
-                            <span className="error-text">{errors.kitQty}</span>
-                          )}
-                        </div>
-
+                            <AddCircleOutlineIcon className="cursor-pointer" />
+                          </div>
+                        ) : (
+                          <div
+                            onClick={() => handleRemoveField(index)}
+                            style={{ marginTop: "42px" }}
+                          >
+                            <HighlightOffIcon className="cursor-pointer" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-lg-3 col-md-2">
                         {/* Display the static kit image */}
-                        {index !== undefined && selectedKitNumbers[index] ? (
-                          <div className="col-lg-3 col-md-2 mb-2 text-center">
+                        {selectedKitNumbers[index] ? (
+                          <>
                             <img
                               src={getKitImageByNumber(
                                 selectedKitNumbers[index]
@@ -638,41 +655,27 @@ function IssueReq() {
                               style={{
                                 width: "90px",
                                 height: "90px",
-                                margin: "auto",
                               }}
                             />
                             <span className="pt-1" style={{ fontSize: "12px" }}>
                               PA00341
                             </span>
-                          </div>
+                          </>
                         ) : (
-                          <div className="col-lg-3 col-md-6 mb-2 text-center">
-                            <img
-                              src="/partImage2.png"
-                              style={{ width: "80px", margin: "auto" }}
-                            />
-                          </div>
+                          <img
+                            src="/partImage2.png"
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              marginTop: "35px",
+                            }}
+                          />
                         )}
-
-                        <div className="col-lg-1 col-md-2 mb-2">
-                          {index === 0 ? (
-                            <div
-                              onClick={handleAddField}
-                              style={{ marginTop: "42px" }}
-                            >
-                              <AddCircleOutlineIcon className="cursor-pointer" />
-                            </div>
-                          ) : (
-                            <div
-                              onClick={() => handleRemoveField(index)}
-                              style={{ marginTop: "42px" }}
-                            >
-                              <HighlightOffIcon className="cursor-pointer" />
-                            </div>
-                          )}
-                        </div>
                       </div>
-                    </>
+                      <DisplaySelectedPartInfo
+                        selectedPartNo={selectedPartNumbers[index]}
+                      />
+                    </div>
                   ))}
                   <button
                     type="button"
@@ -683,6 +686,7 @@ function IssueReq() {
                   </button>
                 </CustomTabPanel>
               </div>
+
               <div
                 className="scrollable-container"
                 style={{ maxHeight: "200px", overflowY: "auto" }}
@@ -755,9 +759,9 @@ function IssueReq() {
                           </div>
                         )}
                       </div>
-                      {selectedPartNumbers[index] && (
-                        <>
-                          <div className="col-lg-3 col-md-2">
+                      <div className="col-lg-3 col-md-2">
+                        {selectedPartNumbers[index] ? (
+                          <>
                             <img
                               src={getPartImageByNumber(
                                 selectedPartNumbers[index]
@@ -771,12 +775,23 @@ function IssueReq() {
                             >
                               PA00341
                             </span>
-                          </div>
-                          <DisplaySelectedPartInfo
-                            selectedPartNo={selectedPartNumbers[index]}
+                          </>
+                        ) : (
+                          // Display default image if part number is not selected
+                          <img
+                            src="/partImage2.png" // Replace with your default image path
+                            alt="Default Image"
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              marginTop: "35px",
+                            }}
                           />
-                        </>
-                      )}
+                        )}
+                      </div>
+                      <DisplaySelectedPartInfo
+                        selectedPartNo={selectedPartNumbers[index]}
+                      />
                     </div>
                   ))}
                   <button
