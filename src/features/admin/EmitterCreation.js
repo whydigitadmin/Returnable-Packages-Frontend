@@ -289,16 +289,19 @@ function EmitterCreation() {
     }
   };
 
-  const handleFlowSelection = (flow) => {
-    if (selectedFlows.includes(flow)) {
-      // If the flow is already selected, remove it from the array
-      setSelectedFlows(
-        selectedFlows.filter((selectedFlow) => selectedFlow !== flow)
-      );
-    } else {
-      // If the flow is not selected, add it to the array
-      setSelectedFlows([...selectedFlows, flow.id]);
-    }
+  const handleFlowSelection = (flow, isChecked) => {
+    setSelectedFlows((prevWarehouse) => {
+      if (isChecked && !prevWarehouse.includes(flow)) {
+        // Add warehouseLocation to the array if it's not already present
+        return [...prevWarehouse, flow];
+      } else if (!isChecked) {
+        // Remove warehouseLocation from the array
+        return prevWarehouse.filter((wh) => wh !== flow);
+      }
+
+      // Return the unchanged array if isChecked is true and warehouseLocation is already present
+      return prevWarehouse;
+    });
   };
 
   useEffect(() => {
@@ -630,12 +633,16 @@ function EmitterCreation() {
             <div className="col-lg-12 col-md-12">
               {flow.map((flowItem) => (
                 <div key={flowItem.id} className="mb-2">
-                  <label>
-                    <input
-                      type="checkbox"
-                      checked={selectedFlows.includes(flowItem)}
-                      onChange={() => handleFlowSelection(flowItem)}
-                    />
+                  <input
+                    type="checkbox"
+                    checked={selectedFlows.includes(flowItem.id)}
+                    onChange={(e) =>
+                      handleFlowSelection(flowItem.id, e.target.checked)
+                    }
+                    id={flowItem.id}
+                    value={flowItem.id}
+                  />{" "}
+                  <label className="form-check-label" htmlFor={flowItem.id}>
                     {flowItem.flowName}
                   </label>
                 </div>
@@ -645,7 +652,7 @@ function EmitterCreation() {
         </DialogContent>
 
         <DialogActions className="mb-2 me-2">
-          <Button onClick={handleShippingClickClose}>Cancel</Button>
+          <Button onClick={handleShippingClickClose}>OK</Button>
           {selectedFlow && <Button variant="contained">Submit</Button>}
         </DialogActions>
       </Dialog>
