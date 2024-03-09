@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo, useState } from "react";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -11,6 +10,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
@@ -120,7 +120,7 @@ function Customer() {
         },
       },
       {
-        accessorKey: "customerOrgName",
+        accessorKey: "entityLegalName",
         header: "Customer Org Name",
         size: 50,
         muiTableHeadCellProps: {
@@ -130,28 +130,28 @@ function Customer() {
           align: "center",
         },
       },
-      {
-        accessorKey: "firstName",
-        header: "First Name",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "lastName",
-        header: "Last Name",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "firstName",
+      //   header: "First Name",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "lastName",
+      //   header: "Last Name",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
         accessorKey: "email",
         header: "Email",
@@ -164,7 +164,7 @@ function Customer() {
         },
       },
       {
-        accessorKey: "phone",
+        accessorKey: "phoneNumber",
         header: "Phone",
         size: 50,
         muiTableHeadCellProps: {
@@ -184,6 +184,9 @@ function Customer() {
         muiTableBodyCellProps: {
           align: "center",
         },
+        Cell: ({ cell: { value } }) => (
+          <span>{value ? "Active" : "Active"}</span>
+        ),
       },
     ],
     []

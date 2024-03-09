@@ -1,3 +1,9 @@
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
@@ -5,15 +11,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -94,7 +93,8 @@ function UserCreation() {
   useEffect(() => {
     getWarehouseLocationList();
     // fetchData(); // Fetch data when the component mounts
-  }, []);
+    console.log("Testt", warehouse);
+  }, [warehouse]);
 
   const getWarehouseLocationList = async () => {
     try {
@@ -115,18 +115,20 @@ function UserCreation() {
   };
 
   const handleLocationChange = (warehouseLocation, isChecked) => {
-    if (isChecked) {
-      if (!warehouse.includes(warehouseLocation)) {
-        setWarehouse((prevWarehouse) => [...prevWarehouse, warehouseLocation]);
-        console.log("isChecked", warehouse);
+    setWarehouse((prevWarehouse) => {
+      if (isChecked && !prevWarehouse.includes(warehouseLocation)) {
+        // Add warehouseLocation to the array if it's not already present
+        return [...prevWarehouse, warehouseLocation];
+      } else if (!isChecked) {
+        // Remove warehouseLocation from the array
+        return prevWarehouse.filter((wh) => wh !== warehouseLocation);
       }
-    } else {
-      setWarehouse((prevWarehouse) =>
-        prevWarehouse.filter((wh) => wh !== warehouseLocation)
-      );
-      console.log("unchecked", warehouse);
-    }
+
+      // Return the unchanged array if isChecked is true and warehouseLocation is already present
+      return prevWarehouse;
+    });
   };
+
   // const handleLocationChange = (warehouseLocation, isChecked) => {
   //   setWarehouse((prevWarehouse) => {
   //     if (isChecked) {
@@ -252,9 +254,9 @@ function UserCreation() {
     // Update userData with the hashed password
 
     const userPayload = {
-      accessRightsRoleId: 0,
+      accessRightsRoleId: 2,
       accessWarehouse: warehouse,
-      accessaddId: 0,
+      // accessaddId: 0,
       active: active,
       email: email,
       emitterId: 0,
@@ -288,6 +290,19 @@ function UserCreation() {
         )
         .then((response) => {
           console.log("User saved successfully!", response.data);
+          setFirstName("");
+          setEmail("");
+          setPassword("");
+          setAddress("");
+          setCity("");
+          setState("");
+          setCountry("");
+          setPincode("");
+          setPhone("");
+          setActive(true);
+          setRole("ROLE_USER");
+          setWarehouse([]);
+          setErrors({});
           // notify();
         })
         .catch((error) => {
@@ -592,19 +607,20 @@ function UserCreation() {
                     <input
                       className="form-check-input"
                       type="checkbox"
-                      id={`location_${location.warehouseId}`}
-                      value={location.warehouseLocation}
-                      checked={warehouse.includes(location.warehouseLocation)}
+                      id={location.warehouseId}
+                      value={location.warehouseId}
+                      checked={warehouse.includes(location.warehouseId)}
                       onChange={(e) =>
                         handleLocationChange(
-                          location.warehouseLocation,
+                          location.warehouseId,
                           e.target.checked
                         )
                       }
                     />
+
                     <label
                       className="form-check-label"
-                      htmlFor={`location_${location.warehouseId}`}
+                      htmlFor={location.warehouseId}
                     >
                       {location.warehouseLocation}
                     </label>

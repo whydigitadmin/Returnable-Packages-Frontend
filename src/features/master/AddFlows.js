@@ -1,8 +1,8 @@
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import React, { useState, useEffect } from "react";
 import Axios from "axios";
+import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -75,10 +75,13 @@ function AddFlows({ addFlows }) {
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [getkit, setGetKit] = React.useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
+  const [warehouseLocationValue, setWarehouseLocationValue] = useState();
 
   useEffect(() => {
     getCustomersList();
     getAllKitData();
+    getWarehouseLocationList();
   }, []);
 
   const handleFlows = () => {
@@ -95,6 +98,9 @@ function AddFlows({ addFlows }) {
   };
   const handleReceiverChange = (event) => {
     setReceiver(event.target.value);
+  };
+  const handleWarehouseLocationChange = (event) => {
+    setWarehouseLocationValue(event.target.value);
   };
   const handleSelectKitName = (event) => {
     setKitName(event.target.value);
@@ -234,6 +240,7 @@ function AddFlows({ addFlows }) {
         orgin,
         destination,
         active,
+        warehouseLocation: warehouseLocationValue,
         flowDetailDTO: [
           {
             kitName,
@@ -255,6 +262,24 @@ function AddFlows({ addFlows }) {
         });
     } else {
       setErrors(errors);
+    }
+  };
+
+  const getWarehouseLocationList = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
+        console.log(
+          "WarehouseLocation",
+          response.data.paramObjectsMap.WarehouseLocation
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -410,18 +435,30 @@ function AddFlows({ addFlows }) {
             <label className="label mb-4">
               <span
                 className={
-                  "d-flex flex-row label-text label-font-size text-base-content"
+                  "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Active
+                warehouse
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-            />
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleWarehouseLocationChange}
+              value={warehouseLocationValue}
+            >
+              <option value="" disabled>
+                Select Warehouse Location
+              </option>
+              {warehouseLocationVO.length > 0 &&
+                warehouseLocationVO.map((list) => (
+                  <option key={list.id} value={list.id}>
+                    {list.warehouseLocation}
+                  </option>
+                ))}
+            </select>
           </div>
         </div>
         <h1 className="text-xl font-semibold mb-4">Sub Flow Details</h1>
@@ -526,6 +563,23 @@ function AddFlows({ addFlows }) {
               className="form-control form-sz mb-2"
               value={cycleTime}
               disabled
+            />
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "d-flex flex-row label-text label-font-size text-base-content"
+                }
+              >
+                Active
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <FormControlLabel
+              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
         </div>

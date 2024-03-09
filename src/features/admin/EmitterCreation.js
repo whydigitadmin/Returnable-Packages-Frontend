@@ -1,3 +1,8 @@
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
@@ -5,15 +10,8 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -84,6 +82,8 @@ function EmitterCreation() {
   const [flow, setFlow] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [selectedFlow, setSelectedFlow] = useState(null);
+  const [selectedFlows, setSelectedFlows] = useState([]);
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -110,16 +110,13 @@ function EmitterCreation() {
       );
       if (response.status === 200) {
         setFlow(response.data.paramObjectsMap.flowVO);
+        setSelectedFlow(null); // Reset selected flow
         console.log("flow", response.data.paramObjectsMap.flowVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
-  useEffect(() => {
-    getCustomersList();
-  }, []);
 
   const getCustomersList = async () => {
     try {
@@ -132,10 +129,15 @@ function EmitterCreation() {
           response.data.paramObjectsMap.customersVO.emitterCustomersVO
         );
       }
+
+      console.log("Test", emitterCustomersVO);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  // const handleFlowSelection = (flow) => {
+  //   setSelectedFlow(flow);
+  // };
 
   // const notify = () => toast("User Created Successfully");
 
@@ -219,12 +221,11 @@ function EmitterCreation() {
     const hashedPassword = encryptPassword(password);
 
     // Update userData with the hashed password
-
     const userPayload = {
-      accessRightsRoleId: 0,
+      accessRightsRoleId: 2,
       // accessWarehouse: warehouse,
-      accessaddId: 0,
-      accessFlowId: 0,
+      // accessaddId: 0,
+      accessFlowId: selectedFlows,
       active: active,
       email: email,
       emitterId: emitter,
@@ -258,6 +259,25 @@ function EmitterCreation() {
         )
         .then((response) => {
           console.log("User saved successfully!", response.data);
+          setFirstName("");
+          setEmail("");
+          setPassword("");
+          setAddress("");
+          setCity("");
+          setState("");
+          setCountry("");
+          setPincode("");
+          setPhone("");
+          setActive(true);
+          setRole("ROLE_EMITTER");
+          setErrors({});
+          setOpenShippingModal(false);
+          setEmitter(null);
+          setFlow([]);
+          setEmitterCustomersVO([]);
+          setOrgId(localStorage.getItem("orgId"));
+          setSelectedFlow(null);
+          setSelectedFlows([]);
           // notify();
         })
         .catch((error) => {
@@ -268,6 +288,23 @@ function EmitterCreation() {
       setErrors(errors);
     }
   };
+
+  const handleFlowSelection = (flow) => {
+    if (selectedFlows.includes(flow)) {
+      // If the flow is already selected, remove it from the array
+      setSelectedFlows(
+        selectedFlows.filter((selectedFlow) => selectedFlow !== flow)
+      );
+    } else {
+      // If the flow is not selected, add it to the array
+      setSelectedFlows([...selectedFlows, flow.id]);
+    }
+  };
+
+  useEffect(() => {
+    console.log("value", selectedFlows);
+    getCustomersList();
+  }, [selectedFlows]); // This will be triggered whenever selectedFlows changes
 
   return (
     <>
@@ -589,49 +626,27 @@ function EmitterCreation() {
           />
         </div>
         <DialogContent>
-          <DialogContentText className="d-flex flex-column">
-            <div className="row mb-3">
-              {/* <div className="col-lg-12 col-md-12">
-                {warehouseLocationVO.map((location) => (
-                  <div className="form-check" key={location.warehouseId}>
+          <div className="row mb-3">
+            <div className="col-lg-12 col-md-12">
+              {flow.map((flowItem) => (
+                <div key={flowItem.id} className="mb-2">
+                  <label>
                     <input
-                      className="form-check-input"
                       type="checkbox"
-                      id={`location_${location.warehouseId}`}
-                      value={location.warehouseLocation}
-                      checked={selectedLocations.includes(
-                        location.warehouseLocation
-                      )}
-                      onChange={(e) =>
-                        handleLocationChange(
-                          location.warehouseLocation,
-                          e.target.checked
-                        )
-                      }
+                      checked={selectedFlows.includes(flowItem)}
+                      onChange={() => handleFlowSelection(flowItem)}
                     />
-                    <label
-                      className="form-check-label"
-                      htmlFor={`location_${location.warehouseId}`}
-                    >
-                      {location.warehouseLocation}
-                    </label>
-                  </div>
-                ))}
-              </div> */}
-              {/* <div className="form-check" key={location.warehouseId}>
-                <input className="form-check-input" type="checkbox" />
-                <label className="form-check-label">Chennai to Bangalore</label>
-              </div>
-              <div className="form-check" key={location.warehouseId}>
-                <input className="form-check-input" type="checkbox" />
-                <label className="form-check-label">Delhi to Pune</label>
-              </div> */}
+                    {flowItem.flowName}
+                  </label>
+                </div>
+              ))}
             </div>
-          </DialogContentText>
+          </div>
         </DialogContent>
+
         <DialogActions className="mb-2 me-2">
           <Button onClick={handleShippingClickClose}>Cancel</Button>
-          <Button variant="contained">Submit</Button>
+          {selectedFlow && <Button variant="contained">Submit</Button>}
         </DialogActions>
       </Dialog>
     </>

@@ -174,8 +174,10 @@ function Unit() {
         },
         muiTableBodyCellProps: {
           align: "center",
-          render: (value) => (value ? "Active" : "Inactive"),
         },
+        Cell: ({ cell: { value } }) => (
+          <span>{value ? "Active" : "Active"}</span>
+        ),
       },
     ],
     []

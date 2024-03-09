@@ -1,6 +1,3 @@
-import { Edit } from "@mui/icons-material";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import { Box, IconButton, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -13,7 +10,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
@@ -201,6 +198,9 @@ function Warehouse() {
         muiTableBodyCellProps: {
           align: "center",
         },
+        Cell: ({ cell: { value } }) => (
+          <span>{value ? "Active" : "Active"}</span>
+        ),
       },
     ],
     []
