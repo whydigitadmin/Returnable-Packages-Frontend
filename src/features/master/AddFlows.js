@@ -76,7 +76,7 @@ function AddFlows({ addFlows }) {
   const [getkit, setGetKit] = React.useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
-  const [warehouseLocationValue, setWarehouseLocationValue] = useState();
+  const [warehouseLocationValue, setWarehouseLocationValue] = useState("");
 
   useEffect(() => {
     getCustomersList();
@@ -438,7 +438,7 @@ function AddFlows({ addFlows }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                warehouse
+                Warehouse Handling Location
                 <FaStarOfLife className="must" />
               </span>
             </label>
