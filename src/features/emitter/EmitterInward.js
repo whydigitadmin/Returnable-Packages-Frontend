@@ -11,6 +11,8 @@ function EmitterInward() {
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
+          <p className="ml-5 mt-3 text-2xl"><strong>Inward</strong></p>
+
             <div className="col-lg-1">
               <div className="d-flex justify-content-center">
                 <Link to="/app/EmitterLanding">

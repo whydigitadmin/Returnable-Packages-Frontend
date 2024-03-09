@@ -444,7 +444,10 @@ function IssueReq() {
         )}
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
+          <p className="ml-5 mt-3 text-2xl"><strong>Issue Request</strong></p>
+
             <div className="col-lg-1">
+              
               <div className="d-flex justify-content-center">
                 <Link to="/app/EmitterLanding">
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
@@ -498,6 +501,8 @@ function IssueReq() {
                         </option>
                       ))}
                   </select>
+
+
                 </div>
 
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">

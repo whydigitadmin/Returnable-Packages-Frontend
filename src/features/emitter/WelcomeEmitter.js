@@ -146,10 +146,10 @@ function WelcomeEmitter() {
                   <div className="">
                     <div className="d-flex flex-row">
                       <img
-                        src="/inward.png"
+                        src="/incoming.png"
                         style={{
-                          width: "30px",
-                          height: "30px",
+                          width: "32px",
+                          height: "32px",
                           marginRight: "6px",
                         }}
                       />
@@ -173,7 +173,7 @@ function WelcomeEmitter() {
                         style={{ marginTop: 2 }}
                       /> */}
                       <img
-                        src="/outward.png"
+                        src="/outgoing.png"
                         style={{
                           width: "30px",
                           height: "30px",

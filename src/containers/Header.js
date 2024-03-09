@@ -63,7 +63,15 @@ function Header() {
             className="text-2xl font-semibold ml-2"
             // style={{ color: "rgb(51, 156, 109)" }}
           >
-            {pageTitle}
+            {/* {pageTitle} */}
+            <img
+              src="/BIN_BEE.png"
+                  style={{
+                    width: "150px",
+                    height: "auto",
+                    marginRight: "6px",
+                  }}
+              />
           </h1>
         </div>
 
