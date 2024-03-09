@@ -53,18 +53,12 @@ function EmitterInward() {
                     Flow To -
                   </h4>
                   <select className="form-select w-56 h-10 mt-1 mb-2">
-                    <option value="Tata Motors-Pune">Tata Motors-Pune</option>
-                    <option value="Tata Motors-Chennai">
-                      Tata Motors-Chennai
-                    </option>
-                    <option value="Tata Motors-Mumbai">
-                      Tata Motors-Mumbai
-                    </option>
+                    <option value="">Select a Flow</option>
                   </select>
                 </div>
 
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
-                  Tata Motors- Pune
+                  -
                 </h4>
                 {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
