@@ -76,18 +76,18 @@ function EmitterInward() {
                 style={{ marginTop: 70 }}
               />
             </div> */}
-            <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3">
-              <div className="p-1">
+            <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-28">
+              <div className="p-2">
                 <div className="d-flex flex-row">
                   <FaLocationDot
                     className="text-xl font-semibold w-5 h-5"
                     style={{ marginTop: 11 }}
                   />
-                  <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
+                  <h4 className="text-xl font-semibold mt-2 ms-1 me-2 mb-2">
                     Flow To -
                   </h4>
                   <select
-                    className="form-select w-56 h-10 mt-1 mb-2"
+                    className="form-select w-72 h-10 mt-1 mb-2"
                     value={selectedFlow}
                     onChange={(e) => setSelectedFlow(e.target.value)}
                   >
@@ -102,7 +102,7 @@ function EmitterInward() {
                 </div>
 
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
-                  -
+                  {selectedFlow}
                 </h4>
                 {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
