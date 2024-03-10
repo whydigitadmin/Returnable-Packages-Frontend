@@ -29,10 +29,7 @@ function WelcomeEmitter() {
         setDisplayName(
           response.data.paramObjectsMap.userVO.customersVO.displayName
         );
-        console.log(
-          "display",
-          response.data.paramObjectsMap.userVO.customersVO.displayName
-        );
+        console.log("userVO", response.data.paramObjectsMap.userVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

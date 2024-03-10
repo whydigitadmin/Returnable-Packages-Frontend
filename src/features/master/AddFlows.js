@@ -3,8 +3,15 @@ import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import Axios from "axios";
 import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
 import { FaStarOfLife } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
+import { FaTrash } from "react-icons/fa";
+import { IoIosAdd, IoMdClose } from "react-icons/io";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -77,6 +84,8 @@ function AddFlows({ addFlows }) {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [warehouseLocationValue, setWarehouseLocationValue] = useState("");
+  const [openKitModal, setOpenKitModal] = React.useState(false);
+  const [kitDTO, setKitDTO] = useState([]);
 
   useEffect(() => {
     getCustomersList();
@@ -218,17 +227,11 @@ function AddFlows({ addFlows }) {
     if (!destination) {
       errors.destination = "Destination is required";
     }
-    if (!kitName) {
-      errors.kitName = "Kit name is required";
+    if (!warehouseLocationValue) {
+      errors.warehouseLocationValue = "Warehouse Location is required";
     }
-    if (!partName) {
-      errors.partName = "Part name is required";
-    }
-    if (!partNumber) {
-      errors.partNumber = "Part number is required";
-    }
-    if (!cycleTime) {
-      errors.cycleTime = "Cycle Time is required";
+    if (kitDTO.length === 0) {
+      errors.kitDTO = "Please add at least one Kit detail";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -241,15 +244,7 @@ function AddFlows({ addFlows }) {
         destination,
         active,
         warehouseLocation: warehouseLocationValue,
-        flowDetailDTO: [
-          {
-            kitName,
-            partNumber,
-            partName,
-            cycleTime,
-            active,
-          },
-        ],
+        flowDetailDTO: kitDTO,
       };
 
       Axios.post(`${process.env.REACT_APP_API_URL}/api/master/flow`, formData)
@@ -281,6 +276,54 @@ function AddFlows({ addFlows }) {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const handleKitOpen = () => {
+    setOpenKitModal(true);
+  };
+
+  const handleKitClose = () => {
+    setOpenKitModal(false);
+    setKitName("");
+    setPartName("");
+    setPartNumber("");
+    setCycleTime("");
+    setErrors({});
+  };
+
+  const handleAddKitDetails = () => {
+    const errors = {};
+    if (!kitName) {
+      errors.kitName = "Kit is required";
+    }
+    if (!partName) {
+      errors.partName = "Part Name is required";
+    }
+    if (!partNumber) {
+      errors.partNumber = "Part Number is required";
+    }
+    if (!cycleTime) {
+      errors.cycleTime = "Cycle Time is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const newKitDetails = {
+        kitName,
+        partName,
+        partNumber,
+        cycleTime,
+      };
+      setKitDTO([...kitDTO, newKitDetails]);
+      handleKitClose();
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
+  };
+
+  const handleDeleteRow = (index) => {
+    const updatedKitDTO = [...kitDTO];
+    updatedKitDTO.splice(index, 1);
+    setKitDTO(updatedKitDTO);
   };
 
   return (
@@ -317,7 +360,7 @@ function AddFlows({ addFlows }) {
               onChange={handleInputChange}
             />
             {errors.flowName && (
-              <span className="error-text">{errors.flowName}</span>
+              <span className="error-text mb-1">{errors.flowName}</span>
             )}
           </div>
           {/* emitter field */}
@@ -349,6 +392,9 @@ function AddFlows({ addFlows }) {
                   </option>
                 ))}
             </select>
+            {errors.emitter && (
+              <span className="error-text mb-1">{errors.emitter}</span>
+            )}
           </div>
           {/* receiver field */}
           <div className="col-lg-3 col-md-6">
@@ -359,7 +405,7 @@ function AddFlows({ addFlows }) {
                 }
               >
                 Receiver
-                <FaStarOfLife className="must" />
+                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -402,7 +448,9 @@ function AddFlows({ addFlows }) {
               value={orgin}
               onChange={handleInputChange}
             />
-            {errors.orgin && <span className="error-text">{errors.orgin}</span>}
+            {errors.orgin && (
+              <span className="error-text mb-1">{errors.orgin}</span>
+            )}
           </div>
 
           {/* designation field */}
@@ -427,7 +475,7 @@ function AddFlows({ addFlows }) {
               onChange={handleInputChange}
             />
             {errors.destination && (
-              <span className="error-text">{errors.destination}</span>
+              <span className="error-text mb-1">{errors.destination}</span>
             )}
           </div>
           {/* active field */}
@@ -459,111 +507,11 @@ function AddFlows({ addFlows }) {
                   </option>
                 ))}
             </select>
-          </div>
-        </div>
-        <h1 className="text-xl font-semibold mb-4">Sub Flow Details</h1>
-
-        <div className="row">
-          {/* kit Name field */}
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Kit Name
-                <FaStarOfLife className="must" />
+            {errors.warehouseLocationValue && (
+              <span className="error-text mb-1">
+                {errors.warehouseLocationValue}
               </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              className="form-select form-sz w-full"
-              value={kitName}
-              onChange={handleSelectKitName}
-            >
-              <option value="">Select an Kit</option>
-              {getkit.map((kitId) => (
-                <option key={kitId.id} value={kitId.id}>
-                  {kitId.id}
-                </option>
-              ))}
-            </select>
-          </div>
-          {/* Part Name */}
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Part Name
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              style={{ height: 40, fontSize: "0.800rem" }}
-              className="input mb-2 w-full input-bordered ps-2"
-              onChange={handlePartName}
-              value={partName}
-            >
-              <option value="" disabled>
-                Select a Part Study Name
-              </option>
-              {partStudyNameVO.length > 0 &&
-                partStudyNameVO.map((list) => (
-                  <option key={list.id} value={list}>
-                    {list}
-                  </option>
-                ))}
-            </select>
-            {errors.partName && (
-              <span className="error-text">{errors.partName}</span>
             )}
-          </div>
-          {/* part no field */}
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Part Number
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <input
-              className="form-control form-sz mb-2"
-              disabled
-              value={partNumber}
-            />
-          </div>
-          {/* cycle Time field */}
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Cycle Time
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <input
-              className="form-control form-sz mb-2"
-              value={cycleTime}
-              disabled
-            />
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -583,6 +531,62 @@ function AddFlows({ addFlows }) {
             />
           </div>
         </div>
+
+        <div className="d-flex justify-content-between">
+          <h1 className="text-xl font-semibold mb-4">Sub Flow Details</h1>
+          <div className="d-flex flex-column">
+            <button
+              className="btn btn-ghost btn-lg text-sm col-xs-1"
+              style={{ color: "blue" }}
+              onClick={handleKitOpen}
+              disabled={emitter === ""}
+            >
+              <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
+              <span className="text-form text-base">KIT</span>
+            </button>
+            {errors.kitDTO && (
+              <span className="error-text mb-1">{errors.kitDTO}</span>
+            )}
+          </div>
+        </div>
+        {kitDTO.length > 0 && (
+          <div
+            className="w-full p-3 bg-base-100 shadow-xl mt-2"
+            style={{ borderRadius: 16 }}
+          >
+            <div className="text-xl font-semibold p-2">Kit & Part Details</div>
+            <div className="divider mt-0 mb-0"></div>
+            <div className="overflow-x-auto w-full ">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th className="text-center">Kit</th>
+                    <th className="text-center">Part Name</th>
+                    <th className="text-center">Part Number</th>
+                    <th className="text-center">Cycle</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {kitDTO.map((kit, index) => (
+                    <tr key={index}>
+                      <td className="text-center">{kit.kitName}</td>
+                      <td className="text-center">{kit.partName}</td>
+                      <td className="text-center">{kit.partNumber}</td>
+                      <td className="text-center">{kit.cycleTime}</td>
+                      <td>
+                        <FaTrash
+                          onClick={() => handleDeleteRow(index)}
+                          className="cursor-pointer w-6 h-6"
+                          style={{ marginLeft: 10 }}
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
@@ -600,6 +604,139 @@ function AddFlows({ addFlows }) {
           </button>
         </div>
       </div>
+      <Dialog
+        fullWidth={true}
+        maxWidth={"md"}
+        open={openKitModal}
+        onClose={handleKitClose}
+      >
+        <div className="d-flex justify-content-between">
+          <DialogTitle>Add Kit & Part Details</DialogTitle>
+          <IoMdClose
+            onClick={handleKitClose}
+            className="cursor-pointer w-8 h-8 mt-3 me-3"
+          />
+        </div>
+        <DialogContent>
+          <DialogContentText>
+            <div className="row">
+              {/* kit Name field */}
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Kit Name
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <select
+                  className="form-select form-sz w-full"
+                  value={kitName}
+                  onChange={handleSelectKitName}
+                >
+                  <option value="">Select a kit</option>
+                  {getkit.map((kitId) => (
+                    <option key={kitId.id} value={kitId.id}>
+                      {kitId.id}
+                    </option>
+                  ))}
+                </select>
+                {errors.kitName && (
+                  <span className="error-text mb-1">{errors.kitName}</span>
+                )}
+              </div>
+              {/* Part Name */}
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Part Name
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <select
+                  className="form-select form-sz w-full"
+                  onChange={handlePartName}
+                  value={partName}
+                >
+                  <option value="" disabled>
+                    Select a part name
+                  </option>
+                  {partStudyNameVO.length > 0 &&
+                    partStudyNameVO.map((list) => (
+                      <option key={list.id} value={list}>
+                        {list}
+                      </option>
+                    ))}
+                </select>
+                {errors.partName && (
+                  <span className="error-text mb-1">{errors.partName}</span>
+                )}
+              </div>
+              {/* part no field */}
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Part Number
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  disabled
+                  value={partNumber}
+                />
+              </div>
+              {/* cycle Time field */}
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Cycle Time
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  value={cycleTime}
+                  disabled
+                />
+              </div>
+            </div>
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions className="mb-2 me-2">
+          <Button onClick={handleKitClose}>Cancel</Button>
+          <Button
+            component="label"
+            variant="contained"
+            onClick={handleAddKitDetails}
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }
