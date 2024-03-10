@@ -88,6 +88,11 @@ function EmitterInwardDetails() {
   const [selectedPendingBill, setSelectedPendingBill] = useState(null);
 
   const [name, setName] = React.useState("");
+  const [netQty, setNetQty] = React.useState("");
+  const [returnQty, setReturnQty] = React.useState("");
+  const [returnReason, setReturnReason] = React.useState("");
+  
+  const [errors, setErrors] = React.useState({});
 
   const updateFormValue = (value) => {
     // Handle the form value update
@@ -113,6 +118,30 @@ function EmitterInwardDetails() {
     setPendingPopupOpenIssued(false);
     setSelectedPendingBill(null);
   };
+  
+  const handleNetQtyReceivedChange = (event) => {
+    let input = event.target.value;
+    input = input.replace(/[^0-9]/g, "");
+    if (input.length > 4) {
+        input = input.slice(0, 4);
+    }
+    setNetQty(input);
+};
+
+  const handleReturnQtyChange = (event) => {
+    let input = event.target.value;
+    input = input.replace(/[^0-9]/g, "");
+    if (input.length > 4) {
+        input = input.slice(0, 4);
+    }
+    setReturnQty(input);
+};
+
+  const handleReturnReasonChange = (event) => {
+    setReturnReason = event.target.value;
+};
+
+
 
   const getPaymentStatus = (status, bill) => {
     return (
@@ -168,9 +197,9 @@ function EmitterInwardDetails() {
                 return (
                   <tr key={k}>
                     {/* <td>{getPaymentStatus(l.status)}</td> */}
-                    <td><img src="/pencil.png" alt="Favorite" 
+                    <td><img src="/edit1.png" alt="Favorite" 
                     style={{
-                      width: "20px",
+                      width: "25px",
                       height: "auto",
                       marginRight: "6px",
                     }}
@@ -284,14 +313,14 @@ function EmitterInwardDetails() {
         </div>
         <DialogContent>
           <div className="row">
-            <div className="col-lg-6 col-md-6 mb-2">
+            <div className="col-lg-4 col-md-4 mb-2">
               <label className="label">
                 <span
                   className={
                     "label-text label-font-size text-base-content d-flex flex-row"
                   }
                 >
-                  Net Quantity Received
+                  Net Qty Received
                   <FaStarOfLife className="must" />
                 </span>
               </label>
@@ -301,23 +330,23 @@ function EmitterInwardDetails() {
                 className="form-control form-sz mb-2"
                 type={"text"}
                 placeholder={""}
-                // name="storageMapping"
-                // value={storageMapping}
-                // onChange={handleInputChange}
+                value={netQty}
+                onChange={handleNetQtyReceivedChange}
+                max={4}
               />
               {/* {errors.storageMapping && (
               <span className="error-text">{errors.storageMapping}</span>
             )} */}
             </div>
-            <div className="col-lg-6 col-md-6 mb-2">
+            <div className="col-lg-4 col-md-4 mb-2">
               <label className="label">
                 <span
                   className={
                     "label-text label-font-size text-base-content d-flex flex-row"
                   }
                 >
-                  Return
-                  <FaStarOfLife className="must" />
+                  Return Qty
+                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
@@ -326,15 +355,14 @@ function EmitterInwardDetails() {
                 className="form-control form-sz mb-2"
                 type={"text"}
                 placeholder={""}
-                // name="storageMapping"
-                // value={storageMapping}
-                // onChange={handleInputChange}
+                value={returnQty}
+                onChange={handleReturnQtyChange}
               />
-              {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
+              {errors.returnQty && (
+              <span className="error-text">{errors.returnQty}</span>
+            )}
             </div>
-            <div className="col-lg-6 col-md-6">
+            <div className="col-lg-4 col-md-6">
               <label className="label">
                 <span
                   className={
@@ -342,7 +370,7 @@ function EmitterInwardDetails() {
                   }
                 >
                   Reason for Return
-                  <FaStarOfLife className="must" />
+                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
@@ -351,9 +379,8 @@ function EmitterInwardDetails() {
                 className="form-control form-sz mb-2"
                 type={"text"}
                 placeholder={""}
-                // name="storageMapping"
-                // value={storageMapping}
-                // onChange={handleInputChange}
+                value={returnReason}
+                onChange={handleReturnReasonChange}
               />
               {/* {errors.storageMapping && (
               <span className="error-text">{errors.storageMapping}</span>
