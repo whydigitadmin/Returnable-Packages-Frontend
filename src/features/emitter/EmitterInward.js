@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
+import axios from "axios";
 import { FaLocationDot } from "react-icons/fa6";
 import { MdDoubleArrow } from "react-icons/md";
 import { FaArrowCircleLeft } from "react-icons/fa";
@@ -6,12 +7,43 @@ import { Link } from "react-router-dom";
 import EmitterInwardDetails from "./EmitterInwardDetails";
 
 function EmitterInward() {
+  const [selectedFlow, setSelectedFlow] = React.useState("");
+  const [flowNames, setFlowNames] = React.useState([]);
+  const [address, setAddress] = React.useState({});
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+
+  useEffect(() => {
+    getAddressById();
+  }, []);
+
+  const getAddressById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow?emitterId=${userId}&orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setAddress(response.data.paramObjectsMap.flowVO);
+        const validFlowNames = response.data.paramObjectsMap.flowVO
+          .map((flow) => flow.flowName)
+          .filter((flowName) => typeof flowName === "string");
+
+        setFlowNames(validFlowNames);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-          <p className="ml-5 mt-3 text-2xl"><strong>Inward</strong></p>
+            <p className="ml-5 mt-3 text-2xl">
+              <strong>Inward</strong>
+            </p>
 
             <div className="col-lg-1">
               <div className="d-flex justify-content-center">
@@ -54,8 +86,18 @@ function EmitterInward() {
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
                     Flow To -
                   </h4>
-                  <select className="form-select w-56 h-10 mt-1 mb-2">
+                  <select
+                    className="form-select w-56 h-10 mt-1 mb-2"
+                    value={selectedFlow}
+                    onChange={(e) => setSelectedFlow(e.target.value)}
+                  >
                     <option value="">Select a Flow</option>
+                    {flowNames &&
+                      flowNames.map((flowName) => (
+                        <option key={flowName} value={flowName}>
+                          {flowName}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
