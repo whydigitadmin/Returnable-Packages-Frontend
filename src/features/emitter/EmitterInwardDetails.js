@@ -120,8 +120,9 @@ function EmitterInwardDetails() {
         className="badge bg-success text-white cursor-pointer"
         onClick={() => handlePendingStatusClickIssued(bill)}
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
+        {/* <svg
+          // xmlns="http://www.w3.org/2000/svg"
+          src="/pencil.png"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -133,7 +134,7 @@ function EmitterInwardDetails() {
             strokeWidth="2"
             d="M12 6v6m0 0v6m0-6h6m-6 0H6"
           />
-        </svg>
+        </svg> */}
       </div>
     );
   };
@@ -163,10 +164,18 @@ function EmitterInwardDetails() {
               </tr>
             </thead>
             <tbody>
-              {/* {bills.map((l, k) => {
+              {bills.map((l, k) => {
                 return (
                   <tr key={k}>
-                    <td>{getPaymentStatus(l.status)}</td>
+                    {/* <td>{getPaymentStatus(l.status)}</td> */}
+                    <td><img src="/pencil.png" alt="Favorite" 
+                    style={{
+                      width: "20px",
+                      height: "auto",
+                      marginRight: "6px",
+                    }}
+                    onClick={() => handlePendingStatusClickIssued(l)} // Call handlePendingStatusClickIssued function with the bill object
+                    /> </td>
                     <td>{l.rmno}</td>
                     <td>{l.rmdate}</td>
                     <td>{l.ddate}</td>
@@ -182,7 +191,7 @@ function EmitterInwardDetails() {
                     <td>{l.pname}</td>
                   </tr>
                 );
-              })} */}
+              })}
             </tbody>
           </table>
         </div>
