@@ -197,11 +197,12 @@ function EmitterInwardDetails() {
                 return (
                   <tr key={k}>
                     {/* <td>{getPaymentStatus(l.status)}</td> */}
-                    <td><img src="/edit1.png" alt="Favorite" 
+                    <td><img src="/edit1.png" alt="Favorite"
                     style={{
                       width: "25px",
                       height: "auto",
                       marginRight: "6px",
+                      cursor: "pointer",
                     }}
                     onClick={() => handlePendingStatusClickIssued(l)} // Call handlePendingStatusClickIssued function with the bill object
                     /> </td>

@@ -79,10 +79,17 @@ export const EmitterOutward = () => {
             <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-28">
               <div className="p-2">
                 <div className="d-flex flex-row">
-                  <FaLocationDot
+                  {/* <FaLocationDot
                     className="text-xl font-semibold w-5 h-5"
                     style={{ marginTop: 11 }}
-                  />
+                  /> */}
+                  <img src="/destination.png" alt="Favorite" 
+                    style={{
+                      width: "30px",
+                      height: "25px",
+                      marginRight: "6px",
+                      marginTop: "12px",
+                    }}/>
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-2 mb-2">
                     Issued To -
                   </h4>

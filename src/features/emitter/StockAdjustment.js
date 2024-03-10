@@ -69,15 +69,22 @@ function StockAdjustment() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-4 card bg-base-100 shadow-sm ms-4 mt-3 me-2">
+            <div className="col-lg-6 card bg-base-100 shadow-sm ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
-                  <FaLocationDot
+                  {/* <FaLocationDot
                     className="text-xl font-semibold w-5 h-5"
                     style={{ marginTop: 11 }}
-                  />
+                  /> */}
+                  <img src="/destination.png" alt="Favorite" 
+                    style={{
+                      width: "30px",
+                      height: "25px",
+                      marginRight: "6px",
+                      marginTop: "12px",
+                    }}/>
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
-                    Issued To -
+                    Issued To
                   </h4>
                   <select className="form-select w-52 h-10 mt-1 mb-2">
                     <option value="">Select a Flow</option>
