@@ -114,19 +114,17 @@ function Header() {
             />
           </label> */}
           <label>
-            <Link to={"/app/welcome"}>
-              <img
-                className="mask mask-squircle w-10"
-                src="/AI_Packs.png"
-                style={{
-                  width: "50px",
-                  height: "auto",
-                  marginRight: "20px",
-                }}
-                alt="AI Packs org logo"
-              />
-              {/* AI Packs */}
-            </Link>
+            <img
+              className="mask mask-squircle w-10"
+              src="/AI_Packs.png"
+              style={{
+                width: "50px",
+                height: "auto",
+                marginRight: "20px",
+              }}
+              alt="AI Packs org logo"
+            />
+            {/* AI Packs */}
           </label>
 
           {/* Notification icon */}
