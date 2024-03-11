@@ -451,7 +451,7 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span style={{ marginLeft: "10px" }}>Lifecycle Management</span>,
+    name: <span style={{ marginLeft: "8px" }}>Lifecycle Management</span>,
     submenu: [
       {
         path: "/app/audit",
