@@ -311,6 +311,7 @@ function AddFlows({ addFlows }) {
         partName,
         partNumber,
         cycleTime,
+        orgId,
       };
       setKitDTO([...kitDTO, newKitDetails]);
       handleKitClose();
