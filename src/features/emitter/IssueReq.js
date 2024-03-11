@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import Box from "@mui/material/Box";
@@ -6,29 +5,27 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { StaticDatePicker } from "@mui/x-date-pickers/StaticDatePicker";
+import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import axios from "axios";
 import dayjs from "dayjs";
 import moment from "moment";
 import PropTypes from "prop-types";
-import { FaLocationDot, FaPallet } from "react-icons/fa6";
-import { MdDoubleArrow, MdPallet } from "react-icons/md";
+import React, { useEffect, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { FaLocationDot, FaPallet } from "react-icons/fa6";
+import { MdPallet } from "react-icons/md";
 import { TbReport } from "react-icons/tb";
+import { Link } from "react-router-dom";
 import kit3 from "../../assets/gearbox.jpg";
 import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { Switch, FormControlLabel } from "@mui/material";
 
 function IssueReq() {
+  const [value, setValue] = React.useState(0);
   const [kitFields, setKitFields] = React.useState([{ kitNo: "", qty: "" }]);
   const [selectedKitNumbers, setSelectedKitNumbers] = React.useState([""]);
   const [partFields, setPartFields] = React.useState([{ partNo: "", qty: "" }]);
@@ -48,45 +45,29 @@ function IssueReq() {
   const [selectedIssueRequest, setSelectedIssueRequest] = useState(null);
   const [selectedSubIndex, setSelectedSubIndex] = useState(null);
   const currentDate = dayjs();
-  const [selectedDate1, setSelectedDate1] = useState(null); // Initialize selectedDate with the current date
-  const [priorityStatus, setPriorityStatus] = useState("");
-  const [mode, setMode] = useState("KIT"); // Default mode is KIT
-  const [value, setValue] = React.useState("");
-
-  const handleChange = (event, newValue) => {
-    setValue(newValue);
-    if (newValue === 2) {
-      // If REQ SUMMARY tab is clicked
-      // Handle displaying REQ SUMMARY fields here
-    }
-  };
-
-  const toggleMode = () => {
-    const newMode = mode === "KIT" ? "PART" : "KIT";
-    setMode(newMode);
-    setValue(""); // Reset tab value when mode changes
-  };
+  const [selectedDate1, setSelectedDate1] = useState(currentDate.add(2, "day")); // Initialize selectedDate with the current date plus 2 days
+  const [errorMessage, setErrorMessage] = useState("");
+  const [flowData, setFlowData] = useState([]);
+  const [selectedFlowId, setSelectedFlowId] = useState("");
+  const [kitNames, setKitNames] = useState([]);
+  const [kitData, setKitData] = useState([]);
+  const [partData, setPartData] = useState([]);
 
   const handleIssueDateChange = (date) => {
-    setSelectedDate1(date);
-
-    const hoursDifference = date.diff(currentDate, "hour");
-    if (hoursDifference <= 48) {
-      setPriorityStatus("High Priority");
-    } else {
-      setPriorityStatus("Normal Priority");
+    if (date.diff(currentDate, "day") <= 1) {
+      // Check if selected date is current date or tomorrow
+      setErrorMessage("Please select a date after two days.");
+      return;
     }
-  };
-
-  const getPriorityColor = () => {
-    return priorityStatus === "High Priority" ? "red" : "green";
+    setSelectedDate1(date);
+    setErrorMessage("");
   };
 
   useEffect(() => {
     getAllKitData();
     getAddressById();
     getIssueRequest();
-  }, []);
+  }, [selectedFlowId, kitData]);
 
   const getAllKitData = async () => {
     try {
@@ -105,6 +86,14 @@ function IssueReq() {
     }
   };
 
+  const dummyPartData = [
+    { value: "", label: "Select a Part" },
+    { value: "Part0025", label: "Part0025" },
+    { value: "Part0078", label: "Part0078" },
+    { value: "Part0043", label: "Part0043" },
+    { value: "Part0157", label: "Part0157" },
+  ];
+
   useEffect(() => {
     console.log("Updated getkit:", getKitIds);
   }, [getKitIds]);
@@ -112,16 +101,21 @@ function IssueReq() {
   const getAddressById = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow?emitterId=${userId}&orgId=${orgId}`
+        `${
+          process.env.REACT_APP_API_URL
+        }/api/master/getAllFlowName?emitterId=${89}&orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        setAddress(response.data.paramObjectsMap.flowVO);
-        const validFlowNames = response.data.paramObjectsMap.flowVO
-          .map((flow) => flow.flowName)
-          .filter((flowName) => typeof flowName === "string");
+        setAddress(response.data.paramObjectsMap.Flows);
 
-        setFlowNames(validFlowNames);
+        const validFlows = response.data.paramObjectsMap.Flows.filter(
+          (flow) => typeof flow.flow === "string" && flow.flow.trim() !== ""
+        ).map((flow) => ({ flowid: flow.flowid, flow: flow.flow }));
+
+        setFlowData(validFlows);
+
+        console.log("Addressss", flowData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -133,13 +127,13 @@ function IssueReq() {
     const errors = {};
 
     const kitNoErrors = kitFields.some((field) => !field.kitNo);
-    if (kitNoErrors) {
-      errors.kitNo = "kit Id is required";
-    }
+    // if (kitNoErrors) {
+    //   errors.kitNo = "kit Id is required";
+    // }
 
-    if (!demandDate) {
-      errors.demandDate = "demand date is required";
-    }
+    // if (!demandDate) {
+    //   errors.demandDate = "demand date is required";
+    // }
     const kitQtyErrors = kitFields.some((field) => !field.qty);
     if (kitQtyErrors) {
       errors.kitQty = "kit quantity is required";
@@ -147,11 +141,11 @@ function IssueReq() {
 
     if (Object.keys(errors).length === 0) {
       const formData = {
-        demandDate,
+        demandDate: "2024-03-14",
         orgId,
-        // flowTo,
+        flowTo: selectedFlowId,
         issueItemDTO: kitFields.map((field) => ({
-          kitNo: field.kitNo,
+          kitName: field.kitNo,
           kitQty: field.qty,
         })),
       };
@@ -166,8 +160,7 @@ function IssueReq() {
           console.log("Response:", response.data);
           setKitFields([{ kitNo: "", qty: "" }]);
           setSelectedKitNumbers([""]);
-          // setPartFields([{ partNo: "", qty: "" }]);
-          // setSelectedPartNumbers([""]);
+          setKitData([]);
           setSelectedKitId("");
           setSelectedDate(null);
           setErrors("");
@@ -186,13 +179,13 @@ function IssueReq() {
     const errors = {};
 
     const partNoErrors = partFields.some((field) => !field.partNo);
-    if (partNoErrors) {
-      errors.partNo = "part is required";
-    }
+    // if (partNoErrors) {
+    //   errors.partNo = "part is required";
+    // }
 
-    if (!demandDate) {
-      errors.demandDate = "date is required";
-    }
+    // if (!demandDate) {
+    //   errors.demandDate = "date is required";
+    // }
     const partQtyErrors = partFields.some((field) => !field.qty);
     if (partQtyErrors) {
       errors.partQty = "part is required";
@@ -200,9 +193,9 @@ function IssueReq() {
 
     if (Object.keys(errors).length === 0) {
       const formData = {
-        demandDate,
+        demandDate: "2024-03-14",
         orgId,
-        // flowTo,
+        flowTo: selectedFlowId,
         issueItemDTO: partFields.map((field) => ({
           partNo: field.partNo,
           partQty: field.qty,
@@ -221,6 +214,7 @@ function IssueReq() {
           // setPartFields([{ partNo: "", qty: "" }]);
           // setSelectedPartNumbers([""]);
           // setSelectedKitId("");
+
           setSelectedDate(null);
           setErrors("");
         })
@@ -233,9 +227,50 @@ function IssueReq() {
     }
   };
 
-  // const handleChange = (event, newValue) => {
-  //   setValue(newValue);
-  // };
+  const getkitNameById = async () => {
+    // setKitData([]);
+
+    // console.log("selectedFlowId", selectedFlowId);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow/${selectedFlowId}`
+      );
+
+      if (response.status === 200) {
+        setKitNames(response.data.paramObjectsMap.flowVO.flowDetailVO);
+
+        const kitDataArray =
+          response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
+            id: kit.id,
+            kitName: kit.kitName,
+          }));
+
+        // Setting kitData in the state using a callback function
+        setKitData([...kitDataArray]);
+
+        const partDataArray =
+          response.data.paramObjectsMap.flowVO.flowDetailVO.map((part) => ({
+            id: part.id,
+            partName: part.partName,
+          }));
+
+        // Setting kitData in the state using a callback function
+        // setKitData([...kitDataArray]);
+
+        setPartData([...partDataArray]);
+
+        console.log("part Names:", partData);
+
+        console("Testtt", kitData);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const handleDateChange = (newDate) => {
     // Update the state with the selected date
@@ -262,15 +297,15 @@ function IssueReq() {
     setSelectedPartNumbers(newSelectedPartNumbers);
   };
 
-  const handlePartNoChange = (e, index) => {
-    const newFields = [...partFields];
-    newFields[index].partNo = e.target.value;
-    setPartFields(newFields);
+  // const handlePartNoChange = (e, index) => {
+  //   const newFields = [...partFields];
+  //   newFields[index].partNo = e.target.value;
+  //   setPartFields(newFields);
 
-    const newSelectedPartNumbers = [...selectedPartNumbers];
-    newSelectedPartNumbers[index] = e.target.value;
-    setSelectedPartNumbers(newSelectedPartNumbers);
-  };
+  //   const newSelectedPartNumbers = [...selectedPartNumbers];
+  //   newSelectedPartNumbers[index] = e.target.value;
+  //   setSelectedPartNumbers(newSelectedPartNumbers);
+  // };
 
   const handlePartQtyChange = (e, index) => {
     const newFields = [...partFields];
@@ -317,15 +352,48 @@ function IssueReq() {
     }
   };
 
-  const handleKitNoChange = (e, index) => {
-    const newFields = [...kitFields];
-    newFields[index].kitNo = e.target.value;
-    setKitFields(newFields);
+  const handleFlowChange = (e) => {
+    const selectedId = e.target.value;
+    setSelectedFlowId(selectedId);
 
-    // Use kit ID instead of kit number
-    const newSelectedKitNumbers = [...selectedKitNumbers];
-    newSelectedKitNumbers[index] = e.target.value.toUpperCase();
-    setSelectedKitNumbers(newSelectedKitNumbers);
+    setKitData([]);
+    setFlowData("");
+    console.log("Newwww", selectedFlowId);
+  };
+
+  useEffect(() => {
+    getkitNameById();
+  }, [selectedFlowId]);
+
+  // const handleKitNoChange = (e, index) => {
+  //   const newFields = [...kitFields];
+  //   newFields[index].kitNo = e.target.value;
+  //   setKitFields(newFields);
+
+  //   console.log("Testing", kitFields);
+
+  //   // Use kit ID instead of kit number
+  //   const newSelectedKitNumbers = [...selectedKitNumbers];
+  //   newSelectedKitNumbers[index] = e.target.value.toUpperCase();
+  //   setSelectedKitNumbers(newSelectedKitNumbers);
+  // };
+
+  const handleKitNoChange = (e, index) => {
+    setKitFields((prevFields) => {
+      const newFields = [...prevFields];
+      newFields[index].kitNo = e.target.value;
+      console.log("Updated kitFields:", newFields); // Log the updated state
+      return newFields;
+    });
+  };
+
+  const handlePartNoChange = (e, index) => {
+    setPartFields((prevFields) => {
+      const newFields = [...prevFields];
+      newFields[index].partNo = e.target.value;
+      console.log("Updated PartttttttFields:", newFields); // Log the updated state
+      return newFields;
+    });
   };
 
   const getPartImageByNumber = (partNo) => {
@@ -464,125 +532,19 @@ function IssueReq() {
           ""
         )}
         <div className="card bg-base-100 shadow-xl">
-          <div className="row p-4">
-            <div className="col-md-12">
-              <p className="text-2xl flex items-center">
-                <Link to="/app/EmitterLanding">
-                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                </Link>
-                <span>
-                  <strong className="ml-4">Issue Request</strong>
-                </span>
-              </p>
-            </div>
-          </div>
+          <div className="row">
+            <p className="ml-5 mt-3 text-2xl">
+              <strong>Issue Request</strong>
+            </p>
 
-          <div
-            className="row d-flex flex-row card bg-base-100 shadow-xl m-auto"
-            style={{ width: "1000px" }}
-          >
-            <div className="col-md-5">
-              <div className="p-3">
-                <div className="d-flex flex-row">
-                  {/* <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 11 }}
-                  /> */}
-                  <img
-                    src="/destination.png"
-                    alt="Favorite"
-                    style={{
-                      width: "25px",
-                      height: "25px",
-                      marginRight: "6px",
-                      marginTop: "12px",
-                    }}
-                  />
-                  <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
-                    Flow To -
-                  </h4>
-                  <select
-                    className="form-select w-56 h-10 mt-1 mb-2"
-                    value={selectedFlow}
-                    onChange={(e) => setSelectedFlow(e.target.value)}
-                  >
-                    <option value="">Select a Flow</option>
-                    {flowNames &&
-                      flowNames.map((flowName) => (
-                        <option key={flowName} value={flowName}>
-                          {flowName}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
-                  -
-                </h4>
-                {/* <p className="ms-1 mb-2">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p> */}
-              </div>
-            </div>
-            <div className="col-md-1 mt-4">
-              <label>
-                <b>Date</b>
-              </label>
-            </div>
-            <div className="col-md-4 mt-4">
-              <div>
-                {/* <label style={{ fontWeight: "bold" }}>Select Date</label> */}
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DesktopDatePicker
-                    value={selectedDate1 || currentDate}
-                    onChange={handleIssueDateChange}
-                    minDate={currentDate}
-                    slotProps={{
-                      textField: { size: "small", clearable: true },
-                    }}
-                    format="DD/MM/YYYY"
-                  />
-                </LocalizationProvider>
-              </div>
-              <p>
-                <strong style={{ fontSize: "12px" }}>
-                  (<span style={{ color: "red" }}>*</span> Issue Within 48Hrs
-                  Considered as High Priroity)
-                </strong>
-              </p>
-            </div>
-            {selectedDate1 && ( // Only show the priority input table if a date is selected
-              <div className="col-md-2">
-                <input
-                  type="text"
-                  className="form-control form-sz mb-2 mt-4"
-                  value={priorityStatus}
-                  disabled
-                  style={{ color: getPriorityColor(), marginTop: "5px" }}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="assetName"
-              value={assetName}
-              onChange={handleCategoryChange}
-            />
-            {errors.assetName && (
-              <span className="error-text">{errors.assetName}</span>
-            )}
-          </div> */}
-
-          {/* <div className="d-flex flex-row card bg-base-100 shadow-xl ms-2 mt-3 h-fit ml-5">
             <div className="col-lg-1">
-              <div className="d-flex justify-content-center"></div>
-            </div> */}
-          {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
+              <div className="d-flex justify-content-center">
+                <Link to="/app/EmitterLanding">
+                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
+                </Link>
+              </div>
+            </div>
+            {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -606,7 +568,7 @@ function IssueReq() {
                 style={{ marginTop: 70 }}
               />
             </div> */}
-          {/* <div className="col-lg-">
+            <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3 h-fit">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -618,14 +580,14 @@ function IssueReq() {
                   </h4>
                   <select
                     className="form-select w-56 h-10 mt-1 mb-2"
-                    value={selectedFlow}
-                    onChange={(e) => setSelectedFlow(e.target.value)}
+                    value={selectedFlowId}
+                    onChange={handleFlowChange}
                   >
                     <option value="">Select a Flow</option>
-                    {flowNames &&
-                      flowNames.map((flowName) => (
-                        <option key={flowName} value={flowName}>
-                          {flowName}
+                    {flowData &&
+                      flowData.map((flowName) => (
+                        <option key={flowName.flowid} value={flowName.flowid}>
+                          {flowName.flow}
                         </option>
                       ))}
                   </select>
@@ -633,15 +595,15 @@ function IssueReq() {
 
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   -
-                </h4> */}
-          {/* <p className="ms-1 mb-2">
+                </h4>
+                {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                   Pune, Maharashtra, 410501 India
                 </p> */}
-          {/* </div>
-            </div> */}
-          {/* <div className="col-lg-4 d-flex justify-content-center"> */}
-          {/* <div className="mt-4">
+              </div>
+            </div>
+            <div className="col-lg-4 d-flex justify-content-center">
+              {/* <div className="mt-4">
                 <div className="text-xl font-semibold mb-3">
                   Select Date Range
                 </div>
@@ -658,7 +620,7 @@ function IssueReq() {
                   primaryColor={"green"}
                 />
               </div> */}
-          {/* <div className="mt-4">
+              <div className="mt-4">
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DemoContainer
                     components={[
@@ -672,7 +634,6 @@ function IssueReq() {
                       <DesktopDatePicker
                         value={selectedDate1}
                         onChange={handleIssueDateChange}
-                        minDate={currentDate.add()} // Minimum selectable date is current date + 2 days
                       />
                       {errorMessage && (
                         <p style={{ color: "red" }}>{errorMessage}</p>
@@ -682,53 +643,9 @@ function IssueReq() {
                 </LocalizationProvider>
               </div>
             </div>
-          </div> */}
-
+          </div>
           <div className="row pt-4 pl-5 pr-5 pb-10">
             <div className="col-lg-12">
-              {/* <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-                  variant="scrollable"
-                  scrollButtons="auto"
-                >
-                  <Tab
-                    label="KIT WISE"
-                    icon={<MdPallet className="w-16 h-6" />}
-                    {...a11yProps(0)}
-                  />
-                  <Tab
-                    label="PART WISE"
-                    icon={<FaPallet className="w-16 h-6" />}
-                    {...a11yProps(1)}
-                  />
-                  <Tab
-                    label="REQ SUMMARY"
-                    icon={<TbReport className="w-16 h-6" />}
-                    {...a11yProps(2)}
-                  />
-                </Tabs>
-              </Box> */}
-
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={mode === "PART"}
-                    onChange={toggleMode}
-                    color="primary"
-                  />
-                }
-                labelPlacement="start"
-                label={<span style={{ fontWeight: "bold" }}>KIT</span>}
-              />
-              <FormControlLabel
-                control={<div />} // This is to leave the control empty
-                labelPlacement="start"
-                label={<span style={{ fontWeight: "bold" }}>PART</span>}
-              />
-
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                   value={value}
@@ -737,20 +654,16 @@ function IssueReq() {
                   variant="scrollable"
                   scrollButtons="auto"
                 >
-                  {/* {mode === "KIT" && ( */}
                   <Tab
                     label="KIT WISE"
                     icon={<MdPallet className="w-16 h-6" />}
                     {...a11yProps(0)}
                   />
-                  {/* )} */}
-                  {/* {mode === "PART" && ( */}
                   <Tab
                     label="PART WISE"
                     icon={<FaPallet className="w-16 h-6" />}
                     {...a11yProps(1)}
                   />
-                  {/* )} */}
                   <Tab
                     label="REQ SUMMARY"
                     icon={<TbReport className="w-16 h-6" />}
@@ -759,323 +672,307 @@ function IssueReq() {
                 </Tabs>
               </Box>
 
-              <div>
-                <div
-                  className="scrollable-container"
-                  style={{ maxHeight: "200px", overflowY: "auto" }}
-                >
-                  {/* KIT TAB */}
-                  {mode === "KIT" && value === 0 && (
-                    <CustomTabPanel value={value} index={0}>
-                      {kitFields.map((field, index) => (
-                        <div className="row" key={index}>
-                          <div className="col-lg-4 col-md-6 mb-2">
-                            <label className="label">
-                              <span className="label-text label-font-size text-base-content">
-                                KIT :
-                              </span>
-                            </label>
-                            <select
-                              className="form-select form-sz w-full"
-                              value={field.kitNo}
-                              onChange={(e) => handleKitNoChange(e, index)}
-                            >
-                              <option value="">Select a Part</option>
-                              <option value="Part0025">Part0025</option>
-                              <option value="Part0078">Part0078</option>
-                              <option value="Part0043">Part0043</option>
-                              <option value="Part0157">Part0157</option>
-                            </select>
-                          </div>
-                          {errors.kitNo && (
-                            <span className="error-text">{errors.kitNo}</span>
-                          )}
+              <div
+                className="scrollable-container"
+                style={{ maxHeight: "200px", overflowY: "auto" }}
+              >
+                <CustomTabPanel value={value} index={0}>
+                  {kitFields.map((field, index) => (
+                    <div className="row" key={index}>
+                      <div className="col-lg-4 col-md-6 mb-2">
+                        <label className="label">
+                          <span className="label-text label-font-size text-base-content">
+                            KIT :
+                          </span>
+                        </label>
+                        <select
+                          className="form-select form-sz w-full"
+                          value={field.kitNo}
+                          onChange={(e) => handleKitNoChange(e, index)}
+                        >
+                          {kitData &&
+                            kitData.map((kit) => (
+                              <option key={kit.id} value={kit.kitName}>
+                                {kit.kitName}
+                              </option>
+                            ))}
+                        </select>
 
-                          <div className="col-lg-4 col-md-6 mb-2">
-                            <label className="label">
-                              <span className="label-text label-font-size text-base-content">
-                                QTY :
-                              </span>
-                            </label>
-                            <input
-                              className="form-control form-sz mb-2"
-                              type="text"
-                              value={field.qty}
-                              onChange={(e) => handleQtyChange(e, index)}
-                            />
-                            {errors.kitQty && (
-                              <span className="error-text">
-                                {errors.kitQty}
-                              </span>
-                            )}
-                          </div>
+                        <div></div>
+                      </div>
+                      {errors.kitNo && (
+                        <span className="error-text">{errors.kitNo}</span>
+                      )}
 
-                          <div className="col-lg-1 col-md-2 mb-2">
-                            {index === 0 ? (
-                              <div
-                                onClick={handleAddField}
-                                style={{ marginTop: "42px" }}
-                              >
-                                <AddCircleOutlineIcon className="cursor-pointer" />
-                              </div>
-                            ) : (
-                              <div
-                                onClick={() => handleRemoveField(index)}
-                                style={{ marginTop: "42px" }}
-                              >
-                                <HighlightOffIcon className="cursor-pointer" />
-                              </div>
-                            )}
+                      <div className="col-lg-4 col-md-6 mb-2">
+                        <label className="label">
+                          <span className="label-text label-font-size text-base-content">
+                            QTY :
+                          </span>
+                        </label>
+                        <input
+                          className="form-control form-sz mb-2"
+                          type="text"
+                          value={field.qty}
+                          onChange={(e) => handleQtyChange(e, index)}
+                        />
+                        {errors.kitQty && (
+                          <span className="error-text">{errors.kitQty}</span>
+                        )}
+                      </div>
+
+                      <div className="col-lg-1 col-md-2 mb-2">
+                        {index === 0 ? (
+                          <div
+                            onClick={handleAddField}
+                            style={{ marginTop: "42px" }}
+                          >
+                            <AddCircleOutlineIcon className="cursor-pointer" />
                           </div>
-                          <div className="col-lg-3 col-md-2">
-                            {/* Display the static kit image */}
-                            {selectedKitNumbers[index] ? (
-                              <>
-                                <img
-                                  src={getKitImageByNumber(
-                                    selectedKitNumbers[index]
-                                  )}
-                                  alt={`Kit ${selectedKitNumbers[index]} Image`}
-                                  style={{
-                                    width: "90px",
-                                    height: "90px",
-                                  }}
-                                />
-                                <span
-                                  className="pt-1"
-                                  style={{ fontSize: "12px" }}
-                                >
-                                  PA00341
-                                </span>
-                              </>
-                            ) : (
-                              <img
-                                src="/partImage2.png"
-                                style={{
-                                  width: "40px",
-                                  height: "40px",
-                                  marginTop: "35px",
-                                }}
-                              />
-                            )}
+                        ) : (
+                          <div
+                            onClick={() => handleRemoveField(index)}
+                            style={{ marginTop: "42px" }}
+                          >
+                            <HighlightOffIcon className="cursor-pointer" />
                           </div>
-                          <DisplaySelectedPartInfo
-                            selectedPartNo={selectedPartNumbers[index]}
-                          />
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={handleIssueReq}
-                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                      >
-                        Submit
-                      </button>
-                    </CustomTabPanel>
-                  )}
-                </div>
-                <div
-                  className="scrollable-container"
-                  style={{ maxHeight: "200px", overflowY: "auto" }}
-                >
-                  {/* PART TAB*/}
-                  {mode === "PART" && value === 1 && (
-                    <CustomTabPanel value={value} index={1}>
-                      {partFields.map((field, index) => (
-                        <div className="row" key={index}>
-                          <div className="col-lg-4 col-md-8 mb-2">
-                            <label className="label">
-                              <span
-                                className={
-                                  "label-text label-font-size text-base-content"
-                                }
-                              >
-                                Part :
-                              </span>
-                            </label>
-                            <select
-                              className="form-select form-sz w-full"
-                              value={field.partNo}
-                              onChange={(e) => {
-                                handlePartNoChange(e, index);
+                        )}
+                      </div>
+                      <div className="col-lg-3 col-md-2">
+                        {/* Display the static kit image */}
+                        {selectedKitNumbers[index] ? (
+                          <>
+                            <img
+                              src={getKitImageByNumber(
+                                selectedKitNumbers[index]
+                              )}
+                              alt={`Kit ${selectedKitNumbers[index]} Image`}
+                              style={{
+                                width: "90px",
+                                height: "90px",
                               }}
-                            >
-                              <option value="">Select a Part</option>
-                              <option value="Part0025">Part0025</option>
-                              <option value="Part0078">Part0078</option>
-                              <option value="Part0043">Part0043</option>
-                              <option value="Part0157">Part0157</option>
-                            </select>
-                          </div>
-                          {errors.partNo && (
-                            <span className="error-text">{errors.partNo}</span>
-                          )}
-                          <div className="col-lg-4 col-md-8">
-                            <label className="label">
-                              <span
-                                className={
-                                  "label-text label-font-size text-base-content"
-                                }
-                              >
-                                QTY :
-                              </span>
-                            </label>
-                            <input
-                              className="form-control form-sz"
-                              type={"number"}
-                              placeholder={""}
-                              value={field.qty}
-                              onChange={(e) => handlePartQtyChange(e, index)}
                             />
-                            {errors.partQty && (
-                              <span className="error-text">
-                                {errors.partQty}
-                              </span>
-                            )}
-                          </div>
-                          <div className="col-lg-1 col-md-2">
-                            {index === 0 ? (
-                              <div
-                                onClick={handleAddPartField}
-                                style={{ marginTop: "42px" }}
-                              >
-                                <AddCircleOutlineIcon className="cursor-pointer" />
-                              </div>
-                            ) : (
-                              <div
-                                onClick={() => handleRemovePartField(index)}
-                                style={{ marginTop: "42px" }}
-                              >
-                                <HighlightOffIcon className="cursor-pointer" />
-                              </div>
-                            )}
-                          </div>
-                          <div className="col-lg-3 col-md-2">
-                            {selectedPartNumbers[index] ? (
-                              <>
-                                <img
-                                  src={getPartImageByNumber(
-                                    selectedPartNumbers[index]
-                                  )}
-                                  alt={`Kit ${selectedPartNumbers[index]} Image`}
-                                  style={{ width: "90px", height: "90px" }}
-                                />
-                                <span
-                                  className="pt-1 ms-4"
-                                  style={{ fontSize: "12px" }}
-                                >
-                                  PA00341
-                                </span>
-                              </>
-                            ) : (
-                              // Display default image if part number is not selected
-                              <img
-                                src="/partImage2.png" // Replace with your default image path
-                                alt="Default Image"
-                                style={{
-                                  width: "40px",
-                                  height: "40px",
-                                  marginTop: "35px",
-                                }}
-                              />
-                            )}
-                          </div>
-                          <DisplaySelectedPartInfo
-                            selectedPartNo={selectedPartNumbers[index]}
+                            <span className="pt-1" style={{ fontSize: "12px" }}>
+                              PA00341
+                            </span>
+                          </>
+                        ) : (
+                          <img
+                            src="/partImage2.png"
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              marginTop: "35px",
+                            }}
                           />
-                        </div>
-                      ))}
-                      <button
-                        type="button"
-                        onClick={handlePartReq}
-                        style={{ marginTop: "5px" }}
-                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                      >
-                        Submit
-                      </button>
-                    </CustomTabPanel>
-                  )}
-                </div>
-                <div
-                  className="scrollable-container"
-                  style={{ maxHeight: "200px", overflowY: "auto" }}
-                >
-                  {/* REQSUMMARTY */}
-                  {/* {mode === "KIT" ||
-                    (mode === "PART" && value === 2 && ( */}
-                  <CustomTabPanel value={value} index={2}>
-                    <>
-                      <div
-                        className="w-full p-2 bg-base-100 shadow-xl"
-                        style={{ borderRadius: 16 }}
-                      >
-                        <div className="text-xl font-semibold p-3">
-                          Issue Manifest Details
-                        </div>
-                        <div className="divider mt-0 mb-0"></div>
-                        <div className="overflow-x-auto w-full "></div>
-                        {/* Invoice list in table format loaded constant */}
-                        <div className="overflow-x-auto w-full ">
-                          <table className="table w-full">
-                            <thead>
-                              <tr>
-                                <th>RM No.</th>
-                                <th>RM Date</th>
-                                <th>Demand Date</th>
-                                <th>Flow Name</th>
-                                <th>TAT (Hrs)</th>
-                                <th>Status</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {bills.map((issueRequest, index) => (
-                                <React.Fragment key={index}>
-                                  {issueRequest.issueItemVO.map(
-                                    (item, subIndex) => (
-                                      <tr key={`${index}-${subIndex}`}>
-                                        {subIndex === 0 && (
-                                          <>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {issueRequest.reqAddressId}
-                                            </td>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {moment(
-                                                issueRequest.requestedDate
-                                              ).format("DD-MM-YY")}
-                                            </td>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {moment(
-                                                issueRequest.demandDate
-                                              ).format("DD-MM-YY")}
-                                            </td>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {issueRequest.flowTo}
-                                            </td>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                              className="text-center"
-                                            >
-                                              48
-                                            </td>
-                                            {/* <td
+                        )}
+                      </div>
+                      <DisplaySelectedPartInfo
+                        selectedPartNo={selectedPartNumbers[index]}
+                      />
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handleIssueReq}
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  >
+                    Submit
+                  </button>
+                </CustomTabPanel>
+              </div>
+
+              <div
+                className="scrollable-container"
+                style={{ maxHeight: "200px", overflowY: "auto" }}
+              >
+                <CustomTabPanel value={value} index={1}>
+                  {partFields.map((field, index) => (
+                    <div className="row" key={index}>
+                      <div className="col-lg-4 col-md-8 mb-2">
+                        <label className="label">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content"
+                            }
+                          >
+                            Part :
+                          </span>
+                        </label>
+                        <select
+                          className="form-select form-sz w-full"
+                          value={field.partNo}
+                          onChange={(e) => {
+                            handlePartNoChange(e, index);
+                          }}
+                        >
+                          {partData &&
+                            partData.map((part) => (
+                              <option key={part.id} value={part.partName}>
+                                {part.partName}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
+                      {errors.partNo && (
+                        <span className="error-text">{errors.partNo}</span>
+                      )}
+                      <div className="col-lg-4 col-md-8">
+                        <label className="label">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content"
+                            }
+                          >
+                            QTY :
+                          </span>
+                        </label>
+                        <input
+                          className="form-control form-sz"
+                          type={"number"}
+                          placeholder={""}
+                          value={field.qty}
+                          onChange={(e) => handlePartQtyChange(e, index)}
+                        />
+                        {errors.partQty && (
+                          <span className="error-text">{errors.partQty}</span>
+                        )}
+                      </div>
+                      <div className="col-lg-1 col-md-2">
+                        {index === 0 ? (
+                          <div
+                            onClick={handleAddPartField}
+                            style={{ marginTop: "42px" }}
+                          >
+                            <AddCircleOutlineIcon className="cursor-pointer" />
+                          </div>
+                        ) : (
+                          <div
+                            onClick={() => handleRemovePartField(index)}
+                            style={{ marginTop: "42px" }}
+                          >
+                            <HighlightOffIcon className="cursor-pointer" />
+                          </div>
+                        )}
+                      </div>
+                      <div className="col-lg-3 col-md-2">
+                        {selectedPartNumbers[index] ? (
+                          <>
+                            <img
+                              src={getPartImageByNumber(
+                                selectedPartNumbers[index]
+                              )}
+                              alt={`Kit ${selectedPartNumbers[index]} Image`}
+                              style={{ width: "90px", height: "90px" }}
+                            />
+                            <span
+                              className="pt-1 ms-4"
+                              style={{ fontSize: "12px" }}
+                            >
+                              PA00341
+                            </span>
+                          </>
+                        ) : (
+                          // Display default image if part number is not selected
+                          <img
+                            src="/partImage2.png" // Replace with your default image path
+                            alt="Default Image"
+                            style={{
+                              width: "40px",
+                              height: "40px",
+                              marginTop: "35px",
+                            }}
+                          />
+                        )}
+                      </div>
+                      <DisplaySelectedPartInfo
+                        selectedPartNo={selectedPartNumbers[index]}
+                      />
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={handlePartReq}
+                    style={{ marginTop: "5px" }}
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  >
+                    Submit
+                  </button>
+                </CustomTabPanel>
+              </div>
+              <CustomTabPanel value={value} index={2}>
+                <>
+                  <div
+                    className="w-full p-2 bg-base-100 shadow-xl"
+                    style={{ borderRadius: 16 }}
+                  >
+                    <div className="text-xl font-semibold p-3">
+                      Issue Manifest Details
+                    </div>
+                    <div className="divider mt-0 mb-0"></div>
+                    <div className="overflow-x-auto w-full "></div>
+                    {/* Invoice list in table format loaded constant */}
+                    <div className="overflow-x-auto w-full ">
+                      <table className="table w-full">
+                        <thead>
+                          <tr>
+                            <th>RM No.</th>
+                            <th>RM Date</th>
+                            <th>Demand Date</th>
+                            <th>Flow Name</th>
+                            <th>TAT (Hrs)</th>
+                            <th>Status</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bills.map((issueRequest, index) => (
+                            <React.Fragment key={index}>
+                              {issueRequest.issueItemVO.map(
+                                (item, subIndex) => (
+                                  <tr key={`${index}-${subIndex}`}>
+                                    {subIndex === 0 && (
+                                      <>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {issueRequest.reqAddressId}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {moment(
+                                            issueRequest.requestedDate
+                                          ).format("DD-MM-YY")}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {moment(
+                                            issueRequest.demandDate
+                                          ).format("DD-MM-YY")}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                        >
+                                          {issueRequest.flowTo}
+                                        </td>
+                                        <td
+                                          rowSpan={
+                                            issueRequest.issueItemVO.length
+                                          }
+                                          className="text-center"
+                                        >
+                                          48
+                                        </td>
+                                        {/* <td
                                           rowSpan={
                                             issueRequest.issueItemVO.length
                                           }
@@ -1091,23 +988,23 @@ function IssueReq() {
                                         >
                                           {issueRequest.partQty}
                                         </td> */}
-                                          </>
-                                        )}
-                                        <td
-                                        // onClick={() =>
-                                        //   handlePendingStatusClick(
-                                        //     issueRequest,
-                                        //     subIndex
-                                        //   )
-                                        // }
-                                        >
-                                          {getPaymentStatus(
-                                            issueRequest.issueStatus
-                                          )}
-                                        </td>
+                                      </>
+                                    )}
+                                    <td
+                                    // onClick={() =>
+                                    //   handlePendingStatusClick(
+                                    //     issueRequest,
+                                    //     subIndex
+                                    //   )
+                                    // }
+                                    >
+                                      {getPaymentStatus(
+                                        issueRequest.issueStatus
+                                      )}
+                                    </td>
 
-                                        {/* Random Status Code */}
-                                        {/* 
+                                    {/* Random Status Code */}
+                                    {/* 
                                     <td
                                       style={{ width: 100 }}
                                       // onClick={() =>
@@ -1116,20 +1013,17 @@ function IssueReq() {
                                     >
                                       {getPaymentStatus()}
                                     </td> */}
-                                      </tr>
-                                    )
-                                  )}
-                                </React.Fragment>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </>
-                  </CustomTabPanel>
-                  {/* ))} */}
-                </div>
-              </div>
+                                  </tr>
+                                )
+                              )}
+                            </React.Fragment>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
+              </CustomTabPanel>
             </div>
           </div>
         </div>
