@@ -91,7 +91,7 @@ function EmitterInwardDetails() {
   const [netQty, setNetQty] = React.useState("");
   const [returnQty, setReturnQty] = React.useState("");
   const [returnReason, setReturnReason] = React.useState("");
-  
+
   const [errors, setErrors] = React.useState({});
 
   const updateFormValue = (value) => {
@@ -118,30 +118,28 @@ function EmitterInwardDetails() {
     setPendingPopupOpenIssued(false);
     setSelectedPendingBill(null);
   };
-  
+
   const handleNetQtyReceivedChange = (event) => {
     let input = event.target.value;
     input = input.replace(/[^0-9]/g, "");
     if (input.length > 4) {
-        input = input.slice(0, 4);
+      input = input.slice(0, 4);
     }
     setNetQty(input);
-};
+  };
 
   const handleReturnQtyChange = (event) => {
     let input = event.target.value;
     input = input.replace(/[^0-9]/g, "");
     if (input.length > 4) {
-        input = input.slice(0, 4);
+      input = input.slice(0, 4);
     }
     setReturnQty(input);
-};
+  };
 
   const handleReturnReasonChange = (event) => {
     setReturnReason = event.target.value;
-};
-
-
+  };
 
   const getPaymentStatus = (status, bill) => {
     return (
@@ -193,19 +191,22 @@ function EmitterInwardDetails() {
               </tr>
             </thead>
             <tbody>
-              {bills.map((l, k) => {
+              {/* {bills.map((l, k) => {
                 return (
                   <tr key={k}>
-                    {/* <td>{getPaymentStatus(l.status)}</td> */}
-                    <td><img src="/edit1.png" alt="Favorite"
-                    style={{
-                      width: "25px",
-                      height: "auto",
-                      marginRight: "6px",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => handlePendingStatusClickIssued(l)} // Call handlePendingStatusClickIssued function with the bill object
-                    /> </td>
+                    <td>
+                      <img
+                        src="/edit1.png"
+                        alt="Favorite"
+                        style={{
+                          width: "25px",
+                          height: "auto",
+                          marginRight: "6px",
+                          cursor: "pointer",
+                        }}
+                        onClick={() => handlePendingStatusClickIssued(l)} // Call handlePendingStatusClickIssued function with the bill object
+                      />{" "}
+                    </td>
                     <td>{l.rmno}</td>
                     <td>{l.rmdate}</td>
                     <td>{l.ddate}</td>
@@ -221,7 +222,7 @@ function EmitterInwardDetails() {
                     <td>{l.pname}</td>
                   </tr>
                 );
-              })}
+              })} */}
             </tbody>
           </table>
         </div>
@@ -360,8 +361,8 @@ function EmitterInwardDetails() {
                 onChange={handleReturnQtyChange}
               />
               {errors.returnQty && (
-              <span className="error-text">{errors.returnQty}</span>
-            )}
+                <span className="error-text">{errors.returnQty}</span>
+              )}
             </div>
             <div className="col-lg-4 col-md-6">
               <label className="label">

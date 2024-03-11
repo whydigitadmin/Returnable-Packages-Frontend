@@ -1,35 +1,44 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaLocationDot } from "react-icons/fa6";
-import { MdDoubleArrow } from "react-icons/md";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import EmitterInwardDetails from "./EmitterInwardDetails";
 
 function EmitterInward() {
   const [selectedFlow, setSelectedFlow] = React.useState("");
-  const [flowNames, setFlowNames] = React.useState([]);
-  const [address, setAddress] = React.useState({});
+  const [flowData, setFlowData] = React.useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
 
   useEffect(() => {
-    getAddressById();
+    getDisplayName();
   }, []);
 
-  const getAddressById = async () => {
+  const getDisplayName = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow?emitterId=${userId}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/auth/user/${userId}`
       );
 
       if (response.status === 200) {
-        setAddress(response.data.paramObjectsMap.flowVO);
-        const validFlowNames = response.data.paramObjectsMap.flowVO
-          .map((flow) => flow.flowName)
-          .filter((flowName) => typeof flowName === "string");
+        getAddressById(response.data.paramObjectsMap.userVO.customersVO.id);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-        setFlowNames(validFlowNames);
+  const getAddressById = async (value) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${value}&orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        const validFlows = response.data.paramObjectsMap.Flows.filter(
+          (flow) => typeof flow.flow === "string" && flow.flow.trim() !== ""
+        ).map((flow) => ({ flowid: flow.flowid, flow: flow.flow }));
+        setFlowData(validFlows);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -44,7 +53,6 @@ function EmitterInward() {
             <p className="ml-5 mt-3 text-2xl">
               <strong>Inward</strong>
             </p>
-
             <div className="col-lg-1">
               <div className="d-flex justify-content-center">
                 <Link to="/app/EmitterLanding">
@@ -83,13 +91,16 @@ function EmitterInward() {
                     className="text-xl font-semibold w-5 h-5"
                     style={{ marginTop: 11 }}
                   /> */}
-                  <img src="/destination.png" alt="Favorite" 
+                  <img
+                    src="/destination.png"
+                    alt="Favorite"
                     style={{
                       width: "30px",
                       height: "25px",
                       marginRight: "6px",
                       marginTop: "12px",
-                    }}/>
+                    }}
+                  />
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-2 mb-2">
                     Flow To -
                   </h4>
@@ -99,15 +110,14 @@ function EmitterInward() {
                     onChange={(e) => setSelectedFlow(e.target.value)}
                   >
                     <option value="">Select a Flow</option>
-                    {flowNames &&
-                      flowNames.map((flowName) => (
-                        <option key={flowName} value={flowName}>
-                          {flowName}
+                    {flowData &&
+                      flowData.map((flowName) => (
+                        <option key={flowName.flowid} value={flowName.flow}>
+                          {flowName.flow}
                         </option>
                       ))}
                   </select>
                 </div>
-
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   {selectedFlow}
                 </h4>
