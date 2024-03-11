@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContentText from "@mui/material/DialogContentText";
+import { FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import EmitterOutwardDetails from "./EmitterOutwardDetails";
+import TitleCard from "../../components/Cards/TitleCard";
 
 export const EmitterOutward = () => {
   const [selectedFlow, setSelectedFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
+  const [assignedFlow, setAssignFlow] = React.useState("");
+  const [displayFlowName, setDisplayFlowName] = React.useState();
+  const [inwardVO, setInwardVO] = React.useState([]);
+  const [errors, setErrors] = React.useState({});
+  const [isPendingPopupOpenIssued, setPendingPopupOpenIssued] = useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = useState(
     JSON.parse(localStorage.getItem("userId"))
@@ -14,7 +24,8 @@ export const EmitterOutward = () => {
 
   useEffect(() => {
     getDisplayName();
-  }, []);
+    // getOutwardDetails();
+  }, [assignedFlow]);
 
   const getDisplayName = async () => {
     try {
@@ -24,6 +35,7 @@ export const EmitterOutward = () => {
 
       if (response.status === 200) {
         getAddressById(response.data.paramObjectsMap.userVO.customersVO.id);
+        // getOutwardDetails(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -45,6 +57,63 @@ export const EmitterOutward = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  // const getOutwardDetails = async (value) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/emitter/viewEmitterInward`,
+  //       {
+  //         params: {
+  //           orgId: orgId,
+  //           emitterId: value,
+  //           flowId: assignedFlow,
+  //         },
+  //       }
+  //     );
+  //     console.log("Response from API:", response.data);
+  //     if (response.status === 200) {
+  //       const InwardVO =
+  //         response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO;
+  //       setInwardVO(
+  //         response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO
+  //       );
+  //       console.log("InwardVO", InwardVO);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  const getFlowNameById = async (value) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow/${value}`
+      );
+
+      if (response.status === 200) {
+        setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleSelectedFlow = (event) => {
+    setSelectedFlow(event.target.value);
+    setAssignFlow(event.target.value);
+    getFlowNameById(event.target.value);
+  };
+
+  const handlePendingStatusClickIssued = () => {
+    setPendingPopupOpenIssued(true);
+  };
+
+  const closePendingPopupIssued = () => {
+    setPendingPopupOpenIssued(false);
+    // setNetQty("");
+    // setReturnQty("");
+    // setReturnReason("");
   };
 
   return (
@@ -109,19 +178,19 @@ export const EmitterOutward = () => {
                   <select
                     className="form-select w-72 h-10 mt-1 mb-2"
                     value={selectedFlow}
-                    onChange={(e) => setSelectedFlow(e.target.value)}
+                    onChange={handleSelectedFlow}
                   >
                     <option value="">Select a Flow</option>
                     {flowData &&
                       flowData.map((flowName) => (
-                        <option key={flowName.flowid} value={flowName.flow}>
+                        <option key={flowName.flowid} value={flowName.flowid}>
                           {flowName.flow}
                         </option>
                       ))}
                   </select>
                 </div>
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1">
-                  {selectedFlow}
+                  {displayFlowName}
                 </h4>
                 {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
@@ -130,7 +199,155 @@ export const EmitterOutward = () => {
               </div>
             </div>
           </div>
-          <EmitterOutwardDetails />
+          <TitleCard title="Outward Manifest" topMargin="mt-2">
+            <div className="overflow-x-auto w-full ">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th>Update</th>
+                    <th>Part No</th>
+                    <th>Part name</th>
+                    <th>Part Qty</th>
+                    <th>Kit No</th>
+                    <th>Kit Qty</th>
+                    <th>Balance kit</th>
+                    <th>Emitter Inv no</th>
+                    <th>Cycle Time (days) </th>
+                    <th>Previous dispatch</th>
+                    <th>O2O - TAT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* {bills.map((l, k) => {
+                return (
+                  <tr key={k}>
+                    <td>{getPaymentStatus(l.status)}</td>
+                    <td>{l.partno}</td>
+                    <td>{l.partname}</td>
+                    <td>{l.partqty}</td>
+                    <td>{l.kitno}</td>
+                    <td>{l.kitqty}</td>
+                    <td>{l.balancekit}</td>
+                    <td>{l.invoiceno}</td>
+                    <td>{l.cycletime}</td>
+                    <td>{l.previous}</td>
+                    <td>{l.o2o}</td>
+                  </tr>
+                );
+              })} */}
+                </tbody>
+              </table>
+            </div>
+          </TitleCard>
+          <Dialog
+            fullWidth={true}
+            maxWidth={"sm"}
+            open={isPendingPopupOpenIssued}
+            onClose={closePendingPopupIssued}
+          >
+            <div className="d-flex justify-content-between">
+              <DialogTitle>Outward Manifest</DialogTitle>
+              <IoMdClose
+                className="cursor-pointer w-8 h-8 mt-3 me-3"
+                onClick={closePendingPopupIssued}
+              />
+            </div>
+            <DialogContent>
+              <div className="row">
+                <div className="col-lg-6 col-md-6 mb-2">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Part no
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6 mb-2">
+                  <input
+                    className="form-control form-sz mb-2"
+                    type={"text"}
+                    placeholder={""}
+                    // name="storageMapping"
+                    // value={storageMapping}
+                    // onChange={handleInputChange}
+                  />
+                  {/* {errors.storageMapping && (
+              <span className="error-text">{errors.storageMapping}</span>
+            )} */}
+                </div>
+                <div className="col-lg-6 col-md-6 mb-2">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Part name
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6 mb-2">
+                  <input
+                    className="form-control form-sz mb-2"
+                    type={"text"}
+                    placeholder={""}
+                    // name="storageMapping"
+                    // value={storageMapping}
+                    // onChange={handleInputChange}
+                  />
+                  {/* {errors.storageMapping && (
+              <span className="error-text">{errors.storageMapping}</span>
+            )} */}
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Part Qty
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6">
+                  <input
+                    className="form-control form-sz mb-2"
+                    type={"text"}
+                    placeholder={""}
+                    // name="storageMapping"
+                    // value={storageMapping}
+                    // onChange={handleInputChange}
+                  />
+                  {/* {errors.storageMapping && (
+              <span className="error-text">{errors.storageMapping}</span>
+            )} */}
+                </div>
+              </div>
+            </DialogContent>
+            <div className="d-flex justify-content-center">
+              <DialogActions className="mb-2 me-2">
+                <Button
+                  component="label"
+                  variant="contained"
+                  onClick={closePendingPopupIssued}
+                >
+                  Confirm
+                </Button>
+              </DialogActions>
+            </div>
+            <DialogContentText>
+              <center className="text-dark mb-2">
+                Issued by AIPACKS - Karthi-19/01/2024-10:00AM
+              </center>
+            </DialogContentText>
+          </Dialog>
         </div>
       </div>
     </>
