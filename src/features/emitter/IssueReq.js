@@ -87,7 +87,7 @@ function IssueReq() {
       if (response.status === 200) {
         setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
 
-        getAddressById();
+        getAddressById(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -108,10 +108,13 @@ function IssueReq() {
     setValue(""); // Reset tab value when mode changes
   };
 
-  const handleIssueDateChange = (date) => {
-    setSelectedDate1(date);
+  const handleIssueDateChange = (newDate) => {
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setSelectedDate1(formattedDate);
+    console.log("FORMATTED DATE IS", selectedDate1);
 
-    const hoursDifference = date.diff(currentDate, "hour");
+    const hoursDifference = originalDateString.diff(currentDate, "hour");
     if (hoursDifference <= 48) {
       setPriorityStatus("High Priority");
     } else {
@@ -154,12 +157,10 @@ function IssueReq() {
   //   console.log("Updated getkit:", getKitIds);
   // }, [getKitIds]);
 
-  const getAddressById = async () => {
+  const getAddressById = async (value) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${
-          emitterId ? emitterId : 89
-        }&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${value}&orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -186,6 +187,9 @@ function IssueReq() {
     // if (kitNoErrors) {
     //   errors.kitNo = "kit Id is required";
     // }
+    if (!selectedDate1) {
+      errors.selectedDate1 = "date is required";
+    }
 
     // if (!demandDate) {
     //   errors.demandDate = "demand date is required";
@@ -197,9 +201,10 @@ function IssueReq() {
 
     if (Object.keys(errors).length === 0) {
       const formData = {
-        demandDate: "2024-03-14",
+        demandDate: selectedDate1,
         emitterId: emitterId,
         orgId,
+        irType: "IR_KIT",
         flowTo: selectedFlowId,
         issueItemDTO: kitFields.map((field) => ({
           kitName: field.kitNo,
@@ -240,9 +245,9 @@ function IssueReq() {
     //   errors.partNo = "part is required";
     // }
 
-    // if (!demandDate) {
-    //   errors.demandDate = "date is required";
-    // }
+    if (!selectedDate1) {
+      errors.selectedDate1 = "date is required";
+    }
     const partQtyErrors = partFields.some((field) => !field.qty);
     if (partQtyErrors) {
       errors.partQty = "part is required";
@@ -250,12 +255,14 @@ function IssueReq() {
 
     if (Object.keys(errors).length === 0) {
       const formData = {
-        demandDate: "2024-03-14",
+        demandDate: selectedDate1,
         orgId,
         flowTo: selectedFlowId,
+        irType: "IR_PART",
         issueItemDTO: partFields.map((field) => ({
           partNo: field.partNo,
           partQty: field.qty,
+          // partName: field.partValue,
         })),
       };
       console.log("test1", formData);
@@ -266,7 +273,7 @@ function IssueReq() {
         )
         .then((response) => {
           console.log("Response:", response.data);
-          setPartFields([{ partNo: "", qty: "" }]);
+          setPartFields([{ partNo: "", qty: "", partName: "" }]);
           // setSelectedKitNumbers([""]);
           // setPartFields([{ partNo: "", qty: "" }]);
           // setSelectedPartNumbers([""]);
@@ -308,7 +315,8 @@ function IssueReq() {
         const partDataArray =
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((part) => ({
             id: part.id,
-            partName: part.partName,
+            partName: part.partNumber,
+            partValue: part.partName,
             // partNo:part.partNo
           }));
 
@@ -437,10 +445,13 @@ function IssueReq() {
   // };
 
   const handleKitNoChange = (e, index) => {
+    console.log("Event:", e);
+
     setKitFields((prevFields) => {
       const newFields = [...prevFields];
       newFields[index].kitNo = e.target.value;
-      console.log("Updated kitFields:", newFields); // Log the updated state
+      console.log("Previous kitFields:", prevFields);
+      console.log("Updated kitFields:", newFields);
       return newFields;
     });
   };
@@ -449,10 +460,24 @@ function IssueReq() {
     setPartFields((prevFields) => {
       const newFields = [...prevFields];
       newFields[index].partNo = e.target.value;
+      // newFields[index].partName = e.target.value;
       console.log("Updated PartttttttFields:", newFields); // Log the updated state
       return newFields;
     });
   };
+  // const handlePartNoChange = (e, index) => {
+  //   const { name, value } = e.target;
+
+  //   setPartFields((prevFields) => {
+  //     const newFields = [...prevFields];
+  //     newFields[index] = {
+  //       ...newFields[index],
+  //       [name]: value,
+  //     };
+  //     console.log("Updated PartFields:", newFields); // Log the updated state
+  //     return newFields;
+  //   });
+  // };
 
   const getPartImageByNumber = (partNo) => {
     switch (partNo) {
@@ -533,11 +558,14 @@ function IssueReq() {
       );
 
       if (response.status === 200) {
-        setBills(response.data.paramObjectsMap.issueRequestVO);
-        console.log(
-          "getIssueRequest",
+        const sortedIssueRequestVO =
           response.data.paramObjectsMap.issueRequestVO
-        );
+            .slice() // Create a shallow copy to avoid mutating the original array
+            .sort((a, b) => b.id - a.id); // Sort based on the 'id' property in descending order
+
+        setBills(sortedIssueRequestVO);
+
+        console.log("getIssueRequest", sortedIssueRequestVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -684,7 +712,7 @@ function IssueReq() {
                 {/* <label style={{ fontWeight: "bold" }}>Select Date</label> */}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DesktopDatePicker
-                    value={selectedDate1 || currentDate}
+                    value={selectedDate1}
                     onChange={handleIssueDateChange}
                     minDate={currentDate}
                     slotProps={{
@@ -694,12 +722,16 @@ function IssueReq() {
                   />
                 </LocalizationProvider>
               </div>
+
               <p>
                 <strong style={{ fontSize: "12px" }}>
                   (<span style={{ color: "red" }}>*</span> Issue Within 48Hrs
                   Considered as High Priroity)
                 </strong>
               </p>
+              {errors.selectedDate1 && (
+                <span className="error-text">{errors.selectedDate1}</span>
+              )}
             </div>
             {selectedDate1 && ( // Only show the priority input table if a date is selected
               <div className="col-md-2">
@@ -789,7 +821,6 @@ function IssueReq() {
                                 </option>
                               ))}
                           </select>
-
                           <div></div>
                         </div>
                         {errors.kitNo && (
