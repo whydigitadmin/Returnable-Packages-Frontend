@@ -9,55 +9,99 @@ const submenuIconClasses = `h-5 w-5`;
 const routes = [
   {
     path: "/app/dashboard",
-    icon: <Squares2X2Icon className={iconClasses} />,
-    name: "Dashboard",
+    icon: (
+      <img
+        src="/dashboard.png"
+        alt="Dashboard"
+        style={{ width: "25px", height: "auto", marginRight: "5px" }}
+        className={iconClasses}
+      />
+    ),
+    name: <span>Dashboard</span>,
   },
   {
-    path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Admin", // name that appear in Sidebar
+    path: "", //no URL needed as this has submenu
+    icon: (
+      <img
+        src="/admin.png"
+        alt="Admin"
+        style={{ width: "28px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span className="ml-3">Admin</span>,
+
     submenu: [
       {
         path: "/app/UserCreation",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "User Creation",
+        icon: (
+          <img
+            src="/usercreation.png"
+            alt="Usercreation"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>User Creation</span>,
       },
       {
         path: "/app/EmitterCreation",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Emitter Creation",
+        icon: (
+          <img
+            src="/emittercreation.png"
+            alt="Emittercreation"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Emitter Creation</span>,
       },
-      {
-        path: "/app/Roles",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Roles",
-      },
-      {
-        path: "/app/Responsibilities",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Responsibilities",
-      },
-      {
-        path: "/app/AccessRights",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Access Rights",
-      },
-      {
-        path: "/app/Branch",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Branch",
-      },
+      // {
+      //   path: "/app/Roles",
+      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+      //   name: "Roles",
+      // },
+      // {
+      //   path: "/app/Responsibilities",
+      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+      //   name: "Responsibilities",
+      // },
+      // {
+      //   path: "/app/AccessRights",
+      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+      //   name: "Access Rights",
+      // },
+      // {
+      //   path: "/app/Branch",
+      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+      //   name: "Branch",
+      // },
     ],
   },
+
   {
     path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Masters", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/master.png"
+        alt="Master"
+        style={{ width: "32px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span className="ml-2">Master</span>,
     submenu: [
       {
         path: "/app/itemGroup",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Asset Group",
+        icon: (
+          <img
+            src="/asset.png"
+            alt="AssetGroup"
+            style={{ width: "32px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Asset Group</span>,
       },
       // {
       //   path: "/app/manufacturerDetails",
@@ -66,33 +110,75 @@ const routes = [
       // },
       {
         path: "/app/items",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Create Assets",
+        icon: (
+          <img
+            src="/createAsset.png"
+            alt="CreateAssets"
+            style={{ width: "32px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Create Assets</span>,
       },
       {
         path: "/app/createkit",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Create Kit",
+        icon: (
+          <img
+            src="/createkit.png"
+            alt="CreateKit"
+            style={{ width: "31px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Create Kit</span>,
       },
       {
         path: "/app/warehouse",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Warehouse",
+        icon: (
+          <img
+            src="/warehouse.png"
+            alt="Warehouse"
+            style={{ width: "28px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Warehouse</span>,
       },
       {
         path: "/app/customer",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Customer",
+        icon: (
+          <img
+            src="/customer.png"
+            alt="Customer"
+            style={{ width: "32px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Customer</span>,
       },
       {
         path: "/app/vendors",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Vendors",
+        icon: (
+          <img
+            src="/vendor.png"
+            alt="Vendors"
+            style={{ width: "33px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Vendors</span>,
       },
       {
         path: "/app/unit",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Unit",
+        icon: (
+          <img
+            src="/unit.png"
+            alt="Unit"
+            style={{ width: "34px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Unit</span>,
       },
       // {
       //   path: "/app/warehouseLocation",
@@ -104,75 +190,159 @@ const routes = [
 
   {
     path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Operational Masters", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/operational.png"
+        alt="Operational"
+        style={{ width: "34px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "7px" }}>Engineering</span>,
     submenu: [
       {
-        path: "/app/flows",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Flows",
+        path: "/app/partstudy", //no url needed as this has submenu
+        icon: (
+          <img
+            src="/part.png"
+            alt="PartStudy"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Part Study</span>,
       },
       {
-        path: "/app/partstudy", //no url needed as this has submenu
-        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-        name: "Part Study", // name that appear in Sidebar
+        path: "/app/flows",
+        icon: (
+          <img
+            src="/flow.png"
+            alt="Flows"
+            style={{ width: "26px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Flows</span>,
       },
     ],
   },
 
   {
     path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Issue Manifest", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/issueManifest.png"
+        alt="IssueManifest"
+        style={{ width: "33px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span className="ml-2">Issue Manifest</span>,
     submenu: [
       {
         path: "/app/issuemanifest", //no url needed as this has submenu
-        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-        name: "IssueManifest", // name that appear in Sidebar
+        icon: (
+          <img
+            src="/issuemanifest1.png"
+            alt="Issuemanifest"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Issuemanifest</span>,
       },
-      {
-        path: "/app/issuemanifest-report", //no url needed as this has submenu
-        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-        name: "IssueManifestReport", // name that appear in Sidebar
-      },
+      // {
+      //   path: "/app/issuemanifest-report", //no url needed as this has submenu
+      //   icon: (
+      //     <img
+      //       src="/issuemanifestReport.png"
+      //       alt="IssuemanifestReport"
+      //       style={{ width: "30px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="ml-1">Issuemanifest Report</span>,
+      // },
     ],
   },
 
   {
     path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Inward", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/inwardAdmin.png"
+        alt="Inward"
+        style={{ width: "29px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "12px" }}>Inward</span>,
     submenu: [
       {
         path: "/app/inwardmanifest", //no url needed as this has submenu
-        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-        name: "InwardManifest", // name that appear in Sidebar
+        icon: (
+          <img
+            src="/inward1.png"
+            alt="Inwardmanifest"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Inwardmanifest</span>,
       },
       {
-        path: "/app/inwardmanifest-eport", //no url needed as this has submenu
-        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-        name: "InwardManifestReport", // name that appear in Sidebar
+        path: "/app/inwardmanifest-report", //no url needed as this has submenu
+        icon: (
+          <img
+            src="/inwardManifestReport.png"
+            alt="InwardmanifestReport"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Inwardmanifest Report</span>,
       },
     ],
   },
 
   {
     path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Outward", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/outwardAdmin.png"
+        alt="Outward"
+        style={{ width: "30px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "12px" }}>Outward</span>,
     submenu: [
       {
         path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
-        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-        name: "EmptyRetrievalManifest", // name that appear in Sidebar
+        icon: (
+          <img
+            src="/emptyRetrieval.png"
+            alt="EmptyRetrievalManifest"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">EmptyRetrievalManifest</span>,
       },
     ],
   },
 
   {
     path: "/app/KitDistributionReport", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Kit Distribution Report", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/report.png"
+        alt="KitDistributionReport"
+        style={{ width: "29px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "6px" }}>Kit Distribution Report</span>,
   },
   // {
   //   path: "", //no url needed as this has submenu
@@ -246,26 +416,54 @@ const routes = [
 
   {
     path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Account", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/accounting.png"
+        alt="Accounting"
+        style={{ width: "29px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "14px" }}>Accounting</span>,
     submenu: [
       {
         path: "/app/expenses", //no url needed as this has submenu
-        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-        name: "Expenses",
+        icon: (
+          <img
+            src="/expenses.png"
+            alt="Expenses"
+            style={{ width: "33px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Expenses</span>,
       },
     ],
   },
 
   {
     path: "", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Lifecycle Management", // name that appear in Sidebar
+    icon: (
+      <img
+        src="/lifecycle.png"
+        alt="LifecycleManagement"
+        style={{ width: "30px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "10px" }}>Lifecycle Management</span>,
     submenu: [
       {
         path: "/app/audit",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Audit",
+        icon: (
+          <img
+            src="/audit.png"
+            alt="Audit"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Audit</span>,
       },
     ],
   },
