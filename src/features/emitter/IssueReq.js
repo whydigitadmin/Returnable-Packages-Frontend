@@ -1,19 +1,35 @@
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from "@mui/material";
 import Box from "@mui/material/Box";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import axios from "axios";
 import dayjs from "dayjs";
 import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
-import { FaLocationDot, FaPallet } from "react-icons/fa6";
+import { FaPallet } from "react-icons/fa6";
 import { MdPallet } from "react-icons/md";
 import { TbReport } from "react-icons/tb";
 import { Link } from "react-router-dom";
@@ -22,10 +38,6 @@ import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { Switch, FormControlLabel } from "@mui/material";
 
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
@@ -58,6 +70,29 @@ function IssueReq() {
   const [priorityStatus, setPriorityStatus] = useState("");
   const [mode, setMode] = useState("KIT"); // Default mode is KIT
   const [value, setValue] = React.useState("");
+  const [selectedIssue, setSelectedIssue] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [emitterId, setEmitterId] = useState();
+
+  useEffect(() => {
+    getDisplayName();
+  }, [selectedFlowId]);
+
+  const getDisplayName = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/auth/user/${userId}`
+      );
+
+      if (response.status === 200) {
+        setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
+
+        getAddressById();
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -83,6 +118,10 @@ function IssueReq() {
       setPriorityStatus("Normal Priority");
     }
   };
+  const handleIdClick = (issueRequest) => {
+    setSelectedIssue(issueRequest);
+    setIsDialogOpen(true);
+  };
 
   const getPriorityColor = () => {
     return priorityStatus === "High Priority" ? "red" : "green";
@@ -90,7 +129,7 @@ function IssueReq() {
 
   useEffect(() => {
     getAllKitData();
-    getAddressById();
+
     getIssueRequest();
   }, [selectedFlowId, kitData]);
 
@@ -111,24 +150,16 @@ function IssueReq() {
     }
   };
 
-  const dummyPartData = [
-    { value: "", label: "Select a Part" },
-    { value: "Part0025", label: "Part0025" },
-    { value: "Part0078", label: "Part0078" },
-    { value: "Part0043", label: "Part0043" },
-    { value: "Part0157", label: "Part0157" },
-  ];
-
-  useEffect(() => {
-    console.log("Updated getkit:", getKitIds);
-  }, [getKitIds]);
+  // useEffect(() => {
+  //   console.log("Updated getkit:", getKitIds);
+  // }, [getKitIds]);
 
   const getAddressById = async () => {
     try {
       const response = await axios.get(
-        `${
-          process.env.REACT_APP_API_URL
-        }/api/master/getAllFlowName?emitterId=${89}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${
+          emitterId ? emitterId : 89
+        }&orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -167,6 +198,7 @@ function IssueReq() {
     if (Object.keys(errors).length === 0) {
       const formData = {
         demandDate: "2024-03-14",
+        emitterId: emitterId,
         orgId,
         flowTo: selectedFlowId,
         issueItemDTO: kitFields.map((field) => ({
@@ -277,6 +309,7 @@ function IssueReq() {
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((part) => ({
             id: part.id,
             partName: part.partName,
+            // partNo:part.partNo
           }));
 
         // Setting kitData in the state using a callback function
@@ -982,12 +1015,13 @@ function IssueReq() {
                       <table className="table w-full">
                         <thead>
                           <tr>
+                            <th>Details</th>
                             <th>RM No.</th>
                             <th>RM Date</th>
                             <th>Demand Date</th>
                             <th>Flow Name</th>
                             <th>TAT (Hrs)</th>
-                            <th>Status</th>
+                            {/* <th>Status</th> */}
                           </tr>
                         </thead>
                         <tbody>
@@ -998,12 +1032,23 @@ function IssueReq() {
                                   <tr key={`${index}-${subIndex}`}>
                                     {subIndex === 0 && (
                                       <>
+                                        <td>
+                                          <button
+                                            className="badge bg-primary text-white"
+                                            onClick={() =>
+                                              handleIdClick(issueRequest)
+                                            }
+                                          >
+                                            View
+                                          </button>
+                                        </td>
+
                                         <td
                                           rowSpan={
                                             issueRequest.issueItemVO.length
                                           }
                                         >
-                                          {issueRequest.reqAddressId}
+                                          {issueRequest.id}
                                         </td>
                                         <td
                                           rowSpan={
@@ -1028,7 +1073,7 @@ function IssueReq() {
                                             issueRequest.issueItemVO.length
                                           }
                                         >
-                                          {issueRequest.flowTo}
+                                          {issueRequest.flowName}
                                         </td>
                                         <td
                                           rowSpan={
@@ -1036,7 +1081,7 @@ function IssueReq() {
                                           }
                                           className="text-center"
                                         >
-                                          48
+                                          {issueRequest.tat}
                                         </td>
                                         {/* <td
                                           rowSpan={
@@ -1064,9 +1109,9 @@ function IssueReq() {
                                     //   )
                                     // }
                                     >
-                                      {getPaymentStatus(
+                                      {/* {getPaymentStatus(
                                         issueRequest.issueStatus
-                                      )}
+                                      )} */}
                                     </td>
 
                                     {/* Random Status Code */}
@@ -1087,6 +1132,80 @@ function IssueReq() {
                         </tbody>
                       </table>
                     </div>
+
+                    <Dialog
+                      open={isDialogOpen}
+                      onClose={() => setIsDialogOpen(false)}
+                      maxWidth="sm" // You can adjust the size by changing "md" to other values like "sm", "lg", "xl", or a specific pixel value
+                      fullWidth
+                    >
+                      <DialogTitle>
+                        Details for RM No. {selectedIssue && selectedIssue.id}
+                      </DialogTitle>
+                      <DialogContent
+                        style={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "flex-start",
+                        }}
+                      >
+                        <p>
+                          <strong>RM Date:</strong>{" "}
+                          {selectedIssue &&
+                            moment(selectedIssue.requestedDate).format(
+                              "DD-MM-YY"
+                            )}
+                        </p>
+                        <p>
+                          <strong>Demand Date:</strong>{" "}
+                          {selectedIssue &&
+                            moment(selectedIssue.demandDate).format("DD-MM-YY")}
+                        </p>
+                        <p>
+                          <strong>Flow Name:</strong>{" "}
+                          {selectedIssue && selectedIssue.flowName}
+                        </p>
+
+                        {/* Display issueItemVO details in a table */}
+                        <br></br>
+                        <TableContainer component={Paper}>
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Kit Name</TableCell>
+                                <TableCell>Kit Quantity</TableCell>
+                                <TableCell>Status</TableCell>
+                                {/* Add more columns if needed */}
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {selectedIssue &&
+                                selectedIssue.issueItemVO.map((item) => (
+                                  <TableRow key={item.id}>
+                                    <TableCell>{item.kitName}</TableCell>
+                                    <TableCell>{item.kitQty}</TableCell>
+                                    {/* Add more cells for additional columns */}
+                                    <TableCell>
+                                      {" "}
+                                      {getPaymentStatus(
+                                        item.issueItemStatus
+                                      )}{" "}
+                                    </TableCell>
+                                  </TableRow>
+                                ))}
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => setIsDialogOpen(false)}
+                          color="primary"
+                        >
+                          Close
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
                   </div>
                 </>
               </CustomTabPanel>
