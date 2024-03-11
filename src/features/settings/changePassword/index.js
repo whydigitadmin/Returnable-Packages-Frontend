@@ -29,11 +29,6 @@ function ChangePassword() {
   const [savedData, setSavedData] = React.useState("");
   const [loginUserName, setLoginUserName] = React.useState(localStorage.getItem("userName"));
 
-
-
-
-
-
   const handleClickOpen = () => {
     setOpenModal(true);
   };
@@ -148,7 +143,7 @@ function ChangePassword() {
 
   return (
     <>
-      <TitleCard title="Organizational Profile" topMargin="mt-2">
+      <div className="card w-full p-6 bg-base-100 shadow-xl">
         {/* NEW PASSWORD FIELD */}
         <div className="row mb-4">
           <div className="col-lg-3 col-md-6">
@@ -171,6 +166,7 @@ function ChangePassword() {
             )}
           </div>
         </div>
+
         {/* CONFIRM PASSWORD FIELD */}
         <div className="row mb-4">
           <div className="col-lg-3 col-md-6">
@@ -193,6 +189,7 @@ function ChangePassword() {
           </div>
         </div>
 
+        {/* BUTTONS  */}
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
@@ -272,8 +269,7 @@ function ChangePassword() {
             </Button>
           </DialogActions>
         </Dialog>
-
-      </TitleCard>
+      </div>
     </>
   );
 }
