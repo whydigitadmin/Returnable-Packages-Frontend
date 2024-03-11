@@ -69,7 +69,7 @@ function IssueReq() {
   const [selectedDate1, setSelectedDate1] = useState(null); // Initialize selectedDate with the current date
   const [priorityStatus, setPriorityStatus] = useState("");
   const [mode, setMode] = useState("KIT"); // Default mode is KIT
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState(0);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [emitterId, setEmitterId] = useState();
@@ -222,9 +222,9 @@ function IssueReq() {
           console.log("Response:", response.data);
           setKitFields([{ kitNo: "", qty: "" }]);
           setSelectedKitNumbers([""]);
-          setKitData([]);
           setSelectedKitId("");
           setSelectedDate(null);
+          getIssueRequest();
           setErrors("");
         })
         .catch((error) => {
@@ -273,12 +273,13 @@ function IssueReq() {
         )
         .then((response) => {
           console.log("Response:", response.data);
-          setKitData([]);
+          setAleartState(true);
           // setSelectedKitNumbers([""]);
           // setPartFields([{ partNo: "", qty: "" }]);
           // setSelectedPartNumbers([""]);
           // setSelectedKitId("");
-
+          getIssueRequest();
+          setPartFields([{ partNo: "", qty: "" }]);
           setSelectedDate(null);
           setErrors("");
         })
@@ -814,6 +815,9 @@ function IssueReq() {
                             value={field.kitNo}
                             onChange={(e) => handleKitNoChange(e, index)}
                           >
+                            <option value="" disabled>
+                              Select a kit
+                            </option>
                             {kitData &&
                               kitData.map((kit) => (
                                 <option key={kit.id} value={kit.kitName}>
@@ -935,6 +939,9 @@ function IssueReq() {
                               handlePartNoChange(e, index);
                             }}
                           >
+                            <option value="" disabled>
+                              Select a part
+                            </option>
                             {partData &&
                               partData.map((part) => (
                                 <option key={part.id} value={part.partName}>
