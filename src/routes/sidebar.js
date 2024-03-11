@@ -25,11 +25,11 @@ const routes = [
       <img
         src="/admin.png"
         alt="Admin"
-        style={{ width: "28px", height: "auto" }}
+        style={{ width: "34px", height: "auto" }}
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span className="ml-3">Admin</span>,
+    name: <span className="ml-2">Admin</span>,
 
     submenu: [
       {
@@ -114,7 +114,7 @@ const routes = [
           <img
             src="/createAsset.png"
             alt="CreateAssets"
-            style={{ width: "32px", height: "auto" }}
+            style={{ width: "33px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
@@ -447,7 +447,7 @@ const routes = [
       <img
         src="/lifecycle.png"
         alt="LifecycleManagement"
-        style={{ width: "30px", height: "auto" }}
+        style={{ width: "32px", height: "auto" }}
         className={`${iconClasses} inline`}
       />
     ),
