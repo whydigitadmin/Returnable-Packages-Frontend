@@ -77,6 +77,9 @@ const Preferences = lazy(() => import("../pages/protected/Preferences"));
 const ProfileSettings = lazy(() =>
   import("../pages/protected/ProfileSettings")
 );
+const ChangePassword = lazy(() =>
+  import("../pages/protected/ChangePassword")
+);
 const GettingStarted = lazy(() => import("../pages/GettingStarted"));
 const DocFeatures = lazy(() => import("../pages/DocFeatures"));
 const DocComponents = lazy(() => import("../pages/DocComponents"));
@@ -280,6 +283,10 @@ const routes = [
   {
     path: "/preferences",
     component: Preferences,
+  },
+  {
+    path: "/changepwd",
+    component: ChangePassword,
   },
   {
     path: "/getting-started",
