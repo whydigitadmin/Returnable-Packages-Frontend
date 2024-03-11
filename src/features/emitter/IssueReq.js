@@ -273,7 +273,7 @@ function IssueReq() {
         )
         .then((response) => {
           console.log("Response:", response.data);
-          setPartFields([{ partNo: "", qty: "", partName: "" }]);
+          setKitData([]);
           // setSelectedKitNumbers([""]);
           // setPartFields([{ partNo: "", qty: "" }]);
           // setSelectedPartNumbers([""]);
@@ -1203,8 +1203,20 @@ function IssueReq() {
                           <Table>
                             <TableHead>
                               <TableRow>
-                                <TableCell>Kit Name</TableCell>
-                                <TableCell>Kit Quantity</TableCell>
+                                {selectedIssue &&
+                                selectedIssue.irType === "IR_PART" ? (
+                                  <>
+                                    <TableCell>Part #</TableCell>
+                                    <TableCell>Kit # </TableCell>
+                                    <TableCell>Quantity</TableCell>
+                                  </>
+                                ) : (
+                                  <>
+                                    <TableCell>Kit # </TableCell>
+                                    <TableCell>Quantity</TableCell>
+                                  </>
+                                )}
+
                                 <TableCell>Status</TableCell>
                                 {/* Add more columns if needed */}
                               </TableRow>
@@ -1213,14 +1225,22 @@ function IssueReq() {
                               {selectedIssue &&
                                 selectedIssue.issueItemVO.map((item) => (
                                   <TableRow key={item.id}>
-                                    <TableCell>{item.kitName}</TableCell>
-                                    <TableCell>{item.kitQty}</TableCell>
+                                    {selectedIssue.irType === "IR_PART" ? (
+                                      <>
+                                        <TableCell>{item.partNo}</TableCell>
+                                        <TableCell>{item.kitName}</TableCell>
+                                        <TableCell>{item.partQty}</TableCell>
+                                      </>
+                                    ) : (
+                                      <>
+                                        <TableCell>{item.kitName}</TableCell>
+                                        <TableCell>{item.kitQty}</TableCell>
+                                      </>
+                                    )}
+
                                     {/* Add more cells for additional columns */}
                                     <TableCell>
-                                      {" "}
-                                      {getPaymentStatus(
-                                        item.issueItemStatus
-                                      )}{" "}
+                                      {getPaymentStatus(item.issueItemStatus)}
                                     </TableCell>
                                   </TableRow>
                                 ))}
