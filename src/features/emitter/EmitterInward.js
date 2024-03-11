@@ -281,9 +281,13 @@ function EmitterInward() {
                   })}
                 </tbody>
               </table>
+              {inwardVO.length === 0 && (
+                <h4 className="text-base dark:text-slate-300 font-semibold text-center mt-4">
+                  Data Not Found..!!
+                </h4>
+              )}
             </div>
           </TitleCard>
-          {/* <EmitterInwardDetails flowId={assignedFlow} emitterId={emitterId} /> */}
           <Dialog
             fullWidth={true}
             maxWidth={"sm"}
