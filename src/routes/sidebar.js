@@ -84,12 +84,6 @@ const routes = [
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
         name: "Customer",
       },
-
-      {
-        path: "/app/flows",
-        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-        name: "Flows",
-      },
       {
         path: "/app/vendors",
         icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
@@ -109,35 +103,72 @@ const routes = [
   },
 
   {
-    path: "/app/partstudy", //no url needed as this has submenu
+    path: "", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Part Study", // name that appear in Sidebar
+    name: "Operational Masters", // name that appear in Sidebar
+    submenu: [
+      {
+        path: "/app/flows",
+        icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
+        name: "Flows",
+      },
+      {
+        path: "/app/partstudy", //no url needed as this has submenu
+        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+        name: "Part Study", // name that appear in Sidebar
+      },
+    ],
   },
-  // {
-  //   path: "/app/inbound", //no url needed as this has submenu
-  //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-  //   name: "Inbound", // name that appear in Sidebar
-  // },
+
   {
-    path: "/app/issuemanifest", //no url needed as this has submenu
+    path: "", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "IssueManifest", // name that appear in Sidebar
+    name: "Issue Manifest", // name that appear in Sidebar
+    submenu: [
+      {
+        path: "/app/issuemanifest", //no url needed as this has submenu
+        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+        name: "IssueManifest", // name that appear in Sidebar
+      },
+      {
+        path: "/app/issuemanifest-report", //no url needed as this has submenu
+        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+        name: "IssueManifestReport", // name that appear in Sidebar
+      },
+    ],
   },
+
   {
-    path: "/app/issuemanifest-report", //no url needed as this has submenu
+    path: "", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "IssueManifestReport", // name that appear in Sidebar
+    name: "Inward", // name that appear in Sidebar
+    submenu: [
+      {
+        path: "/app/inwardmanifest", //no url needed as this has submenu
+        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+        name: "InwardManifest", // name that appear in Sidebar
+      },
+      {
+        path: "/app/inwardmanifest-eport", //no url needed as this has submenu
+        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+        name: "InwardManifestReport", // name that appear in Sidebar
+      },
+    ],
   },
+
   {
-    path: "/app/inwardmanifest", //no url needed as this has submenu
+    path: "", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "InwardManifest", // name that appear in Sidebar
+    name: "Outward", // name that appear in Sidebar
+    submenu: [
+      {
+        path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
+        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+        name: "EmptyRetrievalManifest", // name that appear in Sidebar
+      },
+    ],
   },
-  {
-    path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
-    icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "EmptyRetrievalManifest", // name that appear in Sidebar
-  },
+
   {
     path: "/app/KitDistributionReport", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
@@ -212,11 +243,20 @@ const routes = [
   //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
   //   name: "Tickets",
   // },
+
   {
-    path: "/app/expenses", //no url needed as this has submenu
+    path: "", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
-    name: "Expenses",
+    name: "Account", // name that appear in Sidebar
+    submenu: [
+      {
+        path: "/app/expenses", //no url needed as this has submenu
+        icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
+        name: "Expenses",
+      },
+    ],
   },
+
   {
     path: "", //no url needed as this has submenu
     icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component

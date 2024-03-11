@@ -34,15 +34,23 @@ function LeftSidebar() {
           <XMarkIcon className="h-5 inline-block w-5" />
         </button>
 
-        <li className="mb-2 font-semibold text-xl">
-          <Link to={"/app/welcome"}>
+        <li className="">
+          {/* <Link to={"/app/welcome"}>
             <img
               className="mask mask-squircle w-10"
               src="/AI_Packs.png"
               alt="AI Packs org logo"
             />
             AI Packs
-          </Link>
+          </Link> */}
+          <img
+            src="/BIN_BEE.png"
+            style={{
+              width: "200px",
+              height: "auto",
+              marginRight: "6px",
+            }}
+          />
         </li>
         {routes.map((route, k) => {
           return (

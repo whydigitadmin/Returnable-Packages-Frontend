@@ -59,20 +59,26 @@ function Header() {
           >
             <Bars3Icon className="h-5 inline-block w-5" />
           </label>
-          <h1
-            className="text-2xl font-semibold ml-2"
-            // style={{ color: "rgb(51, 156, 109)" }}
-          >
-            {/* {pageTitle} */}
-            <img
-              src="/BIN_BEE.png"
-                  style={{
-                    width: "150px",
-                    height: "auto",
-                    marginRight: "6px",
-                  }}
+
+          {localStorage.getItem("userDetails") === "ROLE_EMITTER" ? (
+            <Link to={"/app/EmitterLanding"}>
+              <img
+                src="/BIN_BEE.png"
+                style={{
+                  width: "150px",
+                  height: "auto",
+                  marginRight: "6px",
+                }}
               />
-          </h1>
+            </Link>
+          ) : (
+            <h1
+              className="text-2xl font-semibold ml-2"
+              // style={{ color: "rgb(51, 156, 109)" }}
+            >
+              {pageTitle}
+            </h1>
+          )}
         </div>
 
         <div className="order-last">
@@ -88,7 +94,7 @@ function Header() {
                 </select> */}
 
           {/* Light and dark theme selection toogle **/}
-          <label className="swap ">
+          {/* <label className="swap ">
             <input type="checkbox" />
             <SunIcon
               data-set-theme="light"
@@ -106,6 +112,21 @@ function Header() {
                 (currentTheme === "light" ? "swap-on" : "swap-off")
               }
             />
+          </label> */}
+          <label>
+            <Link to={"/app/welcome"}>
+              <img
+                className="mask mask-squircle w-10"
+                src="/AI_Packs.png"
+                style={{
+                  width: "50px",
+                  height: "auto",
+                  marginRight: "20px",
+                }}
+                alt="AI Packs org logo"
+              />
+              {/* AI Packs */}
+            </Link>
           </label>
 
           {/* Notification icon */}
@@ -135,14 +156,16 @@ function Header() {
               tabIndex={0}
               className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52"
             >
-              <li className="justify-between">
+              {/* <li className="justify-between">
                 <Link to={"/app/settings-profile"}>
                   Company Profile
-                  {/* <span className="badge">New</span> */}
                 </Link>
               </li>
               <li className="">
                 <Link to={"/app/preferences"}>Preferences</Link>
+              </li> */}
+              <li className="">
+                <Link to={"/app/changepwd"}>Change Password</Link>
               </li>
               <div className="divider mt-0 mb-0"></div>
               <li>
