@@ -43,7 +43,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
-
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
   const [kitFields, setKitFields] = React.useState([{ kitNo: "", qty: "" }]);
@@ -279,6 +278,7 @@ function IssueReq() {
     if (Object.keys(errors).length === 0) {
       const formData = {
         demandDate: selectedDate1,
+        emitterId: emitterId,
         orgId,
         flowTo: selectedFlowId,
         irType: "IR_PART",
@@ -666,9 +666,9 @@ function IssueReq() {
             src="/inprogress.png"
             alt="Inprogress-status-icon"
             style={{ width: 30, height: 30, margin: "auto" }}
-          // onClick={() =>
-          //   handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
-          // }
+            // onClick={() =>
+            //   handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
+            // }
           />
         </div>
       );
@@ -863,7 +863,7 @@ function IssueReq() {
                       icon={<MdPallet className="w-16 h-6" />}
                       {...a11yProps(0)}
                       value={0}
-                    // onClick={() => handleTabClick(0)}
+                      // onClick={() => handleTabClick(0)}
                     />
                   )}
                   {mode === "PART" && (
@@ -873,7 +873,7 @@ function IssueReq() {
                       {...a11yProps(1)}
                       value={1}
 
-                    // onClick={() => handleTabClick(1)}
+                      // onClick={() => handleTabClick(1)}
                     />
                   )}
                   <Tab
@@ -882,7 +882,7 @@ function IssueReq() {
                     {...a11yProps(2)}
                     value={2}
 
-                  // onClick={() => handleTabClick(2)}
+                    // onClick={() => handleTabClick(2)}
                   />
                 </Tabs>
               </Box>
@@ -1200,7 +1200,11 @@ function IssueReq() {
                                         {subIndex === 0 && (
                                           <>
                                             <td>
-                                              <IconButton onClick={() => handleIdClick(issueRequest)}>
+                                              <IconButton
+                                                onClick={() =>
+                                                  handleIdClick(issueRequest)
+                                                }
+                                              >
                                                 <VisibilityIcon />
                                               </IconButton>
                                             </td>
@@ -1349,7 +1353,7 @@ function IssueReq() {
                                 <TableHead>
                                   <TableRow>
                                     {selectedIssue &&
-                                      selectedIssue.irType === "IR_PART" ? (
+                                    selectedIssue.irType === "IR_PART" ? (
                                       <>
                                         <TableCell>
                                           <b>Part No</b>
