@@ -1,15 +1,13 @@
-import { themeChange } from "theme-change";
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import BellIcon from "@heroicons/react/24/outline/BellIcon";
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
-import MoonIcon from "@heroicons/react/24/outline/MoonIcon";
-import SunIcon from "@heroicons/react/24/outline/SunIcon";
+import BellIcon from "@heroicons/react/24/outline/BellIcon";
+import React, { useEffect, useState } from "react";
+import { FaRegUserCircle } from "react-icons/fa";
+import { useDispatch, useSelector } from "react-redux";
+import { themeChange } from "theme-change";
 import { openRightDrawer } from "../features/common/rightDrawerSlice";
 import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
-import { FaRegUserCircle } from "react-icons/fa";
 
-import { NavLink, Routes, Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Header() {
   const dispatch = useDispatch();
@@ -113,19 +111,23 @@ function Header() {
               }
             />
           </label> */}
-          <label>
-            <img
-              className="mask mask-squircle w-10"
-              src="/AI_Packs.png"
-              style={{
-                width: "50px",
-                height: "auto",
-                marginRight: "20px",
-              }}
-              alt="AI Packs org logo"
-            />
-            {/* AI Packs */}
-          </label>
+          {localStorage.getItem("userDetails") === "ROLE_EMITTER" ? (
+            ""
+          ) : (
+            <label>
+              <img
+                className="mask mask-squircle w-10"
+                src="/AI_Packs.png"
+                style={{
+                  width: "50px",
+                  height: "auto",
+                  marginRight: "20px",
+                }}
+                alt="AI Packs org logo"
+              />
+              {/* AI Packs */}
+            </label>
+          )}
 
           {/* Notification icon */}
           <button

@@ -1,11 +1,12 @@
+import CloseIcon from "@material-ui/icons/Close";
+
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
-  Button,
   Dialog,
-  DialogActions,
   DialogContent,
   DialogTitle,
+  IconButton,
   Paper,
   Table,
   TableBody,
@@ -27,7 +28,7 @@ import axios from "axios";
 import dayjs from "dayjs";
 import moment from "moment";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { FaPallet } from "react-icons/fa6";
 import { MdPallet } from "react-icons/md";
@@ -73,10 +74,18 @@ function IssueReq() {
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [emitterId, setEmitterId] = useState();
+  const qtyInputRef = useRef(null);
 
   useEffect(() => {
     getDisplayName();
   }, [selectedFlowId]);
+
+  useEffect(() => {
+    // Check if the ref exists before trying to focus
+    if (qtyInputRef.current) {
+      qtyInputRef.current.focus();
+    }
+  }, [kitFields, partFields]);
 
   const getDisplayName = async () => {
     try {
@@ -378,12 +387,16 @@ function IssueReq() {
     const newFields = [...partFields];
     newFields[index].qty = e.target.value;
     setPartFields(newFields);
+    qtyInputRef.current.focus();
   };
 
   const handleQtyChange = (e, index) => {
     const newFields = [...kitFields];
     newFields[index].qty = e.target.value;
     setKitFields(newFields);
+
+    // Set focus on the input field
+    qtyInputRef.current.focus();
   };
 
   const handleAddField = () => {
@@ -677,7 +690,7 @@ function IssueReq() {
                     }}
                   />
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
-                    Flow To -
+                    Flow To <span style={{ color: "red" }}>*</span>
                   </h4>
                   <select
                     className="form-select w-56 h-10 mt-1 mb-2"
@@ -705,7 +718,10 @@ function IssueReq() {
             </div>
             <div className="col-md-1 mt-4">
               <label>
-                <b>Date</b>
+                <b>
+                  {" "}
+                  Date <span style={{ color: "red" }}>*</span>
+                </b>
               </label>
             </div>
             <div className="col-md-4 mt-4">
@@ -807,7 +823,14 @@ function IssueReq() {
                         <div className="col-lg-4 col-md-6 mb-2">
                           <label className="label">
                             <span className="label-text label-font-size text-base-content">
-                              KIT :
+                              KIT{" "}
+                              <b>
+                                <span
+                                  style={{ color: "red", fontSize: "18px" }}
+                                >
+                                  *
+                                </span>
+                              </b>
                             </span>
                           </label>
                           <select
@@ -834,15 +857,27 @@ function IssueReq() {
                         <div className="col-lg-4 col-md-6 mb-2">
                           <label className="label">
                             <span className="label-text label-font-size text-base-content">
-                              QTY :
+                              QTY{" "}
+                              <b>
+                                <span
+                                  style={{ color: "red", fontSize: "18px" }}
+                                >
+                                  *
+                                </span>
+                              </b>
                             </span>
                           </label>
                           <input
+                            ref={qtyInputRef}
+                            key={index}
                             className="form-control form-sz mb-2"
-                            type="text"
+                            name="kitQty"
+                            type="number"
+                            // value={field.qty}
                             value={field.qty}
                             onChange={(e) => handleQtyChange(e, index)}
                           />
+
                           {errors.kitQty && (
                             <span className="error-text">{errors.kitQty}</span>
                           )}
@@ -929,7 +964,14 @@ function IssueReq() {
                                 "label-text label-font-size text-base-content"
                               }
                             >
-                              Part :
+                              Part{" "}
+                              <b>
+                                <span
+                                  style={{ color: "red", fontSize: "18px" }}
+                                >
+                                  *
+                                </span>
+                              </b>
                             </span>
                           </label>
                           <select
@@ -960,13 +1002,21 @@ function IssueReq() {
                                 "label-text label-font-size text-base-content"
                               }
                             >
-                              QTY :
+                              QTY{" "}
+                              <b>
+                                <span
+                                  style={{ color: "red", fontSize: "18px" }}
+                                >
+                                  *
+                                </span>
+                              </b>
                             </span>
                           </label>
                           <input
                             className="form-control form-sz"
-                            type={"number"}
+                            type="number"
                             placeholder={""}
+                            ref={qtyInputRef}
                             value={field.qty}
                             onChange={(e) => handlePartQtyChange(e, index)}
                           />
@@ -1058,7 +1108,7 @@ function IssueReq() {
                             <th>RM Date</th>
                             <th>Demand Date</th>
                             <th>Flow Name</th>
-                            <th>TAT (Hrs)</th>
+                            {/* <th>Allocated Time - HRS</th> */}
                             {/* <th>Status</th> */}
                           </tr>
                         </thead>
@@ -1113,14 +1163,14 @@ function IssueReq() {
                                         >
                                           {issueRequest.flowName}
                                         </td>
-                                        <td
+                                        {/* <td
                                           rowSpan={
                                             issueRequest.issueItemVO.length
                                           }
                                           className="text-center"
                                         >
                                           {issueRequest.tat}
-                                        </td>
+                                        </td> */}
                                         {/* <td
                                           rowSpan={
                                             issueRequest.issueItemVO.length
@@ -1179,6 +1229,17 @@ function IssueReq() {
                     >
                       <DialogTitle>
                         Details for RM No. {selectedIssue && selectedIssue.id}
+                        <IconButton
+                          aria-label="close"
+                          onClick={() => setIsDialogOpen(false)}
+                          style={{
+                            position: "absolute",
+                            right: 8,
+                            top: 8,
+                          }}
+                        >
+                          <CloseIcon />
+                        </IconButton>
                       </DialogTitle>
                       <DialogContent
                         style={{
@@ -1213,18 +1274,30 @@ function IssueReq() {
                                 {selectedIssue &&
                                 selectedIssue.irType === "IR_PART" ? (
                                   <>
-                                    <TableCell>Part #</TableCell>
-                                    <TableCell>Kit # </TableCell>
-                                    <TableCell>Quantity</TableCell>
+                                    <TableCell>
+                                      <b>Part No</b>
+                                    </TableCell>
+                                    <TableCell>
+                                      <b>Kit No</b>{" "}
+                                    </TableCell>
+                                    <TableCell>
+                                      <b>Quantity</b>
+                                    </TableCell>
                                   </>
                                 ) : (
                                   <>
-                                    <TableCell>Kit # </TableCell>
-                                    <TableCell>Quantity</TableCell>
+                                    <TableCell>
+                                      <b>Kit No </b>
+                                    </TableCell>
+                                    <TableCell>
+                                      <b>Quantity</b>
+                                    </TableCell>
                                   </>
                                 )}
 
-                                <TableCell>Status</TableCell>
+                                <TableCell>
+                                  <b>Status</b>
+                                </TableCell>
                                 {/* Add more columns if needed */}
                               </TableRow>
                             </TableHead>
@@ -1255,14 +1328,14 @@ function IssueReq() {
                           </Table>
                         </TableContainer>
                       </DialogContent>
-                      <DialogActions>
+                      {/* <DialogActions>
                         <Button
                           onClick={() => setIsDialogOpen(false)}
                           color="primary"
                         >
                           Close
                         </Button>
-                      </DialogActions>
+                      </DialogActions> */}
                     </Dialog>
                   </div>
                 </>
