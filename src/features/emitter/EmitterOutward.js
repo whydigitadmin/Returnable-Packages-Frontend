@@ -9,6 +9,47 @@ import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TitleCard from "../../components/Cards/TitleCard";
 
+// const BILLS = [
+//   {
+//     status: "Issued",
+//     partno: "63",
+//     partname: "2024-03-12",
+//     partqty: "49",
+//     kitno: "2024-03-15",
+//     kitqty: "2024-03-15",
+//     balancekit: "PLS/0224/00001",
+//     invoiceno: "4",
+//     cycletime: "4",
+//     previous: "2",
+//     o2o: "2",
+//     cd: "14 ",
+//   },
+
+//   // {
+//   //   invoiceNo: "#4523",
+//   //   amount: "34,989",
+//   //   description: "Product usages",
+//   //   status: "Pending",
+//   //   generatedOn: moment(new Date())
+//   //     .add(-30 * 2, "days")
+//   //     .format("DD MMM YYYY"),
+//   //   paidOn: "-",
+//   // },
+
+//   // {
+//   //   invoiceNo: "#4453",
+//   //   amount: "39,989",
+//   //   description: "Product usages",
+//   //   status: "Paid",
+//   //   generatedOn: moment(new Date())
+//   //     .add(-30 * 3, "days")
+//   //     .format("DD MMM YYYY"),
+//   //   paidOn: moment(new Date())
+//   //     .add(-24 * 2, "days")
+//   //     .format("DD MMM YYYY"),
+//   // },
+// ];
+
 export const EmitterOutward = () => {
   const [selectedFlow, setSelectedFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
@@ -18,6 +59,7 @@ export const EmitterOutward = () => {
   const [errors, setErrors] = React.useState({});
   const [isPendingPopupOpenIssued, setPendingPopupOpenIssued] = useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [bills, setBills] = useState([]);
   const [userId, setUserId] = useState(
     JSON.parse(localStorage.getItem("userId"))
   );
@@ -116,6 +158,30 @@ export const EmitterOutward = () => {
     // setReturnReason("");
   };
 
+  const getPaymentStatus = (status, bill) => {
+    return (
+      <div
+        className="badge bg-success text-white cursor-pointer"
+        onClick={() => handlePendingStatusClickIssued(bill)}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          className="h-5 w-5" // Adjust the size as needed
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+          />
+        </svg>
+      </div>
+    );
+  };
+
   return (
     <>
       <div className="container-sm">
@@ -205,41 +271,47 @@ export const EmitterOutward = () => {
                 <thead>
                   <tr>
                     <th>Update</th>
-                    <th>Part No</th>
-                    <th>Part name</th>
-                    <th>Part Qty</th>
+                    <th>Rm No</th>
+                    <th>RM DATE</th>
+                    {/* <th>Demand Date</th> */}
+                    <th>IM No</th>
+                    <th>IM Date</th>
+                    <th>REC Date</th>
                     <th>Kit No</th>
                     <th>Kit Qty</th>
-                    <th>Balance kit</th>
-                    <th>Emitter Inv no</th>
+                    <th>Net Rec. Qty</th>
+                    <th>Return Qty</th>
+                    <th>Bal Qty</th>
                     <th>Cycle Time (days) </th>
+                    {/* <th>Emitter Inv no</th>
                     <th>Previous dispatch</th>
-                    <th>O2O - TAT</th>
+                    <th>O2O - TAT</th> */}
                   </tr>
                 </thead>
                 <tbody>
-                  {/* {bills.map((l, k) => {
-                return (
-                  <tr key={k}>
-                    <td>{getPaymentStatus(l.status)}</td>
-                    <td>{l.partno}</td>
-                    <td>{l.partname}</td>
-                    <td>{l.partqty}</td>
-                    <td>{l.kitno}</td>
-                    <td>{l.kitqty}</td>
-                    <td>{l.balancekit}</td>
-                    <td>{l.invoiceno}</td>
-                    <td>{l.cycletime}</td>
-                    <td>{l.previous}</td>
-                    <td>{l.o2o}</td>
-                  </tr>
-                );
-              })} */}
+                  {bills.map((l, k) => {
+                    return (
+                      <tr key={k}>
+                        <td>{getPaymentStatus(l.status)}</td>
+                        <td>{l.partno}</td>
+                        <td>{l.partname}</td>
+                        <td>{l.partqty}</td>
+                        <td>{l.kitno}</td>
+                        <td>{l.kitqty}</td>
+                        <td>{l.balancekit}</td>
+                        <td>{l.invoiceno}</td>
+                        <td>{l.cycletime}</td>
+                        <td>{l.previous}</td>
+                        <td>{l.o2o}</td>
+                        <td>{l.cd}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               {inwardVO.length === 0 && (
-                <h4 className="text-base dark:text-slate-300 font-semibold text-center mt-4">
-                  Data Not Found..!!
+                <h4 className="text-base dark:text-slate-300 font-semibold fst-italic text-center mt-4">
+                  No records to display..!!
                 </h4>
               )}
             </div>
@@ -258,6 +330,12 @@ export const EmitterOutward = () => {
               />
             </div>
             <DialogContent>
+              <div className="d-flex justify-between-content mb-4">
+                <p className="font-bold me-5">
+                  Previous dispatched date: 2024-03-17
+                </p>
+                <p className="font-bold">Kit Qty: 2</p>
+              </div>
               <div className="row">
                 <div className="col-lg-6 col-md-6 mb-2">
                   <label className="label">
@@ -266,32 +344,7 @@ export const EmitterOutward = () => {
                         "label-text label-font-size text-base-content d-flex flex-row"
                       }
                     >
-                      Part no
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6 mb-2">
-                  <input
-                    className="form-control form-sz mb-2"
-                    type={"text"}
-                    placeholder={""}
-                    // name="storageMapping"
-                    // value={storageMapping}
-                    // onChange={handleInputChange}
-                  />
-                  {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
-                </div>
-                <div className="col-lg-6 col-md-6 mb-2">
-                  <label className="label">
-                    <span
-                      className={
-                        "label-text label-font-size text-base-content d-flex flex-row"
-                      }
-                    >
-                      Part name
+                      KIT
                       <FaStarOfLife className="must" />
                     </span>
                   </label>
@@ -316,7 +369,7 @@ export const EmitterOutward = () => {
                         "label-text label-font-size text-base-content d-flex flex-row"
                       }
                     >
-                      Part Qty
+                      KIT Qty
                       <FaStarOfLife className="must" />
                     </span>
                   </label>
