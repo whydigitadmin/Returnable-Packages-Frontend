@@ -41,6 +41,8 @@ import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+
 
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
@@ -648,29 +650,36 @@ function IssueReq() {
   const getPaymentStatus = (issueRequest, bill) => {
     if (issueRequest === 0)
       return (
-        <div
-          className="badge bg-danger text-white"
-          // onClick={() => handlePendingStatusClick(issueRequest)}
-        >
-          Pending
+        <div>
+          <img
+            src="/pending.png"
+            alt="pending-status-icon"
+            title="Pending"
+            style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+          />
         </div>
       );
     if (issueRequest === 1)
       return (
-        <div
-          className="badge bg-warning text-white"
-          // onClick={() => handlePendingStatusClick(issueRequest)}
-        >
-          Inprogress
+        <div>
+          <img
+            src="/inprogress.png"
+            alt="Inprogress-status-icon"
+            style={{ width: 30, height: 30, margin: "auto" }}
+          // onClick={() =>
+          //   handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
+          // }
+          />
         </div>
       );
     if (issueRequest === 2)
       return (
-        <div
-          className="badge bg-success text-white"
-          // onClick={() => handlePendingStatusClick(issueRequest)}
-        >
-          Issued
+        <div>
+          <img
+            src="/checked1.png"
+            alt="completed-status-icon"
+            style={{ width: 30, height: 30, margin: "auto" }}
+          />
         </div>
       );
     else return <div className="badge badge-ghost">Unknown</div>;
@@ -854,7 +863,7 @@ function IssueReq() {
                       icon={<MdPallet className="w-16 h-6" />}
                       {...a11yProps(0)}
                       value={0}
-                      // onClick={() => handleTabClick(0)}
+                    // onClick={() => handleTabClick(0)}
                     />
                   )}
                   {mode === "PART" && (
@@ -864,7 +873,7 @@ function IssueReq() {
                       {...a11yProps(1)}
                       value={1}
 
-                      // onClick={() => handleTabClick(1)}
+                    // onClick={() => handleTabClick(1)}
                     />
                   )}
                   <Tab
@@ -873,7 +882,7 @@ function IssueReq() {
                     {...a11yProps(2)}
                     value={2}
 
-                    // onClick={() => handleTabClick(2)}
+                  // onClick={() => handleTabClick(2)}
                   />
                 </Tabs>
               </Box>
@@ -1191,14 +1200,9 @@ function IssueReq() {
                                         {subIndex === 0 && (
                                           <>
                                             <td>
-                                              <button
-                                                className="badge bg-primary text-white"
-                                                onClick={() =>
-                                                  handleIdClick(issueRequest)
-                                                }
-                                              >
-                                                View
-                                              </button>
+                                              <IconButton onClick={() => handleIdClick(issueRequest)}>
+                                                <VisibilityIcon />
+                                              </IconButton>
                                             </td>
 
                                             <td
@@ -1345,7 +1349,7 @@ function IssueReq() {
                                 <TableHead>
                                   <TableRow>
                                     {selectedIssue &&
-                                    selectedIssue.irType === "IR_PART" ? (
+                                      selectedIssue.irType === "IR_PART" ? (
                                       <>
                                         <TableCell>
                                           <b>Part No</b>
@@ -1398,7 +1402,7 @@ function IssueReq() {
                                         )}
 
                                         {/* Add more cells for additional columns */}
-                                        <TableCell>
+                                        <TableCell style={{ width: 100 }}>
                                           {getPaymentStatus(
                                             item.issueItemStatus
                                           )}
