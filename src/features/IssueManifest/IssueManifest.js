@@ -1,88 +1,18 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import moment from "moment";
-import Datepicker from "react-tailwindcss-datepicker";
-import { FaLocationDot } from "react-icons/fa6";
-import { MdDoubleArrow } from "react-icons/md";
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import Box from "@mui/material/Box";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
-import Step from "@mui/material/Step";
-import StepLabel from "@mui/material/StepLabel";
-import Stepper from "@mui/material/Stepper";
 import Typography from "@mui/material/Typography";
+import axios from "axios";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
+import { FaLocationDot } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
+import { MdDoubleArrow } from "react-icons/md";
 import TitleCard from "../../components/Cards/TitleCard";
 
 const steps = ["Issue manifest", "Mode of Transport "];
-
-// const BILLS = [
-//   {
-//     rmno: "1072",
-//     rmdate: "16-02-2024",
-//     ddate: "18-02-2024",
-//     kitno: "KIT1072",
-//     fname: "GB PUNE TO TATA PUNE",
-//     rqty: "10",
-//     iqty: "10",
-//     bqty: "0",
-//     tat: "48",
-//     pname: "PISTON/PS01",
-//     status: "Issued",
-//   },
-//   {
-//     rmno: "1072",
-//     rmdate: "16-02-2024",
-//     ddate: "18-02-2024",
-//     kitno: "KIT1072",
-//     fname: "GB PUNE TO TATA PUNE",
-//     rqty: "10",
-//     iqty: "0",
-//     bqty: "0",
-//     tat: "48",
-//     pname: "PISTON/PS01",
-//     status: "Pending",
-//   },
-//   {
-//     rmno: "1072",
-//     rmdate: "16-02-2024",
-//     ddate: "18-02-2024",
-//     kitno: "KIT1072",
-//     fname: "GB PUNE TO TATA PUNE",
-//     rqty: "10",
-//     iqty: "5",
-//     bqty: "5",
-//     tat: "48",
-//     pname: "PISTON/PS01",
-//     status: "Inprogress",
-//   },
-
-//   // {
-//   //   invoiceNo: "#4523",
-//   //   amount: "34,989",
-//   //   description: "Product usages",
-//   //   status: "Pending",
-//   //   generatedOn: moment(new Date())
-//   //     .add(-30 * 2, "days")
-//   //     .format("DD MMM YYYY"),
-//   //   paidOn: "-",
-//   // },
-
-//   // {
-//   //   invoiceNo: "#4453",
-//   //   amount: "39,989",
-//   //   description: "Product usages",
-//   //   status: "Paid",
-//   //   generatedOn: moment(new Date())
-//   //     .add(-30 * 3, "days")
-//   //     .format("DD MMM YYYY"),
-//   //   paidOn: moment(new Date())
-//   //     .add(-24 * 2, "days")
-//   //     .format("DD MMM YYYY"),
-//   // },
-// ];
 
 function IssueManifest() {
   const [dateValue, setDateValue] = useState({
@@ -96,14 +26,22 @@ function IssueManifest() {
   const [selectedIssueRequest, setSelectedIssueRequest] = useState(null);
   const [selectedSubIndex, setSelectedSubIndex] = useState(null);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [emitterLocationVO, setEmitterLocationVO] = useState([]);
+
   const [emitter, setEmitter] = useState("");
+  const [emitterId, setEmitterId] = useState("");
   const [qty, setQty] = React.useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [selectedWarehouseId, setSelectedWarehouseId] = useState();
+
+  useEffect(() => {
+    getLocationList();
+  }, []);
 
   useEffect(() => {
     getIssueRequest();
-    getCustomersList();
-  }, []);
+  }, [emitterId]);
 
   const handleQtyChange = (e) => {
     setQty(e.target.value);
@@ -293,29 +231,63 @@ function IssueManifest() {
   };
 
   const handleEmitterChange = (event) => {
-    setEmitter(event.target.value);
+    const selectedWarehouseLocation = event.target.value;
+
+    // Find the corresponding warehouse object in emitterLocationVO based on the selected location
+    const selectedWarehouse = emitterLocationVO.find(
+      (warehouse) => warehouse.warehouseLocation === selectedWarehouseLocation
+    );
+
+    // Update the state with the selected warehouse ID
+    setSelectedWarehouseId(
+      selectedWarehouse ? selectedWarehouse.warehouseId : ""
+    );
+
+    setEmitter(selectedWarehouseLocation); // If needed, you can also update the 'emitter' state with the selected location
+    getCustomersList(selectedWarehouse);
   };
 
-  const getCustomersList = async () => {
+  const handleEmitterIdChange = (event) => {
+    const selectedEmitterId = event.target.value;
+
+    setEmitterId(selectedEmitterId);
+
+    getIssueRequest(selectedEmitterId);
+  };
+
+  const getCustomersList = async (selectedWarehouse) => {
+    console.log("Test@", selectedWarehouse);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getemitterByWarehouseId?orgid=${orgId}&warehouseid=${selectedWarehouse.warehouseId}`
       );
 
       if (response.status === 200) {
-        setEmitterCustomersVO(
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
-        );
+        setEmitterCustomersVO(response.data.paramObjectsMap.emitters);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const getIssueRequest = async () => {
+  const getLocationList = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest`
+        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseByUserID?userId=${userId}`
+      );
+
+      if (response.status === 200) {
+        setEmitterLocationVO(response.data.paramObjectsMap.warehouseVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getIssueRequest = async (selectedEmitterId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest?orgId=${orgId}&emitterId=${selectedEmitterId}`
       );
 
       if (response.status === 200) {
@@ -335,7 +307,7 @@ function IssueManifest() {
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-            <div className="col-lg-3 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
+            <div className="col-lg-5 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -343,25 +315,36 @@ function IssueManifest() {
                     style={{ marginTop: 17 }}
                   />
                   <h4 className="text-2xl font-semibold mt-3 ms-1 mb-3">
-                    Location
+                    Warehouse Location
                   </h4>
                 </div>
-                <h4 className="text-xl dark:text-slate-300 font-semibold mb-2">
+                {/* <h4 className="text-xl dark:text-slate-300 font-semibold mb-2">
                   SCM AI-PACKS PVT LTD
-                </h4>
-                <p className="mb-2">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p>
+                </h4> */}
+                <select
+                  className="form-select form-sz w-full mb-2"
+                  onChange={handleEmitterChange}
+                  value={emitter}
+                >
+                  <option value="" disabled>
+                    Select an Location
+                  </option>
+                  {emitterLocationVO.length > 0 &&
+                    emitterLocationVO.map((list) => (
+                      <option key={list.id} value={list.warehouseLocation}>
+                        {list.warehouseLocation}
+                      </option>
+                    ))}
+                </select>
               </div>
             </div>
             <div className="col-lg-1">
               <MdDoubleArrow
                 className="text-xl font-semibold w-16 h-16"
-                style={{ marginTop: 100 }}
+                style={{ marginTop: 50 }}
               />
             </div>
-            <div className="col-lg-3 card bg-base-100 shadow-xl ms-2 mt-3">
+            <div className="col-lg-5 card bg-base-100 shadow-xl ms-2 mt-3">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <FaLocationDot
@@ -374,35 +357,22 @@ function IssueManifest() {
                 </div>
                 <select
                   className="form-select form-sz w-full mb-2"
-                  onChange={handleEmitterChange}
-                  value={emitter}
+                  onChange={handleEmitterIdChange}
+                  value={emitterId}
                 >
-                  <option value="" disabled>
+                  <option value="" disabled selected>
                     Select an Emitter
                   </option>
                   {emitterCustomersVO.length > 0 &&
                     emitterCustomersVO.map((list) => (
-                      <option key={list.id} value={list.displayName}>
-                        {list.displayName}
+                      <option key={list.id} value={list.emitterId}>
+                        {list.emitterName}
                       </option>
                     ))}
                 </select>
-                {/* <select className="form-select w-11/12 mb-2">
-                  <option value="Gabriel India Ltd-Pune">
-                    Gabriel India Ltd-Pune
-                  </option>
-                  <option value="Denso-Bangalore">Denso-Bangalore</option>
-                </select> */}
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
-                  Gabriel India Ltd
-                </h4>
-                <p className="mb-2 ms-1">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p>
               </div>
             </div>
-            <div className="col-lg-4 d-flex justify-content-center">
+            {/* <div className="col-lg-4 d-flex justify-content-center">
               <div className="mt-4">
                 <div className="text-xl font-semibold mb-3">
                   Select Date Range
@@ -420,7 +390,7 @@ function IssueManifest() {
                   primaryColor={"green"}
                 />
               </div>
-            </div>
+            </div> */}
           </div>
           <>
             <TitleCard title="Issue Manifest Details" topMargin="mt-2">
@@ -450,7 +420,7 @@ function IssueManifest() {
                             {subIndex === 0 && (
                               <>
                                 <td rowSpan={issueRequest.issueItemVO.length}>
-                                  {issueRequest.reqAddressId}
+                                  {issueRequest.id}
                                 </td>
                                 <td rowSpan={issueRequest.issueItemVO.length}>
                                   {moment(issueRequest.requestedDate).format(
@@ -463,13 +433,13 @@ function IssueManifest() {
                                   )}
                                 </td>
                                 <td rowSpan={issueRequest.issueItemVO.length}>
-                                  {issueRequest.flowTo}
+                                  {issueRequest.flowName}
                                 </td>
                                 <td
                                   rowSpan={issueRequest.issueItemVO.length}
                                   className="text-center"
                                 >
-                                  48
+                                  {issueRequest.tat}
                                 </td>
                                 <td
                                   rowSpan={issueRequest.issueItemVO.length}
