@@ -12,6 +12,8 @@ import DialogTitle from "@mui/material/DialogTitle";
 import { FaStarOfLife } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -86,6 +88,14 @@ function AddFlows({ addFlows }) {
   const [warehouseLocationValue, setWarehouseLocationValue] = useState("");
   const [openKitModal, setOpenKitModal] = React.useState(false);
   const [kitDTO, setKitDTO] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleCloseSnackbar = (event, reason) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setErrorMessage(""); // Clear the error message
+  };
 
   useEffect(() => {
     getCustomersList();
@@ -306,17 +316,34 @@ function AddFlows({ addFlows }) {
       errors.cycleTime = "Cycle Time is required";
     }
     if (Object.keys(errors).length === 0) {
-      const newKitDetails = {
-        kitName,
-        partName,
-        partNumber,
-        cycleTime,
-        orgId,
-      };
-      setKitDTO([...kitDTO, newKitDetails]);
-      handleKitClose();
+      const existingKit = kitDTO.find(
+        (kit) => kit.kitName === kitName && kit.partNumber === partNumber
+      );
+      if (existingKit) {
+        toast.error("This kit and part number combination already exists", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        const existingPartNumber = kitDTO.find(
+          (kit) => kit.partNumber === partNumber
+        );
+        if (existingPartNumber) {
+          toast.error("This part number is already assigned to another kit", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        } else {
+          const newKitDetails = {
+            kitName,
+            partName,
+            partNumber,
+            cycleTime,
+            orgId,
+          };
+          setKitDTO([...kitDTO, newKitDetails]);
+          handleKitClose();
+        }
+      }
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -566,6 +593,7 @@ function AddFlows({ addFlows }) {
                     <th className="text-center">Part Name</th>
                     <th className="text-center">Part Number</th>
                     <th className="text-center">Cycle</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -606,12 +634,16 @@ function AddFlows({ addFlows }) {
           </button>
         </div>
       </div>
+
       <Dialog
         fullWidth={true}
         maxWidth={"md"}
         open={openKitModal}
         onClose={handleKitClose}
       >
+        <div>
+          <ToastContainer />
+        </div>
         <div className="d-flex justify-content-between">
           <DialogTitle>Add Kit & Part Details</DialogTitle>
           <IoMdClose

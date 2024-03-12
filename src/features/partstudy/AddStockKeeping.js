@@ -51,6 +51,26 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
   };
 
   useEffect(() => {
+    const total =
+      parseFloat(emitterStoreDays || 0) +
+      parseFloat(emitterLineDays || 0) +
+      parseFloat(inTransitDays || 0) +
+      parseFloat(receiverLineStorageDays || 0) +
+      parseFloat(receiverManufacturingLineDays || 0) +
+      parseFloat(otherStorageDays || 0) +
+      parseFloat(reverseLogisticsDay || 0);
+    setTotalCycleTime(total.toString());
+  }, [
+    emitterStoreDays,
+    emitterLineDays,
+    inTransitDays,
+    receiverLineStorageDays,
+    receiverManufacturingLineDays,
+    otherStorageDays,
+    reverseLogisticsDay,
+  ]);
+
+  useEffect(() => {
     if (refPsId) {
       fetchStockDetails(refPsId);
     }
@@ -164,6 +184,16 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
       errors.reverseLogisticsDay = "Empty Packaging Reverse Days is required";
     }
 
+    // const total =
+    //   parseFloat(emitterStoreDays) +
+    //   parseFloat(emitterLineDays) +
+    //   parseFloat(inTransitDays) +
+    //   parseFloat(receiverLineStorageDays) +
+    //   parseFloat(receiverManufacturingLineDays) +
+    //   parseFloat(otherStorageDays) +
+    //   parseFloat(reverseLogisticsDay);
+    // const totalCycleTimeValue = total.toString();
+
     if (Object.keys(errors).length === 0) {
       const formData = {
         emitterStoreDays,
@@ -271,7 +301,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="emitterStoreDays"
               value={emitterStoreDays}
@@ -296,7 +326,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="emitterLineDays"
               value={emitterLineDays}
@@ -321,7 +351,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="inTransitDays"
               value={inTransitDays}
@@ -346,7 +376,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="receiverLineStorageDays"
               value={receiverLineStorageDays}
@@ -373,7 +403,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="receiverManufacturingLineDays"
               value={receiverManufacturingLineDays}
@@ -400,7 +430,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="otherStorageDays"
               value={otherStorageDays}
@@ -428,7 +458,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="reverseLogisticsDay"
               value={reverseLogisticsDay}
@@ -453,9 +483,10 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mt-2"
-              type={"text"}
+              type={"number"}
               placeholder={""}
               name="totalCycleTime"
+              disabled
               value={totalCycleTime}
               onChange={handleInputChange}
             />
