@@ -39,6 +39,8 @@ import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
@@ -75,6 +77,7 @@ function IssueReq() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [emitterId, setEmitterId] = useState();
   const qtyInputRef = useRef(null);
+  const [duplicateKitError, setDuplicateKitError] = useState(false);
 
   useEffect(() => {
     getDisplayName();
@@ -458,16 +461,39 @@ function IssueReq() {
   //   setSelectedKitNumbers(newSelectedKitNumbers);
   // };
 
-  const handleKitNoChange = (e, index) => {
-    console.log("Event:", e);
+  // const handleKitNoChange = (e, index) => {
+  //   console.log("Event:", e);
 
-    setKitFields((prevFields) => {
-      const newFields = [...prevFields];
-      newFields[index].kitNo = e.target.value;
-      console.log("Previous kitFields:", prevFields);
-      console.log("Updated kitFields:", newFields);
-      return newFields;
-    });
+  //   setKitFields((prevFields) => {
+  //     const newFields = [...prevFields];
+  //     newFields[index].kitNo = e.target.value;
+  //     console.log("Previous kitFields:", prevFields);
+  //     console.log("Updated kitFields:", newFields);
+  //     return newFields;
+  //   });
+  // };
+
+  const handleKitNoChange = (e, index) => {
+    const selectedKitNo = e.target.value;
+
+    // Check if the selected kit already exists
+    const isDuplicate = kitFields.some(
+      (field, i) => index !== i && field.kitNo === selectedKitNo
+    );
+
+    if (isDuplicate) {
+      setDuplicateKitError(true);
+      toast.error("The selected kit already exists", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else {
+      setDuplicateKitError(false);
+      setKitFields((prevFields) => {
+        const newFields = [...prevFields];
+        newFields[index].kitNo = selectedKitNo;
+        return newFields;
+      });
+    }
   };
 
   const handlePartNoChange = (e, index) => {
@@ -1344,6 +1370,7 @@ function IssueReq() {
           </div>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }
