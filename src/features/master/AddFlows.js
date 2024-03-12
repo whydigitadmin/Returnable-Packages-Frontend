@@ -534,8 +534,9 @@ function AddFlows({ addFlows }) {
         </div>
 
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-4">Sub Flow Details</h1>
-          <div className="d-flex flex-column">
+          {/* <h1 className="text-xl font-semibold mb-4">Sub Flow Details</h1> */}
+          {/* <div className="d-flex flex-column"> */}
+          <div className="ml-auto">
             <button
               className="btn btn-ghost btn-lg text-sm col-xs-1"
               style={{ color: "blue" }}
