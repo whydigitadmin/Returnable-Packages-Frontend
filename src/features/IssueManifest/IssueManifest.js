@@ -453,53 +453,54 @@ function IssueManifest() {
                       <th>Status</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {bills.map((issueRequest, index) => (
-                      <React.Fragment key={index}>
-                        {issueRequest.issueItemVO.map((item, subIndex) => (
-                          <tr key={`${index}-${subIndex}`}>
-                            {subIndex === 0 && (
-                              <>
-                                <td rowSpan={issueRequest.issueItemVO.length}>
-                                  {issueRequest.id}
-                                </td>
-                                <td rowSpan={issueRequest.issueItemVO.length}>
-                                  {moment(issueRequest.requestedDate).format(
-                                    "DD-MM-YY"
-                                  )}
-                                </td>
-                                <td rowSpan={issueRequest.issueItemVO.length}>
-                                  {moment(issueRequest.demandDate).format(
-                                    "DD-MM-YY"
-                                  )}
-                                </td>
-                                <td rowSpan={issueRequest.issueItemVO.length}>
-                                  {issueRequest.flowName}
-                                </td>
-                                <td
-                                  rowSpan={issueRequest.issueItemVO.length}
-                                  className="text-center"
-                                >
-                                  {issueRequest.tat}
-                                </td>
-                                <td
-                                  rowSpan={issueRequest.issueItemVO.length}
-                                  className="text-center"
-                                >
-                                  {issueRequest.totalIssueItem}
-                                </td>
-                                {/* <td
+                  {bills.length > 0 && (
+                    <tbody>
+                      {bills.map((issueRequest, index) => (
+                        <React.Fragment key={index}>
+                          {issueRequest.issueItemVO.map((item, subIndex) => (
+                            <tr key={`${index}-${subIndex}`}>
+                              {subIndex === 0 && (
+                                <>
+                                  <td rowSpan={issueRequest.issueItemVO.length}>
+                                    {issueRequest.id}
+                                  </td>
+                                  <td rowSpan={issueRequest.issueItemVO.length}>
+                                    {moment(issueRequest.requestedDate).format(
+                                      "DD-MM-YY"
+                                    )}
+                                  </td>
+                                  <td rowSpan={issueRequest.issueItemVO.length}>
+                                    {moment(issueRequest.demandDate).format(
+                                      "DD-MM-YY"
+                                    )}
+                                  </td>
+                                  <td rowSpan={issueRequest.issueItemVO.length}>
+                                    {issueRequest.flowName}
+                                  </td>
+                                  <td
+                                    rowSpan={issueRequest.issueItemVO.length}
+                                    className="text-center"
+                                  >
+                                    {issueRequest.tat}
+                                  </td>
+                                  <td
+                                    rowSpan={issueRequest.issueItemVO.length}
+                                    className="text-center"
+                                  >
+                                    {issueRequest.totalIssueItem}
+                                  </td>
+                                  {/* <td
                                   rowSpan={issueRequest.issueItemVO.length}
                                   className="text-center"
                                 >
                                   {issueRequest.partQty}
                                 </td> */}
-                              </>
-                            )}
-                            {/* <td>{issueRequest.kitQty}</td>
+                                </>
+                              )}
+                              {/* <td>{issueRequest.kitQty}</td>
                             <td>{issueRequest.kitNo}</td>
                             <td>{issueRequest.partNo}</td> */}
-                            {/* <td
+                              {/* <td
                               onClick={() =>
                                 handlePendingStatusClick(issueRequest, subIndex)
                               }
@@ -507,25 +508,32 @@ function IssueManifest() {
                               {getPaymentStatus(issueRequest.issueStatus)}
                             </td> */}
 
-                            {/* Random Status Code */}
+                              {/* Random Status Code */}
 
-                            <td
-                              style={{ width: 100 }}
-                              // onClick={() =>
-                              //   handlePendingStatusClick(issueRequest, subIndex)
-                              // }
-                            >
-                              {getPaymentStatus(
-                                issueRequest.issueStatus,
-                                issueRequest
-                              )}
-                            </td>
-                          </tr>
-                        ))}
-                      </React.Fragment>
-                    ))}
-                  </tbody>
+                              <td
+                                style={{ width: 100 }}
+                                // onClick={() =>
+                                //   handlePendingStatusClick(issueRequest, subIndex)
+                                // }
+                              >
+                                {getPaymentStatus(
+                                  issueRequest.issueStatus,
+                                  issueRequest
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </React.Fragment>
+                      ))}
+                    </tbody>
+                  )}
                 </table>
+
+                {bills.length === 0 && (
+                  <h4 className="text-base dark:text-slate-300 font-semibold text-center fst-italic mt-4">
+                    No records to display..!!
+                  </h4>
+                )}
               </div>
             </TitleCard>
             {/* Pending Modal Popup */}
