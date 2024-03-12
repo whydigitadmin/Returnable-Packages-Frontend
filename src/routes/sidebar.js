@@ -290,18 +290,18 @@ const routes = [
         ),
         name: <span className="">Inwardmanifest</span>,
       },
-      {
-        path: "/app/inwardmanifest-report", //no url needed as this has submenu
-        icon: (
-          <img
-            src="/inwardManifestReport.png"
-            alt="InwardmanifestReport"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Inwardmanifest Report</span>,
-      },
+      // {
+      //   path: "/app/inwardmanifest-report", //no url needed as this has submenu
+      //   icon: (
+      //     <img
+      //       src="/inwardManifestReport.png"
+      //       alt="InwardmanifestReport"
+      //       style={{ width: "30px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="ml-1">Inwardmanifest Report</span>,
+      // },
     ],
   },
 
