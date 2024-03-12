@@ -78,6 +78,13 @@ function IssueReq() {
   const [emitterId, setEmitterId] = useState();
   const qtyInputRef = useRef(null);
   const [duplicateKitError, setDuplicateKitError] = useState(false);
+  const [duplicatePartError, setDuplicatePartError] = useState(false);
+
+  // useEffect(() => {
+  //   // Initialize mode and value when component mounts
+  //   setMode("KIT");
+  //   setValue(0);
+  // }, []);
 
   useEffect(() => {
     getDisplayName();
@@ -108,17 +115,19 @@ function IssueReq() {
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    if (newValue === 2) {
-      // If REQ SUMMARY tab is clicked
-      // Handle displaying REQ SUMMARY fields here
-    }
+    // Handle displaying fields based on mode and tab selection
   };
 
   const toggleMode = () => {
     const newMode = mode === "KIT" ? "PART" : "KIT";
     setMode(newMode);
-    setValue(""); // Reset tab value when mode changes
+    setValue(newMode === "PART" ? 1 : 0); // Reset tab value when mode changes
   };
+
+  // const handleTabClick = (newValue) => {
+  //   setValue(newValue);
+  //   // Handle displaying fields based on mode and tab selection
+  // };
 
   const handleIssueDateChange = (newDate) => {
     const originalDateString = newDate;
@@ -496,15 +505,39 @@ function IssueReq() {
     }
   };
 
+  // const handlePartNoChange = (e, index) => {
+  //   setPartFields((prevFields) => {
+  //     const newFields = [...prevFields];
+  //     newFields[index].partNo = e.target.value;
+  //     // newFields[index].partName = e.target.value;
+  //     console.log("Updated PartttttttFields:", newFields); // Log the updated state
+  //     return newFields;
+  //   });
+  // };
+
   const handlePartNoChange = (e, index) => {
-    setPartFields((prevFields) => {
-      const newFields = [...prevFields];
-      newFields[index].partNo = e.target.value;
-      // newFields[index].partName = e.target.value;
-      console.log("Updated PartttttttFields:", newFields); // Log the updated state
-      return newFields;
-    });
+    const selectedPartNo = e.target.value;
+
+    // Check if the selected part number already exists
+    const isDuplicate = partFields.some(
+      (field, i) => index !== i && field.partNo === selectedPartNo
+    );
+
+    if (isDuplicate) {
+      setDuplicatePartError(true);
+      toast.error("The selected part number already exists", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else {
+      setDuplicatePartError(false);
+      setPartFields((prevFields) => {
+        const newFields = [...prevFields];
+        newFields[index].partNo = selectedPartNo;
+        return newFields;
+      });
+    }
   };
+
   // const handlePartNoChange = (e, index) => {
   //   const { name, value } = e.target;
 
@@ -815,34 +848,42 @@ function IssueReq() {
                   variant="scrollable"
                   scrollButtons="auto"
                 >
-                  {/* {mode === "KIT" && ( */}
-                  <Tab
-                    label="KIT WISE"
-                    icon={<MdPallet className="w-16 h-6" />}
-                    {...a11yProps(0)}
-                  />
-                  {/* )} */}
-                  {/* {mode === "PART" && ( */}
-                  <Tab
-                    label="PART WISE"
-                    icon={<FaPallet className="w-16 h-6" />}
-                    {...a11yProps(1)}
-                  />
-                  {/* )} */}
+                  {mode === "KIT" && (
+                    <Tab
+                      label="KIT WISE"
+                      icon={<MdPallet className="w-16 h-6" />}
+                      {...a11yProps(0)}
+                      value={0}
+                      // onClick={() => handleTabClick(0)}
+                    />
+                  )}
+                  {mode === "PART" && (
+                    <Tab
+                      label="PART WISE"
+                      icon={<FaPallet className="w-16 h-6" />}
+                      {...a11yProps(1)}
+                      value={1}
+
+                      // onClick={() => handleTabClick(1)}
+                    />
+                  )}
                   <Tab
                     label="REQ SUMMARY"
                     icon={<TbReport className="w-16 h-6" />}
                     {...a11yProps(2)}
+                    value={2}
+
+                    // onClick={() => handleTabClick(2)}
                   />
                 </Tabs>
               </Box>
+              {/* KIT TAB */}
 
-              <div
-                className="scrollable-container"
-                style={{ maxHeight: "200px", overflowY: "auto" }}
-              >
-                {/* KIT TAB */}
-                {mode === "KIT" && value === 0 && (
+              {mode === "KIT" && value === 0 && (
+                <div
+                  className="scrollable-container"
+                  style={{ maxHeight: "200px", overflowY: "auto" }}
+                >
                   <CustomTabPanel value={value} index={0}>
                     {kitFields.map((field, index) => (
                       <div className="row" key={index}>
@@ -971,15 +1012,16 @@ function IssueReq() {
                       Submit
                     </button>
                   </CustomTabPanel>
-                )}
-              </div>
+                </div>
+              )}
 
-              <div
-                className="scrollable-container"
-                style={{ maxHeight: "200px", overflowY: "auto" }}
-              >
-                {/* PART TAB*/}
-                {mode === "PART" && value === 1 && (
+              {/* PART TAB*/}
+
+              {mode === "PART" && value === 1 && (
+                <div
+                  className="scrollable-container"
+                  style={{ maxHeight: "200px", overflowY: "auto" }}
+                >
                   <CustomTabPanel value={value} index={1}>
                     {partFields.map((field, index) => (
                       <div className="row" key={index}>
@@ -1111,85 +1153,87 @@ function IssueReq() {
                       Submit
                     </button>
                   </CustomTabPanel>
-                )}
-              </div>
-              <CustomTabPanel value={value} index={2}>
-                <>
-                  <div
-                    className="w-full p-2 bg-base-100 shadow-xl"
-                    style={{ borderRadius: 16 }}
-                  >
-                    <div className="text-xl font-semibold p-3">
-                      Issue Manifest Details
-                    </div>
-                    <div className="divider mt-0 mb-0"></div>
-                    <div className="overflow-x-auto w-full "></div>
-                    {/* Invoice list in table format loaded constant */}
-                    <div className="overflow-x-auto w-full ">
-                      <table className="table w-full">
-                        <thead>
-                          <tr>
-                            <th>Details</th>
-                            <th>RM No.</th>
-                            <th>RM Date</th>
-                            <th>Demand Date</th>
-                            <th>Flow Name</th>
-                            {/* <th>Allocated Time - HRS</th> */}
-                            {/* <th>Status</th> */}
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {bills.map((issueRequest, index) => (
-                            <React.Fragment key={index}>
-                              {issueRequest.issueItemVO.map(
-                                (item, subIndex) => (
-                                  <tr key={`${index}-${subIndex}`}>
-                                    {subIndex === 0 && (
-                                      <>
-                                        <td>
-                                          <button
-                                            className="badge bg-primary text-white"
-                                            onClick={() =>
-                                              handleIdClick(issueRequest)
-                                            }
-                                          >
-                                            View
-                                          </button>
-                                        </td>
+                </div>
+              )}
+              {value === 2 && (
+                <div>
+                  <CustomTabPanel value={value} index={2}>
+                    <>
+                      <div
+                        className="w-full p-2 bg-base-100 shadow-xl"
+                        style={{ borderRadius: 16 }}
+                      >
+                        <div className="text-xl font-semibold p-3">
+                          Issue Manifest Details
+                        </div>
+                        <div className="divider mt-0 mb-0"></div>
+                        <div className="overflow-x-auto w-full "></div>
+                        {/* Invoice list in table format loaded constant */}
+                        <div className="overflow-x-auto w-full ">
+                          <table className="table w-full">
+                            <thead>
+                              <tr>
+                                <th>Details</th>
+                                <th>RM No.</th>
+                                <th>RM Date</th>
+                                <th>Demand Date</th>
+                                <th>Flow Name</th>
+                                {/* <th>Allocated Time - HRS</th> */}
+                                {/* <th>Status</th> */}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {bills.map((issueRequest, index) => (
+                                <React.Fragment key={index}>
+                                  {issueRequest.issueItemVO.map(
+                                    (item, subIndex) => (
+                                      <tr key={`${index}-${subIndex}`}>
+                                        {subIndex === 0 && (
+                                          <>
+                                            <td>
+                                              <button
+                                                className="badge bg-primary text-white"
+                                                onClick={() =>
+                                                  handleIdClick(issueRequest)
+                                                }
+                                              >
+                                                View
+                                              </button>
+                                            </td>
 
-                                        <td
-                                          rowSpan={
-                                            issueRequest.issueItemVO.length
-                                          }
-                                        >
-                                          {issueRequest.id}
-                                        </td>
-                                        <td
-                                          rowSpan={
-                                            issueRequest.issueItemVO.length
-                                          }
-                                        >
-                                          {moment(
-                                            issueRequest.requestedDate
-                                          ).format("DD-MM-YY")}
-                                        </td>
-                                        <td
-                                          rowSpan={
-                                            issueRequest.issueItemVO.length
-                                          }
-                                        >
-                                          {moment(
-                                            issueRequest.demandDate
-                                          ).format("DD-MM-YY")}
-                                        </td>
-                                        <td
-                                          rowSpan={
-                                            issueRequest.issueItemVO.length
-                                          }
-                                        >
-                                          {issueRequest.flowName}
-                                        </td>
-                                        {/* <td
+                                            <td
+                                              rowSpan={
+                                                issueRequest.issueItemVO.length
+                                              }
+                                            >
+                                              {issueRequest.id}
+                                            </td>
+                                            <td
+                                              rowSpan={
+                                                issueRequest.issueItemVO.length
+                                              }
+                                            >
+                                              {moment(
+                                                issueRequest.requestedDate
+                                              ).format("DD-MM-YY")}
+                                            </td>
+                                            <td
+                                              rowSpan={
+                                                issueRequest.issueItemVO.length
+                                              }
+                                            >
+                                              {moment(
+                                                issueRequest.demandDate
+                                              ).format("DD-MM-YY")}
+                                            </td>
+                                            <td
+                                              rowSpan={
+                                                issueRequest.issueItemVO.length
+                                              }
+                                            >
+                                              {issueRequest.flowName}
+                                            </td>
+                                            {/* <td
                                           rowSpan={
                                             issueRequest.issueItemVO.length
                                           }
@@ -1197,7 +1241,7 @@ function IssueReq() {
                                         >
                                           {issueRequest.tat}
                                         </td> */}
-                                        {/* <td
+                                            {/* <td
                                           rowSpan={
                                             issueRequest.issueItemVO.length
                                           }
@@ -1213,23 +1257,23 @@ function IssueReq() {
                                         >
                                           {issueRequest.partQty}
                                         </td> */}
-                                      </>
-                                    )}
-                                    <td
-                                    // onClick={() =>
-                                    //   handlePendingStatusClick(
-                                    //     issueRequest,
-                                    //     subIndex
-                                    //   )
-                                    // }
-                                    >
-                                      {/* {getPaymentStatus(
+                                          </>
+                                        )}
+                                        <td
+                                        // onClick={() =>
+                                        //   handlePendingStatusClick(
+                                        //     issueRequest,
+                                        //     subIndex
+                                        //   )
+                                        // }
+                                        >
+                                          {/* {getPaymentStatus(
                                         issueRequest.issueStatus
                                       )} */}
-                                    </td>
+                                        </td>
 
-                                    {/* Random Status Code */}
-                                    {/* 
+                                        {/* Random Status Code */}
+                                        {/* 
                                     <td
                                       style={{ width: 100 }}
                                       // onClick={() =>
@@ -1238,123 +1282,134 @@ function IssueReq() {
                                     >
                                       {getPaymentStatus()}
                                     </td> */}
-                                  </tr>
-                                )
-                              )}
-                            </React.Fragment>
-                          ))}
-                        </tbody>
-                      </table>
-                    </div>
+                                      </tr>
+                                    )
+                                  )}
+                                </React.Fragment>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
 
-                    <Dialog
-                      open={isDialogOpen}
-                      onClose={() => setIsDialogOpen(false)}
-                      maxWidth="sm" // You can adjust the size by changing "md" to other values like "sm", "lg", "xl", or a specific pixel value
-                      fullWidth
-                    >
-                      <DialogTitle>
-                        Details for RM No. {selectedIssue && selectedIssue.id}
-                        <IconButton
-                          aria-label="close"
-                          onClick={() => setIsDialogOpen(false)}
-                          style={{
-                            position: "absolute",
-                            right: 8,
-                            top: 8,
-                          }}
+                        <Dialog
+                          open={isDialogOpen}
+                          onClose={() => setIsDialogOpen(false)}
+                          maxWidth="sm" // You can adjust the size by changing "md" to other values like "sm", "lg", "xl", or a specific pixel value
+                          fullWidth
                         >
-                          <CloseIcon />
-                        </IconButton>
-                      </DialogTitle>
-                      <DialogContent
-                        style={{
-                          display: "flex",
-                          flexDirection: "column",
-                          alignItems: "flex-start",
-                        }}
-                      >
-                        <p>
-                          <strong>RM Date:</strong>{" "}
-                          {selectedIssue &&
-                            moment(selectedIssue.requestedDate).format(
-                              "DD-MM-YY"
-                            )}
-                        </p>
-                        <p>
-                          <strong>Demand Date:</strong>{" "}
-                          {selectedIssue &&
-                            moment(selectedIssue.demandDate).format("DD-MM-YY")}
-                        </p>
-                        <p>
-                          <strong>Flow Name:</strong>{" "}
-                          {selectedIssue && selectedIssue.flowName}
-                        </p>
-
-                        {/* Display issueItemVO details in a table */}
-                        <br></br>
-                        <TableContainer component={Paper}>
-                          <Table>
-                            <TableHead>
-                              <TableRow>
-                                {selectedIssue &&
-                                selectedIssue.irType === "IR_PART" ? (
-                                  <>
-                                    <TableCell>
-                                      <b>Part No</b>
-                                    </TableCell>
-                                    <TableCell>
-                                      <b>Kit No</b>{" "}
-                                    </TableCell>
-                                    <TableCell>
-                                      <b>Quantity</b>
-                                    </TableCell>
-                                  </>
-                                ) : (
-                                  <>
-                                    <TableCell>
-                                      <b>Kit No </b>
-                                    </TableCell>
-                                    <TableCell>
-                                      <b>Quantity</b>
-                                    </TableCell>
-                                  </>
-                                )}
-
-                                <TableCell>
-                                  <b>Status</b>
-                                </TableCell>
-                                {/* Add more columns if needed */}
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
+                          <DialogTitle>
+                            Details for RM No.{" "}
+                            {selectedIssue && selectedIssue.id}
+                            <IconButton
+                              aria-label="close"
+                              onClick={() => setIsDialogOpen(false)}
+                              style={{
+                                position: "absolute",
+                                right: 8,
+                                top: 8,
+                              }}
+                            >
+                              <CloseIcon />
+                            </IconButton>
+                          </DialogTitle>
+                          <DialogContent
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              alignItems: "flex-start",
+                            }}
+                          >
+                            <p>
+                              <strong>RM Date:</strong>{" "}
                               {selectedIssue &&
-                                selectedIssue.issueItemVO.map((item) => (
-                                  <TableRow key={item.id}>
-                                    {selectedIssue.irType === "IR_PART" ? (
+                                moment(selectedIssue.requestedDate).format(
+                                  "DD-MM-YY"
+                                )}
+                            </p>
+                            <p>
+                              <strong>Demand Date:</strong>{" "}
+                              {selectedIssue &&
+                                moment(selectedIssue.demandDate).format(
+                                  "DD-MM-YY"
+                                )}
+                            </p>
+                            <p>
+                              <strong>Flow Name:</strong>{" "}
+                              {selectedIssue && selectedIssue.flowName}
+                            </p>
+
+                            {/* Display issueItemVO details in a table */}
+                            <br></br>
+                            <TableContainer component={Paper}>
+                              <Table>
+                                <TableHead>
+                                  <TableRow>
+                                    {selectedIssue &&
+                                    selectedIssue.irType === "IR_PART" ? (
                                       <>
-                                        <TableCell>{item.partNo}</TableCell>
-                                        <TableCell>{item.kitName}</TableCell>
-                                        <TableCell>{item.partQty}</TableCell>
+                                        <TableCell>
+                                          <b>Part No</b>
+                                        </TableCell>
+                                        <TableCell>
+                                          <b>Kit No</b>{" "}
+                                        </TableCell>
+                                        <TableCell>
+                                          <b>Quantity</b>
+                                        </TableCell>
                                       </>
                                     ) : (
                                       <>
-                                        <TableCell>{item.kitName}</TableCell>
-                                        <TableCell>{item.kitQty}</TableCell>
+                                        <TableCell>
+                                          <b>Kit No </b>
+                                        </TableCell>
+                                        <TableCell>
+                                          <b>Quantity</b>
+                                        </TableCell>
                                       </>
                                     )}
 
-                                    {/* Add more cells for additional columns */}
                                     <TableCell>
-                                      {getPaymentStatus(item.issueItemStatus)}
+                                      <b>Status</b>
                                     </TableCell>
+                                    {/* Add more columns if needed */}
                                   </TableRow>
-                                ))}
-                            </TableBody>
-                          </Table>
-                        </TableContainer>
-                      </DialogContent>
-                      {/* <DialogActions>
+                                </TableHead>
+                                <TableBody>
+                                  {selectedIssue &&
+                                    selectedIssue.issueItemVO.map((item) => (
+                                      <TableRow key={item.id}>
+                                        {selectedIssue.irType === "IR_PART" ? (
+                                          <>
+                                            <TableCell>{item.partNo}</TableCell>
+                                            <TableCell>
+                                              {item.kitName}
+                                            </TableCell>
+                                            <TableCell>
+                                              {item.partQty}
+                                            </TableCell>
+                                          </>
+                                        ) : (
+                                          <>
+                                            <TableCell>
+                                              {item.kitName}
+                                            </TableCell>
+                                            <TableCell>{item.kitQty}</TableCell>
+                                          </>
+                                        )}
+
+                                        {/* Add more cells for additional columns */}
+                                        <TableCell>
+                                          {getPaymentStatus(
+                                            item.issueItemStatus
+                                          )}
+                                        </TableCell>
+                                      </TableRow>
+                                    ))}
+                                </TableBody>
+                              </Table>
+                            </TableContainer>
+                          </DialogContent>
+                          {/* <DialogActions>
                         <Button
                           onClick={() => setIsDialogOpen(false)}
                           color="primary"
@@ -1362,10 +1417,12 @@ function IssueReq() {
                           Close
                         </Button>
                       </DialogActions> */}
-                    </Dialog>
-                  </div>
-                </>
-              </CustomTabPanel>
+                        </Dialog>
+                      </div>
+                    </>
+                  </CustomTabPanel>
+                </div>
+              )}
             </div>
           </div>
         </div>
