@@ -34,6 +34,10 @@ function IssueManifest() {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [selectedWarehouseId, setSelectedWarehouseId] = useState();
+  const [userDetail, setUserDetail] = useState(
+    JSON.parse(localStorage.getItem("userDto"))
+  );
+  const [demoState, setDemoState] = useState(false);
 
   useEffect(() => {
     getLocationList();
@@ -53,6 +57,7 @@ function IssueManifest() {
 
   const closePendingPopup = () => {
     setPendingPopupOpen(false);
+    setQty("");
   };
 
   const openInProgressPopup = () => {
@@ -142,8 +147,42 @@ function IssueManifest() {
 
   // randomStatus code
 
-  const getPaymentStatus = () => {
-    const randomStatus = Math.floor(Math.random() * 3); // Generates random values 0, 1, 2
+  const handleIssueKit = (item) => {
+    console.log("test");
+    const errors = {};
+    // if (!unit) {
+    //   errors.unit = "Unit Name is required";
+    // }
+    // if (Object.keys(errors).length === 0) {
+    const formData = {
+      approvelId: userId,
+      approverName: userDetail.firstName,
+      issueItemId: item.id,
+      issueRequestId: selectedIssueRequest.id,
+      issuedQty: qty,
+    };
+    console.log("test1", formData);
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/emitter/issueRequestQtyApprovel`,
+        formData
+      )
+      .then((response) => {
+        console.log("Response:", response.data);
+        getIssueRequest(emitterId);
+        closePendingPopup();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  };
+  // else {
+  //   // If there are errors, update the state to display them
+  //   setErrors(errors);
+  // }
+
+  const getPaymentStatus = (issueStatus, selectedIssueRequest) => {
+    const randomStatus = issueStatus;
     if (randomStatus === 0)
       return (
         <div
@@ -152,6 +191,7 @@ function IssueManifest() {
             handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
           }
         >
+          {console.log("Testing", selectedIssueRequest)}
           Pending
         </div>
       );
@@ -160,7 +200,7 @@ function IssueManifest() {
         <div
           className="badge bg-warning text-white cursor-pointer w-full"
           onClick={() =>
-            handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
+            handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
           }
         >
           WIP
@@ -171,7 +211,7 @@ function IssueManifest() {
         <div
           className="badge bg-success text-white cursor-pointer w-full"
           onClick={() =>
-            handleIssuedStatusClick(selectedIssueRequest, selectedSubIndex)
+            handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
           }
         >
           Issued
@@ -250,9 +290,9 @@ function IssueManifest() {
   const handleEmitterIdChange = (event) => {
     const selectedEmitterId = event.target.value;
 
-    setEmitterId(selectedEmitterId);
-
     getIssueRequest(selectedEmitterId);
+
+    console.log("emitterID", emitterId);
   };
 
   const getCustomersList = async (selectedWarehouse) => {
@@ -292,6 +332,7 @@ function IssueManifest() {
 
       if (response.status === 200) {
         setBills(response.data.paramObjectsMap.issueRequestVO);
+        setEmitterId(selectedEmitterId);
         console.log(
           "getIssueRequest",
           response.data.paramObjectsMap.issueRequestVO
@@ -395,7 +436,7 @@ function IssueManifest() {
           <>
             <TitleCard title="Issue Manifest Details" topMargin="mt-2">
               {/* Invoice list in table format loaded constant */}
-              <div className="overflow-x-auto w-full ">
+              <div className="overflow-x-auto w-full">
                 <table className="table w-full">
                   <thead>
                     <tr>
@@ -404,11 +445,11 @@ function IssueManifest() {
                       <th>Demand Date</th>
                       <th>Flow Name</th>
                       <th>TAT (Hrs)</th>
-                      <th>Issued Qty</th>
-                      <th>Bal Qty</th>
+                      <th>Req Item</th>
+                      {/* <th>Bal Qty</th>
                       <th>Req Qty</th>
                       <th>KIT NO</th>
-                      <th>Part Name/No</th>
+                      <th>Part Name/No</th> */}
                       <th>Status</th>
                     </tr>
                   </thead>
@@ -447,17 +488,17 @@ function IssueManifest() {
                                 >
                                   {issueRequest.totalIssueItem}
                                 </td>
-                                <td
+                                {/* <td
                                   rowSpan={issueRequest.issueItemVO.length}
                                   className="text-center"
                                 >
                                   {issueRequest.partQty}
-                                </td>
+                                </td> */}
                               </>
                             )}
-                            <td>{item.kitQty}</td>
-                            <td>{item.kitNo}</td>
-                            <td>{item.partNo}</td>
+                            {/* <td>{issueRequest.kitQty}</td>
+                            <td>{issueRequest.kitNo}</td>
+                            <td>{issueRequest.partNo}</td> */}
                             {/* <td
                               onClick={() =>
                                 handlePendingStatusClick(issueRequest, subIndex)
@@ -474,7 +515,10 @@ function IssueManifest() {
                               //   handlePendingStatusClick(issueRequest, subIndex)
                               // }
                             >
-                              {getPaymentStatus()}
+                              {getPaymentStatus(
+                                issueRequest.issueStatus,
+                                issueRequest
+                              )}
                             </td>
                           </tr>
                         ))}
@@ -487,7 +531,7 @@ function IssueManifest() {
             {/* Pending Modal Popup */}
             <Dialog
               fullWidth={true}
-              maxWidth={"sm"}
+              maxWidth={"md"}
               open={isPendingPopupOpen}
               onClose={closePendingPopup}
             >
@@ -504,7 +548,7 @@ function IssueManifest() {
                     <div>
                       <div className="text-dark">
                         Request.Manifest No:
-                        {selectedIssueRequest?.reqAddressId}
+                        {selectedIssueRequest?.id}
                       </div>
                       <div className="text-dark">
                         Manifest Date :
@@ -514,57 +558,155 @@ function IssueManifest() {
                       </div>
                     </div>
                   </div>
-                  <div className="d-flex flex-row text-dark mt-3">
-                    <div>Part Name/No : </div>
-                    <div className="ms-1">
-                      {selectedIssueRequest?.issueItemVO.map((item, index) => (
-                        <div key={index} className="font-bold">
-                          {item.partNo}
+                  <div
+                    className="d-flex flex-row text-dark mt-3"
+                    style={{ marginLeft: "70px" }}
+                  >
+                    {selectedIssueRequest?.irType === "IR_PART" && (
+                      <div>
+                        <div className="ms-1">
+                          {/* Displaying partName and partQty in a table */}
+
+                          <table className="table">
+                            <thead>
+                              <tr>
+                                <th>Part Name</th>
+                                <th>Part Quantity</th>
+                                <th>Issue Quantity</th>
+                                <th>Balance Quantity</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {selectedIssueRequest?.issueItemVO.map(
+                                (item, index) => (
+                                  <tr key={index}>
+                                    <td>{item.partName}</td>
+                                    <td>{item.partQty}</td>
+                                    <td>
+                                      {/* Issue Quantity input box */}
+                                      <input
+                                        className="form-control form-sz mb-2"
+                                        placeholder="Issue Quantity"
+                                        name={`issueQty-${index}`}
+                                        value={qty[index] || ""}
+                                        onChange={(e) =>
+                                          handleQtyChange(e, index)
+                                        }
+                                        disabled={
+                                          selectedIssueRequest.issueStatus === 2
+                                        }
+                                      />
+                                    </td>
+                                    <td>
+                                      {/* Displaying Balance Quantity (adjust the logic based on your requirement) */}
+                                      {item.balanceQty}
+                                    </td>
+                                    <td>
+                                      {/* Button for issuing kit in this row */}
+                                      {selectedIssueRequest.issueStatus !==
+                                      2 ? (
+                                        <Button
+                                          variant="contained"
+                                          onClick={() => handleIssueKit(item)}
+                                        >
+                                          Issue
+                                        </Button>
+                                      ) : (
+                                        <div className="badge bg-success text-white cursor-pointer w-full">
+                                          Issued
+                                        </div>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )
+                              )}
+                            </tbody>
+                          </table>
                         </div>
-                      ))}
-                    </div>
-                    <div className="ms-4">Kit No : </div>
-                    <div className="ms-1">
-                      {selectedIssueRequest?.issueItemVO.map((item, index) => (
-                        <div key={index} className="font-bold">
-                          {item.kitNo}
+                      </div>
+                    )}
+                    {selectedIssueRequest?.irType === "IR_KIT" && (
+                      <>
+                        {/* <div className="ms-4">Kit No : </div> */}
+                        <div className="ms-1">
+                          {/* Displaying kitName and kitQty in a table */}
+                          <table className="table">
+                            <thead>
+                              <tr>
+                                <th>Kit Name</th>
+                                <th>Kit Quantity</th>
+                                <th>Issue Quantity</th>
+                                <th>Balance Quantity</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {selectedIssueRequest?.issueItemVO.map(
+                                (item, index) => (
+                                  <tr key={index}>
+                                    <td>{item.kitName}</td>
+                                    <td>{item.kitQty}</td>
+                                    <td>
+                                      {/* Issue Quantity input box */}
+                                      <input
+                                        className="form-control form-sz mb-2"
+                                        placeholder="Issue Quantity"
+                                        name={`issueQty-${index}`}
+                                        value={qty[index] || ""}
+                                        disabled={
+                                          selectedIssueRequest.issueStatus === 2
+                                        }
+                                        onChange={(e) =>
+                                          handleQtyChange(e, index)
+                                        }
+                                      />
+                                    </td>
+                                    <td>
+                                      {/* Displaying Balance Quantity (adjust the logic based on your requirement) */}
+                                      {item.balanceQty}
+                                    </td>
+                                    <td>
+                                      {/* Button for issuing kit in this row */}
+                                      {selectedIssueRequest.issueStatus !==
+                                      2 ? (
+                                        <Button
+                                          variant="contained"
+                                          onClick={() => handleIssueKit(item)}
+                                        >
+                                          Issue
+                                        </Button>
+                                      ) : (
+                                        <div className="badge bg-success text-white cursor-pointer w-full">
+                                          Issued
+                                        </div>
+                                      )}
+                                    </td>
+                                  </tr>
+                                )
+                              )}
+                            </tbody>
+                          </table>
                         </div>
-                      ))}
-                    </div>
+                      </>
+                    )}
                   </div>
-                  <div className="col-lg-6 text-dark mt-3">
+                  {/* <div className="col-lg-6 text-dark mt-3">
                     Demand Qty : {selectedIssueRequest?.totalIssueItem}
-                  </div>
+                  </div> */}
                   <div className="col-lg-6 mt-3 font-bold text-xl"></div>
                   <div className="your-form-container d-flex flex-wrap">
-                    <div className="col-lg-3 text-dark mt-3">
+                    {/* <div className="col-lg-3 text-dark mt-3">
                       Available Qty: 15
-                    </div>
-                    <div className="col-lg-6 text-dark d-flex flex-row">
-                      <div className="mt-3 me-1">
-                        <span className="d-flex flex-row">
-                          Issue Qty:
-                          {/* {selectedIssueRequest?.issueItemVO[0].issuedQty} */}
-                          <FaStarOfLife className="must" />
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        <input
-                          className="form-control form-sz mb-2"
-                          placeholder={""}
-                          name="qty"
-                          value={qty}
-                          onChange={handleQtyChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-3 text-dark mt-3 text-end">
+                    </div> */}
+
+                    {/* <div className="col-lg-3 text-dark mt-3 text-end">
                       balance Qty: 5
-                    </div>
+                    </div> */}
                   </div>
                 </DialogContentText>
               </DialogContent>
-              <div className="d-flex justify-content-center">
+              {/* <div className="d-flex justify-content-center">
                 <DialogActions className="mb-2 me-2">
                   <Button
                     component="label"
@@ -574,7 +716,7 @@ function IssueManifest() {
                     Issue
                   </Button>
                 </DialogActions>
-              </div>
+              </div> */}
               <DialogContentText>
                 <center className="text-dark mb-2">
                   Issued by AIPACKS - Karthi-19/01/2024-10:00AM
