@@ -187,20 +187,30 @@ function Vendors() {
           <div className="">
             <div className="flex justify-between mt-4">
               <button
-                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}
               >
-                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                <span className="">Bulk Upload</span>
+                <img
+                  src="/upload.png"
+                  alt="upload-icon"
+                  title="upload"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Bulk Upload</span>
               </button>
               <button
-                className="btn btn-ghost btn-sm text-sm col-xs-1"
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleAddVendors}
               >
-                <IoIosAdd style={{ fontSize: 30, color: "blue" }} />
-                <span className="">Vendor</span>
+                <img
+                  src="/new.png"
+                  alt="new-icon"
+                  title="new"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Vendor</span>
               </button>
             </div>
           </div>

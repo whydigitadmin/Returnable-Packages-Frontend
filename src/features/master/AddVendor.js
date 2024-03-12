@@ -1380,7 +1380,7 @@ function AddVendor({ addVendors }) {
                       fontSize: "0.800rem",
                       width: "100%",
                     }}
-                    type={"number"}
+                    type={"text"}
                     value={newAddress.desination}
                     onChange={(e) => handleAddressInputChange(e, "desination")}
                     className="input input-bordered p-2"
@@ -1400,7 +1400,7 @@ function AddVendor({ addVendors }) {
                       fontSize: "0.800rem",
                       width: "100%",
                     }}
-                    type={"number"}
+                    type={"text"}
                     value={newAddress.emailAddress}
                     onChange={(e) =>
                       handleAddressInputChange(e, "emailAddress")

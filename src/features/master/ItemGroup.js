@@ -267,16 +267,26 @@ function ItemGroup() {
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Type</span>
+                <img
+                  src="/new.png"
+                  alt="new-icon"
+                  title="new"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Type</span>
               </button>
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleAddOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Category</span>
+                <img
+                  src="/new.png"
+                  alt="new-icon"
+                  title="new"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Category</span>
               </button>
             </div>
           </div>

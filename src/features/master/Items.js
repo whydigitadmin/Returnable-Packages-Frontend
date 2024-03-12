@@ -257,16 +257,26 @@ function Items() {
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Bulk Upload</span>
+                <img
+                  src="/upload.png"
+                  alt="upload-icon"
+                  title="upload"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Bulk Upload</span>
               </button>
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleAddOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Asset</span>
+                <img
+                  src="/new.png"
+                  alt="new-icon"
+                  title="new"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Asset</span>
               </button>
             </div>
           </div>

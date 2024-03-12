@@ -291,8 +291,13 @@ function Partstudy() {
                 style={{ color: "blue" }}
                 onClick={handleAddOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Part Study</span>
+                <img
+                  src="/new.png"
+                  alt="new-icon"
+                  title="new"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Part Study</span>
               </button>
             </div>
             <MaterialReactTable table={table} />

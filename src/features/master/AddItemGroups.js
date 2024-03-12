@@ -299,8 +299,12 @@ function AddItemGroups({ addItem }) {
                 style={{ color: "blue" }}
                 onClick={handleAssetOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">ASSET</span>
+                <img
+                  src="/new.png"
+                  alt="new-icon"
+                  title="new"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }} />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Asset</span>
               </button>
             </div>
             {errors.kitAssetDTO && (
@@ -591,7 +595,7 @@ function AddItemGroups({ addItem }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
-          <Button onClick={handleAssetClose}>Cancel</Button>
+          {/* <Button onClick={handleAssetClose}>Cancel</Button> */}
           <Button
             component="label"
             variant="contained"

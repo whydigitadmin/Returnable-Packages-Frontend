@@ -211,9 +211,9 @@ function Warehouse() {
     columns,
   });
 
-  const handleSaveRowEdits = () => {};
+  const handleSaveRowEdits = () => { };
 
-  const handleCancelRowEdits = () => {};
+  const handleCancelRowEdits = () => { };
 
   const handleEdit = (rowData) => {
     // Implement your logic to handle the edit action for the specific row
@@ -243,16 +243,26 @@ function Warehouse() {
                 style={{ color: "blue" }}
                 onClick={handleClickOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Bulk Upload</span>
+                <img
+                  src="/upload.png"
+                  alt="pending-status-icon"
+                  title="add"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Bulk Upload</span>
               </button>
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
                 onClick={handleAddOpen}
               >
-                <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-                <span className="text-form text-base">Warehouse</span>
+                <img
+                  src="/new.png"
+                  alt="pending-status-icon"
+                  title="add"
+                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                />
+                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Warehouse</span>
               </button>
             </div>
           </div>

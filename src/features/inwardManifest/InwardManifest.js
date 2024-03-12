@@ -138,35 +138,43 @@ export const InwardManifest = () => {
     const randomStatus = Math.floor(Math.random() * 3); // Generates random values 0, 1, 2
     if (randomStatus === 0)
       return (
-        <div
-          className="badge bg-danger text-white cursor-pointer w-full"
-          onClick={() =>
-            handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
-          }
-        >
-          Pending
+        <div>
+          <img
+            src="/pending.png"
+            alt="pending-status-icon"
+            title="Pending"
+            style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+            onClick={() =>
+              handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
+            }
+          />
         </div>
       );
     if (randomStatus === 1)
       return (
-        <div
-          className="badge bg-warning text-white cursor-pointer w-full"
-          onClick={() =>
-            handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
-          }
-        >
-          WIP
+        <div>
+          <img
+            src="/inprogress.png"
+            alt="Inprogress-status-icon"
+            style={{ width: 30, height: 30, margin: "auto" }}
+            onClick={() =>
+              handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
+
+            }
+          />
         </div>
       );
     if (randomStatus === 2)
       return (
-        <div
-          className="badge bg-success text-white cursor-pointer w-full"
-          onClick={() =>
-            handleIssuedStatusClick(selectedIssueRequest, selectedSubIndex)
-          }
-        >
-          Issued
+        <div>
+          <img
+            src="/checked1.png"
+            alt="completed-status-icon"
+            style={{ width: 30, height: 30, margin: "auto" }}
+            onClick={() =>
+              handleIssuedStatusClick(selectedIssueRequest, selectedSubIndex)
+            }
+          />
         </div>
       );
     else return <div className="badge badge-ghost">Unknown</div>;
@@ -370,9 +378,9 @@ export const InwardManifest = () => {
 
                             <td
                               style={{ width: 100 }}
-                              // onClick={() =>
-                              //   handlePendingStatusClick(issueRequest, subIndex)
-                              // }
+                            // onClick={() =>
+                            //   handlePendingStatusClick(issueRequest, subIndex)
+                            // }
                             >
                               {getPaymentStatus()}
                             </td>
