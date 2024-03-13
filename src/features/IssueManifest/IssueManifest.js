@@ -215,7 +215,7 @@ function IssueManifest() {
       );
     if (randomStatus === 2)
       return (
-        <div>
+        <div style={{ display: 'flex' }}>
           <img
             src="/checked1.png"
             alt="completed-status-icon"
@@ -223,6 +223,11 @@ function IssueManifest() {
             onClick={() =>
               handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
             }
+          />
+          <img
+            src="/download.png"
+            alt="completed-status-icon"
+            style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
           />
         </div>
       );
@@ -496,9 +501,9 @@ function IssueManifest() {
 
                               <td
                                 style={{ width: 100 }}
-                                // onClick={() =>
-                                //   handlePendingStatusClick(issueRequest, subIndex)
-                                // }
+                              // onClick={() =>
+                              //   handlePendingStatusClick(issueRequest, subIndex)
+                              // }
                               >
                                 {getPaymentStatus(
                                   issueRequest.issueStatus,
@@ -617,7 +622,7 @@ function IssueManifest() {
                                     <td>
                                       {/* Button for issuing part in this row */}
                                       {selectedIssueRequest.issueStatus !==
-                                      2 ? (
+                                        2 ? (
                                         <Button
                                           variant="contained"
                                           onClick={() => handleIssueKit(item)}
@@ -712,7 +717,7 @@ function IssueManifest() {
                                     <td>
                                       {/* Button for issuing kit in this row */}
                                       {selectedIssueRequest.issueStatus !==
-                                      2 ? (
+                                        2 ? (
                                         <Button
                                           variant="contained"
                                           onClick={() => handleIssueKit(item)}
