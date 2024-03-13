@@ -84,7 +84,7 @@ const GettingStarted = lazy(() => import("../pages/GettingStarted"));
 const DocFeatures = lazy(() => import("../pages/DocFeatures"));
 const DocComponents = lazy(() => import("../pages/DocComponents"));
 
-const UserCreation = lazy(() => import("../pages/protected/UserCreation"));
+const UserDetails = lazy(() => import("../pages/protected/UserDetails"));
 const EmitterCreation = lazy(() =>
   import("../pages/protected/EmitterCreation")
 );
@@ -325,8 +325,8 @@ const routes = [
     component: WarehouseLocation,
   },
   {
-    path: "/userCreation",
-    component: UserCreation,
+    path: "/userDetails",
+    component: UserDetails,
   },
   {
     path: "/emitterCreation",

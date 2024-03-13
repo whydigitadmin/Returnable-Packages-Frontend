@@ -130,44 +130,91 @@ function IssueManifest() {
   //   setErrors(errors);
   // }
 
+  // const getPaymentStatus = (issueStatus, selectedIssueRequest) => {
+  //   const randomStatus = issueStatus;
+  //   if (randomStatus === 0)
+  //     return (
+  //       <div
+  //         className="badge bg-danger text-white cursor-pointer w-full"
+  //         onClick={() =>
+  //           handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
+  //         }
+  //       >
+  //         {console.log("Testing", selectedIssueRequest)}
+  //         Pending
+  //       </div>
+  //     );
+  //   if (randomStatus === 1)
+  //     return (
+  //       <div
+  //         className="badge bg-warning text-white cursor-pointer w-full"
+  //         onClick={() =>
+  //           handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
+  //         }
+  //       >
+  //         WIP
+  //       </div>
+  //     );
+  //   if (randomStatus === 2)
+  //     return (
+  //       <div
+  //         className="badge bg-success text-white cursor-pointer w-full"
+  //         onClick={() =>
+  //           handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
+  //         }
+  //       >
+  //         Issued
+  //       </div>
+  //     );
+  //   else return <div className="badge badge-ghost">Unknown</div>;
+  // };
+
   const getPaymentStatus = (issueStatus, selectedIssueRequest) => {
     const randomStatus = issueStatus;
     if (randomStatus === 0)
       return (
-        <div
-          className="badge bg-danger text-white cursor-pointer w-full"
-          onClick={() =>
-            handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
-          }
-        >
-          {console.log("Testing", selectedIssueRequest)}
-          Pending
+        <div>
+          <img
+            src="/pending.png"
+            alt="pending-status-icon"
+            title="Pending"
+            style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
+            onClick={() =>
+              handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
+            }
+          />
         </div>
       );
     if (randomStatus === 1)
       return (
-        <div
-          className="badge bg-warning text-white cursor-pointer w-full"
-          onClick={() =>
-            handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
-          }
-        >
-          WIP
+        <div>
+          <img
+            src="/inprogress.png"
+            alt="Inprogress-status-icon"
+            style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
+            onClick={() =>
+              handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
+            }
+          />
         </div>
       );
     if (randomStatus === 2)
       return (
-        <div
-          className="badge bg-success text-white cursor-pointer w-full"
-          onClick={() =>
-            handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
-          }
-        >
-          Issued
+        <div>
+          <img
+            src="/checked1.png"
+            alt="completed-status-icon"
+            style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
+            onClick={() =>
+              handlePendingStatusClick(selectedIssueRequest, selectedSubIndex)
+            }
+          />
         </div>
       );
     else return <div className="badge badge-ghost">Unknown</div>;
   };
+
+
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
@@ -442,9 +489,9 @@ function IssueManifest() {
 
                               <td
                                 style={{ width: 100 }}
-                                // onClick={() =>
-                                //   handlePendingStatusClick(issueRequest, subIndex)
-                                // }
+                              // onClick={() =>
+                              //   handlePendingStatusClick(issueRequest, subIndex)
+                              // }
                               >
                                 {getPaymentStatus(
                                   issueRequest.issueStatus,
@@ -543,7 +590,7 @@ function IssueManifest() {
                                     <td>
                                       {/* Button for issuing kit in this row */}
                                       {selectedIssueRequest.issueStatus !==
-                                      2 ? (
+                                        2 ? (
                                         <Button
                                           variant="contained"
                                           onClick={() => handleIssueKit(item)}
@@ -551,8 +598,12 @@ function IssueManifest() {
                                           Issue
                                         </Button>
                                       ) : (
-                                        <div className="badge bg-success text-white cursor-pointer w-full">
-                                          Issued
+                                        <div>
+                                          <img
+                                            src="/checked1.png"
+                                            alt="completed-status-icon"
+                                            style={{ width: 30, height: 30, margin: "auto" }}
+                                          />
                                         </div>
                                       )}
                                     </td>
@@ -607,7 +658,7 @@ function IssueManifest() {
                                     <td>
                                       {/* Button for issuing kit in this row */}
                                       {selectedIssueRequest.issueStatus !==
-                                      2 ? (
+                                        2 ? (
                                         <Button
                                           variant="contained"
                                           onClick={() => handleIssueKit(item)}
@@ -615,8 +666,12 @@ function IssueManifest() {
                                           Issue
                                         </Button>
                                       ) : (
-                                        <div className="badge bg-success text-white cursor-pointer w-full">
-                                          Issued
+                                        <div>
+                                          <img
+                                            src="/checked1.png"
+                                            alt="completed-status-icon"
+                                            style={{ width: 30, height: 30, margin: "auto" }}
+                                          />
                                         </div>
                                       )}
                                     </td>
