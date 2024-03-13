@@ -122,18 +122,6 @@ const routes = [
         name: <span>Create Assets</span>,
       },
       {
-        path: "/app/createkit",
-        icon: (
-          <img
-            src="/createkit.png"
-            alt="CreateKit"
-            style={{ width: "31px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span>Create Kit</span>,
-      },
-      {
         path: "/app/warehouse",
         icon: (
           <img
@@ -201,6 +189,18 @@ const routes = [
     ),
     name: <span style={{ marginLeft: "7px" }}>Engineering</span>,
     submenu: [
+      {
+        path: "/app/createkit",
+        icon: (
+          <img
+            src="/createkit.png"
+            alt="CreateKit"
+            style={{ width: "31px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Create Kit</span>,
+      },
       {
         path: "/app/partstudy", //no url needed as this has submenu
         icon: (
