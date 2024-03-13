@@ -9,6 +9,9 @@ import { IoMdClose } from "react-icons/io";
 import { MdDoubleArrow } from "react-icons/md";
 import TitleCard from "../../components/Cards/TitleCard";
 
+import Checkbox from "@mui/material/Checkbox";
+import FormControlLabel from "@mui/material/FormControlLabel";
+
 const steps = ["Issue manifest", "Mode of Transport "];
 
 function IssueManifest() {
@@ -35,6 +38,7 @@ function IssueManifest() {
     JSON.parse(localStorage.getItem("userDto"))
   );
   const [demoState, setDemoState] = useState(false);
+  const [selectedItemIds, setSelectedItemIds] = useState([]);
 
   useEffect(() => {
     getLocationList();
@@ -96,21 +100,17 @@ function IssueManifest() {
 
   // randomStatus code
 
-  const handleIssueKit = (item) => {
-    console.log("test");
-    const errors = {};
-    // if (!unit) {
-    //   errors.unit = "Unit Name is required";
-    // }
-    // if (Object.keys(errors).length === 0) {
+  const handleIssueKit = () => {
     const formData = {
-      approvelId: userId,
+      approvedId: userId,
       approverName: userDetail.firstName,
-      issueItemId: item.id,
       issueRequestId: selectedIssueRequest.id,
-      issuedQty: qty,
+      issueRequestItemApprovelDTO: selectedItemIds.map((itemId) => ({
+        issueItemId: itemId,
+        issuedQty: qty[itemId] || 0, // Assuming qty is an object with item IDs as keys
+      })),
     };
-    console.log("test1", formData);
+
     axios
       .post(
         `${process.env.REACT_APP_API_URL}/api/emitter/issueRequestQtyApprovel`,
@@ -169,6 +169,21 @@ function IssueManifest() {
   //   else return <div className="badge badge-ghost">Unknown</div>;
   // };
 
+  const handleSelectItem = (itemId) => {
+    const newSelectedItems = [...selectedItemIds];
+
+    if (newSelectedItems.includes(itemId)) {
+      // If the item is already selected, remove it
+      const index = newSelectedItems.indexOf(itemId);
+      newSelectedItems.splice(index, 1);
+    } else {
+      // If the item is not selected, add it to the list
+      newSelectedItems.push(itemId);
+    }
+
+    setSelectedItemIds(newSelectedItems);
+  };
+
   const getPaymentStatus = (issueStatus, selectedIssueRequest) => {
     const randomStatus = issueStatus;
     if (randomStatus === 0)
@@ -213,8 +228,6 @@ function IssueManifest() {
       );
     else return <div className="badge badge-ghost">Unknown</div>;
   };
-
-
 
   const [activeStep, setActiveStep] = React.useState(0);
   const [skipped, setSkipped] = React.useState(new Set());
@@ -454,16 +467,10 @@ function IssueManifest() {
                                   <td rowSpan={issueRequest.issueItemVO.length}>
                                     {issueRequest.flowName}
                                   </td>
-                                  <td
-                                    rowSpan={issueRequest.issueItemVO.length}
-                                    className="text-center"
-                                  >
+                                  <td rowSpan={issueRequest.issueItemVO.length}>
                                     {issueRequest.tat}
                                   </td>
-                                  <td
-                                    rowSpan={issueRequest.issueItemVO.length}
-                                    className="text-center"
-                                  >
+                                  <td rowSpan={issueRequest.issueItemVO.length}>
                                     {issueRequest.totalIssueItem}
                                   </td>
                                   {/* <td
@@ -489,9 +496,9 @@ function IssueManifest() {
 
                               <td
                                 style={{ width: 100 }}
-                              // onClick={() =>
-                              //   handlePendingStatusClick(issueRequest, subIndex)
-                              // }
+                                // onClick={() =>
+                                //   handlePendingStatusClick(issueRequest, subIndex)
+                                // }
                               >
                                 {getPaymentStatus(
                                   issueRequest.issueStatus,
@@ -555,6 +562,8 @@ function IssueManifest() {
                           <table className="table">
                             <thead>
                               <tr>
+                                <th>Select</th>
+                                <th>Kit Name</th>
                                 <th>Part Name</th>
                                 <th>Part Quantity</th>
                                 <th>Issue Quantity</th>
@@ -566,6 +575,23 @@ function IssueManifest() {
                               {selectedIssueRequest?.issueItemVO.map(
                                 (item, index) => (
                                   <tr key={index}>
+                                    <td>
+                                      <FormControlLabel
+                                        control={
+                                          <Checkbox
+                                            value={item.id}
+                                            checked={selectedItemIds.includes(
+                                              item.id
+                                            )}
+                                            onChange={() =>
+                                              handleSelectItem(item.id)
+                                            }
+                                          />
+                                        }
+                                        label=""
+                                      />
+                                    </td>
+                                    <td>{item.kitName}</td>
                                     <td>{item.partName}</td>
                                     <td>{item.partQty}</td>
                                     <td>
@@ -574,12 +600,13 @@ function IssueManifest() {
                                         className="form-control form-sz mb-2"
                                         placeholder="Issue Quantity"
                                         name={`issueQty-${index}`}
-                                        value={qty[index] || ""}
-                                        onChange={(e) =>
-                                          handleQtyChange(e, index)
-                                        }
+                                        value={qty[item.id] || ""}
                                         disabled={
+                                          !selectedItemIds.includes(item.id) ||
                                           selectedIssueRequest.issueStatus === 2
+                                        }
+                                        onChange={(e) =>
+                                          handleQtyChange(e, item.id)
                                         }
                                       />
                                     </td>
@@ -588,9 +615,9 @@ function IssueManifest() {
                                       {item.balanceQty}
                                     </td>
                                     <td>
-                                      {/* Button for issuing kit in this row */}
+                                      {/* Button for issuing part in this row */}
                                       {selectedIssueRequest.issueStatus !==
-                                        2 ? (
+                                      2 ? (
                                         <Button
                                           variant="contained"
                                           onClick={() => handleIssueKit(item)}
@@ -602,7 +629,11 @@ function IssueManifest() {
                                           <img
                                             src="/checked1.png"
                                             alt="completed-status-icon"
-                                            style={{ width: 30, height: 30, margin: "auto" }}
+                                            style={{
+                                              width: 30,
+                                              height: 30,
+                                              margin: "auto",
+                                            }}
                                           />
                                         </div>
                                       )}
@@ -623,6 +654,7 @@ function IssueManifest() {
                           <table className="table">
                             <thead>
                               <tr>
+                                <th>Select</th>
                                 <th>Kit Name</th>
                                 <th>Kit Quantity</th>
                                 <th>Issue Quantity</th>
@@ -634,6 +666,26 @@ function IssueManifest() {
                               {selectedIssueRequest?.issueItemVO.map(
                                 (item, index) => (
                                   <tr key={index}>
+                                    <td>
+                                      {" "}
+                                      <td>
+                                        {/* Material-UI Checkbox for selecting item */}
+                                        <FormControlLabel
+                                          control={
+                                            <Checkbox
+                                              value={item.id}
+                                              checked={selectedItemIds.includes(
+                                                item.id
+                                              )}
+                                              onChange={() =>
+                                                handleSelectItem(item.id)
+                                              }
+                                            />
+                                          }
+                                          label=""
+                                        />
+                                      </td>
+                                    </td>
                                     <td>{item.kitName}</td>
                                     <td>{item.kitQty}</td>
                                     <td>
@@ -642,12 +694,13 @@ function IssueManifest() {
                                         className="form-control form-sz mb-2"
                                         placeholder="Issue Quantity"
                                         name={`issueQty-${index}`}
-                                        value={qty[index] || ""}
+                                        value={qty[item.id] || ""}
                                         disabled={
+                                          !selectedItemIds.includes(item.id) ||
                                           selectedIssueRequest.issueStatus === 2
                                         }
                                         onChange={(e) =>
-                                          handleQtyChange(e, index)
+                                          handleQtyChange(e, item.id)
                                         }
                                       />
                                     </td>
@@ -655,10 +708,11 @@ function IssueManifest() {
                                       {/* Displaying Balance Quantity (adjust the logic based on your requirement) */}
                                       {item.balanceQty}
                                     </td>
+
                                     <td>
                                       {/* Button for issuing kit in this row */}
                                       {selectedIssueRequest.issueStatus !==
-                                        2 ? (
+                                      2 ? (
                                         <Button
                                           variant="contained"
                                           onClick={() => handleIssueKit(item)}
@@ -670,7 +724,11 @@ function IssueManifest() {
                                           <img
                                             src="/checked1.png"
                                             alt="completed-status-icon"
-                                            style={{ width: 30, height: 30, margin: "auto" }}
+                                            style={{
+                                              width: 30,
+                                              height: 30,
+                                              margin: "auto",
+                                            }}
                                           />
                                         </div>
                                       )}
