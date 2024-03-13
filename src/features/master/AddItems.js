@@ -94,15 +94,23 @@ function AddItem({ addItem }) {
   const [showQuantity, setShowQuantity] = useState(true);
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [warehouse, setWarehouse] = useState("");
+  const [selected, setSelected] = useState(false);
+  const [categorySelected, setCategorySelected] = useState(false);
+  const [nameSelected, setNameSelected] = useState(false);
+  const [codeSelected, setCodeSelected] = useState(false);
 
   const handleAssetCategoryChange = (event) => {
-    setAssetCategory(event.target.value);
+    const selectedCategory = event.target.value;
+    setAssetCategory(selectedCategory);
+    setCategorySelected(true);
     // Call function to fetch asset names based on the selected category
     getAssetNamesByCategory(event.target.value);
   };
 
   const handleAssetNameChange = (event) => {
-    setAssetName(event.target.value);
+    const selectedType = event.target.value;
+    setAssetName(selectedType);
+    setNameSelected(true);
     // Call function to fetch asset names based on the selected category
     getAssetIdByName(event.target.value);
   };
@@ -110,6 +118,7 @@ function AddItem({ addItem }) {
   const handleAsseCodeChange = (event) => {
     const selectedAssetCodeId = event.target.value;
     setAssetCodeId(selectedAssetCodeId);
+    setCodeSelected(true);
 
     // Check if a valid Asset Code is selected
     // if (selectedAssetCodeId) {
@@ -371,7 +380,9 @@ function AddItem({ addItem }) {
   };
 
   const handleWarehouseChange = (event) => {
-    setWarehouse(event.target.value);
+    const selectedWarehouse = event.target.value;
+    setWarehouse(selectedWarehouse);
+    setSelected(true); // Set selected to true once a value is selected
   };
 
   const handleUnitChange = (e) => {
@@ -417,6 +428,7 @@ function AddItem({ addItem }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleWarehouseChange}
               value={warehouse}
+              disabled={selected}
             >
               <option value="" disabled>
                 Select an Emitter
@@ -448,6 +460,7 @@ function AddItem({ addItem }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAssetCategoryChange}
               value={assetCategory}
+              disabled={categorySelected}
             >
               <option value="" disabled>
                 Select an Type
@@ -476,6 +489,7 @@ function AddItem({ addItem }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAssetNameChange}
               value={assetName}
+              disabled={nameSelected}
             >
               <option value="" disabled>
                 Select a Name
@@ -500,6 +514,7 @@ function AddItem({ addItem }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAsseCodeChange}
               value={assetCodeId}
+              disabled={codeSelected}
             >
               <option value="" disabled>
                 Select a Code

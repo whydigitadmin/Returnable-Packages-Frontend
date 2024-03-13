@@ -26,6 +26,9 @@ function AddItemGroups({ addItem }) {
   const [id, setId] = useState();
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [kitAssetDTO, setKitAssetDTO] = useState([]);
+  const [selectedAssetCategory, setSelectedAssetCategory] = useState(false);
+  const [selectedName, setSelectedName] = useState(false);
+  const [selectedCode, setSelectedCode] = useState(false);
 
   // Update this function to add asset details to the state
   const handleAddAssetDetails = () => {
@@ -77,6 +80,9 @@ function AddItemGroups({ addItem }) {
     setPartQuantity("");
     setShowPartQuantity(false);
     setErrors({});
+    setSelectedAssetCategory(false);
+    setSelectedName(false);
+    setSelectedCode(false);
   };
   const handleKitId = (event) => {
     setId(event.target.value);
@@ -106,6 +112,7 @@ function AddItemGroups({ addItem }) {
   const handleAssetCategoryChange = (event) => {
     const selectedCategory = event.target.value;
     setAssetCategory(selectedCategory);
+    setSelectedAssetCategory(true);
     // Toggle visibility of part quantity input based on the selected category
     setShowPartQuantity(selectedCategory === "CUSTOMIZED");
     // Call function to fetch asset names based on the selected category
@@ -114,6 +121,7 @@ function AddItemGroups({ addItem }) {
 
   const handleAssetNameChange = (event) => {
     setAssetName(event.target.value);
+    setSelectedName(true);
     // Call function to fetch asset names based on the selected category
     getAssetIdByName(event.target.value);
   };
@@ -121,6 +129,7 @@ function AddItemGroups({ addItem }) {
   const handleAsseCodeChange = (event) => {
     const selectedAssetCodeId = event.target.value;
     setAssetCodeId(selectedAssetCodeId);
+    setSelectedCode(true);
   };
 
   const getAllAssetCategory = async () => {
@@ -303,8 +312,19 @@ function AddItemGroups({ addItem }) {
                   src="/new.png"
                   alt="new-icon"
                   title="new"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }} />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Asset</span>
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
+                />
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Asset
+                </span>
               </button>
             </div>
             {errors.kitAssetDTO && (
@@ -460,8 +480,9 @@ function AddItemGroups({ addItem }) {
                   className="input input-bordered ps-2"
                   onChange={handleAssetCategoryChange}
                   value={assetCategory}
+                  disabled={selectedAssetCategory}
                 >
-                  <option value="" disabled>
+                  <option value="" selected>
                     Select an Asset Type
                   </option>
                   {assetCategoryVO.length > 0 &&
@@ -493,6 +514,7 @@ function AddItemGroups({ addItem }) {
                   className="input input-bordered ps-2"
                   onChange={handleAssetNameChange}
                   value={assetName}
+                  disabled={selectedName}
                 >
                   <option value="" disabled>
                     Select an Asset Name
@@ -526,6 +548,7 @@ function AddItemGroups({ addItem }) {
                   className="input input-bordered ps-2"
                   onChange={handleAsseCodeChange}
                   value={assetCodeId}
+                  disabled={selectedCode}
                 >
                   <option value="" disabled>
                     Select an Asset Code
