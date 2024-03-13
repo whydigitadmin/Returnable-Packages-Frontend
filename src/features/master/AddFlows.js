@@ -253,7 +253,8 @@ function AddFlows({ addFlows }) {
         orgin,
         destination,
         active,
-        warehouseLocation: warehouseLocationValue,
+        warehouseId: warehouseLocationValue,
+        // warehouseLocation: warehouseLocationValue,
         flowDetailDTO: kitDTO,
       };
 
@@ -530,7 +531,7 @@ function AddFlows({ addFlows }) {
               </option>
               {warehouseLocationVO.length > 0 &&
                 warehouseLocationVO.map((list) => (
-                  <option key={list.id} value={list.id}>
+                  <option key={list.warehouseId} value={list.warehouseId}>
                     {list.warehouseLocation}
                   </option>
                 ))}
