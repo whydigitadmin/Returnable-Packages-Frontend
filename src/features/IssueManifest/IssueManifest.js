@@ -119,7 +119,7 @@ function IssueManifest() {
       .then((response) => {
         console.log("Response:", response.data);
         getIssueRequest(emitterId);
-        closePendingPopup();
+        // closePendingPopup();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -623,12 +623,26 @@ function IssueManifest() {
                                       {/* Button for issuing part in this row */}
                                       {selectedIssueRequest.issueStatus !==
                                         2 ? (
-                                        <Button
-                                          variant="contained"
-                                          onClick={() => handleIssueKit(item)}
-                                        >
-                                          Issue
-                                        </Button>
+                                        // <Button
+                                        //   variant="contained"
+                                        //   onClick={() => handleIssueKit(item)}
+                                        // >
+                                        //   Issue
+                                        // </Button>
+                                        <div>
+                                          <img
+                                            src="/will_issue.png"
+                                            alt="will-issue-icon"
+                                            style={{
+                                              width: 30,
+                                              height: 30,
+                                              margin: "auto",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => handleIssueKit(item)}
+                                          />
+                                        </div>
+
                                       ) : (
                                         <div>
                                           <img
