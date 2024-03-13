@@ -1,12 +1,9 @@
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
-import Box from "@mui/material/Box";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
-import Typography from "@mui/material/Typography";
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { FaStarOfLife } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
 import { MdDoubleArrow } from "react-icons/md";
@@ -30,7 +27,7 @@ function IssueManifest() {
 
   const [emitter, setEmitter] = useState("");
   const [emitterId, setEmitterId] = useState("");
-  const [qty, setQty] = React.useState("");
+  const [qty, setQty] = React.useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [selectedWarehouseId, setSelectedWarehouseId] = useState();
@@ -47,8 +44,10 @@ function IssueManifest() {
     getIssueRequest();
   }, [emitterId]);
 
-  const handleQtyChange = (e) => {
-    setQty(e.target.value);
+  const handleQtyChange = (e, index) => {
+    const newQty = [...qty];
+    newQty[index] = e.target.value;
+    setQty(newQty);
   };
 
   const openPendingPopup = () => {
@@ -94,56 +93,6 @@ function IssueManifest() {
     setSelectedSubIndex(subIndex);
     openIssuedPopup();
   };
-
-  // const handlePendingStatusClick = (bill) => {
-  //   setPendingPopupOpen(true);
-  //   setSelectedPendingBill(bill);
-  // };
-
-  // const handlePendingStatusClickIssued = (bill) => {
-  //   setPendingPopupOpenIssued(true);
-  //   setSelectedPendingBill(bill);
-  // };
-
-  // const closePendingPopup = () => {
-  //   setPendingPopupOpen(false);
-  //   setSelectedPendingBill(null);
-  // };
-
-  // const closePendingPopupIssued = () => {
-  //   setPendingPopupOpenIssued(false);
-  //   setSelectedPendingBill(null);
-  // };
-  // const getPaymentStatus = (issueRequest, bill) => {
-  //   if (issueRequest === 0)
-  //     return (
-  //       <div
-  //         className="badge bg-danger text-white cursor-pointer"
-  //         onClick={() => handlePendingStatusClick(issueRequest)}
-  //       >
-  //         Pending
-  //       </div>
-  //     );
-  //   if (issueRequest === 1)
-  //     return (
-  //       <div
-  //         className="badge bg-warning text-white cursor-pointer"
-  //         onClick={() => handlePendingStatusClick(issueRequest)}
-  //       >
-  //         Inprogress
-  //       </div>
-  //     );
-  //   if (issueRequest === 2)
-  //     return (
-  //       <div
-  //         className="badge bg-success text-white cursor-pointer"
-  //         onClick={() => handlePendingStatusClick(issueRequest)}
-  //       >
-  //         Issued
-  //       </div>
-  //     );
-  //   else return <div className="badge badge-ghost">Unknown</div>;
-  // };
 
   // randomStatus code
 
@@ -413,25 +362,6 @@ function IssueManifest() {
                 </select>
               </div>
             </div>
-            {/* <div className="col-lg-4 d-flex justify-content-center">
-              <div className="mt-4">
-                <div className="text-xl font-semibold mb-3">
-                  Select Date Range
-                </div>
-                <Datepicker
-                  containerClassName="w-64"
-                  useRange={false}
-                  value={dateValue}
-                  theme={"light"}
-                  inputClassName="input input-bordered w-72"
-                  popoverDirection="down"
-                  toggleClassName="invisible"
-                  onChange={handleDatePickerValueChange}
-                  showShortcuts={true}
-                  primaryColor={"green"}
-                />
-              </div>
-            </div> */}
           </div>
           <>
             <TitleCard title="Issue Manifest Details" topMargin="mt-2">
@@ -703,28 +633,10 @@ function IssueManifest() {
                     Demand Qty : {selectedIssueRequest?.totalIssueItem}
                   </div> */}
                   <div className="col-lg-6 mt-3 font-bold text-xl"></div>
-                  <div className="your-form-container d-flex flex-wrap">
-                    {/* <div className="col-lg-3 text-dark mt-3">
-                      Available Qty: 15
-                    </div> */}
-
-                    {/* <div className="col-lg-3 text-dark mt-3 text-end">
-                      balance Qty: 5
-                    </div> */}
-                  </div>
+                  <div className="your-form-container d-flex flex-wrap"></div>
                 </DialogContentText>
               </DialogContent>
-              {/* <div className="d-flex justify-content-center">
-                <DialogActions className="mb-2 me-2">
-                  <Button
-                    component="label"
-                    variant="contained"
-                    onClick={closePendingPopup}
-                  >
-                    Issue
-                  </Button>
-                </DialogActions>
-              </div> */}
+
               <DialogContentText>
                 <center className="text-dark mb-2">
                   Issued by AIPACKS - Karthi-19/01/2024-10:00AM
@@ -747,83 +659,7 @@ function IssueManifest() {
                   onClick={closeInProgressPopup}
                 />
               </div>
-              <DialogContent>
-                <DialogContentText className="d-flex flex-column">
-                  <div className="d-flex justify-content-between">
-                    <div>
-                      <div className="text-dark">
-                        No: {selectedIssueRequest?.reqAddressId}
-                      </div>
-                      <div className="text-dark">
-                        Date :
-                        {moment(selectedIssueRequest?.requestedDate).format(
-                          "DD/MM/YYYY"
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <div className="text-dark">
-                        Request.Manifest No:
-                        {selectedIssueRequest?.reqAddressId}
-                      </div>
-                      <div className="text-dark">
-                        Manifest Date :
-                        {moment(selectedIssueRequest?.requestedDate).format(
-                          "DD/MM/YYYY"
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="d-flex flex-row text-dark mt-3">
-                    <div>Part Name/No : </div>
-                    <div className="ms-1">
-                      {selectedIssueRequest?.issueItemVO.map((item, index) => (
-                        <div key={index} className="font-bold">
-                          {item.partNo}
-                        </div>
-                      ))}
-                    </div>
-                    <div className="ms-4">Kit No : </div>
-                    <div className="ms-1">
-                      {selectedIssueRequest?.issueItemVO.map((item, index) => (
-                        <div key={index} className="font-bold">
-                          {item.kitNo}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  <div className="col-lg-6 text-dark mt-3">
-                    Demand Qty : {selectedIssueRequest?.totalIssueItem}
-                  </div>
-                  <div className="col-lg-6 mt-3 font-bold text-xl"></div>
-                  <div className="your-form-container d-flex flex-wrap">
-                    <div className="col-lg-3 text-dark mt-3">
-                      Available Qty: 15
-                    </div>
-                    <div className="col-lg-6 text-dark d-flex flex-row">
-                      <div className="mt-3 me-1">
-                        <span className="d-flex flex-row">
-                          Issue Qty:
-                          {/* {selectedIssueRequest?.issueItemVO[0].issuedQty} */}
-                          <FaStarOfLife className="must" />
-                        </span>
-                      </div>
-                      <div className="mt-2">
-                        <input
-                          className="form-control form-sz mb-2"
-                          placeholder={""}
-                          name="qty"
-                          value={qty}
-                          onChange={handleQtyChange}
-                        />
-                      </div>
-                    </div>
-                    <div className="col-lg-3 text-dark mt-3 text-end">
-                      balance Qty: 5
-                    </div>
-                  </div>
-                </DialogContentText>
-              </DialogContent>
+
               <div className="d-flex justify-content-center">
                 <DialogActions className="mb-2 me-2">
                   {/* <Button onClick={closePendingPopup}>Cancel</Button> */}
@@ -844,81 +680,6 @@ function IssueManifest() {
             </Dialog>
 
             {/* Issued Manifest Modal */}
-
-            <Dialog
-              fullWidth={true}
-              maxWidth={"sm"}
-              open={isIssuedPopupOpen}
-              onClose={closeIssuedPopup}
-            >
-              <div className="d-flex justify-content-between">
-                <DialogTitle>Issue Manifest</DialogTitle>
-                <IoMdClose
-                  className="cursor-pointer w-8 h-8 mt-3 me-3"
-                  onClick={closeIssuedPopup}
-                />
-              </div>
-              <DialogContent>
-                <DialogContentText className="d-flex flex-column">
-                  <Box sx={{ width: "100%" }}>
-                    <React.Fragment>
-                      <Typography sx={{ mt: 2, mb: 1 }}>
-                        <div className="d-flex justify-content-between">
-                          <div>
-                            <div className="text-dark"> No: 1704</div>
-                            <div className="text-dark">Date : 19/01/2022</div>
-                          </div>
-                          <div>
-                            <div className="text-dark">
-                              Request.Manifest No: 1704
-                            </div>
-                            <div className="text-dark">
-                              Manifest Date : 19/01/2022
-                            </div>
-                          </div>
-                        </div>
-                        <div className="col-lg-6  text-dark mt-3">
-                          Part Name/No : PISTON/PS01
-                        </div>
-                        <div className="col-lg-6 text-dark ">
-                          Demand Qty : 10
-                        </div>
-                        <div className="col-lg-6 mt-3 font-bold text-xl">
-                          Kit No : 1072
-                        </div>
-                        <div className="your-form-container d-flex flex-wrap">
-                          <div className="col-lg-4 text-dark mt-3">
-                            Available Qty: 15
-                          </div>
-                          <div className="col-lg-4 text-dark mt-3">
-                            Issued Qty: 10
-                          </div>
-                          <div className="col-lg-4 text-dark mt-3">
-                            balance Qty: 5
-                          </div>
-                        </div>
-                        <div className="d-flex justify-content-center">
-                          <DialogActions className="mb-2 me-2">
-                            <Button
-                              component="label"
-                              variant="contained"
-                              onClick={closeIssuedPopup}
-                            >
-                              Download
-                            </Button>
-                          </DialogActions>
-                        </div>
-                      </Typography>
-                    </React.Fragment>
-                  </Box>
-                </DialogContentText>
-              </DialogContent>
-              <DialogContentText>
-                <center className="text-dark mb-2">
-                  Issued by AIPACKS - Karthi-19/01/2024-10:00AM
-                </center>
-              </DialogContentText>
-            </Dialog>
           </>
         </div>
       </div>
