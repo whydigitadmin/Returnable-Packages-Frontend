@@ -16,26 +16,26 @@ import { FiDownload } from "react-icons/fi";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import UserCreation from "./UserCreation";
+import EmitterCreation from "./EmitterCreation";
 import DashBoardComponent from "../master/DashBoardComponent";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const statsData = [
     {
-        title: "No of Users",
+        title: "No of Emitters",
         value: "0",
         icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
         description: "",
     },
     {
-        title: "Active Users",
+        title: "Active Emitters",
         value: "0",
         icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
         description: "",
     },
     {
-        title: "InActive Users",
+        title: "InActive Emitters",
         value: "0",
         icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
         description: "",
@@ -49,8 +49,8 @@ const statsData = [
     },
 ];
 
-export const UserDetails = () => {
-    const [addUser, setAddUser] = React.useState(false);
+const EmitterDetails = () => {
+    const [addEmitter, setAddEmitter] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [add, setAdd] = React.useState(false);
     const [data, setData] = React.useState([]);
@@ -64,20 +64,20 @@ export const UserDetails = () => {
         setOpen(false);
     };
 
-    const handleAddUserOpen = () => {
-        setAddUser(true);
+    const handleAddEmitterOpen = () => {
+        setAddEmitter(true);
     };
 
     const handleBack = () => {
-        setAddUser(false);
+        setAddEmitter(false);
         // getWarehouseData();
     };
 
     useEffect(() => {
-        getAllUsersData();
+        // getAllEmittersData();
     }, []);
 
-    const getAllUsersData = async () => {
+    const getAllEmittersData = async () => {
         try {
             const response = await axios.get(
                 `${process.env.REACT_APP_API_URL}/api/auth/userByOrgId?orgId=${orgId}`
@@ -199,8 +199,8 @@ export const UserDetails = () => {
 
     return (
         <>
-            {addUser ? (
-                <UserCreation addUser={handleBack} />
+            {addEmitter ? (
+                <EmitterCreation addEmitter={handleBack} />
             ) : (
                 <div className="card w-full p-6 bg-base-100 shadow-xl">
                     <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
@@ -226,7 +226,7 @@ export const UserDetails = () => {
                             <button
                                 className="btn btn-ghost btn-lg text-sm col-xs-1"
                                 style={{ color: "blue" }}
-                                onClick={handleAddUserOpen}
+                                onClick={handleAddEmitterOpen}
                             >
                                 <img
                                     src="/new.png"
@@ -234,7 +234,7 @@ export const UserDetails = () => {
                                     title="add"
                                     style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
                                 />
-                                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Users</span>
+                                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Emitter</span>
                             </button>
                         </div>
                     </div>
@@ -296,6 +296,4 @@ export const UserDetails = () => {
     );
 }
 
-export default UserDetails;
-
-
+export default EmitterDetails

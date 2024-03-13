@@ -64,7 +64,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function EmitterCreation() {
+function EmitterCreation({ addEmitter }) {
   const [firstName, setFirstName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -84,6 +84,7 @@ function EmitterCreation() {
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
+  // const [addEmitter, setAddEmitter] = useState();
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -177,6 +178,29 @@ function EmitterCreation() {
     }
   };
 
+  const handleNew = () => {
+    setFirstName("");
+    setEmail("");
+    setPassword("");
+    setAddress("");
+    setCity("");
+    setState("");
+    setCountry("");
+    setPincode("");
+    setPhone("");
+    setActive(true);
+    setRole("ROLE_EMITTER");
+    setErrors({});
+    setOpenShippingModal(false);
+    setEmitter(null);
+    setFlow([]);
+    setEmitterCustomersVO([]);
+    setOrgId(localStorage.getItem("orgId"));
+    setSelectedFlow(null);
+    setSelectedFlows([]);
+    // notify();
+  }
+
   const handleUserCreation = () => {
     const errors = {};
     if (!firstName) {
@@ -259,26 +283,7 @@ function EmitterCreation() {
         )
         .then((response) => {
           console.log("User saved successfully!", response.data);
-          setFirstName("");
-          setEmail("");
-          setPassword("");
-          setAddress("");
-          setCity("");
-          setState("");
-          setCountry("");
-          setPincode("");
-          setPhone("");
-          setActive(true);
-          setRole("ROLE_EMITTER");
-          setErrors({});
-          setOpenShippingModal(false);
-          setEmitter(null);
-          setFlow([]);
-          setEmitterCustomersVO([]);
-          setOrgId(localStorage.getItem("orgId"));
-          setSelectedFlow(null);
-          setSelectedFlows([]);
-          // notify();
+          handleNew();
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
@@ -309,13 +314,19 @@ function EmitterCreation() {
     getCustomersList();
   }, [selectedFlows]); // This will be triggered whenever selectedFlows changes
 
+  const handleEmitterCreationClose = () => {
+    addEmitter(false);
+  };
+
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         {/* <ToastContainer /> */}
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-end">
           {/* <h1 className="text-xl font-semibold mb-3">User Details</h1> */}
-          {/* <IoMdClose onClick={""} className="cursor-pointer w-8 h-8 mb-3" /> */}
+          <IoMdClose
+            onClick={handleEmitterCreationClose}
+            className="cursor-pointer w-8 h-8 mb-3" />
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-6">
@@ -606,13 +617,13 @@ function EmitterCreation() {
           >
             Save
           </button>
-          {/* <button
+          <button
             type="button"
-            onClick={""}
+            onClick={handleNew}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Cancel
-          </button> */}
+            Clear
+          </button>
         </div>
       </div>
       <Dialog

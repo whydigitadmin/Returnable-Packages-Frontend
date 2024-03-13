@@ -88,6 +88,9 @@ const UserDetails = lazy(() => import("../pages/protected/UserDetails"));
 const EmitterCreation = lazy(() =>
   import("../pages/protected/EmitterCreation")
 );
+const EmitterDetails = lazy(() =>
+  import("../pages/protected/EmitterDetails")
+);
 const Roles = lazy(() => import("../pages/protected/Roles"));
 const Responsibilities = lazy(() =>
   import("../pages/protected/Responsibilites")
@@ -331,6 +334,10 @@ const routes = [
   {
     path: "/emitterCreation",
     component: EmitterCreation,
+  },
+  {
+    path: "/emitterDetails",
+    component: EmitterDetails,
   },
   {
     path: "/roles",
