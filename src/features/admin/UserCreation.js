@@ -65,7 +65,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function UserCreation() {
+function UserCreation({ addUser }) {
   const [firstName, setFirstName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -332,16 +332,22 @@ function UserCreation() {
     }
   };
 
+  const handleUserCreationClose = () => {
+    addUser(false);
+  };
+
 
 
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         {/* <ToastContainer /> */}
-        {/* <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">User Details</h1>
-          <IoMdClose onClick={""} className="cursor-pointer w-8 h-8 mb-3" />
-        </div> */}
+        <div className="d-flex justify-content-end">
+          <IoMdClose
+            onClick={handleUserCreationClose}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
         <div className="row">
           <div className="row">
             <div className="col-lg-3 col-md-6 mb-4">

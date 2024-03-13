@@ -33,7 +33,7 @@ const routes = [
 
     submenu: [
       {
-        path: "/app/UserCreation",
+        path: "/app/UserDetails",
         icon: (
           <img
             src="/usercreation.png"
@@ -42,7 +42,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span>User Creation</span>,
+        name: <span>Users</span>,
       },
       {
         path: "/app/EmitterCreation",
