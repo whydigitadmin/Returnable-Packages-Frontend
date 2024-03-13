@@ -527,7 +527,7 @@ function IssueReq() {
 
     if (isDuplicate) {
       setDuplicatePartError(true);
-      toast.error("The selected part number already exists", {
+      toast.error("The selected part already exists", {
         position: toast.POSITION.TOP_CENTER,
       });
     } else {

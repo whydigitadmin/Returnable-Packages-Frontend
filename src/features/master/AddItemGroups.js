@@ -10,6 +10,8 @@ import { FaStarOfLife } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { FaEdit, FaSave } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function AddItemGroups({ addItem }) {
   const [openAssetModal, setOpenAssetModal] = React.useState(false);
@@ -126,10 +128,27 @@ function AddItemGroups({ addItem }) {
     getAssetIdByName(event.target.value);
   };
 
+  // const handleAsseCodeChange = (event) => {
+  //   const selectedAssetCodeId = event.target.value;
+  //   setAssetCodeId(selectedAssetCodeId);
+  //   setSelectedCode(true);
+  // };
+
   const handleAsseCodeChange = (event) => {
     const selectedAssetCodeId = event.target.value;
-    setAssetCodeId(selectedAssetCodeId);
-    setSelectedCode(true);
+    // Check if the selected code already exists
+    const codeExists = kitAssetDTO.some(
+      (asset) => asset.assetCodeId === selectedAssetCodeId
+    );
+    if (codeExists) {
+      // Display toast message for code already exists
+      toast.error("The Asset code already exists.", {
+        position: "top-center",
+      });
+    } else {
+      setAssetCodeId(selectedAssetCodeId);
+      setSelectedCode(true);
+    }
   };
 
   const getAllAssetCategory = async () => {
@@ -447,12 +466,16 @@ function AddItemGroups({ addItem }) {
         </div>
         <br></br>
       </div>
+
       <Dialog
         fullWidth={true}
         maxWidth={"md"}
         open={openAssetModal}
         onClose={handleAssetClose}
       >
+        <div>
+          <ToastContainer />
+        </div>
         <div className="d-flex justify-content-between">
           <DialogTitle>Add Asset Details</DialogTitle>
           <IoMdClose
