@@ -84,7 +84,6 @@ function EmitterCreation({ addEmitter }) {
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
-  // const [addEmitter, setAddEmitter] = useState();
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -142,14 +141,42 @@ function EmitterCreation({ addEmitter }) {
 
   // const notify = () => toast("User Created Successfully");
 
+  function isValidEmail(email) {
+    // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
+    let filteredValue = value;
+
+    const allowedCharactersRegex = /^[a-zA-Z\s\-]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (name === "firstName" || name === "city" || name === "state" || name === "country") {
+      if (!allowedCharactersRegex.test(value)) {
+        filteredValue = value.replace(/[^a-zA-Z\s\-]+/g, '');
+      }
+    }
+    else if (name === "phone") {
+      filteredValue = value.replace(/\D/g, '').slice(0, 10);
+    }
+    else if (name === "pincode") {
+      filteredValue = value.replace(/\D/g, '').slice(0, 6);
+    }
+    else if (name === "email") {
+      if (!emailRegex.test(value)) {
+        filteredValue = value.replace(/[^\w\s@.-]+/g, '');
+      }
+    }
+
     switch (name) {
       case "firstName":
-        setFirstName(value);
+        setFirstName(filteredValue);
         break;
       case "email":
-        setEmail(value);
+        setEmail(filteredValue);
         break;
       case "password":
         setPassword(value);
@@ -158,22 +185,19 @@ function EmitterCreation({ addEmitter }) {
         setAddress(value);
         break;
       case "city":
-        setCity(value);
+        setCity(filteredValue);
         break;
       case "state":
-        setState(value);
+        setState(filteredValue);
         break;
       case "country":
-        setCountry(value);
+        setCountry(filteredValue);
         break;
       case "pincode":
-        setPincode(value);
+        setPincode(filteredValue);
         break;
       case "phone":
-        setPhone(value);
-        break;
-      case "password":
-        setPassword(value);
+        setPhone(filteredValue);
         break;
     }
   };
@@ -208,9 +232,13 @@ function EmitterCreation({ addEmitter }) {
     }
     if (!email) {
       errors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      errors.email = "Invalid email format";
     }
     if (!phone) {
       errors.phone = "Phone is required";
+    } else if (phone.length < 10) {
+      errors.phone = "Phone number must be 10 Digit";
     }
     if (!password) {
       errors.password = "Password is required";
@@ -229,6 +257,8 @@ function EmitterCreation({ addEmitter }) {
     }
     if (!pincode) {
       errors.pincode = "Pincode is required";
+    } else if (pincode.length < 6) {
+      errors.pincode = "Pincode must be 6 Digit";
     }
 
     const token = localStorage.getItem("token");
@@ -395,7 +425,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="firstName"
               value={firstName}
               onChange={handleInputChange}
@@ -420,7 +450,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="email"
               value={email}
               onChange={handleInputChange}
@@ -443,7 +473,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"password"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="password"
               value={password}
               onChange={handleInputChange}
@@ -468,7 +498,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="address"
               value={address}
               onChange={handleInputChange}
@@ -493,7 +523,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="city"
               value={city}
               onChange={handleInputChange}
@@ -516,7 +546,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="state"
               value={state}
               onChange={handleInputChange}
@@ -539,7 +569,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="country"
               value={country}
               onChange={handleInputChange}
@@ -564,7 +594,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="pincode"
               value={pincode}
               onChange={handleInputChange}
@@ -589,7 +619,7 @@ function EmitterCreation({ addEmitter }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="phone"
               value={phone}
               onChange={handleInputChange}

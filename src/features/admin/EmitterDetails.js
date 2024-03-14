@@ -10,7 +10,7 @@ import {
     MaterialReactTable,
     useMaterialReactTable,
 } from "material-react-table";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo, useEffect, useState } from "react";
 import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
@@ -18,8 +18,20 @@ import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import EmitterCreation from "./EmitterCreation";
 import DashBoardComponent from "../master/DashBoardComponent";
-import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import Typography from "@mui/material/Typography";
+import EditIcon from '@mui/icons-material/Edit';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableRow,
+    Paper,
+} from "@mui/material";
+
 
 const statsData = [
     {
@@ -55,6 +67,13 @@ const EmitterDetails = () => {
     const [add, setAdd] = React.useState(false);
     const [data, setData] = React.useState([]);
     const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [openView, setOpenView] = React.useState(false);
+    const [userAddressData, setUserAddressData] = React.useState(null);
+    const [selectedRowData, setSelectedRowData] = useState(null);
+
+    const handleViewClose = () => {
+        setOpenView(false);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -91,6 +110,11 @@ const EmitterDetails = () => {
         }
     };
 
+    const handleViewRow = (row) => {
+        setSelectedRowData(row.original);
+        setOpenView(true);
+    };
+
     const VisuallyHiddenInput = styled("input")({
         clip: "rect(0 0 0 0)",
         clipPath: "inset(50%)",
@@ -119,17 +143,24 @@ const EmitterDetails = () => {
                 enableColumnOrdering: false,
                 enableEditing: false,
                 Cell: ({ row }) => (
-                    <IconButton
-                    // onClick={() => handleViewRow(row)}
-                    >
-                        <VisibilityIcon />
-                    </IconButton>
+                    <div>
+                        <IconButton
+                        // onClick={() => handleViewRow(row)}
+                        >
+                            <VisibilityIcon />
+                        </IconButton>
+                        <IconButton
+                        // onClick={() => handleEditRow(row)}
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </div>
                 ),
             },
 
             {
                 accessorKey: "warehouseId",
-                header: "User Name",
+                header: "Emitter Name",
                 size: 50,
                 muiTableHeadCellProps: {
                     align: "center",
@@ -292,6 +323,51 @@ const EmitterDetails = () => {
                     </Dialog>
                 </div>
             )}
+
+
+            {/* Modal to display selected row data */}
+            <Dialog open={openView} onClose={handleViewClose} maxWidth="sm" fullWidth>
+                <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+                    <div className="row">
+                        <div className="col-md-11">
+                            <Typography variant="h6">User Details</Typography>
+                        </div>
+                        <div className="col-md-1">
+                            <IconButton onClick={handleViewClose} aria-label="close">
+                                <CloseIcon />
+                            </IconButton>
+                        </div>
+                    </div>
+                </DialogTitle>
+                <DialogContent className="mt-4">
+                    {selectedRowData && (
+                        <TableContainer component={Paper}>
+                            <Table>
+                                <TableBody>
+                                    <TableRow>
+                                        <TableCell>User Name</TableCell>
+                                        <TableCell>{selectedRowData.firstName}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Email ID</TableCell>
+                                        <TableCell>{selectedRowData.email}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Phone</TableCell>
+                                        <TableCell>{selectedRowData.pno}</TableCell>
+                                    </TableRow>
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    )}
+                </DialogContent>
+                {/* <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Close
+                    </Button>
+                </DialogActions> */}
+            </Dialog>
+
         </>
     );
 }
