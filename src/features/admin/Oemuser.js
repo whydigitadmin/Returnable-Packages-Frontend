@@ -91,14 +91,15 @@ const Oemuser = () => {
 
   const handleBack = () => {
     setAddEmitter(false);
-    getAllEmittersData();
+    setEditEmitter(false);
+    getAllOemData();
   };
 
   useEffect(() => {
-    getAllEmittersData();
+    getAllOemData();
   }, []);
 
-  const getAllEmittersData = async () => {
+  const getAllOemData = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/auth/userByOrgId?orgId=${orgId}`
@@ -260,9 +261,9 @@ const Oemuser = () => {
     columns,
   });
 
-  const handleSaveRowEdits = () => {};
+  const handleSaveRowEdits = () => { };
 
-  const handleCancelRowEdits = () => {};
+  const handleCancelRowEdits = () => { };
 
   const handleEdit = (rowData) => {
     // Implement your logic to handle the edit action for the specific row
@@ -278,7 +279,7 @@ const Oemuser = () => {
     <>
       {(addEmitter && <OemCreation addEmitter={handleBack} />) ||
         (editEmitter && (
-          <OemCreation addEmitter={handleBack} emitterEditId={selectedRowId} />
+          <OemCreation addEmitter={handleBack} oemEditId={selectedRowId} />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             {/* DASHBOARD COMPONENT CALLING */}
