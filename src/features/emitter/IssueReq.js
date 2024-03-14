@@ -2,6 +2,7 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Dialog,
   DialogContent,
@@ -34,14 +35,13 @@ import { FaPallet } from "react-icons/fa6";
 import { MdPallet } from "react-icons/md";
 import { TbReport } from "react-icons/tb";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import kit3 from "../../assets/gearbox.jpg";
 import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
@@ -179,22 +179,47 @@ function IssueReq() {
   //   console.log("Updated getkit:", getKitIds);
   // }, [getKitIds]);
 
-  const getAddressById = async (value) => {
+  // const getAddressById = async (value) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${value}&orgId=${orgId}`
+  //     );
+
+  //     if (response.status === 200) {
+  //       setAddress(response.data.paramObjectsMap.Flows);
+
+  //       const validFlows = response.data.paramObjectsMap.Flows.filter(
+  //         (flow) => typeof flow.flow === "string" && flow.flow.trim() !== ""
+  //       ).map((flow) => ({ flowid: flow.flowid, flow: flow.flow }));
+
+  //       setFlowData(validFlows);
+
+  //       console.log("Addressss", flowData);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  const getAddressById = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${value}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/flow/getFlowByUserId?userId=${userId}`
       );
 
       if (response.status === 200) {
-        setAddress(response.data.paramObjectsMap.Flows);
-
-        const validFlows = response.data.paramObjectsMap.Flows.filter(
-          (flow) => typeof flow.flow === "string" && flow.flow.trim() !== ""
-        ).map((flow) => ({ flowid: flow.flowid, flow: flow.flow }));
-
+        console.log(
+          "response.data.paramObjectsMap",
+          response.data.paramObjectsMap
+        );
+        const validFlows = response.data.paramObjectsMap.flowVO
+          .filter(
+            (flow) =>
+              typeof flow.flowName === "string" && flow.flowName.trim() !== ""
+          )
+          .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
-
-        console.log("Addressss", flowData);
+        console.log("validFlows", validFlows);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -318,7 +343,7 @@ function IssueReq() {
   const getkitNameById = async () => {
     // setKitData([]);
 
-    // console.log("selectedFlowId", selectedFlowId);
+    console.log("selectedFlowIdddddd", selectedFlowId);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/flow/${selectedFlowId}`
@@ -452,7 +477,7 @@ function IssueReq() {
 
     setKitData([]);
     setFlowData("");
-    console.log("Newwww", selectedFlowId);
+    console.log("Newwww", e.target.value);
   };
 
   useEffect(() => {
@@ -629,7 +654,7 @@ function IssueReq() {
   const getIssueRequest = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest?orgId=${orgId}&emitterId=${emitterId}`
       );
 
       if (response.status === 200) {
@@ -768,7 +793,7 @@ function IssueReq() {
                     <option value="">Select a Flow</option>
                     {flowData &&
                       flowData.map((flowName) => (
-                        <option key={flowName.flowid} value={flowName.flowid}>
+                        <option key={flowName.id} value={flowName.id}>
                           {flowName.flow}
                         </option>
                       ))}

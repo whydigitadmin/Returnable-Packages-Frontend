@@ -4,13 +4,13 @@ import DialogContentText from "@mui/material/DialogContentText";
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { FaLocationDot } from "react-icons/fa6";
 import { IoMdClose } from "react-icons/io";
-import { MdDoubleArrow } from "react-icons/md";
 import TitleCard from "../../components/Cards/TitleCard";
 
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import NoRecordsFound from "../../utils/NoRecordsFound";
+import ToastComponent from "../../utils/ToastComponent";
 
 const steps = ["Issue manifest", "Mode of Transport "];
 
@@ -38,7 +38,9 @@ function IssueManifest() {
     JSON.parse(localStorage.getItem("userDto"))
   );
   const [demoState, setDemoState] = useState(false);
+  const [toast, setToast] = useState(false);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
+  const [maxPartQty, setMaxPartQty] = useState("");
 
   useEffect(() => {
     getLocationList();
@@ -61,6 +63,7 @@ function IssueManifest() {
   const closePendingPopup = () => {
     setPendingPopupOpen(false);
     setQty("");
+    setSelectedItemIds("");
   };
 
   const openInProgressPopup = () => {
@@ -119,7 +122,8 @@ function IssueManifest() {
       .then((response) => {
         console.log("Response:", response.data);
         getIssueRequest(emitterId);
-        // closePendingPopup();
+        setToast(true);
+        closePendingPopup();
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -215,7 +219,7 @@ function IssueManifest() {
       );
     if (randomStatus === 2)
       return (
-        <div style={{ display: 'flex' }}>
+        <div style={{ display: "flex" }}>
           <img
             src="/checked1.png"
             alt="completed-status-icon"
@@ -229,6 +233,47 @@ function IssueManifest() {
             alt="completed-status-icon"
             style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
           />
+        </div>
+      );
+    else return <div className="badge badge-ghost">Unknown</div>;
+  };
+
+  const getPaymentStatusDummy = (issueStatus, selectedIssueRequest) => {
+    const randomStatus = issueStatus;
+    if (randomStatus === 0)
+      return (
+        <div>
+          <img
+            src="/pending.png"
+            alt="pending-status-icon"
+            title="Pending"
+            // style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
+          />
+        </div>
+      );
+    if (randomStatus === 1)
+      return (
+        <div>
+          <img
+            src="/inprogress.png"
+            alt="Inprogress-status-icon"
+            // style={{ width: 40, height: 40, margin: "auto", cursor: "pointer" }}
+          />
+        </div>
+      );
+    if (randomStatus === 2)
+      return (
+        <div style={{ display: "flex" }}>
+          <img
+            src="/checked1.png"
+            alt="completed-status-icon"
+            style={{ width: 40, height: 40, margin: "auto", cursor: "pointer" }}
+          />
+          {/* <img
+            src="/download.png"
+            alt="completed-status-icon"
+            style={{ width: 40, height: 40, margin: "auto", cursor: "pointer" }}
+          /> */}
         </div>
       );
     else return <div className="badge badge-ghost">Unknown</div>;
@@ -338,6 +383,25 @@ function IssueManifest() {
     }
   };
 
+  const getKitQtyByPartId = async (item) => {
+    console.log("partCheck", item);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/maxPartQtyPerKit?orgId=${orgId}&emitterId=${emitterId}&partNumber=${item.partNo}&flowId=${selectedIssueRequest.flowTo}`
+      );
+
+      if (response.status === 200) {
+        setMaxPartQty(
+          response.data.paramObjectsMap.maxPartQtyPerKitVO.MaxPartQtyPerKitVO[0]
+        );
+
+        console.log("check", maxPartQty);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const getIssueRequest = async (selectedEmitterId) => {
     try {
       const response = await axios.get(
@@ -365,9 +429,14 @@ function IssueManifest() {
             <div className="col-lg-5 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
-                  <FaLocationDot
-                    className="text-xl font-semibold w-7 h-7"
-                    style={{ marginTop: 17 }}
+                  <img
+                    src="/location.png"
+                    style={{
+                      width: "28px",
+                      height: "35px",
+                      marginTop: "12px",
+                      marginRight: "4px",
+                    }}
                   />
                   <h4 className="text-2xl font-semibold mt-3 ms-1 mb-3">
                     Warehouse Location
@@ -394,17 +463,24 @@ function IssueManifest() {
               </div>
             </div>
             <div className="col-lg-1">
-              <MdDoubleArrow
-                className="text-xl font-semibold w-16 h-16"
+              <img
+                src="	https://cdn-icons-png.flaticon.com/128/10246/10246448.png"
+                width={85}
+                height={40}
                 style={{ marginTop: 50 }}
-              />
+              ></img>
             </div>
             <div className="col-lg-5 card bg-base-100 shadow-xl ms-2 mt-3">
               <div className="p-1">
                 <div className="d-flex flex-row">
-                  <FaLocationDot
-                    className="text-xl font-semibold w-7 h-7"
-                    style={{ marginTop: 17 }}
+                  <img
+                    src="/location.png"
+                    style={{
+                      width: "28px",
+                      height: "35px",
+                      marginTop: "12px",
+                      marginRight: "4px",
+                    }}
                   />
                   <h4 className="text-2xl font-semibold mt-3 ms-1 mb-3">
                     Issued To
@@ -501,9 +577,9 @@ function IssueManifest() {
 
                               <td
                                 style={{ width: 100 }}
-                              // onClick={() =>
-                              //   handlePendingStatusClick(issueRequest, subIndex)
-                              // }
+                                // onClick={() =>
+                                //   handlePendingStatusClick(issueRequest, subIndex)
+                                // }
                               >
                                 {getPaymentStatus(
                                   issueRequest.issueStatus,
@@ -519,9 +595,7 @@ function IssueManifest() {
                 </table>
 
                 {bills.length === 0 && (
-                  <h4 className="text-base dark:text-slate-300 font-semibold text-center fst-italic mt-4">
-                    No records to display..!!
-                  </h4>
+                  <NoRecordsFound message="No Records to diaplay!" />
                 )}
               </div>
             </TitleCard>
@@ -533,7 +607,10 @@ function IssueManifest() {
               onClose={closePendingPopup}
             >
               <div className="d-flex justify-content-between">
-                <DialogTitle>Issue Manifest</DialogTitle>
+                <DialogTitle>
+                  Issue Manifest For{" "}
+                  {selectedIssueRequest?.irType === "IR_PART" ? "Part" : "Kit"}
+                </DialogTitle>
                 <IoMdClose
                   className="cursor-pointer w-8 h-8 mt-3 me-3"
                   onClick={closePendingPopup}
@@ -557,7 +634,7 @@ function IssueManifest() {
                   </div>
                   <div
                     className="d-flex flex-row text-dark mt-3"
-                    style={{ marginLeft: "70px" }}
+                    // style={{ marginLeft: "10px" }}
                   >
                     {selectedIssueRequest?.irType === "IR_PART" && (
                       <div>
@@ -569,6 +646,7 @@ function IssueManifest() {
                               <tr>
                                 <th>Select</th>
                                 <th>Kit Name</th>
+                                <th>Part Per kit</th>
                                 <th>Part Name</th>
                                 <th>Part Quantity</th>
                                 <th>Issue Quantity</th>
@@ -597,6 +675,32 @@ function IssueManifest() {
                                       />
                                     </td>
                                     <td>{item.kitName}</td>
+                                    <td>
+                                      {maxPartQty &&
+                                      maxPartQty.partNumber === item.partNo ? (
+                                        <div style={{ marginLeft: "30px" }}>
+                                          {maxPartQty.maxPartQty}
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          <img
+                                            src={
+                                              "https://cdn-icons-png.flaticon.com/128/3049/3049489.png"
+                                            }
+                                            alt="will-issue-icon"
+                                            style={{
+                                              width: 40,
+                                              height: 40,
+                                              margin: "auto",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() =>
+                                              getKitQtyByPartId(item)
+                                            }
+                                          />
+                                        </div>
+                                      )}
+                                    </td>
                                     <td>{item.partName}</td>
                                     <td>{item.partQty}</td>
                                     <td>
@@ -622,28 +726,13 @@ function IssueManifest() {
                                     <td>
                                       {/* Button for issuing part in this row */}
                                       {selectedIssueRequest.issueStatus !==
-                                        2 ? (
+                                      2 ? (
                                         // <Button
                                         //   variant="contained"
                                         //   onClick={() => handleIssueKit(item)}
                                         // >
                                         //   Issue
                                         // </Button>
-                                        <div>
-                                          <img
-                                            src="/will_issue.png"
-                                            alt="will-issue-icon"
-                                            style={{
-                                              width: 30,
-                                              height: 30,
-                                              margin: "auto",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() => handleIssueKit(item)}
-                                          />
-                                        </div>
-
-                                      ) : (
                                         <div>
                                           <img
                                             src="/checked1.png"
@@ -655,8 +744,22 @@ function IssueManifest() {
                                             }}
                                           />
                                         </div>
+                                      ) : (
+                                        <div>
+                                          <img
+                                            src={"/will_issue.png"}
+                                            alt="will-issue-icon"
+                                            style={{
+                                              width: 40,
+                                              height: 40,
+                                              margin: "auto",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => handleIssueKit(item)}
+                                          />
+                                        </div>
                                       )}
-                                    </td>
+                                    </td>{" "}
                                   </tr>
                                 )
                               )}
@@ -674,6 +777,7 @@ function IssueManifest() {
                             <thead>
                               <tr>
                                 <th>Select</th>
+
                                 <th>Kit Name</th>
                                 <th>Kit Quantity</th>
                                 <th>Issue Quantity</th>
@@ -705,6 +809,7 @@ function IssueManifest() {
                                         />
                                       </td>
                                     </td>
+
                                     <td>{item.kitName}</td>
                                     <td>{item.kitQty}</td>
                                     <td>
@@ -716,7 +821,9 @@ function IssueManifest() {
                                         value={qty[item.id] || ""}
                                         disabled={
                                           !selectedItemIds.includes(item.id) ||
-                                          selectedIssueRequest.issueStatus === 2
+                                          selectedIssueRequest.issueStatus ===
+                                            2 ||
+                                          item.balanceQty === 0
                                         }
                                         onChange={(e) =>
                                           handleQtyChange(e, item.id)
@@ -729,16 +836,14 @@ function IssueManifest() {
                                     </td>
 
                                     <td>
-                                      {/* Button for issuing kit in this row */}
-                                      {selectedIssueRequest.issueStatus !==
-                                        2 ? (
-                                        <Button
-                                          variant="contained"
-                                          onClick={() => handleIssueKit(item)}
-                                        >
-                                          Issue
-                                        </Button>
-                                      ) : (
+                                      {/* Button for issuing part in this row */}
+                                      {item.balanceQty === 0 ? (
+                                        // <Button
+                                        //   variant="contained"
+                                        //   onClick={() => handleIssueKit(item)}
+                                        // >
+                                        //   Issue
+                                        // </Button>
                                         <div>
                                           <img
                                             src="/checked1.png"
@@ -748,6 +853,20 @@ function IssueManifest() {
                                               height: 30,
                                               margin: "auto",
                                             }}
+                                          />
+                                        </div>
+                                      ) : (
+                                        <div>
+                                          <img
+                                            src={"/will_issue.png"}
+                                            alt="will-issue-icon"
+                                            style={{
+                                              width: 40,
+                                              height: 40,
+                                              margin: "auto",
+                                              cursor: "pointer",
+                                            }}
+                                            onClick={() => handleIssueKit(item)}
                                           />
                                         </div>
                                       )}
@@ -813,6 +932,12 @@ function IssueManifest() {
 
             {/* Issued Manifest Modal */}
           </>
+          <div>
+            {" "}
+            {toast && (
+              <ToastComponent content="Quantity issued" type="success" />
+            )}
+          </div>
         </div>
       </div>
     </>

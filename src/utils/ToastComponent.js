@@ -4,11 +4,14 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Assuming you have defined or imported the 'dark' theme
 
-function ToastComponent({ content }) {
+function ToastComponent({ content, type }) {
   useEffect(() => {
-    // Trigger the toast notification when the component mounts
-    toast(content);
-  }, [content]);
+    if (type === "success") {
+      toast.success(content, { autoClose: 3000, theme: "colored" });
+    } else if (type === "error") {
+      toast.error(content, { autoClose: 3000, theme: "colored" });
+    }
+  }, [content, type]);
 
   return <ToastContainer />;
 }
