@@ -122,6 +122,7 @@ function UserCreation({ addUser, userEditId }) {
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin)
         setPhone(response.data.paramObjectsMap.userVO.pno)
         setDisabledWarehouseIds(response.data.paramObjectsMap.userVO.accessWarehouse)
+        setWarehouse(response.data.paramObjectsMap.userVO.accessWarehouse)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -539,16 +540,6 @@ function UserCreation({ addUser, userEditId }) {
               </span>
             </label>
           </div>
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              // placeholder={"Enter"}
-              name="email"
-              value={email}
-              onChange={handleInputChange}
-            />
-            {errors.email && <span className="error-text">{errors.email}</span>}
-          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
@@ -563,33 +554,6 @@ function UserCreation({ addUser, userEditId }) {
           </div>
 
           {/* PASSWORD FIELD */}
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Password
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"password"}
-              // placeholder={"Enter"}
-              name="password"
-              value={password}
-              onChange={handleInputChange}
-              disabled={userEditId ? true : false}
-            />
-            {errors.password && (
-              <span className="error-text">{errors.password}</span>
-            )}
-          </div> */}
-
           {!userEditId && (
             <>
               <div className="col-lg-3 col-md-6 mb-2">
@@ -612,7 +576,6 @@ function UserCreation({ addUser, userEditId }) {
                   name="password"
                   value={password}
                   onChange={handleInputChange}
-                  disabled={userEditId ? true : false}
                 />
                 {errors.password && (
                   <span className="error-text">{errors.password}</span>

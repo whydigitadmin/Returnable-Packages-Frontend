@@ -98,6 +98,8 @@ export const UserDetails = () => {
 
     const handleBack = () => {
         setAddUser(false);
+        setEditUser(false);
+
         // getWarehouseData();
     };
 
@@ -130,6 +132,7 @@ export const UserDetails = () => {
         setSelectedRowId(row.original.userId);
         console.log("setSelectedRowID", row.original.userId);
         setEditUser(true);
+        // setAddUser(true);
     };
 
     const VisuallyHiddenInput = styled("input")({
@@ -423,11 +426,6 @@ export const UserDetails = () => {
                         </TableContainer>
                     )}
                 </DialogContent>
-                {/* <DialogActions>
-                    <Button onClick={handleClose} color="primary">
-                        Close
-                    </Button>
-                </DialogActions> */}
             </Dialog>
 
 
