@@ -53,7 +53,7 @@ import TitleCard from "../../components/Cards/TitleCard";
 export const EmitterOutward = () => {
   const [selectedFlow, setSelectedFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
-  const [assignedFlow, setAssignFlow] = React.useState("");
+  const [emitterId, setEmitterId] = React.useState("");
   const [displayFlowName, setDisplayFlowName] = React.useState();
   const [inwardVO, setInwardVO] = React.useState([]);
   const [errors, setErrors] = React.useState({});
@@ -67,7 +67,7 @@ export const EmitterOutward = () => {
   useEffect(() => {
     getDisplayName();
     // getOutwardDetails();
-  }, [assignedFlow]);
+  }, [selectedFlow]);
 
   const getDisplayName = async () => {
     try {
@@ -76,25 +76,33 @@ export const EmitterOutward = () => {
       );
 
       if (response.status === 200) {
-        getAddressById(response.data.paramObjectsMap.userVO.customersVO.id);
-        // getOutwardDetails(response.data.paramObjectsMap.userVO.customersVO.id);
+        setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
+        getAddressById();
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const getAddressById = async (value) => {
+  const getAddressById = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${value}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/flow/getFlowByUserId?userId=${userId}`
       );
 
       if (response.status === 200) {
-        const validFlows = response.data.paramObjectsMap.Flows.filter(
-          (flow) => typeof flow.flow === "string" && flow.flow.trim() !== ""
-        ).map((flow) => ({ flowid: flow.flowid, flow: flow.flow }));
+        console.log(
+          "response.data.paramObjectsMap",
+          response.data.paramObjectsMap
+        );
+        const validFlows = response.data.paramObjectsMap.flowVO
+          .filter(
+            (flow) =>
+              typeof flow.flowName === "string" && flow.flowName.trim() !== ""
+          )
+          .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
+        console.log("validFlows", validFlows);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -135,6 +143,10 @@ export const EmitterOutward = () => {
 
       if (response.status === 200) {
         setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
+        console.log(
+          "setDisplayFlowName",
+          response.data.paramObjectsMap.flowVO.flowName
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -143,7 +155,6 @@ export const EmitterOutward = () => {
 
   const handleSelectedFlow = (event) => {
     setSelectedFlow(event.target.value);
-    setAssignFlow(event.target.value);
     getFlowNameById(event.target.value);
   };
 
@@ -249,7 +260,7 @@ export const EmitterOutward = () => {
                     <option value="">Select a Flow</option>
                     {flowData &&
                       flowData.map((flowName) => (
-                        <option key={flowName.flowid} value={flowName.flowid}>
+                        <option key={flowName.id} value={flowName.id}>
                           {flowName.flow}
                         </option>
                       ))}
