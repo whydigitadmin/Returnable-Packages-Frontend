@@ -12,22 +12,25 @@ import TitleCard from "../../components/Cards/TitleCard";
 function EmitterInward() {
   const [flowData, setFlowData] = React.useState([]);
   const [selectedFlow, setSelectedFlow] = React.useState("");
-  const [assignedFlow, setAssignFlow] = React.useState("");
+  const [emitterId, setEmitterId] = React.useState("");
   const [displayFlowName, setDisplayFlowName] = React.useState();
   const [inwardVO, setInwardVO] = React.useState([]);
-  const [netQty, setNetQty] = React.useState("");
+  const [issueItemInwardId, setIssueItemInwardId] = React.useState("");
+  const [itemId, setItemId] = React.useState("");
+  const [netQtyRecieved, setNetQtyRecieved] = React.useState("");
   const [returnQty, setReturnQty] = React.useState("");
   const [returnReason, setReturnReason] = React.useState("");
   const [errors, setErrors] = React.useState({});
   const [isPendingPopupOpenIssued, setPendingPopupOpenIssued] = useState(false);
-  const [selectedPendingBill, setSelectedPendingBill] = useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
 
   useEffect(() => {
     getDisplayName();
-    getInwardDetails();
-  }, [assignedFlow]);
+    if (emitterId && selectedFlow) {
+      getInwardDetails();
+    }
+  }, [emitterId, selectedFlow]);
 
   const getDisplayName = async () => {
     try {
@@ -36,40 +39,48 @@ function EmitterInward() {
       );
 
       if (response.status === 200) {
-        getAddressById(response.data.paramObjectsMap.userVO.customersVO.id);
-        getInwardDetails(response.data.paramObjectsMap.userVO.customersVO.id);
+        getAddressById();
+        setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const getAddressById = async (value) => {
+  const getAddressById = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAllFlowName?emitterId=${value}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/flow/getFlowByUserId?userId=${userId}`
       );
 
       if (response.status === 200) {
-        const validFlows = response.data.paramObjectsMap.Flows.filter(
-          (flow) => typeof flow.flow === "string" && flow.flow.trim() !== ""
-        ).map((flow) => ({ flowid: flow.flowid, flow: flow.flow }));
+        console.log(
+          "response.data.paramObjectsMap",
+          response.data.paramObjectsMap
+        );
+        const validFlows = response.data.paramObjectsMap.flowVO
+          .filter(
+            (flow) =>
+              typeof flow.flowName === "string" && flow.flowName.trim() !== ""
+          )
+          .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
+        console.log("validFlows", validFlows);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const getInwardDetails = async (value) => {
+  const getInwardDetails = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/emitter/viewEmitterInward`,
         {
           params: {
             orgId: orgId,
-            emitterId: value,
-            flowId: assignedFlow,
+            emitterId: emitterId,
+            flowId: selectedFlow,
           },
         }
       );
@@ -95,6 +106,10 @@ function EmitterInward() {
 
       if (response.status === 200) {
         setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
+        console.log(
+          "setDisplayFlowName",
+          response.data.paramObjectsMap.flowVO.flowName
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -103,41 +118,98 @@ function EmitterInward() {
 
   const handleSelectedFlow = (event) => {
     setSelectedFlow(event.target.value);
-    setAssignFlow(event.target.value);
     getFlowNameById(event.target.value);
   };
 
-  const handlePendingStatusClickIssued = () => {
+  const handlePendingStatusClickIssued = (issueItemInwardId, itemId) => {
+    console.log(
+      "test id handlePendingStatusClickIssued",
+      issueItemInwardId,
+      itemId
+    );
+    setIssueItemInwardId(issueItemInwardId);
+    setItemId(itemId);
     setPendingPopupOpenIssued(true);
+    // handleUpdateInward();
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "netQtyRecieved":
+        setNetQtyRecieved(value);
+        break;
+      case "returnQty":
+        setReturnQty(value);
+        break;
+      case "returnReason":
+        setReturnReason(value);
+        break;
+    }
+  };
+
+  // const handleNetQtyReceivedChange = (event) => {
+  //   let input = event.target.value;
+  //   input = input.replace(/[^0-9]/g, "");
+  //   if (input.length > 4) {
+  //     input = input.slice(0, 4);
+  //   }
+  //   setNetQtyRecieved(input);
+  // };
+
+  // const handleReturnQtyChange = (event) => {
+  //   let input = event.target.value;
+  //   input = input.replace(/[^0-9]/g, "");
+  //   if (input.length > 4) {
+  //     input = input.slice(0, 4);
+  //   }
+  //   setReturnQty(input);
+  // };
+
+  // const handleReturnReasonChange = (event) => {
+  //   setReturnReason(event.target.value);
+  // };
+
+  const handleUpdateInward = () => {
+    const errors = {};
+    if (!netQtyRecieved) {
+      errors.netQtyRecieved = "Kit Qty is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const requestData = {
+        id: issueItemInwardId,
+        issueItemId: itemId,
+        netQtyRecieved,
+        returnQty: returnQty ? returnQty : 0,
+        status: returnReason ? returnReason : 0,
+      };
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/emitter/emitterInward`,
+          requestData
+        )
+        .then((response) => {
+          console.log("Response for UPADTE INWARD:", response.data);
+          setPendingPopupOpenIssued(false);
+          getInwardDetails();
+          setNetQtyRecieved("");
+          setReturnQty("");
+          setReturnReason("");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const closePendingPopupIssued = () => {
     setPendingPopupOpenIssued(false);
-    setNetQty("");
+    setNetQtyRecieved("");
     setReturnQty("");
     setReturnReason("");
-  };
-
-  const handleNetQtyReceivedChange = (event) => {
-    let input = event.target.value;
-    input = input.replace(/[^0-9]/g, "");
-    if (input.length > 4) {
-      input = input.slice(0, 4);
-    }
-    setNetQty(input);
-  };
-
-  const handleReturnQtyChange = (event) => {
-    let input = event.target.value;
-    input = input.replace(/[^0-9]/g, "");
-    if (input.length > 4) {
-      input = input.slice(0, 4);
-    }
-    setReturnQty(input);
-  };
-
-  const handleReturnReasonChange = (event) => {
-    setReturnReason(event.target.value);
+    setErrors("");
   };
 
   return (
@@ -155,37 +227,9 @@ function EmitterInward() {
                 </Link>
               </div>
             </div>
-            {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
-              <div className="p-1">
-                <div className="d-flex flex-row">
-                  <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 14 }}
-                  />
-                  <h4 className="text-xl font-semibold pt-1 mt-2 ms-1 mb-2">
-                    Location -
-                  </h4>
-                  <h4 className="text-2xl font-semibold ms-1 mt-2">Gabriel</h4>
-                </div>
-              </div>
-              <p className="mb-3">
-                29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                Pune, Maharashtra, 410501 India
-              </p>
-            </div> */}
-            {/* <div className="col-lg-1">
-              <MdDoubleArrow
-                className="text-xl font-semibold w-16  h-16 "
-                style={{ marginTop: 70 }}
-              />
-            </div> */}
             <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-28">
               <div className="p-2">
                 <div className="d-flex flex-row">
-                  {/* <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 11 }}
-                  /> */}
                   <img
                     src="/destination.png"
                     alt="Favorite"
@@ -202,13 +246,12 @@ function EmitterInward() {
                   <select
                     className="form-select w-72 h-10 mt-1 mb-2"
                     value={selectedFlow}
-                    // onChange={(e) => setSelectedFlow(e.target.value)}
                     onChange={handleSelectedFlow}
                   >
                     <option value="">Select a Flow</option>
                     {flowData &&
                       flowData.map((flowName) => (
-                        <option key={flowName.flowid} value={flowName.flowid}>
+                        <option key={flowName.id} value={flowName.id}>
                           {flowName.flow}
                         </option>
                       ))}
@@ -217,15 +260,10 @@ function EmitterInward() {
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   {displayFlowName}
                 </h4>
-                {/* <p className="ms-1 mb-2">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p> */}
               </div>
             </div>
           </div>
           <TitleCard title="Inward Manifest" topMargin="mt-2">
-            {/* Invoice list in table format loaded constant */}
             <div className="overflow-x-auto w-full ">
               <table className="table w-full">
                 <thead>
@@ -260,7 +298,12 @@ function EmitterInward() {
                               marginRight: "6px",
                               cursor: "pointer",
                             }}
-                            onClick={() => handlePendingStatusClickIssued(l)} // Call handlePendingStatusClickIssued function with the bill object
+                            onClick={() =>
+                              handlePendingStatusClickIssued(
+                                l.issueItemInwardId,
+                                l.itemId
+                              )
+                            } // Call handlePendingStatusClickIssued function with the bill object
                           />
                         </td>
                         <td>{l.requestId}</td>
@@ -318,15 +361,16 @@ function EmitterInward() {
                 <div className="col-lg-6 col-md-6 mb-2">
                   <input
                     className="form-control form-sz mb-2"
-                    type={"text"}
+                    type={"number"}
                     placeholder={""}
-                    value={netQty}
-                    onChange={handleNetQtyReceivedChange}
-                    max={4}
+                    name="netQtyRecieved"
+                    value={netQtyRecieved}
+                    onChange={handleInputChange}
+                    maxLength={4}
                   />
-                  {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
+                  {errors.netQtyRecieved && (
+                    <span className="error-text">{errors.netQtyRecieved}</span>
+                  )}
                 </div>
                 <div className="col-lg-4 col-md-4 mb-2">
                   <label className="label">
@@ -346,7 +390,8 @@ function EmitterInward() {
                     type={"text"}
                     placeholder={""}
                     value={returnQty}
-                    onChange={handleReturnQtyChange}
+                    name="returnQty"
+                    onChange={handleInputChange}
                   />
                   {errors.returnQty && (
                     <span className="error-text">{errors.returnQty}</span>
@@ -369,8 +414,9 @@ function EmitterInward() {
                     className="form-control form-sz mb-2"
                     type={"text"}
                     placeholder={""}
+                    name="returnReason"
                     value={returnReason}
-                    onChange={handleReturnReasonChange}
+                    onChange={handleInputChange}
                   />
                   {/* {errors.storageMapping && (
               <span className="error-text">{errors.storageMapping}</span>
@@ -383,7 +429,7 @@ function EmitterInward() {
                 <Button
                   component="label"
                   variant="contained"
-                  onClick={closePendingPopupIssued}
+                  onClick={handleUpdateInward}
                 >
                   Proceed
                 </Button>
