@@ -88,7 +88,7 @@ function Login() {
             window.location.href = "/app/welcome";
           } else if (localStorage.getItem("userDetails") === "ROLE_USER") {
             window.location.href = "/app/welcome";
-          } else {
+          } else if (localStorage.getItem("userDetails") === "ROLE_OEM") {
             window.location.href = "/app/EmptyCount";
           }
         }

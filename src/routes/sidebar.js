@@ -56,6 +56,18 @@ const routes = [
         ),
         name: <span>Emitters</span>,
       },
+      {
+        path: "/app/OemUser",
+        icon: (
+          <img
+            src="/emittercreation.png"
+            alt="OemUser"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>OEM User</span>,
+      },
 
       // {
       //   path: "/app/Roles",

@@ -77,9 +77,7 @@ const Preferences = lazy(() => import("../pages/protected/Preferences"));
 const ProfileSettings = lazy(() =>
   import("../pages/protected/ProfileSettings")
 );
-const ChangePassword = lazy(() =>
-  import("../pages/protected/ChangePassword")
-);
+const ChangePassword = lazy(() => import("../pages/protected/ChangePassword"));
 const GettingStarted = lazy(() => import("../pages/GettingStarted"));
 const DocFeatures = lazy(() => import("../pages/DocFeatures"));
 const DocComponents = lazy(() => import("../pages/DocComponents"));
@@ -88,9 +86,8 @@ const UserDetails = lazy(() => import("../pages/protected/UserDetails"));
 const EmitterCreation = lazy(() =>
   import("../pages/protected/EmitterCreation")
 );
-const EmitterDetails = lazy(() =>
-  import("../pages/protected/EmitterDetails")
-);
+const EmitterDetails = lazy(() => import("../pages/protected/EmitterDetails"));
+const OemUser = lazy(() => import("../pages/protected/OemUser"));
 const Roles = lazy(() => import("../pages/protected/Roles"));
 const Responsibilities = lazy(() =>
   import("../pages/protected/Responsibilites")
@@ -338,6 +335,10 @@ const routes = [
   {
     path: "/emitterDetails",
     component: EmitterDetails,
+  },
+  {
+    path: "/oemUser",
+    component: OemUser,
   },
   {
     path: "/roles",
