@@ -92,7 +92,8 @@ const EmitterDetails = () => {
 
     const handleBack = () => {
         setAddEmitter(false);
-        // getAllEmittersData();
+        setEditEmitter(false)
+        getAllEmittersData();
     };
 
     useEffect(() => {

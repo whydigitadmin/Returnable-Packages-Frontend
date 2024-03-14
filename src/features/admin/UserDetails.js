@@ -99,8 +99,7 @@ export const UserDetails = () => {
     const handleBack = () => {
         setAddUser(false);
         setEditUser(false);
-
-        // getWarehouseData();
+        getAllUsersData();
     };
 
     useEffect(() => {
