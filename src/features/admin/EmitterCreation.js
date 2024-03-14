@@ -64,7 +64,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function EmitterCreation({ addEmitter }) {
+function EmitterCreation({ addEmitter, emitterEditId }) {
   const [firstName, setFirstName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
@@ -84,6 +84,7 @@ function EmitterCreation({ addEmitter }) {
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
+  const [emitterData, setEmitterData] = useState({});
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -340,9 +341,142 @@ function EmitterCreation({ addEmitter }) {
   };
 
   useEffect(() => {
+    if (emitterEditId) {
+      getEmitterById();
+    }
     console.log("value", selectedFlows);
     getCustomersList();
   }, [selectedFlows]); // This will be triggered whenever selectedFlows changes
+
+  // GET USER DETAILS 
+  const getEmitterById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/auth/user/${emitterEditId}`
+      );
+
+      if (response.status === 200) {
+        setEmitterData(response.data.paramObjectsMap.userVO);
+        console.log("Edit Emitter Details", response.data.paramObjectsMap.userVO);
+        setFirstName(response.data.paramObjectsMap.userVO.firstName)
+        setEmail(response.data.paramObjectsMap.userVO.email)
+        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1)
+        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city)
+        setState(response.data.paramObjectsMap.userVO.userAddressVO.state)
+        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country)
+        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin)
+        setPhone(response.data.paramObjectsMap.userVO.pno)
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  //UPDATE EMITTER
+  const handleEmitterUpdate = () => {
+    const errors = {};
+    if (!firstName) {
+      errors.firstName = "First Name is required";
+    }
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      errors.email = "Invalid email format";
+    }
+
+    if (!phone) {
+      errors.phone = "Phone is required";
+    } else if (phone.length < 10) {
+      errors.phone = "Phone number must be 10 Digit";
+    }
+
+    // if (!password) {
+    //   errors.password = "Password is required";
+    // }
+    if (!address) {
+      errors.address = "Address is required";
+    }
+    if (!city) {
+      errors.city = "City is required";
+    }
+    if (!state) {
+      errors.state = "State is required";
+    }
+    if (!country) {
+      errors.country = "Country is required";
+    }
+    if (!pincode) {
+      errors.pincode = "Pincode is required";
+    } else if (pincode.length < 6) {
+      errors.pincode = "Pincode must be 6 Digit";
+    }
+    // if (!warehouse) {
+    //   errors.warehouse = "Warehouse is required";
+    // }
+    const userPayload = {
+      accessRightsRoleId: 2,
+      // accessWarehouse: warehouse,
+      // accessaddId: 0,
+      active: active,
+      email: email,
+      emitterId: 0,
+      firstName: firstName,
+      orgId: orgId, // You may need to provide a default value
+      role: role,
+      pno: phone,
+      userAddressDTO: {
+        address1: address,
+        address2: "", // You may need to provide a default value
+        country: country,
+        location: city,
+        pin: pincode,
+        state: state,
+      },
+      userName: email,
+      userId: emitterEditId, // You may need to provide a default value
+    };
+
+    const token = localStorage.getItem("token");
+    let headers = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers = {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
+
+    const hashedPassword = encryptPassword(password);
+
+    console.log("Update Payload is:", userPayload);
+
+    // const userDataWithHashedPassword = {
+    //   ...userPayload,
+    //   password: hashedPassword,
+    // };
+
+    if (Object.keys(errors).length === 0) {
+      // Valid data, perform API call or other actions
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/auth/updateUser`,
+          userPayload,
+          { headers }
+        )
+        .then((response) => {
+          console.log("User Updated successfully!", response.data);
+          setErrors("");
+          handleEmitterCreationClose();
+
+        })
+        .catch((error) => {
+          console.error("Error saving user:", error.message);
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
 
   const handleEmitterCreationClose = () => {
     addEmitter(false);
@@ -454,9 +588,41 @@ function EmitterCreation({ addEmitter }) {
               name="email"
               value={email}
               onChange={handleInputChange}
+              disabled={emitterEditId ? true : false}
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
+
+          {/* PASSWORD FIELD */}
+          {!emitterEditId && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Password
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"password"}
+                  // placeholder={"Enter"}
+                  name="password"
+                  value={password}
+                  onChange={handleInputChange}
+                />
+                {errors.password && (
+                  <span className="error-text">{errors.password}</span>
+                )}
+              </div>
+            </>
+          )}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -464,31 +630,7 @@ function EmitterCreation({ addEmitter }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Password
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"password"}
-              // placeholder={"Enter"}
-              name="password"
-              value={password}
-              onChange={handleInputChange}
-            />
-            {errors.password && (
-              <span className="error-text">{errors.password}</span>
-            )}
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
+
                 Address
                 <FaStarOfLife className="must" />
               </span>
@@ -639,22 +781,33 @@ function EmitterCreation({ addEmitter }) {
             />
           </div>
         </div>
-        <div className="d-flex flex-row mt-3">
+
+        {emitterEditId ? (<div className="d-flex flex-row mt-3">
           <button
             type="button"
-            onClick={handleUserCreation}
+            onClick={handleEmitterUpdate}
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
-            Save
+            Update
           </button>
-          <button
-            type="button"
-            onClick={handleNew}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Clear
-          </button>
-        </div>
+        </div>) : (
+          <div className="d-flex flex-row mt-3">
+
+            <button
+              type="button"
+              onClick={handleUserCreation}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleNew}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Clear
+            </button>
+          </div>)}
       </div>
       <Dialog
         fullWidth={true}

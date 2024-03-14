@@ -83,6 +83,8 @@ function UserCreation({ addUser, userEditId }) {
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [userData, setUserData] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [disabledWarehouseIds, setDisabledWarehouseIds] = useState([]);
+
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -119,13 +121,13 @@ function UserCreation({ addUser, userEditId }) {
         setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country)
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin)
         setPhone(response.data.paramObjectsMap.userVO.pno)
+        setDisabledWarehouseIds(response.data.paramObjectsMap.userVO.accessWarehouse)
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  // UPDATE USER
   const handleUserUpdate = () => {
     const errors = {};
     if (!firstName) {
@@ -142,10 +144,6 @@ function UserCreation({ addUser, userEditId }) {
     } else if (phone.length < 10) {
       errors.phone = "Phone number must be 10 Digit";
     }
-
-    // if (!password) {
-    //   errors.password = "Password is required";
-    // }
     if (!address) {
       errors.address = "Address is required";
     }
@@ -166,22 +164,6 @@ function UserCreation({ addUser, userEditId }) {
     // if (!warehouse) {
     //   errors.warehouse = "Warehouse is required";
     // }
-
-    const token = localStorage.getItem("token");
-    let headers = {
-      "Content-Type": "application/json",
-    };
-
-    if (token) {
-      headers = {
-        ...headers,
-        Authorization: `Bearer ${token}`,
-      };
-    }
-    const hashedPassword = encryptPassword(password);
-
-    // Update userData with the hashed password
-
     const userPayload = {
       accessRightsRoleId: 2,
       // accessWarehouse: warehouse,
@@ -197,13 +179,27 @@ function UserCreation({ addUser, userEditId }) {
         address1: address,
         address2: "", // You may need to provide a default value
         country: country,
-        location: city,
+        location: "Location",
         pin: pincode,
         state: state,
+        city: city,
       },
       userName: email,
       userId: userEditId, // You may need to provide a default value
     };
+
+    const token = localStorage.getItem("token");
+    let headers = {
+      "Content-Type": "application/json",
+    };
+    if (token) {
+      headers = {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
+
+    const hashedPassword = encryptPassword(password);
 
     console.log("Update Payload is:", userPayload);
 
@@ -217,13 +213,12 @@ function UserCreation({ addUser, userEditId }) {
       axios
         .put(
           `${process.env.REACT_APP_API_URL}/api/auth/updateUser`,
-          // userDataWithHashedPassword,
           userPayload,
           { headers }
         )
         .then((response) => {
           console.log("User Updated successfully!", response.data);
-          // handleNew();
+          setErrors("");
           handleUserCreationClose();
 
         })
@@ -506,28 +501,6 @@ function UserCreation({ addUser, userEditId }) {
           />
         </div>
         <div className="row">
-          <div className="row">
-            <div className="col-lg-3 col-md-6 mb-4">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Warehouse
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-4 ml-2">
-              <button
-                type="button"
-                onClick={handleShippingClickOpen}
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              >
-                Assign Warehouse
-              </button>
-            </div>
-          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -566,7 +539,7 @@ function UserCreation({ addUser, userEditId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
               // placeholder={"Enter"}
@@ -575,8 +548,22 @@ function UserCreation({ addUser, userEditId }) {
               onChange={handleInputChange}
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              // placeholder={"Enter"}
+              name="email"
+              value={email}
+              onChange={handleInputChange}
+              disabled={userEditId ? true : false}
+
+            />
+            {errors.email && <span className="error-text">{errors.email}</span>}
+          </div>
+
+          {/* PASSWORD FIELD */}
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -596,11 +583,45 @@ function UserCreation({ addUser, userEditId }) {
               name="password"
               value={password}
               onChange={handleInputChange}
+              disabled={userEditId ? true : false}
             />
             {errors.password && (
               <span className="error-text">{errors.password}</span>
             )}
-          </div>
+          </div> */}
+
+          {!userEditId && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Password
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type={"password"}
+                  // placeholder={"Enter"}
+                  name="password"
+                  value={password}
+                  onChange={handleInputChange}
+                  disabled={userEditId ? true : false}
+                />
+                {errors.password && (
+                  <span className="error-text">{errors.password}</span>
+                )}
+              </div>
+            </>
+          )}
+
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -741,6 +762,28 @@ function UserCreation({ addUser, userEditId }) {
             />
             {errors.phone && <span className="error-text">{errors.phone}</span>}
           </div>
+
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Warehouse
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-4">
+            <button
+              type="button"
+              onClick={handleShippingClickOpen}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Assign Warehouse
+            </button>
+          </div>
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -754,32 +797,38 @@ function UserCreation({ addUser, userEditId }) {
             />
           </div>
         </div>
-        <div className="d-flex flex-row mt-3">
-          {userEditId ? (
+
+        {userEditId ? (
+          <div className="d-flex flex-row mt-3">
             <button
               type="button"
               onClick={handleUserUpdate}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Update
-            </button>) : (
+            </button>
+          </div>
+        ) : (
+          <div className="d-flex flex-row mt-3">
             <button
               type="button"
               onClick={handleUserCreation}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Save
-            </button>)}
-
-          <button
-            type="button"
-            onClick={handleNew}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Clear
-          </button>
-        </div>
+            </button>
+            <button
+              type="button"
+              onClick={handleNew}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Clear
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* ASSIGN WAREHOUSE MODAL */}
       <Dialog
         fullWidth={true}
         maxWidth={"sm"}

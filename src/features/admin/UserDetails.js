@@ -112,9 +112,8 @@ export const UserDetails = () => {
             );
 
             if (response.status === 200) {
-                setData(response.data.paramObjectsMap.userVO);
-                // setUserAddressData(response.data.paramObjectsMap.userAddressVO);
-                console.log("USER ADDRESS VO DETAILS:", response.data.paramObjectsMap.userVO.userAddressVO)
+                setData(response.data.paramObjectsMap.userVO.filter(user => user.role === "ROLE_USER"));
+                console.log(response.data.paramObjectsMap.userVO.filter(user => user.role === "ROLE_USER"));
             }
         } catch (error) {
             console.error("Error fetching data:", error);
@@ -131,23 +130,7 @@ export const UserDetails = () => {
         setSelectedRowId(row.original.userId);
         console.log("setSelectedRowID", row.original.userId);
         setEditUser(true);
-        // <UserCreation id={row.original.userId} />
-        // setOpenView(true);
     };
-
-    // const editUserData = async () => {
-    //     try {
-    //         const response = await axios.get(
-    //             `${process.env.REACT_APP_API_URL}/api/auth/userByOrgId?orgId=${orgId}`
-    //         );
-
-    //         if (response.status === 200) {
-    //             setData(response.data.paramObjectsMap.userVO);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching data:", error);
-    //     }
-    // };
 
     const VisuallyHiddenInput = styled("input")({
         clip: "rect(0 0 0 0)",
@@ -189,8 +172,17 @@ export const UserDetails = () => {
                     </div>
                 ),
             },
-
-
+            {
+                accessorKey: "userId",
+                header: "User ID",
+                size: 50,
+                muiTableHeadCellProps: {
+                    align: "center",
+                },
+                muiTableBodyCellProps: {
+                    align: "center",
+                },
+            },
             {
                 accessorKey: "firstName",
                 header: "User Name",
@@ -267,11 +259,14 @@ export const UserDetails = () => {
                 editUser && <UserCreation addUser={handleBack} userEditId={selectedRowId} />
                 || (
                     <div className="card w-full p-6 bg-base-100 shadow-xl">
+                        {/* DASHBOARD COMPONENT */}
                         <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
                             {statsData.map((d, k) => {
                                 return <DashBoardComponent key={k} {...d} colorIndex={k} />;
                             })}
                         </div>
+
+                        {/* BULK UPLOAD AND ADD NEW BUTTON */}
                         <div className="">
                             <div className="flex justify-between mt-4">
                                 <button
@@ -302,10 +297,14 @@ export const UserDetails = () => {
                                 </button>
                             </div>
                         </div>
+
+                        {/* LISTVIEW TABLE */}
                         <div className="mt-4">
                             <MaterialReactTable table={table}
                             />
                         </div>
+
+                        {/* BULK UPLOAD MODAL */}
                         <Dialog
                             fullWidth={true}
                             maxWidth={"sm"}
@@ -377,6 +376,10 @@ export const UserDetails = () => {
                             <Table>
                                 <TableBody>
                                     <TableRow>
+                                        <TableCell>User ID</TableCell>
+                                        <TableCell>{selectedRowData.userId}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
                                         <TableCell>User Name</TableCell>
                                         <TableCell>{selectedRowData.firstName}</TableCell>
                                     </TableRow>
@@ -392,7 +395,30 @@ export const UserDetails = () => {
                                         <TableCell>Address</TableCell>
                                         <TableCell>{selectedRowData.userAddressVO.address1}</TableCell>
                                     </TableRow>
+                                    <TableRow>
+                                        <TableCell>City</TableCell>
+                                        {selectedRowData.userAddressVO.city ? (
+                                            <TableCell>{selectedRowData.userAddressVO.city}</TableCell>) : (<TableCell>-</TableCell>)}
+                                        {/* <TableCell>{selectedRowData.userAddressVO.city}</TableCell> */}
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>State</TableCell>
+                                        <TableCell>{selectedRowData.userAddressVO.state}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>Country</TableCell>
+                                        <TableCell>{selectedRowData.userAddressVO.country}</TableCell>
+                                    </TableRow>
+                                    <TableRow>
+                                        <TableCell>PinCode</TableCell>
+                                        <TableCell>{selectedRowData.userAddressVO.pin}</TableCell>
+                                    </TableRow>
+                                    {/* <TableRow>
+                                        <TableCell>Status</TableCell>
+                                        <TableCell>{selectedRowData.active}</TableCell>
+                                    </TableRow> */}
                                 </TableBody>
+
                             </Table>
                         </TableContainer>
                     )}
