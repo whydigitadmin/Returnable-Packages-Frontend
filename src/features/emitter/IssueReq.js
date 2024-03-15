@@ -973,7 +973,7 @@ function IssueReq() {
                             key={index}
                             className="form-control form-sz mb-2"
                             name="kitQty"
-                            type="number"
+                            type="text"
                             // value={field.qty}
                             value={field.qty}
                             onChange={(e) => handleQtyChange(e, index)}
@@ -1116,7 +1116,7 @@ function IssueReq() {
                           </label>
                           <input
                             className="form-control form-sz"
-                            type="number"
+                            type="text"
                             placeholder={""}
                             ref={qtyInputRef}
                             value={field.qty}
