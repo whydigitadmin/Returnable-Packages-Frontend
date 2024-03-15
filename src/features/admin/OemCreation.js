@@ -13,6 +13,7 @@ import { IoMdClose } from "react-icons/io";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
 
+
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -85,6 +86,8 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
   const [oemData, setOemData] = useState({});
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -477,7 +480,26 @@ function OemCreation({ addEmitter, oemEditId }) {
     }
   };
 
+  // const handleEmitterCreationClose = () => {
+  //   addEmitter(false);
+  // };
+
+  // CLOSE BUTTON WITH CONFIRMATION
   const handleEmitterCreationClose = () => {
+    if (firstName || phone || address || city || state || country || pincode || flow > 0) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+      addEmitter(false)
+    }
+  }
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
     addEmitter(false);
   };
 
@@ -851,6 +873,17 @@ function OemCreation({ addEmitter, oemEditId }) {
             </div>
           </div>
         </DialogContent>
+      </Dialog>
+
+      {/* CLOSE CONFIRMATION MODAL */}
+      <Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
+        </DialogActions>
       </Dialog>
     </>
   );

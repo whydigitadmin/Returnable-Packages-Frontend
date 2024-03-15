@@ -74,7 +74,7 @@ function UserCreation({ addUser, userEditId }) {
   const [state, setState] = React.useState("");
   const [country, setCountry] = React.useState("");
   const [pincode, setPincode] = React.useState("");
-  const [phone, setPhone] = React.useState();
+  const [phone, setPhone] = React.useState("");
   const [active, setActive] = React.useState(true);
   const [role, setRole] = React.useState("ROLE_USER");
   const [warehouse, setWarehouse] = React.useState([]);
@@ -84,7 +84,7 @@ function UserCreation({ addUser, userEditId }) {
   const [userData, setUserData] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [disabledWarehouseIds, setDisabledWarehouseIds] = useState([]);
-
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -98,9 +98,6 @@ function UserCreation({ addUser, userEditId }) {
       getUserById();
     }
     getWarehouseLocationList();
-    // fetchData(); // Fetch data when the component mounts
-    console.log("Testt", warehouse);
-    console.log("Testt", userEditId);
   }, [warehouse]);
 
   // GET USER DETAILS 
@@ -488,7 +485,22 @@ function UserCreation({ addUser, userEditId }) {
     }
   };
 
+  // CLOSE BUTTON WITH CONFIRMATION
   const handleUserCreationClose = () => {
+    if (firstName || phone || address || city || state || country || pincode || warehouse > 0) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+      addUser(false)
+    }
+  }
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
     addUser(false);
   };
 
@@ -851,6 +863,17 @@ function UserCreation({ addUser, userEditId }) {
           <Button variant="contained" onClick={handleShippingClickClose}>
             Submit
           </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* CLOSE CONFIRMATION MODAL */}
+      <Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
         </DialogActions>
       </Dialog>
     </>
