@@ -424,7 +424,7 @@ function OemCreation({ addEmitter, oemEditId }) {
         .then((response) => {
           console.log("User Updated successfully!", response.data);
           setErrors("");
-          handleEmitterCreationClose();
+          addEmitter(false)   // OEMUSER CREATION SCREEN CLOSE AFTER UPDATE 
 
         })
         .catch((error) => {

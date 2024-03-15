@@ -469,7 +469,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
         .then((response) => {
           console.log("User Updated successfully!", response.data);
           setErrors("");
-          handleEmitterCreationClose();
+          addEmitter(false)   // EMITTER CREATION SCREEN CLOSE AFTER UPDATE 
 
         })
         .catch((error) => {

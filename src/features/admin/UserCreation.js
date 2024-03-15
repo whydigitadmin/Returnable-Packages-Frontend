@@ -126,6 +126,7 @@ function UserCreation({ addUser, userEditId }) {
     }
   };
 
+  // UPDATE USER
   const handleUserUpdate = () => {
     const errors = {};
     if (!firstName) {
@@ -217,7 +218,7 @@ function UserCreation({ addUser, userEditId }) {
         .then((response) => {
           console.log("User Updated successfully!", response.data);
           setErrors("");
-          handleUserCreationClose();
+          addUser(false)   // USER CREATION SCREEN CLOSE AFTER UPDATE 
 
         })
         .catch((error) => {
@@ -491,7 +492,7 @@ function UserCreation({ addUser, userEditId }) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
-      addUser(false)
+      addUser(false)   // USER CREATION SCREEN CLOSE AFTER UPDATE 
     }
   }
 
