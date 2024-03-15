@@ -1,4 +1,10 @@
-import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  TextField,
+} from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
 import axios from "axios";
@@ -27,7 +33,7 @@ function IssueManifest() {
   const [selectedSubIndex, setSelectedSubIndex] = useState(null);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [emitterLocationVO, setEmitterLocationVO] = useState([]);
-
+  const [errors, setErrors] = useState("");
   const [emitter, setEmitter] = useState("");
   const [emitterId, setEmitterId] = useState("");
   const [qty, setQty] = React.useState([]);
@@ -41,7 +47,10 @@ function IssueManifest() {
   const [toast, setToast] = useState(false);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const [maxPartQty, setMaxPartQty] = useState("");
+  const [kitQuantity, setKitQuantity] = useState("");
+  const [selectedItemKit, setSelectedItemKit] = useState("");
 
+  const [warehouseLocationId, setWarehouseLocationId] = useState("");
   useEffect(() => {
     getLocationList();
   }, []);
@@ -356,6 +365,8 @@ function IssueManifest() {
 
   const getCustomersList = async (selectedWarehouse) => {
     console.log("Test@", selectedWarehouse);
+
+    setWarehouseLocationId(selectedWarehouse.warehouseId);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/emitter/getemitterByWarehouseId?orgid=${orgId}&warehouseid=${selectedWarehouse.warehouseId}`
@@ -383,7 +394,35 @@ function IssueManifest() {
     }
   };
 
+  const handlePartStudyUpdate = () => {
+    const errors = {};
+
+    if (!kitQuantity) {
+      errors.kitQuantity = "Kit Quantity is required";
+    }
+
+    if (Object.keys(errors).length === 0) {
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/master/loadKitQty?kitQty=${kitQuantity}&irItemId=${selectedItemKit.id}`
+        )
+        .then((response) => {
+          setErrors("");
+          setKitQuantity("");
+          setToast(true);
+          closeInProgressPopup();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
+
   const getKitQtyByPartId = async (item) => {
+    setInProgressPopupOpen(true);
+    setSelectedItemKit(item);
     console.log("partCheck", item);
     try {
       const response = await axios.get(
@@ -405,7 +444,7 @@ function IssueManifest() {
   const getIssueRequest = async (selectedEmitterId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest?orgId=${orgId}&emitterId=${selectedEmitterId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest?orgId=${orgId}&emitterId=${selectedEmitterId}&warehouseLocationId=${warehouseLocationId}`
       );
 
       if (response.status === 200) {
@@ -646,7 +685,7 @@ function IssueManifest() {
                               <tr>
                                 <th>Select</th>
                                 <th>Kit Name</th>
-                                <th>Part Per kit</th>
+                                <th>Update Kit Qty</th>
                                 <th>Part Name</th>
                                 <th>Part Quantity</th>
                                 <th>Issue Quantity</th>
@@ -676,30 +715,23 @@ function IssueManifest() {
                                     </td>
                                     <td>{item.kitName}</td>
                                     <td>
-                                      {maxPartQty &&
-                                      maxPartQty.partNumber === item.partNo ? (
-                                        <div style={{ marginLeft: "30px" }}>
-                                          {maxPartQty.maxPartQty}
-                                        </div>
-                                      ) : (
-                                        <div>
-                                          <img
-                                            src={
-                                              "https://cdn-icons-png.flaticon.com/128/3049/3049489.png"
-                                            }
-                                            alt="will-issue-icon"
-                                            style={{
-                                              width: 40,
-                                              height: 40,
-                                              margin: "auto",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() =>
-                                              getKitQtyByPartId(item)
-                                            }
-                                          />
-                                        </div>
-                                      )}
+                                      <div>
+                                        <img
+                                          src={
+                                            "https://cdn-icons-png.flaticon.com/128/4059/4059902.png"
+                                          }
+                                          alt="will-issue-icon"
+                                          style={{
+                                            width: 40,
+                                            height: 40,
+                                            margin: "auto",
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={() =>
+                                            getKitQtyByPartId(item)
+                                          }
+                                        />
+                                      </div>
                                     </td>
                                     <td>{item.partName}</td>
                                     <td>{item.partQty}</td>
@@ -724,41 +756,45 @@ function IssueManifest() {
                                       {item.balanceQty}
                                     </td>
                                     <td>
-                                      {/* Button for issuing part in this row */}
-                                      {selectedIssueRequest.issueStatus !==
-                                      2 ? (
-                                        // <Button
-                                        //   variant="contained"
-                                        //   onClick={() => handleIssueKit(item)}
-                                        // >
-                                        //   Issue
-                                        // </Button>
-                                        <div>
-                                          <img
-                                            src="/checked1.png"
-                                            alt="completed-status-icon"
-                                            style={{
-                                              width: 30,
-                                              height: 30,
-                                              margin: "auto",
-                                            }}
-                                          />
-                                        </div>
-                                      ) : (
-                                        <div>
-                                          <img
-                                            src={"/will_issue.png"}
-                                            alt="will-issue-icon"
-                                            style={{
-                                              width: 40,
-                                              height: 40,
-                                              margin: "auto",
-                                              cursor: "pointer",
-                                            }}
-                                            onClick={() => handleIssueKit(item)}
-                                          />
-                                        </div>
-                                      )}
+                                      <div>
+                                        {/* Button for issuing part in this row */}
+                                        {selectedIssueRequest.issueStatus ===
+                                        2 ? (
+                                          // <Button
+                                          //   variant="contained"
+                                          //   onClick={() => handleIssueKit(item)}
+                                          // >
+                                          //   Issue
+                                          // </Button>
+                                          <div>
+                                            <img
+                                              src="/checked1.png"
+                                              alt="completed-status-icon"
+                                              style={{
+                                                width: 30,
+                                                height: 30,
+                                                margin: "auto",
+                                              }}
+                                            />
+                                          </div>
+                                        ) : (
+                                          <div>
+                                            <img
+                                              src={"/will_issue.png"}
+                                              alt="will-issue-icon"
+                                              style={{
+                                                width: 40,
+                                                height: 40,
+                                                margin: "auto",
+                                                cursor: "pointer",
+                                              }}
+                                              onClick={() =>
+                                                handleIssueKit(item)
+                                              }
+                                            />
+                                          </div>
+                                        )}
+                                      </div>{" "}
                                     </td>{" "}
                                   </tr>
                                 )
@@ -904,12 +940,30 @@ function IssueManifest() {
               onClose={closeInProgressPopup}
             >
               <div className="d-flex justify-content-between">
-                <DialogTitle>Issue Manifest</DialogTitle>
+                <DialogTitle>Update Kit</DialogTitle>
                 <IoMdClose
                   className="cursor-pointer w-8 h-8 mt-3 me-3"
                   onClick={closeInProgressPopup}
                 />
               </div>
+              <DialogContent>
+                <div>
+                  Max part per kit :{" "}
+                  {maxPartQty.partNumber === selectedItemKit.partNo &&
+                    maxPartQty.maxPartQty}
+                </div>
+                <br></br>
+                <TextField
+                  label="Kit Quantity"
+                  type="number"
+                  value={kitQuantity}
+                  onChange={(e) => setKitQuantity(e.target.value)}
+                  fullWidth
+                />
+                {errors.kitQuantity && (
+                  <span className="error-text">{errors.kitQuantity}</span>
+                )}
+              </DialogContent>
 
               <div className="d-flex justify-content-center">
                 <DialogActions className="mb-2 me-2">
@@ -917,16 +971,16 @@ function IssueManifest() {
                   <Button
                     component="label"
                     variant="contained"
-                    onClick={closePendingPopup}
+                    onClick={handlePartStudyUpdate}
                   >
-                    Proceed
+                    Update
                   </Button>
                 </DialogActions>
               </div>
               <DialogContentText>
-                <center className="text-dark mb-2">
+                {/* <center className="text-dark mb-2">
                   Issued by AIPACKS - Karthi-19/01/2024-10:00AM
-                </center>
+                </center> */}
               </DialogContentText>
             </Dialog>
 
