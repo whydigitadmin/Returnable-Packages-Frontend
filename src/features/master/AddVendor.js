@@ -113,46 +113,52 @@ function AddVendor({ addVendors }) {
   const [firstName, setFirstName] = useState();
   const [lastName, setLastName] = useState();
   const [email, setEmail] = useState("");
-  const [venderOrgName, setVenderOrgName] = useState("");
+  const [entityLegalName, setEntityLegalName] = useState("");
   const [displyName, setDisplyName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [active, setActive] = useState("");
-  const [accountName, setAccountName] = useState("");
-  const [accountNO, setAccountNO] = useState("");
-  const [bankName, setBankName] = useState("");
+  const [active, setActive] = useState(true);
+  const [venderActivePortal, setVenderActivePortal] = useState(true);
+  const [displayName, setDisplayName] = useState("");
+  const [accountNum, setAccountNum] = useState("");
+  const [bank, setBank] = useState("");
   const [branch, setBranch] = useState("");
   const [ifscCode, setIfscCode] = useState("");
   const [tableData, setTableData] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [isPrimary, setIsPrimary] = useState(false);
-  const [gstRegStatus, setGstRegStatus] = React.useState("");
-  const [gstNo, setGstNo] = React.useState("");
+  const [gstRegistrationStatus, setGstRegistrationStatus] = React.useState("");
+  const [gstNumber, setGstNumber] = React.useState("");
   const [street1, setStreet1] = React.useState("");
   const [street2, setStreet2] = React.useState("");
   const [state, setState] = React.useState("");
   const [city, setCity] = React.useState("");
   const [pincode, setPincode] = React.useState("");
   const [contactName, setContactName] = React.useState("");
-  const [desination, setDesination] = React.useState("");
+  const [phone, setPhone] = useState("");
+  const [destination, setDestination] = React.useState("");
   const [emailAddress, setEmailAddress] = React.useState("");
+  const [id, setId] = React.useState();
+  const [vendorId, setVendorId] = React.useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [addressShow, setAddressShow] = React.useState(false);
 
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [newAddress, setNewAddress] = useState({
-    gstRegStatus: "",
-    gstNo: "",
+    gstRegistrationStatus: "",
+    gstNumber: "",
     street1: "",
     street2: "",
     state: "",
     city: "",
     pincode: "",
     contactName: "",
-    phoneNumber: "",
-    desination: "",
-    emailAddress: "",
+    phone: "",
+    destination: "",
+    email: emailAddress,
     isPrimary: false,
   });
   const [errors1, setErrors1] = useState({
-    gstRegStatus: false,
+    gstRegistrationStatus: false,
     street1: false,
     state: false,
     city: false,
@@ -161,7 +167,7 @@ function AddVendor({ addVendors }) {
 
   const isValidAddress = () => {
     return (
-      newAddress.gstRegStatus.trim() !== "" &&
+      newAddress.gstRegistrationStatus.trim() !== "" &&
       newAddress.street1.trim() !== "" &&
       newAddress.state.trim() !== "" &&
       newAddress.city.trim() !== "" &&
@@ -171,22 +177,22 @@ function AddVendor({ addVendors }) {
   const handleCancel = () => {
     // Clear form fields
     setNewAddress({
-      gstRegStatus: "",
-      gstNo: "",
+      gstRegistrationStatus: "",
+      gstNumber: "",
       street1: "",
       street2: "",
       state: "",
       city: "",
       pincode: "",
       contactName: "",
-      phoneNumber: "",
-      desination: "",
-      emailAddress: "",
+      phone: "",
+      destination: "",
+      email: "",
       isPrimary: false,
     });
     // Clear all error messages
     setErrors1({
-      gstRegStatus: false,
+      gstRegistrationStatus: false,
       street1: false,
       state: false,
       city: false,
@@ -196,17 +202,58 @@ function AddVendor({ addVendors }) {
     handleShippingClickClose();
   };
 
-  const handleAddressSubmit = () => {
+  // const handleAddressSubmit = () => {
+  //   const addressWithVendorId = { ...newAddress, vendorId: vendorId };
+  //   if (isValidAddress()) {
+  //     handleAddShippingAddress();
+  //   } else {
+  //     // Set errors for invalid or empty fields
+  //     const updatedErrors = {};
+  //     for (const field in newAddress) {
+  //       if (
+  //         field !== "street2" &&
+  //         field !== "contactName" &&
+  //         field !== "phoneNumber" &&
+  //         field !== "isPrimary"
+  //       ) {
+  //         if (!newAddress[field].trim()) {
+  //           updatedErrors[field] = true;
+  //         }
+  //       }
+  //     }
+  //     setErrors1(updatedErrors);
+  //   }
+  // };
+
+  const handleAddressSubmit = async () => {
+    const addressWithVendorId = { ...newAddress, vendorId: vendorId };
     if (isValidAddress()) {
-      handleAddShippingAddress();
+      try {
+        const response = await axios.post(
+          "/api/master/vendorAddress",
+          addressWithVendorId
+        );
+        console.log("Response:", response.data);
+        setErrors1({}); // Clear any previous errors on successful submission
+        handleAddShippingAddress();
+      } catch (errors1) {
+        console.error("Error:", errors1);
+        if (errors1.response && errors1.response.data) {
+          // Handle errors from the server
+          const serverErrors = errors1.response.data;
+          setErrors1(serverErrors);
+        } else {
+          // Handle other errors
+          setErrors1({ unexpectedError: true });
+        }
+      }
     } else {
-      // Set errors for invalid or empty fields
       const updatedErrors = {};
       for (const field in newAddress) {
         if (
           field !== "street2" &&
           field !== "contactName" &&
-          field !== "phoneNumber" &&
+          field !== "phone" &&
           field !== "isPrimary"
         ) {
           if (!newAddress[field].trim()) {
@@ -214,7 +261,7 @@ function AddVendor({ addVendors }) {
           }
         }
       }
-      setErrors1(updatedErrors);
+      setErrors1(updatedErrors); // Update errors for invalid fields
     }
   };
 
@@ -231,19 +278,20 @@ function AddVendor({ addVendors }) {
     }));
   };
   const handleAddShippingAddress = () => {
-    setShippingAddresses([...shippingAddresses, newAddress]);
+    const addressWithVendorId = { ...newAddress, vendorId: vendorId };
+    setShippingAddresses([...shippingAddresses, addressWithVendorId]);
     setNewAddress({
-      gstRegStatus: "",
-      gstNo: "",
+      gstRegistrationStatus: "",
+      gstNumber: "",
       street1: "",
       street2: "",
       state: "",
       city: "",
       pincode: "",
       contactName: "",
-      phoneNumber: "",
-      desination: "",
-      emailAddress: "",
+      phone: "",
+      destination: "",
+      email: emailAddress,
       isPrimary: false,
     });
     setOpenShippingModal(false);
@@ -303,7 +351,7 @@ function AddVendor({ addVendors }) {
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    console.log("test", value);
+    // console.log("test", value);
 
     switch (name) {
       case "firstName":
@@ -318,8 +366,8 @@ function AddVendor({ addVendors }) {
       case "email":
         setEmail(value);
         break;
-      case "venderOrgName":
-        setVenderOrgName(value);
+      case "entityLegalName":
+        setEntityLegalName(value);
         break;
       case "displyName":
         setDisplyName(value);
@@ -327,14 +375,14 @@ function AddVendor({ addVendors }) {
       case "phoneNumber":
         setPhoneNumber(value);
         break;
-      case "accountName":
-        setAccountName(value);
+      case "displayName":
+        setDisplayName(value);
         break;
-      case "accountNO":
-        setAccountNO(value);
+      case "accountNum":
+        setAccountNum(value);
         break;
-      case "bankName":
-        setBankName(value);
+      case "bank":
+        setBank(value);
         break;
       case "branch":
         setBranch(value);
@@ -346,38 +394,72 @@ function AddVendor({ addVendors }) {
   };
 
   const handleVender = () => {
+    setIsSubmitting(true);
     const errors = {};
 
     console.log("test");
-    if (!firstName) {
-      errors.firstName = "firstName is required";
-    }
-    if (!lastName) {
-      errors.lastName = "lastName is required";
-    }
     if (!venderType) {
       errors.venderType = "venderType is required";
     }
     if (!email) {
-      errors.email = "email is required";
+      errors.email = "Email is required";
     }
-    if (!venderOrgName) {
-      errors.venderOrgName = "venderOrgName is required";
+    if (!entityLegalName) {
+      errors.entityLegalName = "EntityLegalName is required";
     }
     if (!displyName) {
       errors.displyName = "displyName is required";
     }
     if (!phoneNumber) {
-      errors.phoneNumber = "Phone is required";
+      errors.phoneNumber = "phoneNumber is required";
     }
-    if (!bankName) {
-      errors.bankName = "Bank Name is required";
+
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        venderType,
+        displyName,
+        email,
+        entityLegalName,
+        phoneNumber,
+        active,
+        orgId,
+        id,
+        venderActivePortal,
+      };
+
+      console.log("test", formData);
+      axios
+        .put(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
+        .then((response) => {
+          setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
+          console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
+          setErrors({});
+          setAddressShow(true);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+      setIsSubmitting(false);
     }
-    if (!accountNO) {
-      errors.accountNO = "account No is required";
+  };
+
+  const handleBankVender = () => {
+    // const bankVendorId = vendorId;
+
+    const errors = {};
+
+    console.log("vendorIds", vendorId);
+    if (!bank) {
+      errors.bank = "Bank Name is required";
     }
-    if (!accountName) {
-      errors.accountName = "Account Name No is required";
+    if (!accountNum) {
+      errors.accountNum = "account No is required";
+    }
+    if (!displayName) {
+      errors.displayName = "Account Name No is required";
     }
     if (!branch) {
       errors.branch = "branch Name No is required";
@@ -387,39 +469,28 @@ function AddVendor({ addVendors }) {
     }
 
     if (Object.keys(errors).length === 0) {
-      const formData = {
-        venderType,
-        firstName,
-        lastName,
-        email,
-        venderOrgName,
-        phoneNumber,
-        displyName,
-        active,
-        orgId,
-        bankName,
-        accountNO,
-        accountName,
+      const formDataBank = {
+        bank,
+        accountNum,
+        displayName,
         branch,
         ifscCode,
+        vendorId,
+        orgId,
+        id,
       };
 
-      console.log("test", formData);
+      console.log("test", formDataBank);
       axios
-        .post(`${process.env.REACT_APP_API_URL}/api/master/vender`, formData)
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/master/vendorBankDetails`,
+          formDataBank
+        )
         .then((response) => {
           console.log("Response:", response.data);
-          addVendors(true);
-          setVenderType("");
-          setFirstName("");
-          setLastName("");
-          setEmail("");
-          setVenderOrgName("");
-          setPhoneNumber("");
-          setDisplyName("");
-          setAccountNO("");
-          setBankName("");
-          setAccountName("");
+          setAccountNum("");
+          setBank("");
+          setDisplayName("");
           setBranch("");
           setIfscCode("");
           setErrors({});
@@ -461,12 +532,14 @@ function AddVendor({ addVendors }) {
               className="form-select form-sz w-full"
               onChange={handleInputChange}
               value={venderType}
+              name="venderType"
+              disabled={isSubmitting}
             >
               <option value="" disabled>
                 Select a vendor
               </option>
-              <option value="0">Transport</option>
-              <option value="1">Supplier</option>
+              <option value="Transport">Transport</option>
+              <option value="Supplier">Supplier</option>
             </select>
             {errors.venderType && (
               <div className="error-text">{errors.venderType}</div>
@@ -534,12 +607,13 @@ function AddVendor({ addVendors }) {
               className="form-control form-sz"
               type={"text"}
               placeholder={"Enter"}
-              name="venderOrgName"
-              value={venderOrgName}
+              name="entityLegalName"
+              value={entityLegalName}
               onChange={handleInputChange}
+              disabled={isSubmitting}
             />
-            {errors.venderOrgName && (
-              <span className="error-text">{errors.venderOrgName}</span>
+            {errors.entityLegalName && (
+              <span className="error-text">{errors.entityLegalName}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6">
@@ -562,6 +636,7 @@ function AddVendor({ addVendors }) {
               name="displyName"
               value={displyName}
               onChange={handleInputChange}
+              disabled={isSubmitting}
             />
             {errors.displyName && (
               <span className="error-text">{errors.displyName}</span>
@@ -587,6 +662,7 @@ function AddVendor({ addVendors }) {
               name="email"
               value={email}
               onChange={handleInputChange}
+              disabled={isSubmitting}
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
@@ -605,6 +681,7 @@ function AddVendor({ addVendors }) {
               name="phoneNumber"
               value={phoneNumber}
               onChange={handleInputChange}
+              disabled={isSubmitting}
             />
             {errors.phoneNumber && (
               <span className="error-text">{errors.phoneNumber}</span>
@@ -634,244 +711,291 @@ function AddVendor({ addVendors }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
-        </div>
-        <Box sx={{ width: "100%" }}>
-          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              aria-label="basic tabs example"
+          <div className="d-flex flex-row mt-1 mb-2">
+            <button
+              type="button"
+              onClick={handleVender}
+              disabled={addressShow === true}
+              style={{ cursor: addressShow ? "not-allowed" : "pointer" }}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
-              <Tab
-                className="text-form"
-                label="Bank Details"
-                {...a11yProps(1)}
-              />
-              <Tab className="text-form" label="Address" {...a11yProps(0)} />
-            </Tabs>
-          </Box>
-          <CustomTabPanel value={value} index={1}>
-            <div className="row d-flex justify-content-center">
-              <div className="col-md-12">
-                <button
-                  type="button"
-                  onClick={handleShippingClickOpen}
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleCloseAddVendor}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+        {addressShow && (
+          <>
+            <Box sx={{ width: "100%" }}>
+              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                <Tabs
+                  value={value}
+                  onChange={handleChange}
+                  aria-label="basic tabs example"
                 >
-                  + Add Billing Address
-                </button>
-              </div>
-            </div>
-            <div className="d-flex align-items-center justify-content-center flex-wrap">
-              {shippingAddresses.map((address, index) => (
-                <div
-                  className="col-md-5 mt-3"
-                  key={index}
-                  style={styles.submittedDataContainer}
-                >
-                  <div className="row">
-                    <div className="col-md-10">
-                      <h2 style={styles.submittedDataTitle}>
-                        Address {index + 1}
-                      </h2>
-                    </div>
-                    <div className="col-md-2">
-                      <FaTrash
-                        className="cursor-pointer w-4 h-8 me-3"
-                        onClick={() => handleDeleteAddress(index)}
-                      />
-                    </div>
-                  </div>
-
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>
-                      GST Registration Status:
-                    </span>
-                    <span>{address.gstRegStatus}</span>
-                  </div>
-                  {address.gstRegStatus === "Registered" && (
-                    <div style={styles.submittedDataItem}>
-                      <span style={styles.submittedDataLabel}>GST Number:</span>
-                      <span>{address.gstNo}</span>
-                    </div>
-                  )}
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Street 1:</span>
-                    <span>{address.street1}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Street 2:</span>
-                    <span>{address.street2}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>State:</span>
-                    <span>{address.state}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>City:</span>
-                    <span>{address.city}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Pin Code:</span>
-                    <span>{address.pincode}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>
-                      Contact Person:
-                    </span>
-                    <span>{address.contactName}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Destination:</span>
-                    <span>{address.desination}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Email:</span>
-                    <span>{address.emailAddress}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Phone Number:</span>
-                    <span>{address.phoneNumber}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Primary:</span>
-                    <span>{address.isPrimary ? "Yes" : "No"}</span>
+                  <Tab
+                    className="text-form"
+                    label="Bank Details"
+                    {...a11yProps(1)}
+                  />
+                  <Tab
+                    className="text-form"
+                    label="Address"
+                    {...a11yProps(0)}
+                  />
+                </Tabs>
+              </Box>
+              <CustomTabPanel value={value} index={1}>
+                <div className="row d-flex justify-content-center">
+                  <div className="col-md-12">
+                    <button
+                      type="button"
+                      onClick={handleShippingClickOpen}
+                      className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                    >
+                      + Add Address
+                    </button>
                   </div>
                 </div>
-              ))}
-            </div>
-          </CustomTabPanel>
-          <CustomTabPanel value={value} index={0}>
-            <div className="row">
-              <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Bank
-                    <FaStarOfLife className="must" />
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  type="text"
-                  className="form-control form-sz"
-                  placeholder="Enter"
-                  value={bankName}
-                  name="bankName"
-                  onChange={handleInputChange}
-                />
-                {errors.bankName && (
-                  <div className="error-text">{errors.bankName}</div>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Account No
-                    <FaStarOfLife className="must" />
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  type="text"
-                  className="form-control form-sz"
-                  placeholder="Enter"
-                  value={accountNO}
-                  name="accountNO"
-                  onChange={handleInputChange}
-                />
-                {errors.accountNO && (
-                  <div className="error-text">{errors.accountNO}</div>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Account Name
-                    <FaStarOfLife className="must" />
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  type="text"
-                  className="form-control form-sz"
-                  placeholder="Enter"
-                  value={accountName}
-                  name="accountName"
-                  onChange={handleInputChange}
-                />
-                {errors.accountName && (
-                  <div className="error-text">{errors.accountName}</div>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    Branch
-                    <FaStarOfLife className="must" />
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6 mb-2">
-                <input
-                  type="text"
-                  className="form-control form-sz"
-                  placeholder="Enter"
-                  value={branch}
-                  name="branch"
-                  onChange={handleInputChange}
-                />
-                {errors.branch && (
-                  <div className="error-text">{errors.branch}</div>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <label className="label">
-                  <span
-                    className={
-                      "label-text label-font-size text-base-content d-flex flex-row"
-                    }
-                  >
-                    IFSC Code
-                    <FaStarOfLife className="must" />
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <input
-                  type="text"
-                  className="form-control form-sz"
-                  placeholder="Enter"
-                  value={ifscCode}
-                  name="ifscCode"
-                  onChange={handleInputChange}
-                />
-                {errors.ifscCode && (
-                  <div className="error-text">{errors.ifscCode}</div>
-                )}
-              </div>
-            </div>
-          </CustomTabPanel>
-        </Box>
+                <div className="d-flex align-items-center justify-content-center flex-wrap">
+                  {shippingAddresses.map((address, index) => (
+                    <div
+                      className="col-md-5 mt-3"
+                      key={index}
+                      style={styles.submittedDataContainer}
+                    >
+                      <div className="row">
+                        <div className="col-md-10">
+                          <h2 style={styles.submittedDataTitle}>
+                            Address {index + 1}
+                          </h2>
+                        </div>
+                        <div className="col-md-2">
+                          <FaTrash
+                            className="cursor-pointer w-4 h-8 me-3"
+                            onClick={() => handleDeleteAddress(index)}
+                          />
+                        </div>
+                      </div>
 
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>
+                          GST Registration Status:
+                        </span>
+                        <span>{address.gstRegistrationStatus}</span>
+                      </div>
+                      {address.gstRegistrationStatus === "Registered" && (
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            GST Number:
+                          </span>
+                          <span>{address.gstNumber}</span>
+                        </div>
+                      )}
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>Street 1:</span>
+                        <span>{address.street1}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>Street 2:</span>
+                        <span>{address.street2}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>State:</span>
+                        <span>{address.state}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>City:</span>
+                        <span>{address.city}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>Pin Code:</span>
+                        <span>{address.pincode}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>
+                          Contact Person:
+                        </span>
+                        <span>{address.contactName}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>
+                          Destination:
+                        </span>
+                        <span>{address.destination}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>Email:</span>
+                        <span>{address.email}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>
+                          Phone Number:
+                        </span>
+                        <span>{address.phone}</span>
+                      </div>
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>Primary:</span>
+                        <span>{address.isPrimary ? "Yes" : "No"}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CustomTabPanel>
+              <CustomTabPanel value={value} index={0}>
+                <div className="row">
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Bank
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      placeholder="Enter"
+                      value={bank}
+                      name="bank"
+                      onChange={handleInputChange}
+                    />
+                    {errors.bank && (
+                      <div className="error-text">{errors.bank}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Account No
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      placeholder="Enter"
+                      value={accountNum}
+                      name="accountNum"
+                      onChange={handleInputChange}
+                    />
+                    {errors.accountNum && (
+                      <div className="error-text">{errors.accountNum}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Account Name
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      placeholder="Enter"
+                      value={displayName}
+                      name="displayName"
+                      onChange={handleInputChange}
+                    />
+                    {errors.displayName && (
+                      <div className="error-text">{errors.displayName}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Branch
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      placeholder="Enter"
+                      value={branch}
+                      name="branch"
+                      onChange={handleInputChange}
+                    />
+                    {errors.branch && (
+                      <div className="error-text">{errors.branch}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        IFSC Code
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      placeholder="Enter"
+                      value={ifscCode}
+                      name="ifscCode"
+                      onChange={handleInputChange}
+                    />
+                    {errors.ifscCode && (
+                      <div className="error-text">{errors.ifscCode}</div>
+                    )}
+                  </div>
+                </div>
+              </CustomTabPanel>
+            </Box>
+            <div className="d-flex flex-row mt-3">
+              <button
+                type="button"
+                onClick={handleBankVender}
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                // onClick={handleCloseAddVendor}
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
         {/* Billing Address Modal Define */}
         {/* <Dialog
           fullWidth={true}
@@ -1128,19 +1252,19 @@ function AddVendor({ addVendors }) {
                         height: 40,
                         fontSize: "0.800rem",
                         width: "100%",
-                        borderColor: errors1.gstRegStatus ? "red" : "",
+                        borderColor: errors1.gstRegistrationStatus ? "red" : "",
                       }}
                       className="input input-bordered ps-2"
-                      value={newAddress.gstRegStatus}
+                      value={newAddress.gstRegistrationStatus}
                       onChange={(e) =>
-                        handleAddressInputChange(e, "gstRegStatus")
+                        handleAddressInputChange(e, "gstRegistrationStatus")
                       }
                     >
                       <option value="">Select</option>
                       <option value="Registered">Registered</option>
                       <option value="Unregistered">Unregistered</option>
                     </select>
-                    {errors1.gstRegStatus && (
+                    {errors1.gstRegistrationStatus && (
                       <span style={{ color: "red", fontSize: "12px" }}>
                         GST Registration Status is required
                       </span>
@@ -1149,7 +1273,7 @@ function AddVendor({ addVendors }) {
                 </div>
 
                 {/* Show GST Number input field only when "Registered" is selected */}
-                {newAddress.gstRegStatus === "Registered" && (
+                {newAddress.gstRegistrationStatus === "Registered" && (
                   <div className="row mb-3">
                     <div className="col-lg-6 col-md-6">
                       <label className="label label-text label-font-size text-base-content">
@@ -1164,8 +1288,10 @@ function AddVendor({ addVendors }) {
                           width: "100%",
                         }}
                         type={"number"}
-                        value={newAddress.gstNo}
-                        onChange={(e) => handleAddressInputChange(e, "gstNo")}
+                        value={newAddress.gstNumber}
+                        onChange={(e) =>
+                          handleAddressInputChange(e, "gstNumber")
+                        }
                         className="input input-bordered p-2"
                       />
                     </div>
@@ -1361,8 +1487,8 @@ function AddVendor({ addVendors }) {
                       width: "100%",
                     }}
                     type={"number"}
-                    value={newAddress.phoneNumber}
-                    onChange={(e) => handleAddressInputChange(e, "phoneNumber")}
+                    value={newAddress.phone}
+                    onChange={(e) => handleAddressInputChange(e, "phone")}
                     className="input input-bordered p-2"
                   />
                 </div>
@@ -1381,8 +1507,8 @@ function AddVendor({ addVendors }) {
                       width: "100%",
                     }}
                     type={"text"}
-                    value={newAddress.desination}
-                    onChange={(e) => handleAddressInputChange(e, "desination")}
+                    value={newAddress.destination}
+                    onChange={(e) => handleAddressInputChange(e, "destination")}
                     className="input input-bordered p-2"
                   />
                 </div>
@@ -1401,10 +1527,8 @@ function AddVendor({ addVendors }) {
                       width: "100%",
                     }}
                     type={"text"}
-                    value={newAddress.emailAddress}
-                    onChange={(e) =>
-                      handleAddressInputChange(e, "emailAddress")
-                    }
+                    value={newAddress.email}
+                    onChange={(e) => handleAddressInputChange(e, "email")}
                     className="input input-bordered p-2"
                   />
                 </div>
@@ -1443,23 +1567,6 @@ function AddVendor({ addVendors }) {
             </Button>
           </DialogActions>
         </Dialog>
-
-        <div className="d-flex flex-row mt-3">
-          <button
-            type="button"
-            onClick={handleVender}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleCloseAddVendor}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
-        </div>
       </div>
     </>
   );

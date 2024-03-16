@@ -60,9 +60,9 @@ const routes = [
         path: "/app/OemUser",
         icon: (
           <img
-            src="/emittercreation.png"
+            src="/OemUser.png"
             alt="OemUser"
-            style={{ width: "30px", height: "auto" }}
+            style={{ width: "31px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),

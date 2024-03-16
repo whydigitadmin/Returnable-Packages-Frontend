@@ -69,24 +69,6 @@ function Vendors() {
     setOpen(false);
   };
 
-  useEffect(() => {
-    getVendorData();
-  }, []);
-
-  const getVendorData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/vender?orgId=${orgId}`
-      );
-
-      if (response.status === 200) {
-        setData(response.data.paramObjectsMap.venderVO);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -173,6 +155,25 @@ function Vendors() {
     data,
     columns,
   });
+
+  useEffect(() => {
+    getVendorData();
+  }, []);
+
+  const getVendorData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getVendorByOrgId?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.vendorVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <>
       {addVendors ? (
@@ -195,9 +196,19 @@ function Vendors() {
                   src="/upload.png"
                   alt="upload-icon"
                   title="upload"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
                 />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Bulk Upload</span>
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Bulk Upload
+                </span>
               </button>
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -208,9 +219,19 @@ function Vendors() {
                   src="/new.png"
                   alt="new-icon"
                   title="new"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
                 />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Vendor</span>
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Vendor
+                </span>
               </button>
             </div>
           </div>
