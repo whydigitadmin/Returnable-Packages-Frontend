@@ -13,6 +13,7 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
+import CloseConfirmation from "../../utils/CloseConfirmation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -877,6 +878,8 @@ function UserCreation({ addUser, userEditId }) {
           <Button onClick={handleConfirmationYes}>Yes</Button>
         </DialogActions>
       </Dialog>
+      {/* {openConfirmationDialog && (<CloseConfirmation open={openConfirmationDialog} close={handleConfirmationYes} no={handleConfirmationClose} />)} */}
+
     </>
   );
 }

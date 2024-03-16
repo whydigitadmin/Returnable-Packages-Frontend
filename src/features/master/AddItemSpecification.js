@@ -7,6 +7,10 @@ import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -72,10 +76,13 @@ function AddItemSpecification({ addItemSpecification }) {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
 
   const handleSelectChange = (e) => {
     setAssetCategory(e.target.value);
   };
+
   // const handleUnitChange = (e) => {
   //   setDimUnit(e.target.value);
   // };
@@ -84,15 +91,18 @@ function AddItemSpecification({ addItemSpecification }) {
     getAllAssetCategory();
   }, []);
 
+  // ALL ASSET CATEGORY 
   const getAllAssetCategory = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory`
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
       );
 
       if (response.status === 200) {
-        const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
+        const assetCategories =
+          response.data.paramObjectsMap.assetGroupVO.assetCategory;
         setAssetCategoryVO(assetCategories);
+
         if (assetCategories.length > 0) {
           setAssetCategory(assetCategories[0].assetCategory);
         }
@@ -128,6 +138,7 @@ function AddItemSpecification({ addItemSpecification }) {
     }
   };
 
+  // SAVE ASSETCATEGORY
   const handleAssetCategory = () => {
     const errors = {};
     if (!assetCodeId) {
@@ -172,7 +183,7 @@ function AddItemSpecification({ addItemSpecification }) {
           setBreath("");
           setDimUnit("");
           setId("");
-          addItemSpecification(true);
+          // addItemSpecification(true);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -183,9 +194,37 @@ function AddItemSpecification({ addItemSpecification }) {
     }
   };
 
+  // const handleCloseAddItemSpecification = () => {
+  //   addItemSpecification(true);
+  // };
+
+
+  // CLOSE BUTTON WITH CONFIRMATION
   const handleCloseAddItemSpecification = () => {
+    if (assetCategory ||
+      assetName ||
+      assetCodeId ||
+      length ||
+      breath ||
+      height) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+      addItemSpecification(true)
+    }
+  }
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
     addItemSpecification(true);
   };
+
+
+
 
   return (
     <>
@@ -217,12 +256,12 @@ function AddItemSpecification({ addItemSpecification }) {
               value={assetCategory}
             >
               <option value="" disabled>
-                Select an Asset Type
+                Select an Type
               </option>
               {assetCategoryVO.length > 0 &&
                 assetCategoryVO.map((list) => (
-                  <option key={list.id} value={list.assetCategory}>
-                    {list.assetCategory}
+                  <option key={list.id} value={list}>
+                    {list}
                   </option>
                 ))}
             </select>
@@ -392,6 +431,17 @@ function AddItemSpecification({ addItemSpecification }) {
           </button>
         </div>
       </div>
+
+      {/* CLOSE CONFIRMATION MODAL */}
+      <Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

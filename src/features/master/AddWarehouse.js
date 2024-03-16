@@ -5,6 +5,10 @@ import Axios from "axios";
 import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 5;
@@ -83,6 +87,8 @@ function AddWarehouse({ addWarehouse }) {
   const [active, setActive] = useState(true);
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -108,9 +114,11 @@ function AddWarehouse({ addWarehouse }) {
     );
   };
 
-  const handleCloseWarehouse = () => {
-    addWarehouse(false);
-  };
+  // const handleCloseWarehouse = () => {
+  //   addWarehouse(false);
+  // };
+
+  // ALL INPUT FIELD CHANGE EVENTS
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
@@ -149,6 +157,7 @@ function AddWarehouse({ addWarehouse }) {
     }
   };
 
+  // SAVE WAREHOUSE
   const handleWarehouse = () => {
     const errors = {};
     if (!name) {
@@ -210,6 +219,34 @@ function AddWarehouse({ addWarehouse }) {
     }
   };
 
+  // CLOSE BUTTON WITH CONFIRMATION
+  const handleCloseWarehouse = () => {
+    if (locationName ||
+      unit ||
+      name ||
+      code ||
+      address ||
+      city ||
+      state ||
+      country ||
+      pincode ||
+      gst) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+      addWarehouse(false);
+    }
+  }
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
+    addWarehouse(false);
+  };
+
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
@@ -220,6 +257,8 @@ function AddWarehouse({ addWarehouse }) {
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
+
+
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -485,6 +524,17 @@ function AddWarehouse({ addWarehouse }) {
           </button>
         </div>
       </div>
+
+      {/* CLOSE CONFIRMATION MODAL */}
+      <Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

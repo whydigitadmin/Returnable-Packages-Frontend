@@ -5,6 +5,10 @@ import { styled } from "@mui/material/styles";
 import { default as Axios, default as axios } from "axios";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -98,6 +102,8 @@ function AddItem({ addItem }) {
   const [categorySelected, setCategorySelected] = useState(false);
   const [nameSelected, setNameSelected] = useState(false);
   const [codeSelected, setCodeSelected] = useState(false);
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+
 
   const handleAssetCategoryChange = (event) => {
     const selectedCategory = event.target.value;
@@ -401,7 +407,75 @@ function AddItem({ addItem }) {
     setBrand(e.target.value);
   };
 
+  // const handleAssetClose = () => {
+  //   addItem(false);
+  // };
+
+  // CLOSE BUTTON WITH CONFIRMATION
+  // const handleAssetClose = () => {
+  //   if (warehouse ||
+  //     assetCategory ||
+  //     assetName ||
+  //     assetCodeId > 0 ||
+  //     assetQty ||
+  //     height ||
+  //     skuFrom ||
+  //     skuTo ||
+  //     length ||
+  //     breath ||
+  //     height ||
+  //     eanUpc ||
+  //     weight ||
+  //     value ||
+  //     expectedLife ||
+  //     expectedTrips ||
+  //     hsnCode ||
+  //     taxRate ||
+  //     costPrice ||
+  //     sellPrice ||
+  //     scrapValue) {
+  //     // setOpenConfirmationDialog(true);
+
+  //   } else {
+  //     setOpenConfirmationDialog(false);
+  //     addItem(false);
+  //   }
+  // }
   const handleAssetClose = () => {
+    if (warehouse ||
+      assetCategory ||
+      assetName > 0 ||
+      assetCodeId > 0 ||
+      assetQty ||
+      height ||
+      skuFrom ||
+      skuTo ||
+      length ||
+      breath ||
+      height ||
+      eanUpc ||
+      weight ||
+      value ||
+      expectedLife ||
+      expectedTrips ||
+      hsnCode ||
+      taxRate ||
+      costPrice ||
+      sellPrice ||
+      scrapValue) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+      addItem(false);
+    }
+  }
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
     addItem(false);
   };
 
@@ -431,7 +505,7 @@ function AddItem({ addItem }) {
               disabled={selected}
             >
               <option value="" disabled>
-                Select an Emitter
+                Select a Warehouse
               </option>
               {warehouseLocationVO.length > 0 &&
                 warehouseLocationVO.map((list) => (
@@ -951,6 +1025,18 @@ function AddItem({ addItem }) {
           </button>
         </div>
       </div>
+
+      {/* CLOSE CONFIRMATION MODAL */}
+      <Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
+        </DialogActions>
+      </Dialog>
+
     </>
   );
 }
