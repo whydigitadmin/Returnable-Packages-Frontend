@@ -55,10 +55,6 @@ function EmitterInward() {
       );
 
       if (response.status === 200) {
-        console.log(
-          "response.data.paramObjectsMap",
-          response.data.paramObjectsMap
-        );
         const validFlows = response.data.paramObjectsMap.flowVO
           .filter(
             (flow) =>
@@ -85,14 +81,10 @@ function EmitterInward() {
           },
         }
       );
-      console.log("Response from API:", response.data);
       if (response.status === 200) {
-        const InwardVO =
-          response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO;
         setInwardVO(
           response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO
         );
-        console.log("InwardVO", InwardVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -107,10 +99,6 @@ function EmitterInward() {
 
       if (response.status === 200) {
         setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
-        console.log(
-          "setDisplayFlowName",
-          response.data.paramObjectsMap.flowVO.flowName
-        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -127,12 +115,6 @@ function EmitterInward() {
     itemId,
     issuedQty
   ) => {
-    console.log(
-      "test id handlePendingStatusClickIssued",
-      issueItemInwardId,
-      itemId,
-      issuedQty
-    );
     setIssueItemInwardId(issueItemInwardId);
     setItemId(itemId);
     setShowNetQtyRecieved(issuedQty);
