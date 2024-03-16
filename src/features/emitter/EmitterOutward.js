@@ -9,64 +9,27 @@ import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TitleCard from "../../components/Cards/TitleCard";
 
-// const BILLS = [
-//   {
-//     status: "Issued",
-//     partno: "63",
-//     partname: "2024-03-12",
-//     partqty: "49",
-//     kitno: "2024-03-15",
-//     kitqty: "2024-03-15",
-//     balancekit: "PLS/0224/00001",
-//     invoiceno: "4",
-//     cycletime: "4",
-//     previous: "2",
-//     o2o: "2",
-//     cd: "14 ",
-//   },
-
-//   // {
-//   //   invoiceNo: "#4523",
-//   //   amount: "34,989",
-//   //   description: "Product usages",
-//   //   status: "Pending",
-//   //   generatedOn: moment(new Date())
-//   //     .add(-30 * 2, "days")
-//   //     .format("DD MMM YYYY"),
-//   //   paidOn: "-",
-//   // },
-
-//   // {
-//   //   invoiceNo: "#4453",
-//   //   amount: "39,989",
-//   //   description: "Product usages",
-//   //   status: "Paid",
-//   //   generatedOn: moment(new Date())
-//   //     .add(-30 * 3, "days")
-//   //     .format("DD MMM YYYY"),
-//   //   paidOn: moment(new Date())
-//   //     .add(-24 * 2, "days")
-//   //     .format("DD MMM YYYY"),
-//   // },
-// ];
-
 export const EmitterOutward = () => {
   const [selectedFlow, setSelectedFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
   const [emitterId, setEmitterId] = React.useState("");
+  const [kit, setKit] = React.useState("");
+  const [kitQty, setKitQty] = React.useState("");
+  const [netQtyReceived, setNetQtyReceived] = React.useState("");
   const [displayFlowName, setDisplayFlowName] = React.useState();
-  const [inwardVO, setInwardVO] = React.useState([]);
+  const [outwardVO, setOutwardVO] = React.useState([]);
   const [errors, setErrors] = React.useState({});
   const [isPendingPopupOpenIssued, setPendingPopupOpenIssued] = useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [bills, setBills] = useState([]);
   const [userId, setUserId] = useState(
     JSON.parse(localStorage.getItem("userId"))
   );
 
   useEffect(() => {
     getDisplayName();
-    // getOutwardDetails();
+    if (selectedFlow) {
+      getOutwardDetails();
+    }
   }, [selectedFlow]);
 
   const getDisplayName = async () => {
@@ -91,10 +54,6 @@ export const EmitterOutward = () => {
       );
 
       if (response.status === 200) {
-        console.log(
-          "response.data.paramObjectsMap",
-          response.data.paramObjectsMap
-        );
         const validFlows = response.data.paramObjectsMap.flowVO
           .filter(
             (flow) =>
@@ -109,31 +68,26 @@ export const EmitterOutward = () => {
     }
   };
 
-  // const getOutwardDetails = async (value) => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/emitter/viewEmitterInward`,
-  //       {
-  //         params: {
-  //           orgId: orgId,
-  //           emitterId: value,
-  //           flowId: assignedFlow,
-  //         },
-  //       }
-  //     );
-  //     console.log("Response from API:", response.data);
-  //     if (response.status === 200) {
-  //       const InwardVO =
-  //         response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO;
-  //       setInwardVO(
-  //         response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO
-  //       );
-  //       console.log("InwardVO", InwardVO);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+  const getOutwardDetails = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/emitterOutward/v1`,
+        {
+          params: {
+            orgId: orgId,
+            // emitterId: value,
+            flowId: selectedFlow,
+          },
+        }
+      );
+      console.log("Response from API:", response.data);
+      if (response.status === 200) {
+        setOutwardVO(response.data.paramObjectsMap.emitterOutwardVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getFlowNameById = async (value) => {
     try {
@@ -143,10 +97,6 @@ export const EmitterOutward = () => {
 
       if (response.status === 200) {
         setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
-        console.log(
-          "setDisplayFlowName",
-          response.data.paramObjectsMap.flowVO.flowName
-        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -158,8 +108,10 @@ export const EmitterOutward = () => {
     getFlowNameById(event.target.value);
   };
 
-  const handlePendingStatusClickIssued = () => {
+  const handlePendingStatusClickIssued = (kitNumber, netQtyReceived) => {
     setPendingPopupOpenIssued(true);
+    setKit(kitNumber);
+    setNetQtyReceived(netQtyReceived);
   };
 
   const closePendingPopupIssued = () => {
@@ -167,30 +119,6 @@ export const EmitterOutward = () => {
     // setNetQty("");
     // setReturnQty("");
     // setReturnReason("");
-  };
-
-  const getPaymentStatus = (status, bill) => {
-    return (
-      <div
-        className="badge bg-success text-white cursor-pointer"
-        onClick={() => handlePendingStatusClickIssued(bill)}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className="h-5 w-5" // Adjust the size as needed
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-          />
-        </svg>
-      </div>
-    );
   };
 
   return (
@@ -208,37 +136,9 @@ export const EmitterOutward = () => {
                 </Link>
               </div>
             </div>
-            {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
-              <div className="p-1">
-                <div className="d-flex flex-row">
-                  <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 14 }}
-                  />
-                  <h4 className="text-xl font-semibold pt-1 mt-2 ms-1 mb-2">
-                    Location -
-                  </h4>
-                  <h4 className="text-2xl font-semibold ms-1 mt-2">Gabriel</h4>
-                </div>
-              </div>
-              <p className="mb-3">
-                29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                Pune, Maharashtra, 410501 India
-              </p>
-            </div> */}
-            {/* <div className="col-lg-1">
-              <MdDoubleArrow
-                className="text-xl font-semibold w-16  h-16 "
-                style={{ marginTop: 70 }}
-              />
-            </div> */}
             <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-28">
               <div className="p-1">
                 <div className="d-flex flex-row">
-                  {/* <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 11 }}
-                  /> */}
                   <img
                     src="/destination.png"
                     alt="Favorite"
@@ -269,10 +169,6 @@ export const EmitterOutward = () => {
                 <h4 className="text-xl dark:text-slate-300 font-semibold ms-1">
                   {displayFlowName}
                 </h4>
-                {/* <p className="ms-1 mb-2">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p> */}
               </div>
             </div>
           </div>
@@ -288,9 +184,9 @@ export const EmitterOutward = () => {
                     <th>IM No</th>
                     <th>IM Date</th>
                     <th>REC Date</th>
-                    <th>Kit No</th>
-                    <th>Kit Qty</th>
-                    <th>Net Rec. Qty</th>
+                    <th>Kit</th>
+                    {/* <th>Kit Qty</th> */}
+                    <th>Net Rec Qty</th>
                     <th>Return Qty</th>
                     <th>Bal Qty</th>
                     <th>Cycle Time (days) </th>
@@ -300,27 +196,44 @@ export const EmitterOutward = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {bills.map((l, k) => {
+                  {outwardVO.map((l, k) => {
                     return (
                       <tr key={k}>
-                        <td>{getPaymentStatus(l.status)}</td>
-                        <td>{l.partno}</td>
-                        <td>{l.partname}</td>
-                        <td>{l.partqty}</td>
-                        <td>{l.kitno}</td>
-                        <td>{l.kitqty}</td>
-                        <td>{l.balancekit}</td>
-                        <td>{l.invoiceno}</td>
+                        {/* <td>{getPaymentStatus(l.status)}</td> */}
+                        <td>
+                          <img
+                            src="/edit1.png"
+                            alt="Favorite"
+                            style={{
+                              width: "25px",
+                              height: "auto",
+                              marginRight: "6px",
+                              cursor: "pointer",
+                            }}
+                            onClick={() =>
+                              handlePendingStatusClickIssued(
+                                l.kitNumber,
+                                l.netQtyReceived
+                              )
+                            }
+                          />
+                        </td>
+                        <td>{l.rmNo}</td>
+                        <td>{l.rmDate}</td>
+                        <td>{l.imNo}</td>
+                        <td>{l.imDate}</td>
+                        <td>{l.inwardConfirmDate}</td>
+                        <td>{l.kitNumber}</td>
+                        <td>{l.netQtyReceived}</td>
+                        <td>{l.kitReturnQTY}</td>
+                        <td>{l.balanceQTY}</td>
                         <td>{l.cycletime}</td>
-                        <td>{l.previous}</td>
-                        <td>{l.o2o}</td>
-                        <td>{l.cd}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
-              {inwardVO.length === 0 && (
+              {outwardVO.length === 0 && (
                 <h4 className="text-base dark:text-slate-300 font-semibold fst-italic text-center mt-4">
                   No records to display..!!
                 </h4>
@@ -341,38 +254,27 @@ export const EmitterOutward = () => {
               />
             </div>
             <DialogContent>
-              <div className="d-flex justify-between-content mb-4">
-                <p className="font-bold me-5">
-                  Previous dispatched date: 2024-03-17
-                </p>
-                <p className="font-bold">Kit Qty: 2</p>
+              <div className="d-flex flex-column mb-4">
+                <div className="d-flex justify-content-between">
+                  <p className="font-medium">
+                    Kit: <span className="font-bold">{kit}</span>
+                  </p>
+                  <p className="font-medium">
+                    Net Received Quantity:{" "}
+                    <span className="font-bold">{netQtyReceived}</span>
+                  </p>
+                </div>
+                {/* <div className="d-flex justify-content-between">
+                  <p className="font-medium me-5">
+                    Previous dispatched date:{" "}
+                    <span className="font-bold">2024-03-17</span>
+                  </p>
+                  <p className="font-medium">
+                    Kit Qty: <span className="font-bold">2</span>
+                  </p>
+                </div> */}
               </div>
               <div className="row">
-                <div className="col-lg-6 col-md-6 mb-2">
-                  <label className="label">
-                    <span
-                      className={
-                        "label-text label-font-size text-base-content d-flex flex-row"
-                      }
-                    >
-                      KIT
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-6 col-md-6 mb-2">
-                  <input
-                    className="form-control form-sz mb-2"
-                    type={"text"}
-                    placeholder={""}
-                    // name="storageMapping"
-                    // value={storageMapping}
-                    // onChange={handleInputChange}
-                  />
-                  {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
-                </div>
                 <div className="col-lg-6 col-md-6">
                   <label className="label">
                     <span
@@ -388,15 +290,17 @@ export const EmitterOutward = () => {
                 <div className="col-lg-6 col-md-6">
                   <input
                     className="form-control form-sz mb-2"
-                    type={"text"}
+                    type={"number"}
                     placeholder={""}
-                    // name="storageMapping"
-                    // value={storageMapping}
+                    name="kitQty"
+                    value={kitQty}
                     // onChange={handleInputChange}
+                    max="9999"
+                    maxLength="4"
                   />
-                  {/* {errors.storageMapping && (
-              <span className="error-text">{errors.storageMapping}</span>
-            )} */}
+                  {errors.kitQty && (
+                    <span className="error-text">{errors.kitQty}</span>
+                  )}
                 </div>
               </div>
             </DialogContent>
