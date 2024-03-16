@@ -12,10 +12,10 @@ import TitleCard from "../../components/Cards/TitleCard";
 export const EmitterOutward = () => {
   const [selectedFlow, setSelectedFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
-  const [emitterId, setEmitterId] = React.useState("");
-  const [kit, setKit] = React.useState("");
-  const [kitQty, setKitQty] = React.useState("");
+  const [kitNO, setKitNO] = React.useState("");
+  const [kitQty, setKitQty] = React.useState();
   const [netQtyReceived, setNetQtyReceived] = React.useState("");
+  const [emitterOutwarId, setEmitterOutwarId] = React.useState("");
   const [displayFlowName, setDisplayFlowName] = React.useState();
   const [outwardVO, setOutwardVO] = React.useState([]);
   const [errors, setErrors] = React.useState({});
@@ -26,26 +26,11 @@ export const EmitterOutward = () => {
   );
 
   useEffect(() => {
-    getDisplayName();
+    getAddressById();
     if (selectedFlow) {
       getOutwardDetails();
     }
   }, [selectedFlow]);
-
-  const getDisplayName = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/auth/user/${userId}`
-      );
-
-      if (response.status === 200) {
-        setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
-        getAddressById();
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   const getAddressById = async () => {
     try {
@@ -75,7 +60,6 @@ export const EmitterOutward = () => {
         {
           params: {
             orgId: orgId,
-            // emitterId: value,
             flowId: selectedFlow,
           },
         }
@@ -108,17 +92,62 @@ export const EmitterOutward = () => {
     getFlowNameById(event.target.value);
   };
 
-  const handlePendingStatusClickIssued = (kitNumber, netQtyReceived) => {
+  const handlePendingStatusClickIssued = (
+    kitNumber,
+    netQtyReceived,
+    emitterOutwarId
+  ) => {
     setPendingPopupOpenIssued(true);
-    setKit(kitNumber);
+    setKitNO(kitNumber);
     setNetQtyReceived(netQtyReceived);
+    setEmitterOutwarId(emitterOutwarId);
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "kitQty":
+        if (value.length <= 4) {
+          setKitQty(value);
+          console.log("kitQty", value);
+        }
+        break;
+    }
+  };
+
+  const handleUpdateInward = () => {
+    const errors = {};
+    if (!kitQty) {
+      errors.kitQty = "kit Qty is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const requestData = {
+        emitterOutwarId,
+        kitNO,
+        kitQty,
+      };
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/emitter/updateOutwardKitQty`,
+          requestData
+        )
+        .then((response) => {
+          console.log("Response for UPADTE OUTWARD:", response.data);
+          setPendingPopupOpenIssued(false);
+          getOutwardDetails();
+          setKitQty("");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const closePendingPopupIssued = () => {
     setPendingPopupOpenIssued(false);
-    // setNetQty("");
-    // setReturnQty("");
-    // setReturnReason("");
+    setKitQty("");
   };
 
   return (
@@ -184,8 +213,8 @@ export const EmitterOutward = () => {
                     <th>IM No</th>
                     <th>IM Date</th>
                     <th>REC Date</th>
-                    <th>Kit</th>
-                    {/* <th>Kit Qty</th> */}
+                    <th>KIT</th>
+                    {/* <th>kit Qty</th> */}
                     <th>Net Rec Qty</th>
                     <th>Return Qty</th>
                     <th>Bal Qty</th>
@@ -213,7 +242,8 @@ export const EmitterOutward = () => {
                             onClick={() =>
                               handlePendingStatusClickIssued(
                                 l.kitNumber,
-                                l.netQtyReceived
+                                l.netQtyReceived,
+                                l.outwardId
                               )
                             }
                           />
@@ -257,10 +287,10 @@ export const EmitterOutward = () => {
               <div className="d-flex flex-column mb-4">
                 <div className="d-flex justify-content-between">
                   <p className="font-medium">
-                    Kit: <span className="font-bold">{kit}</span>
+                    Kit: <span className="font-bold">{kitNO}</span>
                   </p>
                   <p className="font-medium">
-                    Net Received Quantity:{" "}
+                    Net Received Quantity:
                     <span className="font-bold">{netQtyReceived}</span>
                   </p>
                 </div>
@@ -270,7 +300,7 @@ export const EmitterOutward = () => {
                     <span className="font-bold">2024-03-17</span>
                   </p>
                   <p className="font-medium">
-                    Kit Qty: <span className="font-bold">2</span>
+                    kit Qty: <span className="font-bold">2</span>
                   </p>
                 </div> */}
               </div>
@@ -282,7 +312,7 @@ export const EmitterOutward = () => {
                         "label-text label-font-size text-base-content d-flex flex-row"
                       }
                     >
-                      KIT Qty
+                      Kit Qty
                       <FaStarOfLife className="must" />
                     </span>
                   </label>
@@ -294,7 +324,7 @@ export const EmitterOutward = () => {
                     placeholder={""}
                     name="kitQty"
                     value={kitQty}
-                    // onChange={handleInputChange}
+                    onChange={handleInputChange}
                     max="9999"
                     maxLength="4"
                   />
@@ -309,7 +339,7 @@ export const EmitterOutward = () => {
                 <Button
                   component="label"
                   variant="contained"
-                  onClick={closePendingPopupIssued}
+                  onClick={handleUpdateInward}
                 >
                   Confirm
                 </Button>
