@@ -17,6 +17,7 @@ function EmitterInward() {
   const [inwardVO, setInwardVO] = React.useState([]);
   const [issueItemInwardId, setIssueItemInwardId] = React.useState("");
   const [itemId, setItemId] = React.useState("");
+  const [showNetQtyRecieved, setShowNetQtyRecieved] = React.useState("");
   const [netQtyRecieved, setNetQtyRecieved] = React.useState("");
   const [returnQty, setReturnQty] = React.useState("");
   const [returnReason, setReturnReason] = React.useState("");
@@ -121,54 +122,41 @@ function EmitterInward() {
     getFlowNameById(event.target.value);
   };
 
-  const handlePendingStatusClickIssued = (issueItemInwardId, itemId) => {
+  const handlePendingStatusClickIssued = (
+    issueItemInwardId,
+    itemId,
+    issuedQty
+  ) => {
     console.log(
       "test id handlePendingStatusClickIssued",
       issueItemInwardId,
-      itemId
+      itemId,
+      issuedQty
     );
     setIssueItemInwardId(issueItemInwardId);
     setItemId(itemId);
+    setShowNetQtyRecieved(issuedQty);
     setPendingPopupOpenIssued(true);
-    // handleUpdateInward();
   };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
       case "netQtyRecieved":
-        setNetQtyRecieved(value);
+        if (value.length <= 4) {
+          setNetQtyRecieved(value);
+        }
         break;
       case "returnQty":
-        setReturnQty(value);
+        if (value.length <= 4) {
+          setReturnQty(value);
+        }
         break;
       case "returnReason":
         setReturnReason(value);
         break;
     }
   };
-
-  // const handleNetQtyReceivedChange = (event) => {
-  //   let input = event.target.value;
-  //   input = input.replace(/[^0-9]/g, "");
-  //   if (input.length > 4) {
-  //     input = input.slice(0, 4);
-  //   }
-  //   setNetQtyRecieved(input);
-  // };
-
-  // const handleReturnQtyChange = (event) => {
-  //   let input = event.target.value;
-  //   input = input.replace(/[^0-9]/g, "");
-  //   if (input.length > 4) {
-  //     input = input.slice(0, 4);
-  //   }
-  //   setReturnQty(input);
-  // };
-
-  // const handleReturnReasonChange = (event) => {
-  //   setReturnReason(event.target.value);
-  // };
 
   const handleUpdateInward = () => {
     const errors = {};
@@ -289,7 +277,37 @@ function EmitterInward() {
                     return (
                       <tr key={k}>
                         <td>
-                          <img
+                          {l.netRecAcceptStatus ? (
+                            <img
+                              src="/edit1.png"
+                              alt="Favorite"
+                              style={{
+                                width: "25px",
+                                height: "auto",
+                                marginRight: "6px",
+                                cursor: "not-allowed",
+                              }}
+                            />
+                          ) : (
+                            <img
+                              src="/edit1.png"
+                              alt="Favorite"
+                              style={{
+                                width: "25px",
+                                height: "auto",
+                                marginRight: "6px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                handlePendingStatusClickIssued(
+                                  l.issueItemInwardId,
+                                  l.itemId,
+                                  l.issuedQty
+                                )
+                              }
+                            />
+                          )}
+                          {/* <img
                             src="/edit1.png"
                             alt="Favorite"
                             style={{
@@ -301,10 +319,11 @@ function EmitterInward() {
                             onClick={() =>
                               handlePendingStatusClickIssued(
                                 l.issueItemInwardId,
-                                l.itemId
+                                l.itemId,
+                                l.issuedQty
                               )
-                            } // Call handlePendingStatusClickIssued function with the bill object
-                          />
+                            }
+                          /> */}
                         </td>
                         <td>{l.requestId}</td>
                         <td>{l.requestedDate}</td>
@@ -345,6 +364,9 @@ function EmitterInward() {
               />
             </div>
             <DialogContent>
+              <p className="font-bold mb-4">
+                Issued Quantity {showNetQtyRecieved}
+              </p>
               <div className="row">
                 <div className="col-lg-4 col-md-4 mb-2">
                   <label className="label">
@@ -366,7 +388,8 @@ function EmitterInward() {
                     name="netQtyRecieved"
                     value={netQtyRecieved}
                     onChange={handleInputChange}
-                    maxLength={4}
+                    max="9999"
+                    maxLength="4"
                   />
                   {errors.netQtyRecieved && (
                     <span className="error-text">{errors.netQtyRecieved}</span>
@@ -392,6 +415,8 @@ function EmitterInward() {
                     value={returnQty}
                     name="returnQty"
                     onChange={handleInputChange}
+                    max="9999"
+                    maxLength="4"
                   />
                   {errors.returnQty && (
                     <span className="error-text">{errors.returnQty}</span>
