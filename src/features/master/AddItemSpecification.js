@@ -78,7 +78,6 @@ function AddItemSpecification({ addItemSpecification }) {
   const [errors, setErrors] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
-
   const handleSelectChange = (e) => {
     setAssetCategory(e.target.value);
   };
@@ -91,7 +90,7 @@ function AddItemSpecification({ addItemSpecification }) {
     getAllAssetCategory();
   }, []);
 
-  // ALL ASSET CATEGORY 
+  // ALL ASSET CATEGORY
   const getAllAssetCategory = async () => {
     try {
       const response = await axios.get(
@@ -198,21 +197,22 @@ function AddItemSpecification({ addItemSpecification }) {
   //   addItemSpecification(true);
   // };
 
-
   // CLOSE BUTTON WITH CONFIRMATION
   const handleCloseAddItemSpecification = () => {
-    if (assetCategory ||
+    if (
+      assetCategory ||
       assetName ||
       assetCodeId ||
       length ||
       breath ||
-      height) {
+      height
+    ) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
-      addItemSpecification(true)
+      addItemSpecification(true);
     }
-  }
+  };
 
   const handleConfirmationClose = () => {
     setOpenConfirmationDialog(false);
@@ -222,9 +222,6 @@ function AddItemSpecification({ addItemSpecification }) {
     setOpenConfirmationDialog(false);
     addItemSpecification(true);
   };
-
-
-
 
   return (
     <>

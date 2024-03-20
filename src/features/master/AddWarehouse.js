@@ -89,7 +89,6 @@ function AddWarehouse({ addWarehouse }) {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
-
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -221,7 +220,8 @@ function AddWarehouse({ addWarehouse }) {
 
   // CLOSE BUTTON WITH CONFIRMATION
   const handleCloseWarehouse = () => {
-    if (locationName ||
+    if (
+      locationName ||
       unit ||
       name ||
       code ||
@@ -230,13 +230,14 @@ function AddWarehouse({ addWarehouse }) {
       state ||
       country ||
       pincode ||
-      gst) {
+      gst
+    ) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
       addWarehouse(false);
     }
-  }
+  };
 
   const handleConfirmationClose = () => {
     setOpenConfirmationDialog(false);
@@ -258,7 +259,6 @@ function AddWarehouse({ addWarehouse }) {
           />
         </div>
 
-
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -276,7 +276,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="locationName"
               value={locationName}
               onChange={handleInputChange}
@@ -300,7 +300,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="unit"
               value={unit}
               onChange={handleInputChange}
@@ -323,7 +323,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="name"
               value={name}
               onChange={handleInputChange}
@@ -346,7 +346,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="code"
               value={code}
               onChange={handleInputChange}
@@ -370,7 +370,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="address"
               value={address}
               onChange={handleInputChange}
@@ -395,7 +395,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="city"
               value={city}
               onChange={handleInputChange}
@@ -418,7 +418,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="state"
               value={state}
               onChange={handleInputChange}
@@ -441,7 +441,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="country"
               value={country}
               onChange={handleInputChange}
@@ -466,7 +466,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="pincode"
               value={pincode}
               onChange={handleInputChange}
@@ -486,7 +486,7 @@ function AddWarehouse({ addWarehouse }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="gst"
               value={gst}
               onChange={handleInputChange}

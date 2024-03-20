@@ -212,7 +212,7 @@ function Unit() {
               type={"text"}
               value={unit}
               name="unit"
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />

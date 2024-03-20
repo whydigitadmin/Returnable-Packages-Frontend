@@ -116,7 +116,7 @@ function AddCustomer({ addcustomer }) {
   const [displayName, setDisplayName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [phoneNumber, setPhoneNumber] = React.useState();
-  const [isPrimary, setIsPrimary] = useState(false);
+  // const [isPrimary, setIsPrimary] = useState(false);
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = React.useState({});
   const [addressShow, setAddressShow] = React.useState(false);
@@ -134,8 +134,8 @@ function AddCustomer({ addcustomer }) {
     contactName: "",
     phoneNumber: "",
     designation: "",
-    emailAddress: "",
-    isPrimary: false,
+    email: "",
+    // isPrimary: false,
   });
   const [errors1, setErrors1] = useState({
     gstRegistrationStatus: false,
@@ -196,8 +196,8 @@ function AddCustomer({ addcustomer }) {
       contactName: "",
       phoneNumber: "",
       designation: "",
-      emailAddress: "",
-      isPrimary: false,
+      email: "",
+      // isPrimary: false,
     });
     // Clear all error messages
     setErrors({
@@ -225,8 +225,8 @@ function AddCustomer({ addcustomer }) {
       contactName: "",
       phoneNumber: "",
       designation: "",
-      emailAddress: "",
-      isPrimary: false,
+      email: "",
+      // isPrimary: false,
     });
     setOpenShippingModal(false);
   };
@@ -275,7 +275,7 @@ function AddCustomer({ addcustomer }) {
     const addressWithCustomerId = { ...newAddress, customerId: customerId };
     if (isValidAddress()) {
       try {
-        const response = await axios.post(
+        const response = await axios.put(
           "/api/master/customersAddress",
           addressWithCustomerId
         );
@@ -299,8 +299,8 @@ function AddCustomer({ addcustomer }) {
         if (
           field !== "street2" &&
           field !== "contactName" &&
-          field !== "phoneNumber" &&
-          field !== "isPrimary"
+          field !== "phoneNumber"
+          // field !== "isPrimary"
         ) {
           if (!newAddress[field].trim()) {
             updatedErrors[field] = true;
@@ -997,12 +997,12 @@ function AddCustomer({ addcustomer }) {
                     </div>
                     <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Email:</span>
-                      <span>{address.emailAddress}</span>
+                      <span>{address.email}</span>
                     </div>
-                    <div style={styles.submittedDataItem}>
+                    {/* <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Primary:</span>
                       <span>{address.isPrimary ? "Yes" : "No"}</span>
-                    </div>
+                    </div> */}
                   </div>
                 ))}
               </div>
@@ -1381,14 +1381,14 @@ function AddCustomer({ addcustomer }) {
                     width: "100%",
                   }}
                   type={"email"}
-                  value={newAddress.emailAddress}
-                  onChange={(e) => handleAddressInputChange(e, "emailAddress")}
+                  value={newAddress.email}
+                  onChange={(e) => handleAddressInputChange(e, "email")}
                   className="input input-bordered p-2"
                 />
               </div>
             </div>
             {/* Checkbox */}
-            <div className="row mb-3">
+            {/* <div className="row mb-3">
               <div className="col-lg-6 col-md-6">
                 <div className="d-flex flex-row">
                   <input
@@ -1407,7 +1407,7 @@ function AddCustomer({ addcustomer }) {
                   </label>
                 </div>
               </div>
-            </div>
+            </div> */}
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">

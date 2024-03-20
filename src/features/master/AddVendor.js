@@ -606,7 +606,7 @@ function AddVendor({ addVendors }) {
             <input
               className="form-control form-sz"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="entityLegalName"
               value={entityLegalName}
               onChange={handleInputChange}
@@ -632,7 +632,7 @@ function AddVendor({ addVendors }) {
             <input
               className="form-control form-sz"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="displyName"
               value={displyName}
               onChange={handleInputChange}
@@ -658,7 +658,7 @@ function AddVendor({ addVendors }) {
             <input
               className="form-control form-sz"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="email"
               value={email}
               onChange={handleInputChange}
@@ -677,7 +677,7 @@ function AddVendor({ addVendors }) {
             <input
               className="form-control form-sz"
               type={"text"}
-              placeholder={"Enter"}
+              // placeholder={"Enter"}
               name="phoneNumber"
               value={phoneNumber}
               onChange={handleInputChange}
@@ -866,7 +866,7 @@ function AddVendor({ addVendors }) {
                     <input
                       type="text"
                       className="form-control form-sz"
-                      placeholder="Enter"
+                      // placeholder="Enter"
                       value={bank}
                       name="bank"
                       onChange={handleInputChange}
@@ -891,7 +891,7 @@ function AddVendor({ addVendors }) {
                     <input
                       type="text"
                       className="form-control form-sz"
-                      placeholder="Enter"
+                      // placeholder="Enter"
                       value={accountNum}
                       name="accountNum"
                       onChange={handleInputChange}
@@ -916,7 +916,7 @@ function AddVendor({ addVendors }) {
                     <input
                       type="text"
                       className="form-control form-sz"
-                      placeholder="Enter"
+                      // placeholder="Enter"
                       value={displayName}
                       name="displayName"
                       onChange={handleInputChange}
@@ -941,7 +941,7 @@ function AddVendor({ addVendors }) {
                     <input
                       type="text"
                       className="form-control form-sz"
-                      placeholder="Enter"
+                      // placeholder="Enter"
                       value={branch}
                       name="branch"
                       onChange={handleInputChange}
@@ -966,7 +966,7 @@ function AddVendor({ addVendors }) {
                     <input
                       type="text"
                       className="form-control form-sz"
-                      placeholder="Enter"
+                      // placeholder="Enter"
                       value={ifscCode}
                       name="ifscCode"
                       onChange={handleInputChange}
