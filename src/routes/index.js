@@ -98,6 +98,7 @@ const EmptyCount = lazy(() => import("../pages/protected/EmptyCount"));
 const EmptyRetrievalManifest = lazy(() =>
   import("../pages/protected/EmptyRetrievalManifest")
 );
+const DocumentType = lazy(() => import("../pages/protected/DocumentType"));
 
 const routes = [
   {
@@ -107,6 +108,10 @@ const routes = [
   {
     path: "/welcome", // the url
     component: Welcome, // view rendered
+  },
+  {
+    path: "/DocumentType",
+    component: DocumentType,
   },
   {
     path: "/EmitterLanding",

@@ -262,7 +262,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Issuemanifest</span>,
+        name: <span className="ml-1">Issue manifest</span>,
       },
       // {
       //   path: "/app/issuemanifest-report", //no url needed as this has submenu
@@ -301,7 +301,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="">Inwardmanifest</span>,
+        name: <span className="">Inward manifest</span>,
       },
       // {
       //   path: "/app/inwardmanifest-report", //no url needed as this has submenu
@@ -340,7 +340,33 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">EmptyRetrievalManifest</span>,
+        name: <span className="ml-1">Empty Retrieval Manifest</span>,
+      },
+    ],
+  },
+  {
+    path: "", //no url needed as this has submenu
+    icon: (
+      <img
+        src="/outwardAdmin.png"
+        alt="Outward"
+        style={{ width: "30px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "12px" }}>Document Type</span>,
+    submenu: [
+      {
+        path: "/app/DocumentType", //no url needed as this has submenu
+        icon: (
+          <img
+            src="/emptyRetrieval.png"
+            alt="DocumentType"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Document Type</span>,
       },
     ],
   },
