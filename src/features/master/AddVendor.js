@@ -14,9 +14,8 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-import { FaStarOfLife } from "react-icons/fa";
+import { FaStarOfLife, FaTrash } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { FaTrash } from "react-icons/fa";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -118,8 +117,8 @@ function AddVendor({ addVendors }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [active, setActive] = useState(true);
   const [venderActivePortal, setVenderActivePortal] = useState(true);
-  const [displayName, setDisplayName] = useState("");
-  const [accountNum, setAccountNum] = useState("");
+  const [accountName, setDisplayName] = useState("");
+  const [accountNo, setAccountNum] = useState("");
   const [bank, setBank] = useState("");
   const [branch, setBranch] = useState("");
   const [ifscCode, setIfscCode] = useState("");
@@ -132,10 +131,10 @@ function AddVendor({ addVendors }) {
   const [street2, setStreet2] = React.useState("");
   const [state, setState] = React.useState("");
   const [city, setCity] = React.useState("");
-  const [pincode, setPincode] = React.useState("");
+  const [pinCode, setPincode] = React.useState("");
   const [contactName, setContactName] = React.useState("");
   const [phone, setPhone] = useState("");
-  const [destination, setDestination] = React.useState("");
+  const [designation, setDestination] = React.useState("");
   const [emailAddress, setEmailAddress] = React.useState("");
   const [id, setId] = React.useState();
   const [vendorId, setVendorId] = React.useState(null);
@@ -150,10 +149,10 @@ function AddVendor({ addVendors }) {
     street2: "",
     state: "",
     city: "",
-    pincode: "",
+    pinCode: "",
     contactName: "",
-    phone: "",
-    destination: "",
+    phoneNumber: "",
+    designation: "",
     email: emailAddress,
     isPrimary: false,
   });
@@ -171,7 +170,7 @@ function AddVendor({ addVendors }) {
       newAddress.street1.trim() !== "" &&
       newAddress.state.trim() !== "" &&
       newAddress.city.trim() !== "" &&
-      newAddress.pincode.trim() !== ""
+      newAddress.pinCode.trim() !== ""
     );
   };
   const handleCancel = () => {
@@ -183,10 +182,10 @@ function AddVendor({ addVendors }) {
       street2: "",
       state: "",
       city: "",
-      pincode: "",
+      pinCode: "",
       contactName: "",
-      phone: "",
-      destination: "",
+      phoneNumber: "",
+      designation: "",
       email: "",
       isPrimary: false,
     });
@@ -196,7 +195,7 @@ function AddVendor({ addVendors }) {
       street1: false,
       state: false,
       city: false,
-      pincode: false,
+      pinCode: false,
     });
     // Close the dialog
     handleShippingClickClose();
@@ -228,40 +227,8 @@ function AddVendor({ addVendors }) {
   const handleAddressSubmit = async () => {
     const addressWithVendorId = { ...newAddress, vendorId: vendorId };
     if (isValidAddress()) {
-      try {
-        const response = await axios.post(
-          "/api/master/vendorAddress",
-          addressWithVendorId
-        );
-        console.log("Response:", response.data);
-        setErrors1({}); // Clear any previous errors on successful submission
-        handleAddShippingAddress();
-      } catch (errors1) {
-        console.error("Error:", errors1);
-        if (errors1.response && errors1.response.data) {
-          // Handle errors from the server
-          const serverErrors = errors1.response.data;
-          setErrors1(serverErrors);
-        } else {
-          // Handle other errors
-          setErrors1({ unexpectedError: true });
-        }
-      }
-    } else {
-      const updatedErrors = {};
-      for (const field in newAddress) {
-        if (
-          field !== "street2" &&
-          field !== "contactName" &&
-          field !== "phone" &&
-          field !== "isPrimary"
-        ) {
-          if (!newAddress[field].trim()) {
-            updatedErrors[field] = true;
-          }
-        }
-      }
-      setErrors1(updatedErrors); // Update errors for invalid fields
+      setErrors1({}); // Clear any previous errors on successful submission
+      handleAddShippingAddress();
     }
   };
 
@@ -287,10 +254,10 @@ function AddVendor({ addVendors }) {
       street2: "",
       state: "",
       city: "",
-      pincode: "",
+      pinCode: "",
       contactName: "",
-      phone: "",
-      destination: "",
+      phoneNumber: "",
+      designation: "",
       email: emailAddress,
       isPrimary: false,
     });
@@ -375,10 +342,10 @@ function AddVendor({ addVendors }) {
       case "phoneNumber":
         setPhoneNumber(value);
         break;
-      case "displayName":
+      case "accountName":
         setDisplayName(value);
         break;
-      case "accountNum":
+      case "accountNo":
         setAccountNum(value);
         break;
       case "bank":
@@ -425,16 +392,32 @@ function AddVendor({ addVendors }) {
         orgId,
         id,
         venderActivePortal,
+        vendorAddressDTO: shippingAddresses,
+        vendorBankDetailsDTO: [
+          {
+            accountName: accountName,
+            accountNo: accountNo,
+            bank: bank,
+            branch: branch,
+            ifscCode: ifscCode,
+          },
+        ],
       };
 
       console.log("test", formData);
       axios
-        .put(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
+        .post(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
         .then((response) => {
           setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
           console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
           setErrors({});
           setAddressShow(true);
+          setAccountNum("");
+          setBank("");
+          setDisplayName("");
+          setBranch("");
+          setIfscCode("");
+          setErrors({});
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -455,11 +438,11 @@ function AddVendor({ addVendors }) {
     if (!bank) {
       errors.bank = "Bank Name is required";
     }
-    if (!accountNum) {
-      errors.accountNum = "account No is required";
+    if (!accountNo) {
+      errors.accountNo = "account No is required";
     }
-    if (!displayName) {
-      errors.displayName = "Account Name No is required";
+    if (!accountName) {
+      errors.accountName = "Account Name No is required";
     }
     if (!branch) {
       errors.branch = "branch Name No is required";
@@ -471,8 +454,8 @@ function AddVendor({ addVendors }) {
     if (Object.keys(errors).length === 0) {
       const formDataBank = {
         bank,
-        accountNum,
-        displayName,
+        accountNo,
+        accountName,
         branch,
         ifscCode,
         vendorId,
@@ -730,272 +713,268 @@ function AddVendor({ addVendors }) {
             </button>
           </div>
         </div>
-        {addressShow && (
-          <>
-            <Box sx={{ width: "100%" }}>
-              <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs
-                  value={value}
-                  onChange={handleChange}
-                  aria-label="basic tabs example"
-                >
-                  <Tab
-                    className="text-form"
-                    label="Bank Details"
-                    {...a11yProps(1)}
-                  />
-                  <Tab
-                    className="text-form"
-                    label="Address"
-                    {...a11yProps(0)}
-                  />
-                </Tabs>
-              </Box>
-              <CustomTabPanel value={value} index={1}>
-                <div className="row d-flex justify-content-center">
-                  <div className="col-md-12">
-                    <button
-                      type="button"
-                      onClick={handleShippingClickOpen}
-                      className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    >
-                      + Add Address
-                    </button>
-                  </div>
-                </div>
-                <div className="d-flex align-items-center justify-content-center flex-wrap">
-                  {shippingAddresses.map((address, index) => (
-                    <div
-                      className="col-md-5 mt-3"
-                      key={index}
-                      style={styles.submittedDataContainer}
-                    >
-                      <div className="row">
-                        <div className="col-md-10">
-                          <h2 style={styles.submittedDataTitle}>
-                            Address {index + 1}
-                          </h2>
-                        </div>
-                        <div className="col-md-2">
-                          <FaTrash
-                            className="cursor-pointer w-4 h-8 me-3"
-                            onClick={() => handleDeleteAddress(index)}
-                          />
-                        </div>
-                      </div>
 
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>
-                          GST Registration Status:
-                        </span>
-                        <span>{address.gstRegistrationStatus}</span>
+        <>
+          <Box sx={{ width: "100%" }}>
+            <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+              <Tabs
+                value={value}
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab
+                  className="text-form"
+                  label="Bank Details"
+                  {...a11yProps(1)}
+                />
+                <Tab className="text-form" label="Address" {...a11yProps(0)} />
+              </Tabs>
+            </Box>
+            <CustomTabPanel value={value} index={1}>
+              <div className="row d-flex justify-content-center">
+                <div className="col-md-12">
+                  <button
+                    type="button"
+                    onClick={handleShippingClickOpen}
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  >
+                    + Add Address
+                  </button>
+                </div>
+              </div>
+              <div className="d-flex align-items-center justify-content-center flex-wrap">
+                {shippingAddresses.map((address, index) => (
+                  <div
+                    className="col-md-5 mt-3"
+                    key={index}
+                    style={styles.submittedDataContainer}
+                  >
+                    <div className="row">
+                      <div className="col-md-10">
+                        <h2 style={styles.submittedDataTitle}>
+                          Address {index + 1}
+                        </h2>
                       </div>
-                      {address.gstRegistrationStatus === "Registered" && (
-                        <div style={styles.submittedDataItem}>
-                          <span style={styles.submittedDataLabel}>
-                            GST Number:
-                          </span>
-                          <span>{address.gstNumber}</span>
-                        </div>
-                      )}
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>Street 1:</span>
-                        <span>{address.street1}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>Street 2:</span>
-                        <span>{address.street2}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>State:</span>
-                        <span>{address.state}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>City:</span>
-                        <span>{address.city}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>Pin Code:</span>
-                        <span>{address.pincode}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>
-                          Contact Person:
-                        </span>
-                        <span>{address.contactName}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>
-                          Destination:
-                        </span>
-                        <span>{address.destination}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>Email:</span>
-                        <span>{address.email}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>
-                          Phone Number:
-                        </span>
-                        <span>{address.phone}</span>
-                      </div>
-                      <div style={styles.submittedDataItem}>
-                        <span style={styles.submittedDataLabel}>Primary:</span>
-                        <span>{address.isPrimary ? "Yes" : "No"}</span>
+                      <div className="col-md-2">
+                        <FaTrash
+                          className="cursor-pointer w-4 h-8 me-3"
+                          onClick={() => handleDeleteAddress(index)}
+                        />
                       </div>
                     </div>
-                  ))}
+
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        GST Registration Status:
+                      </span>
+                      <span>{address.gstRegistrationStatus}</span>
+                    </div>
+                    {address.gstRegistrationStatus === "Registered" && (
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>
+                          GST Number:
+                        </span>
+                        <span>{address.gstNumber}</span>
+                      </div>
+                    )}
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Street 1:</span>
+                      <span>{address.street1}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Street 2:</span>
+                      <span>{address.street2}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>State:</span>
+                      <span>{address.state}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>City:</span>
+                      <span>{address.city}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Pin Code:</span>
+                      <span>{address.pinCode}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Contact Person:
+                      </span>
+                      <span>{address.contactName}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Designation:
+                      </span>
+                      <span>{address.designation}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Email:</span>
+                      <span>{address.email}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Phone Number:
+                      </span>
+                      <span>{address.phoneNumber}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Primary:</span>
+                      <span>{address.isPrimary ? "Yes" : "No"}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CustomTabPanel>
+            <CustomTabPanel value={value} index={0}>
+              <div className="row">
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Bank
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
                 </div>
-              </CustomTabPanel>
-              <CustomTabPanel value={value} index={0}>
-                <div className="row">
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        Bank
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <input
-                      type="text"
-                      className="form-control form-sz"
-                      // placeholder="Enter"
-                      value={bank}
-                      name="bank"
-                      onChange={handleInputChange}
-                    />
-                    {errors.bank && (
-                      <div className="error-text">{errors.bank}</div>
-                    )}
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        Account No
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <input
-                      type="text"
-                      className="form-control form-sz"
-                      // placeholder="Enter"
-                      value={accountNum}
-                      name="accountNum"
-                      onChange={handleInputChange}
-                    />
-                    {errors.accountNum && (
-                      <div className="error-text">{errors.accountNum}</div>
-                    )}
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        Account Name
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <input
-                      type="text"
-                      className="form-control form-sz"
-                      // placeholder="Enter"
-                      value={displayName}
-                      name="displayName"
-                      onChange={handleInputChange}
-                    />
-                    {errors.displayName && (
-                      <div className="error-text">{errors.displayName}</div>
-                    )}
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        Branch
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <input
-                      type="text"
-                      className="form-control form-sz"
-                      // placeholder="Enter"
-                      value={branch}
-                      name="branch"
-                      onChange={handleInputChange}
-                    />
-                    {errors.branch && (
-                      <div className="error-text">{errors.branch}</div>
-                    )}
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        IFSC Code
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      type="text"
-                      className="form-control form-sz"
-                      // placeholder="Enter"
-                      value={ifscCode}
-                      name="ifscCode"
-                      onChange={handleInputChange}
-                    />
-                    {errors.ifscCode && (
-                      <div className="error-text">{errors.ifscCode}</div>
-                    )}
-                  </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <input
+                    type="text"
+                    className="form-control form-sz"
+                    // placeholder="Enter"
+                    value={bank}
+                    name="bank"
+                    onChange={handleInputChange}
+                  />
+                  {errors.bank && (
+                    <div className="error-text">{errors.bank}</div>
+                  )}
                 </div>
-              </CustomTabPanel>
-            </Box>
-            <div className="d-flex flex-row mt-3">
-              <button
-                type="button"
-                onClick={handleBankVender}
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                // onClick={handleCloseAddVendor}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              >
-                Cancel
-              </button>
-            </div>
-          </>
-        )}
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Account No
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <input
+                    type="text"
+                    className="form-control form-sz"
+                    // placeholder="Enter"
+                    value={accountNo}
+                    name="accountNo"
+                    onChange={handleInputChange}
+                  />
+                  {errors.accountNo && (
+                    <div className="error-text">{errors.accountNo}</div>
+                  )}
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Account Name
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <input
+                    type="text"
+                    className="form-control form-sz"
+                    // placeholder="Enter"
+                    value={accountName}
+                    name="accountName"
+                    onChange={handleInputChange}
+                  />
+                  {errors.accountName && (
+                    <div className="error-text">{errors.accountName}</div>
+                  )}
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Branch
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <input
+                    type="text"
+                    className="form-control form-sz"
+                    // placeholder="Enter"
+                    value={branch}
+                    name="branch"
+                    onChange={handleInputChange}
+                  />
+                  {errors.branch && (
+                    <div className="error-text">{errors.branch}</div>
+                  )}
+                </div>
+                <div className="col-lg-3 col-md-6">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      IFSC Code
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-3 col-md-6">
+                  <input
+                    type="text"
+                    className="form-control form-sz"
+                    // placeholder="Enter"
+                    value={ifscCode}
+                    name="ifscCode"
+                    onChange={handleInputChange}
+                  />
+                  {errors.ifscCode && (
+                    <div className="error-text">{errors.ifscCode}</div>
+                  )}
+                </div>
+              </div>
+            </CustomTabPanel>
+          </Box>
+          {/* <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleBankVender}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              // onClick={handleCloseAddVendor}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div> */}
+        </>
+
         {/* Billing Address Modal Define */}
         {/* <Dialog
           fullWidth={true}
@@ -1437,14 +1416,14 @@ function AddVendor({ addVendors }) {
                       height: 40,
                       fontSize: "0.800rem",
                       width: "100%",
-                      borderColor: errors1.pincode ? "red" : "",
+                      borderColor: errors1.pinCode ? "red" : "",
                     }}
                     type={"number"}
-                    value={newAddress.pincode}
-                    onChange={(e) => handleAddressInputChange(e, "pincode")}
+                    value={newAddress.pinCode}
+                    onChange={(e) => handleAddressInputChange(e, "pinCode")}
                     className="input input-bordered p-2"
                   />
-                  {errors1.pincode && (
+                  {errors1.pinCode && (
                     <span style={{ color: "red", fontSize: "12px" }}>
                       Pin Code is required
                     </span>
@@ -1487,8 +1466,8 @@ function AddVendor({ addVendors }) {
                       width: "100%",
                     }}
                     type={"number"}
-                    value={newAddress.phone}
-                    onChange={(e) => handleAddressInputChange(e, "phone")}
+                    value={newAddress.phoneNumber}
+                    onChange={(e) => handleAddressInputChange(e, "phoneNumber")}
                     className="input input-bordered p-2"
                   />
                 </div>
@@ -1496,7 +1475,7 @@ function AddVendor({ addVendors }) {
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <label className="label label-text label-font-size text-base-content">
-                    Destination
+                    Designation
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
@@ -1507,8 +1486,8 @@ function AddVendor({ addVendors }) {
                       width: "100%",
                     }}
                     type={"text"}
-                    value={newAddress.destination}
-                    onChange={(e) => handleAddressInputChange(e, "destination")}
+                    value={newAddress.designation}
+                    onChange={(e) => handleAddressInputChange(e, "designation")}
                     className="input input-bordered p-2"
                   />
                 </div>

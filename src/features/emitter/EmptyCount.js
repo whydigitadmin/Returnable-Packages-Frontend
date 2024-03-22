@@ -1,7 +1,40 @@
-import React from "react";
-import { FaLocationDot } from "react-icons/fa6";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import EmptyCountDetails from "./EmptyCountDetail";
+
 export const EmptyCount = () => {
+  const [flowData, setFlowData] = useState([]);
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+
+  useEffect(() => {
+    getAddressById();
+  }, []);
+
+  const getAddressById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow/getFlowByUserId?userId=${userId}`
+      );
+
+      if (response.status === 200) {
+        console.log(
+          "response.data.paramObjectsMap",
+          response.data.paramObjectsMap
+        );
+        const validFlows = response.data.paramObjectsMap.flowVO
+          .filter(
+            (flow) =>
+              typeof flow.flowName === "string" && flow.flowName.trim() !== ""
+          )
+          .map((flow) => ({ id: flow.id, flow: flow.flowName }));
+        setFlowData(validFlows);
+        console.log("validFlows", validFlows);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <>
       {/* <div className="row" style={{ padding: "0% 8% 0% 8%" }}>
@@ -193,22 +226,38 @@ export const EmptyCount = () => {
             <div className="col-lg-5 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">
-                  <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 14 }}
+                  <img
+                    src="/destination.png"
+                    alt="Favorite"
+                    style={{
+                      width: "30px",
+                      height: "25px",
+                      marginRight: "6px",
+                      marginTop: "12px",
+                    }}
                   />
-                  {/* <h4 className="text-xl font-semibold pt-1 mt-2 ms-1 mb-2">
-                    Location -
-                  </h4> */}
-                  <h4 className="text-2xl font-semibold ms-1 mt-2">
-                    Tata Motors
+                  <h4 className="text-xl font-semibold mt-2 ms-1 me-2 mb-2">
+                    Flow To -
                   </h4>
+                  <select
+                    className="form-select w-72 h-10 mt-1 mb-2"
+                    // value={selectedFlow}
+                    // onChange={handleSelectedFlow}
+                  >
+                    <option value="">Select a Flow</option>
+                    {flowData &&
+                      flowData.map((flowName) => (
+                        <option key={flowName.id} value={flowName.id}>
+                          {flowName.flow}
+                        </option>
+                      ))}
+                  </select>
                 </div>
               </div>
-              <p className="mb-3">
+              {/* <p className="mb-3">
                 29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                 Pune, Maharashtra, 410501 India
-              </p>
+              </p> */}
             </div>
             {/* <div className="col-lg-1">
               <MdDoubleArrow
