@@ -104,7 +104,6 @@ function AddItem({ addItem }) {
   const [codeSelected, setCodeSelected] = useState(false);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
-
   const handleAssetCategoryChange = (event) => {
     const selectedCategory = event.target.value;
     setAssetCategory(selectedCategory);
@@ -145,6 +144,7 @@ function AddItem({ addItem }) {
   useEffect(() => {
     getAllAssetCategory();
     getWarehouseLocationList();
+    getAssetNamesByCategory();
   }, []);
 
   const getWarehouseLocationList = async () => {
@@ -165,12 +165,12 @@ function AddItem({ addItem }) {
   const getAllAssetCategory = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
+        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        const assetCategories =
-          response.data.paramObjectsMap.assetGroupVO.assetCategory;
+        const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
         setAssetCategoryVO(assetCategories);
 
         if (assetCategories.length > 0) {
@@ -185,7 +185,8 @@ function AddItem({ addItem }) {
   const getAssetNamesByCategory = async (category) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup?orgId=${orgId}`,
         {
           params: {
             orgId: orgId,
@@ -193,13 +194,14 @@ function AddItem({ addItem }) {
           },
         }
       );
-      console.log("Response from API:", response.data);
+      // console.log("Response from API:", response.data);
       if (response.status === 200) {
-        const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
+        const assetGroup =
+          response.data.paramObjectsMap.assetGroupVO.assetGroupVO;
         // // Filter asset names based on the selected category
 
-        setAssetNameVO(response.data.paramObjectsMap.assetGroupVO.assetName);
-        console.log("assetName", assetGroupVO);
+        setAssetNameVO(response.data.paramObjectsMap.assetGroupVO.assetGroupVO);
+        console.log("assetName", assetGroup);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -442,7 +444,8 @@ function AddItem({ addItem }) {
   //   }
   // }
   const handleAssetClose = () => {
-    if (warehouse ||
+    if (
+      warehouse ||
       assetCategory ||
       assetName > 0 ||
       assetCodeId > 0 ||
@@ -462,13 +465,14 @@ function AddItem({ addItem }) {
       taxRate ||
       costPrice ||
       sellPrice ||
-      scrapValue) {
+      scrapValue
+    ) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
       addItem(false);
     }
-  }
+  };
 
   const handleConfirmationClose = () => {
     setOpenConfirmationDialog(false);
@@ -541,8 +545,8 @@ function AddItem({ addItem }) {
               </option>
               {assetCategoryVO.length > 0 &&
                 assetCategoryVO.map((list) => (
-                  <option key={list.id} value={list}>
-                    {list}
+                  <option key={list.id} value={list.assetCategory}>
+                    {list.assetCategory}
                   </option>
                 ))}
             </select>
@@ -570,8 +574,8 @@ function AddItem({ addItem }) {
               </option>
               {assetNameVO.length > 0 &&
                 assetNameVO.map((name) => (
-                  <option key={name.id} value={name}>
-                    {name}
+                  <option key={name.id} value={name.assetName}>
+                    {name.assetName}
                   </option>
                 ))}
             </select>
@@ -1036,7 +1040,6 @@ function AddItem({ addItem }) {
           <Button onClick={handleConfirmationYes}>Yes</Button>
         </DialogActions>
       </Dialog>
-
     </>
   );
 }

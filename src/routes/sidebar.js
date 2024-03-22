@@ -348,8 +348,8 @@ const routes = [
     path: "", //no url needed as this has submenu
     icon: (
       <img
-        src="/outwardAdmin.png"
-        alt="Outward"
+        src="/docTypeH.png"
+        alt="docType"
         style={{ width: "30px", height: "auto" }}
         className={`${iconClasses} inline`}
       />
@@ -360,13 +360,39 @@ const routes = [
         path: "/app/DocumentType", //no url needed as this has submenu
         icon: (
           <img
-            src="/emptyRetrieval.png"
+            src="/docType.png"
             alt="DocumentType"
             style={{ width: "30px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
         name: <span className="ml-1">Document Type</span>,
+      },
+    ],
+  },
+  {
+    path: "", //no url needed as this has submenu
+    icon: (
+      <img
+        src="/servicesH.png"
+        alt="Services"
+        style={{ width: "32px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "12px" }}>Services</span>,
+    submenu: [
+      {
+        path: "/app/Services", //no url needed as this has submenu
+        icon: (
+          <img
+            src="/services.png"
+            alt="Services"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Services</span>,
       },
     ],
   },

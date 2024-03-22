@@ -25,7 +25,7 @@ function AddItemGroups({ addItem }) {
   const [partQuantity, setPartQuantity] = useState();
   const [showPartQuantity, setShowPartQuantity] = useState(false);
   const [errors, setErrors] = useState({});
-  const [id, setId] = useState();
+  const [kitCode, setKitCode] = useState();
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [kitAssetDTO, setKitAssetDTO] = useState([]);
   const [selectedAssetCategory, setSelectedAssetCategory] = useState(false);
@@ -47,16 +47,16 @@ function AddItemGroups({ addItem }) {
     if (!assetQty) {
       errors.assetQty = "Asset Quantity is required";
     }
-    if (showPartQuantity && !partQuantity) {
-      errors.partQuantity = "Part Quantity is required";
-    }
+    // if (showPartQuantity && !partQuantity) {
+    //   errors.partQuantity = "Part Quantity is required";
+    // }
     if (Object.keys(errors).length === 0) {
       const newAssetDetails = {
         assetCategory,
         assetCodeId,
         assetName,
         quantity: assetQty,
-        partQuantity,
+        // partQuantity,
       };
       setKitAssetDTO([...kitAssetDTO, newAssetDetails]);
       handleAssetClose();
@@ -79,7 +79,7 @@ function AddItemGroups({ addItem }) {
     setAssetCodeId("");
     setAssetName("");
     setAssetQty("");
-    setPartQuantity("");
+    // setPartQuantity("");
     setShowPartQuantity(false);
     setErrors({});
     setSelectedAssetCategory(false);
@@ -87,7 +87,7 @@ function AddItemGroups({ addItem }) {
     setSelectedCode(false);
   };
   const handleKitId = (event) => {
-    setId(event.target.value);
+    setKitCode(event.target.value);
   };
 
   const handleQuantityEditChange = (event, index) => {
@@ -97,12 +97,12 @@ function AddItemGroups({ addItem }) {
     setKitAssetDTO(updatedKitAssetDTO);
   };
 
-  const handlePartQuantityEditChange = (event, index) => {
-    const { value } = event.target;
-    const updatedKitAssetDTO = [...kitAssetDTO];
-    updatedKitAssetDTO[index].partQuantity = value;
-    setKitAssetDTO(updatedKitAssetDTO);
-  };
+  // const handlePartQuantityEditChange = (event, index) => {
+  //   const { value } = event.target;
+  //   const updatedKitAssetDTO = [...kitAssetDTO];
+  //   updatedKitAssetDTO[index].partQuantity = value;
+  //   setKitAssetDTO(updatedKitAssetDTO);
+  // };
 
   const handleQuantityChange = (event) => {
     setAssetQty(event.target.value);
@@ -218,8 +218,11 @@ function AddItemGroups({ addItem }) {
 
   const handleKitCreation = async () => {
     const errors = {};
-    if (!id) {
-      errors.id = "Kit Id is required";
+    if (!kitCode) {
+      errors.kitCode = "Kit Id is required";
+    }
+    if (!partQuantity) {
+      errors.partQuantity = "Part Quantity is required";
     }
     if (kitAssetDTO.length === 0) {
       errors.kitAssetDTO = "Please add at least one asset detail";
@@ -227,7 +230,8 @@ function AddItemGroups({ addItem }) {
     if (Object.keys(errors).length === 0) {
       try {
         const kitData = {
-          id,
+          kitCode,
+          partQuantity,
           kitAssetDTO,
           orgId,
           // Add other properties from your form if needed
@@ -311,16 +315,42 @@ function AddItemGroups({ addItem }) {
           <div className="col-lg-3 col-md-6">
             <input
               className="form-control form-sz mb-2 p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 uppercase"
-              name="id"
-              value={id}
+              name="kitCode"
+              value={kitCode}
               onChange={handleKitId}
               placeholder={"PLS0000/MMYY/0000"}
               required
             />
-            {errors.id && <span className="error-text">{errors.id}</span>}
+            {errors.kitCode && (
+              <span className="error-text">{errors.kitCode}</span>
+            )}
           </div>
-          <div className="col-lg-3 col-md-6"></div>
           <div className="col-lg-3 col-md-6">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Part Quantity
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              name="partQuantity"
+              value={partQuantity}
+              onChange={handlePartQuantityChange}
+            />
+            {errors.partQuantity && (
+              <span className="error-text">{errors.partQuantity}</span>
+            )}
+          </div>
+
+          {/* </div> */}
+          <div className="col-lg-12 col-md-12 text-right">
             <div className="d-flex justify-content-end">
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -393,7 +423,7 @@ function AddItemGroups({ addItem }) {
                           asset.quantity
                         )}
                       </td>
-                      <td className="text-center">
+                      {/* <td className="text-center">
                         {asset.isEditable ? (
                           <input
                             type="number"
@@ -411,7 +441,7 @@ function AddItemGroups({ addItem }) {
                         ) : (
                           asset.partQuantity
                         )}
-                      </td>
+                      </td> */}
                       <div className="d-flex">
                         <div className="col-4 text-center">
                           <td>
@@ -610,7 +640,7 @@ function AddItemGroups({ addItem }) {
                   <span className="error-text">{errors.assetQty}</span>
                 )}
               </div>
-              {showPartQuantity && ( // Conditionally render the Part Quantity input field
+              {/* {showPartQuantity && ( // Conditionally render the Part Quantity input field
                 <>
                   <div className="col-lg-3 col-md-6 mb-2">
                     <label className="label">
@@ -636,7 +666,7 @@ function AddItemGroups({ addItem }) {
                     )}
                   </div>
                 </>
-              )}
+              )} */}
             </div>
           </DialogContentText>
         </DialogContent>

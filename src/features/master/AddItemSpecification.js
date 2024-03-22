@@ -94,13 +94,14 @@ function AddItemSpecification({ addItemSpecification }) {
   const getAllAssetCategory = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
+        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        const assetCategories =
-          response.data.paramObjectsMap.assetGroupVO.assetCategory;
+        const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
         setAssetCategoryVO(assetCategories);
+        console.log("type", assetCategories);
 
         if (assetCategories.length > 0) {
           setAssetCategory(assetCategories[0].assetCategory);
@@ -110,6 +111,24 @@ function AddItemSpecification({ addItemSpecification }) {
       console.error("Error fetching data:", error);
     }
   };
+
+  // const getAllAssetCategory = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
+  //     );
+
+  //     if (response.status === 200) {
+  //       const assetCategories =
+  //         response.data.paramObjectsMap.assetCategoryVO.assetCategory;
+  //       setAssetCategoryVO(assetCategories);
+  //     }
+
+  //     console.log("Test", assetCategories);
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
@@ -257,8 +276,8 @@ function AddItemSpecification({ addItemSpecification }) {
               </option>
               {assetCategoryVO.length > 0 &&
                 assetCategoryVO.map((list) => (
-                  <option key={list.id} value={list}>
-                    {list}
+                  <option key={list.id} value={list.assetCategory}>
+                    {list.assetCategory}
                   </option>
                 ))}
             </select>

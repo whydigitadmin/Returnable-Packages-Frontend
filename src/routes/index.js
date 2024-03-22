@@ -99,6 +99,7 @@ const EmptyRetrievalManifest = lazy(() =>
   import("../pages/protected/EmptyRetrievalManifest")
 );
 const DocumentType = lazy(() => import("../pages/protected/DocumentType"));
+const Services = lazy(() => import("../pages/protected/Services"));
 
 const routes = [
   {
@@ -112,6 +113,10 @@ const routes = [
   {
     path: "/DocumentType",
     component: DocumentType,
+  },
+  {
+    path: "/Services",
+    component: Services,
   },
   {
     path: "/EmitterLanding",

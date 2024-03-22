@@ -193,7 +193,8 @@ function AddFlows({ addFlows }) {
   const getAllKitData = async () => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getallkit`
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit?orgId=${orgId}`
+        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup?orgId=${orgId}`,
       );
 
       if (response.status === 200) {
@@ -676,8 +677,8 @@ function AddFlows({ addFlows }) {
                 >
                   <option value="">Select a kit</option>
                   {getkit.map((kitId) => (
-                    <option key={kitId.id} value={kitId.id}>
-                      {kitId.id}
+                    <option key={kitId.id} value={kitId.kitCode}>
+                      {kitId.kitCode}
                     </option>
                   ))}
                 </select>
