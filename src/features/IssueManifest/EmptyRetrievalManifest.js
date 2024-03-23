@@ -80,9 +80,7 @@ export const EmptyRetrievalManifest = () => {
             className="w-full p-6 bg-base-100 shadow-xl"
             style={{ borderRadius: 16 }}
           >
-            <div className="text-xl font-semibold">
-              Empty Retrieval Manifest
-            </div>
+            {/* <div className="text-xl font-semibold">Bin Outward</div> */}
             <div className="divider mt-2"></div>
             <div className="overflow-x-auto w-full ">
               <table className="table w-full">

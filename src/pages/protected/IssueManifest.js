@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Issue Manifest" }));
+    dispatch(setPageTitle({ title: "Bin Allotment" }));
   }, []);
 
   return <IssueManifest />;

@@ -127,7 +127,7 @@ function WelcomeEmitter() {
                           marginRight: "6px",
                         }}
                       />
-                      <h4 className="text-xl font-semibold">Issue Request</h4>
+                      <h4 className="text-xl font-semibold">Bin Request</h4>
                     </div>
                   </div>
                 </div>

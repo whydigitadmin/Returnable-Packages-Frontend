@@ -158,8 +158,10 @@ export const InwardManifest = () => {
             alt="Inprogress-status-icon"
             style={{ width: 30, height: 30, margin: "auto" }}
             onClick={() =>
-              handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
-
+              handleInProgressStatusClick(
+                selectedIssueRequest,
+                selectedSubIndex
+              )
             }
           />
         </div>
@@ -301,7 +303,7 @@ export const InwardManifest = () => {
             </div>
           </div>
           <>
-            <TitleCard title="Inward Manifest Details" topMargin="mt-2">
+            <TitleCard title="" topMargin="mt-2">
               {/* Invoice list in table format loaded constant */}
               <div className="overflow-x-auto w-full ">
                 <table className="table w-full">
@@ -378,9 +380,9 @@ export const InwardManifest = () => {
 
                             <td
                               style={{ width: 100 }}
-                            // onClick={() =>
-                            //   handlePendingStatusClick(issueRequest, subIndex)
-                            // }
+                              // onClick={() =>
+                              //   handlePendingStatusClick(issueRequest, subIndex)
+                              // }
                             >
                               {getPaymentStatus()}
                             </td>
@@ -400,7 +402,7 @@ export const InwardManifest = () => {
               onClose={closePendingPopup}
             >
               <div className="d-flex justify-content-between">
-                <DialogTitle>Issue Manifest</DialogTitle>
+                <DialogTitle>Bin Allotment</DialogTitle>
                 <IoMdClose
                   className="cursor-pointer w-8 h-8 mt-3 me-3"
                   onClick={closePendingPopup}
@@ -499,7 +501,7 @@ export const InwardManifest = () => {
               onClose={closeInProgressPopup}
             >
               <div className="d-flex justify-content-between">
-                <DialogTitle>Issue Manifest</DialogTitle>
+                <DialogTitle>Bin Allotment</DialogTitle>
                 <IoMdClose
                   className="cursor-pointer w-8 h-8 mt-3 me-3"
                   onClick={closeInProgressPopup}
@@ -610,7 +612,7 @@ export const InwardManifest = () => {
               onClose={closeIssuedPopup}
             >
               <div className="d-flex justify-content-between">
-                <DialogTitle>Issue Manifest</DialogTitle>
+                <DialogTitle>Bin Allotment</DialogTitle>
                 <IoMdClose
                   className="cursor-pointer w-8 h-8 mt-3 me-3"
                   onClick={closeIssuedPopup}

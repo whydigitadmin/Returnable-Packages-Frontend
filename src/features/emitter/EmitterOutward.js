@@ -156,7 +156,7 @@ export const EmitterOutward = () => {
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
             <p className="ml-5 mt-3 text-2xl">
-              <strong>Outward</strong>
+              <strong>Bin Outward</strong>
             </p>
             <div className="col-lg-1">
               <div className="d-flex justify-content-center">
@@ -201,7 +201,7 @@ export const EmitterOutward = () => {
               </div>
             </div>
           </div>
-          <TitleCard title="Outward Manifest" topMargin="mt-2">
+          <TitleCard title="" topMargin="mt-2">
             <div className="overflow-x-auto w-full ">
               <table className="table w-full">
                 <thead>
@@ -277,7 +277,7 @@ export const EmitterOutward = () => {
             onClose={closePendingPopupIssued}
           >
             <div className="d-flex justify-content-between">
-              <DialogTitle>Outward Manifest</DialogTitle>
+              <DialogTitle>Bin Outward</DialogTitle>
               <IoMdClose
                 className="cursor-pointer w-8 h-8 mt-3 me-3"
                 onClick={closePendingPopupIssued}

@@ -250,7 +250,7 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span className="ml-2">Issue Manifest</span>,
+    name: <span className="ml-2">Bin Allotment</span>,
     submenu: [
       {
         path: "/app/issuemanifest", //no url needed as this has submenu
@@ -262,7 +262,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Issue manifest</span>,
+        name: <span className="ml-1">Bin Allotment</span>,
       },
       // {
       //   path: "/app/issuemanifest-report", //no url needed as this has submenu
@@ -289,7 +289,7 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span style={{ marginLeft: "12px" }}>Inward</span>,
+    name: <span style={{ marginLeft: "12px" }}>Bin Inward</span>,
     submenu: [
       {
         path: "/app/inwardmanifest", //no url needed as this has submenu
@@ -301,7 +301,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="">Inward manifest</span>,
+        name: <span className="">Bin Inward</span>,
       },
       // {
       //   path: "/app/inwardmanifest-report", //no url needed as this has submenu
@@ -328,7 +328,7 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span style={{ marginLeft: "12px" }}>Outward</span>,
+    name: <span style={{ marginLeft: "12px" }}>Bin Outward</span>,
     submenu: [
       {
         path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
@@ -340,7 +340,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Empty Retrieval Manifest</span>,
+        name: <span className="ml-1">Bin Outward</span>,
       },
     ],
   },

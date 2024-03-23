@@ -114,7 +114,7 @@ function EmitterOutwardDetails() {
           Outward
         </button>
       </div> */}
-      <TitleCard title="Outward Manifest" topMargin="mt-2">
+      <TitleCard title="Bin Outward" topMargin="mt-2">
         {/* Invoice list in table format loaded constant */}
         <div className="overflow-x-auto w-full ">
           <table className="table w-full">
@@ -235,7 +235,7 @@ function EmitterOutwardDetails() {
         onClose={closePendingPopupIssued}
       >
         <div className="d-flex justify-content-between">
-          <DialogTitle>Outward Manifest</DialogTitle>
+          <DialogTitle>Bin Outward</DialogTitle>
           <IoMdClose
             className="cursor-pointer w-8 h-8 mt-3 me-3"
             onClick={closePendingPopupIssued}

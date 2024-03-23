@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Inward Manifest" }));
+    dispatch(setPageTitle({ title: "Bin Inward" }));
   }, []);
 
   return <InwardManifest />;

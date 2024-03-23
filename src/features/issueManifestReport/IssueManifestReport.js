@@ -105,9 +105,9 @@ export const IssueManifestReport = () => {
             <div className="col-md-6">
               <h1 className="text-xl text-center">
                 <strong>
-                  Issue
+                  Bin
                   <br />
-                  Manifest
+                  Allotment
                 </strong>
               </h1>
             </div>

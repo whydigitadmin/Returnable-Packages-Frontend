@@ -724,7 +724,7 @@ function IssueReq() {
         ) : (
           ""
         )}
-        <div className="card bg-base-100 shadow-xl">
+        <div className="card bg-base-100 shadow-xl" style={{ height: "auto" }}>
           <div className="row p-4">
             <div className="col-md-12">
               <p className="text-2xl flex items-center">
@@ -732,7 +732,7 @@ function IssueReq() {
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
                 </Link>
                 <span>
-                  <strong className="ml-4">Issue Request</strong>
+                  <strong className="ml-4">Bin Request</strong>
                 </span>
               </p>
             </div>
@@ -763,7 +763,7 @@ function IssueReq() {
             </div> */}
           <div
             className="row d-flex flex-row card bg-base-100 shadow-xl m-auto"
-            style={{ width: "1000px" }}
+            style={{ width: "auto", height: "auto" }}
           >
             <div className="col-md-5">
               <div className="p-3">
@@ -800,9 +800,9 @@ function IssueReq() {
                   </select>
                 </div>
 
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
+                {/* <h4 className="text-xl dark:text-slate-300 font-semibold ms-1">
                   -
-                </h4>
+                </h4> */}
                 {/* <p className="ms-1 mb-2">
                   29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
                   Pune, Maharashtra, 410501 India
@@ -817,7 +817,7 @@ function IssueReq() {
                 </b>
               </label>
             </div>
-            <div className="col-md-4 mt-4">
+            <div className="col-md-3 mt-4">
               <div>
                 {/* <label style={{ fontWeight: "bold" }}>Select Date</label> */}
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -833,31 +833,18 @@ function IssueReq() {
                 </LocalizationProvider>
               </div>
 
-              <p>
+              {/* <p>
                 <strong style={{ fontSize: "12px" }}>
                   (<span style={{ color: "red" }}>*</span> Issue Within 48Hrs
                   Considered as High Priroity)
                 </strong>
-              </p>
+              </p> */}
               {errors.selectedDate1 && (
                 <span className="error-text">{errors.selectedDate1}</span>
               )}
             </div>
-            {selectedDate1 && ( // Only show the priority input table if a date is selected
-              <div className="col-md-2">
-                <input
-                  type="text"
-                  className="form-control form-sz mb-2 mt-4"
-                  value={priorityStatus}
-                  disabled
-                  style={{ color: getPriorityColor(), marginTop: "5px" }}
-                />
-              </div>
-            )}
-          </div>
 
-          <div className="row pt-4 pl-5 pr-5 pb-10">
-            <div className="col-lg-12">
+            <div className="col-md-3 mt-4">
               <FormControlLabel
                 control={
                   <Switch
@@ -874,6 +861,25 @@ function IssueReq() {
                 labelPlacement="start"
                 label={<span style={{ fontWeight: "bold" }}>PART</span>}
               />
+            </div>
+
+            <div className="col-md-5"></div>
+            <div className="col-md-1"></div>
+            {selectedDate1 && ( // Only show the priority input table if a date is selected
+              <div className="col-md-2">
+                <input
+                  type="text"
+                  className="form-control form-sz mb-2"
+                  value={priorityStatus}
+                  disabled
+                  style={{ color: getPriorityColor(), marginTop: "5px" }}
+                />
+              </div>
+            )}
+          </div>
+
+          <div className="row pt-4 pl-5 pr-5 pb-10">
+            <div className="col-lg-12">
               <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs
                   value={value}
@@ -1198,7 +1204,7 @@ function IssueReq() {
                         style={{ borderRadius: 16 }}
                       >
                         <div className="text-xl font-semibold p-3">
-                          Issue Manifest Details
+                          Bin Allotment Details
                         </div>
                         <div className="divider mt-0 mb-0"></div>
                         <div className="overflow-x-auto w-full "></div>

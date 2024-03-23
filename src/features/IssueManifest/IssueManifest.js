@@ -492,7 +492,7 @@ function IssueManifest() {
                   <option value="" disabled>
                     Select an Location
                   </option>
-                  {emitterLocationVO.length > 0 &&
+                  {emitterLocationVO &&
                     emitterLocationVO.map((list) => (
                       <option key={list.id} value={list.warehouseLocation}>
                         {list.warehouseLocation}
@@ -544,7 +544,7 @@ function IssueManifest() {
             </div>
           </div>
           <>
-            <TitleCard title="Issue Manifest Details" topMargin="mt-2">
+            <TitleCard title="" topMargin="mt-2">
               {/* Invoice list in table format loaded constant */}
               <div className="overflow-x-auto w-full">
                 <table className="table w-full">

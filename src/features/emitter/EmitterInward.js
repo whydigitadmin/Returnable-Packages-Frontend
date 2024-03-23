@@ -188,7 +188,7 @@ function EmitterInward() {
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
             <p className="ml-5 mt-3 text-2xl">
-              <strong>Inward</strong>
+              <strong>Bin Inward</strong>
             </p>
             <div className="col-lg-1">
               <div className="d-flex justify-content-center">
@@ -233,7 +233,7 @@ function EmitterInward() {
               </div>
             </div>
           </div>
-          <TitleCard title="Inward Manifest" topMargin="mt-2">
+          <TitleCard title="" topMargin="mt-2">
             <div className="overflow-x-auto w-full ">
               <table className="table w-full">
                 <thead>
@@ -339,7 +339,7 @@ function EmitterInward() {
             onClose={closePendingPopupIssued}
           >
             <div className="d-flex justify-content-between">
-              <DialogTitle>Inward Manifest</DialogTitle>
+              <DialogTitle>Bin Inward</DialogTitle>
               <IoMdClose
                 className="cursor-pointer w-8 h-8 mt-3 me-3"
                 onClick={closePendingPopupIssued}
