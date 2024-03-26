@@ -259,7 +259,7 @@ function NewPartStudy() {
           {ps ? (
             <Tabs
               value={value}
-              onChange={handleChange}
+              // onChange={handleChange}
               aria-label="basic tabs example"
               variant="scrollable"
               scrollButtons="auto"
@@ -288,7 +288,7 @@ function NewPartStudy() {
           ) : (
             <Tabs
               value={value}
-              onChange={handleChange}
+              // onChange={handleChange}
               aria-label="basic tabs example"
               variant="scrollable"
               scrollButtons="auto"
