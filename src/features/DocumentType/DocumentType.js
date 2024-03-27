@@ -1,10 +1,9 @@
+import React, { useState } from "react";
+import axios from "axios";
+import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import axios from "axios";
-import dayjs from "dayjs";
-import PropTypes from "prop-types";
-import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 
 const DOCDATA = [
@@ -27,65 +26,50 @@ export const DocumentType = () => {
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [finYear, setFinYear] = useState("");
   const [tableData, setTableData] = useState([
-    { id: 1, column1: "", column2: "", column3: "", column4: "", column5: "" },
+    { id: 1, scode: "", prefix: "", sequence: "", sufix: "", type: "" },
   ]);
 
   const handleAddRow = () => {
     const newRow = {
       id: tableData.length + 1,
-      column1: "",
-      column2: "",
-      column3: "",
-      column4: "",
-      column5: "",
+      scode: "",
+      prefix: "",
+      sequence: "",
+      sufix: "",
+      type: "",
     };
     setTableData([...tableData, newRow]);
   };
 
+  // const handleAddRow = () => {
+  //   const newRow = {
+  //     id: tableData.length > 0 ? tableData[tableData.length - 1].id + 1 : 1,
+  //     scode: "",
+  //     prefix: "",
+  //     sequence: "",
+  //     sufix: "",
+  //     type: "",
+  //   };
+  //   setTableData([...tableData, newRow]);
+  // };
+
   const handleDoctypeSave = () => {
     const errors = {};
-    if (!docdata[0].Prefix) {
-      errors.prefix = "Prefix is required";
-    }
-    if (!docdata[0].SID) {
-      errors.scode = "SID is required";
-    }
-    if (!docdata[0].Sequence) {
-      errors.sequence = "Sequence is required";
-    }
-    if (!docdata[0].Suffix) {
-      errors.sufix = "Suffix is required";
-    }
-    if (!docdata[0].Type) {
-      errors.type = "Type is required";
-    }
 
     if (!finYear) {
       errors.finYear = "Fin Year is required";
     }
-
     if (!fromDate) {
       errors.fromDate = "From Date is required";
     }
-
     if (!toDate) {
       errors.toDate = "To Date is required";
     }
-
     if (!extDate) {
       errors.extDate = "Ext Date is required";
     }
 
-    const tableFormData = tableData.map((row) => ({
-      scode: row.scode,
-      prefix: row.prefix,
-      sequence: row.sequence,
-      sufix: row.sufix,
-      type: row.type,
-    }));
-
-    // Check if any table fields are empty
-    const isTableDataEmpty = tableFormData.some(
+    const isTableDataEmpty = tableData.some(
       (row) =>
         row.scode === "" ||
         row.prefix === "" ||
@@ -93,14 +77,21 @@ export const DocumentType = () => {
         row.sufix === "" ||
         row.type === ""
     );
-
     if (isTableDataEmpty) {
       errors.tableData = "Please fill all table fields";
+    } else {
+      delete errors.tableData;
     }
 
     if (Object.keys(errors).length === 0) {
       const formData = {
-        dmapDetailsDTO: tableFormData,
+        dmapDetailsDTO: tableData.map((row) => ({
+          scode: row.scode, // Corrected key name from 'scode' to 'SID'
+          prefix: row.prefix,
+          sequence: row.sequence,
+          sufix: row.sufix, // Corrected key name from 'sufix' to 'Suffix'
+          type: row.type,
+        })),
         extDate: extDate ? dayjs(extDate).format("YYYY-MM-DD") : null,
         finYear: finYear,
         fromDate: fromDate ? dayjs(fromDate).format("YYYY-MM-DD") : null,
@@ -112,13 +103,15 @@ export const DocumentType = () => {
         .post(`${process.env.REACT_APP_API_URL}/api/master/dmap`, formData)
         .then((response) => {
           console.log("Response:", response.data);
-          // setDocData(DOCDATA);
+          setDocData(DOCDATA);
           setFromDate(null);
           setToDate(null);
           setExtDate(null);
           setFinYear("");
           setErrors({});
-          setTableData(null);
+          setTableData([
+            { id: 1, scode: "", prefix: "", sequence: "", sufix: "", type: "" },
+          ]);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -131,7 +124,9 @@ export const DocumentType = () => {
   return (
     <>
       <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
+        {/* Main form */}
         <div className="row mt-3">
+          {/* Fin Year */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -152,7 +147,9 @@ export const DocumentType = () => {
             )}
           </div>
         </div>
+        {/* Date pickers */}
         <div className="row">
+          {/* From Date */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -176,6 +173,7 @@ export const DocumentType = () => {
               <span className="error-text mb-1">{errors.fromDate}</span>
             )}
           </div>
+          {/* To Date */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -200,6 +198,7 @@ export const DocumentType = () => {
             )}
           </div>
         </div>
+        {/* Ext Date */}
         <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -225,6 +224,7 @@ export const DocumentType = () => {
             )}
           </div>
         </div>
+        {/* Add Row Button */}
         <div className="mt-2">
           <button
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
@@ -233,6 +233,7 @@ export const DocumentType = () => {
             + Add Row
           </button>
         </div>
+        {/* Table */}
         <div className="row mt-2">
           <div className="col-lg-12">
             <div className="overflow-x-auto">
@@ -240,7 +241,7 @@ export const DocumentType = () => {
                 <thead>
                   <tr>
                     <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">STD</th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">SID</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">Prefix</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
                       Sequence
@@ -349,9 +350,11 @@ export const DocumentType = () => {
             </div>
           </div>
         </div>
+        {/* Table data validation error */}
         {errors.tableData && (
           <div className="error-text mt-2">{errors.tableData}</div>
         )}
+        {/* Save button */}
         <div className="mt-4">
           <button
             type="button"
@@ -364,12 +367,6 @@ export const DocumentType = () => {
       </div>
     </>
   );
-};
-
-DocumentType.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
 };
 
 export default DocumentType;

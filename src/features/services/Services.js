@@ -40,25 +40,14 @@ function Services() {
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [tableData, setTableData] = useState([]);
-  const [unit, setUnit] = useState("");
+  const [code, setCode] = useState("");
+  const [description, setDescription] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [errors, setErrors] = useState({});
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
+  const [errors, setErrors] = useState("");
 
   const handleClose = () => {
     setOpen(false);
-  };
-
-  const handleAddOpen = () => {
-    setAdd(true);
-  };
-
-  const handleBack = () => {
-    setAdd(false);
-    // getWarehouseData();
+    setErrors({});
   };
 
   const [formErrors, setFormErrors] = useState({
@@ -70,63 +59,50 @@ function Services() {
     // getWarehouseData();
   }, []);
 
-  //   const getWarehouseData = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_URL}/api/master/unit?orgId=${orgId}`
-  //       );
-  //       console.log("API Response:", response);
-
-  //       if (response.status === 200) {
-  //         setData(response.data.paramObjectsMap.unitVO);
-  //         setTableData(response.data.paramObjectsMap.unitVO);
-  //         // Handle success
-  //       } else {
-  //         // Handle error
-  //         console.error("API Error:", response.data);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
-
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
-      case "unit":
-        setUnit(value);
+      case "code":
+        setCode(value);
+        break;
+      case "description":
+        setDescription(value);
         break;
     }
   };
 
-  //   const handleUnit = () => {
-  //     console.log("test");
-  //     const errors = {};
-  //     if (!unit) {
-  //       errors.unit = "Unit Name is required";
-  //     }
-  //     if (Object.keys(errors).length === 0) {
-  //       const formData = {
-  //         unit,
-  //         orgId,
-  //       };
-  //       console.log("test1", formData);
-  //       axios
-  //         .post(`${process.env.REACT_APP_API_URL}/api/master/unit`, formData)
-  //         .then((response) => {
-  //           console.log("Response:", response.data);
-  //           getWarehouseData();
-  //           setUnit("");
-  //           setErrors("");
-  //         })
-  //         .catch((error) => {
-  //           console.error("Error:", error);
-  //         });
-  //     } else {
-  //       // If there are errors, update the state to display them
-  //       setErrors(errors);
-  //     }
-  //   };
+  const handleServiceSave = () => {
+    const errors = {};
+    if (!code) {
+      errors.code = "Code is required";
+    }
+    if (!description) {
+      errors.description = "Description is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        // id,
+        code,
+        description,
+      };
+
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/master/updateCreateService`,
+          formData
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          setCode("");
+          setDescription("");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -197,12 +173,6 @@ function Services() {
     <>
       {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div> */}
-
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -220,13 +190,13 @@ function Services() {
             <input
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               type={"text"}
-              value={unit}
-              name="unit"
+              value={code}
+              name="code"
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />
-            {errors.unit && <div className="error-text">{errors.unit}</div>}
+            {errors.code && <div className="error-text">{errors.code}</div>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -244,28 +214,23 @@ function Services() {
             <input
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               type={"text"}
-              value={unit}
-              name="unit"
+              value={description}
+              name="description"
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />
-            {errors.unit && <div className="error-text">{errors.unit}</div>}
+            {errors.description && (
+              <div className="error-text">{errors.description}</div>
+            )}
           </div>
           <div className="d-flex flex-row mt-3">
             <button
               type="button"
-              //   onClick={handleUnit}
+              onClick={handleServiceSave}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Save
-            </button>
-            <button
-              type="button"
-              //onClick={handleCloseWarehouse}
-              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Cancel
             </button>
           </div>
         </div>

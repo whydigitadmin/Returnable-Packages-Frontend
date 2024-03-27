@@ -24,6 +24,12 @@ export const IssueManifestReport = () => {
               display: flex;
               flex-wrap: wrap;
             }
+            .size {
+              font-size: 12px;
+            }
+            .col-md-12 {
+              font-size: 12px;
+            }
             .col-md-6 {
               flex: 0 0 50%;
               max-width: 50%;
@@ -489,11 +495,11 @@ export const IssueManifestReport = () => {
           {/* Signatures */}
           <div className="row mt-5">
             <div className="col-md-6">
-              <strong>For Sending Location:</strong>
+              <strong className="size">For Sending Location:</strong>
               {/* Add sender signature block here */}
             </div>
             <div className="col-md-6">
-              <strong>For Receiving Location :</strong>
+              <strong className="size">For Receiving Location :</strong>
               {/* Add receiver signature block here */}
             </div>
           </div>

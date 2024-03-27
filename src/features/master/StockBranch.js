@@ -2,8 +2,23 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { FaStarOfLife } from "react-icons/fa";
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+  Paper,
+} from "@mui/material";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -62,6 +77,9 @@ export const StockBranch = () => {
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [data, setData] = React.useState([]);
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
@@ -75,6 +93,25 @@ export const StockBranch = () => {
       case "code":
         setCode(value);
         break;
+    }
+  };
+
+  useEffect(() => {
+    getAllStockbranch();
+  }, []);
+
+  const getAllStockbranch = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.branch);
+        console.log("Test", response.data.paramObjectsMap.branch);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -106,6 +143,7 @@ export const StockBranch = () => {
           setBranch("");
           setCode("");
           setErrors({});
+          getAllStockbranch();
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -114,6 +152,85 @@ export const StockBranch = () => {
       setErrors(errors);
     }
   };
+
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    setOpenView(true);
+  };
+
+  const handleEditRow = (row) => {
+    setSelectedRowId(row.original.userId);
+    setEditEmitter(true);
+  };
+
+  const VisuallyHiddenInput = styled("input")({
+    clip: "rect(0 0 0 0)",
+    clipPath: "inset(50%)",
+    height: 1,
+    overflow: "hidden",
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    whiteSpace: "nowrap",
+    width: 1,
+  });
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            {/* <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "branch",
+        header: "Branch",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "branchCode",
+        header: "Code",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+    ],
+    []
+  );
+
+  const table = useMaterialReactTable({
+    data,
+    columns,
+  });
 
   return (
     <div className="card w-full p-6 bg-base-100 shadow-xl">
@@ -194,6 +311,9 @@ export const StockBranch = () => {
         >
           Cancel
         </button>
+      </div>
+      <div className="mt-4">
+        <MaterialReactTable table={table} />
       </div>
     </div>
   );
