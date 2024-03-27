@@ -1,12 +1,7 @@
-import React from "react";
-import { FaArrowCircleDown, FaArrowCircleUp } from "react-icons/fa";
-import { MdOutbound } from "react-icons/md";
-import { TbChartInfographic } from "react-icons/tb";
-import { FaLocationDot } from "react-icons/fa6";
-import { Link } from "react-router-dom";
-import { useState, useEffect } from "react";
-import moment from "moment";
 import axios from "axios";
+import moment from "moment";
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function WelcomeEmitter() {
   const [userDetail, setUserDetail] = useState(
@@ -150,7 +145,7 @@ function WelcomeEmitter() {
                           marginRight: "6px",
                         }}
                       />
-                      <h4 className="text-xl font-semibold">Inward</h4>
+                      <h4 className="text-xl font-semibold">Bin Inward</h4>
                     </div>
                   </div>
                 </div>
@@ -177,7 +172,7 @@ function WelcomeEmitter() {
                           marginRight: "6px",
                         }}
                       />
-                      <h4 className="text-xl font-semibold">Outward</h4>
+                      <h4 className="text-xl font-semibold">Bin Outward</h4>
                     </div>
                   </div>
                 </div>

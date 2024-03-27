@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import axios from "axios";
-import dayjs from "dayjs";
-import PropTypes from "prop-types";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import axios from "axios";
+import dayjs from "dayjs";
+import PropTypes from "prop-types";
+import React, { useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-import { FaSave, FaEdit, FaTrash } from "react-icons/fa";
 
 const DOCDATA = [
   {
@@ -113,7 +112,7 @@ export const DocumentType = () => {
         .post(`${process.env.REACT_APP_API_URL}/api/master/dmap`, formData)
         .then((response) => {
           console.log("Response:", response.data);
-          setDocData(DOCDATA);
+          // setDocData(DOCDATA);
           setFromDate(null);
           setToDate(null);
           setExtDate(null);

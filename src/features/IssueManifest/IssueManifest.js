@@ -36,9 +36,9 @@ function IssueManifest() {
   const [errors, setErrors] = useState("");
   const [emitter, setEmitter] = useState("");
   const [emitterId, setEmitterId] = useState("");
-  const [qty, setQty] = React.useState([]);
-  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [qty, setQty] = useState([]);
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
   const [selectedWarehouseId, setSelectedWarehouseId] = useState();
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
@@ -685,11 +685,12 @@ function IssueManifest() {
                               <tr>
                                 <th>Select</th>
                                 <th>Kit Name</th>
-                                <th>Update Kit Qty</th>
+
                                 <th>Part Name</th>
                                 <th>Part Quantity</th>
                                 <th>Issue Quantity</th>
                                 <th>Balance Quantity</th>
+                                <th>Update Kit Qty</th>
                                 <th>Action</th>
                               </tr>
                             </thead>
@@ -714,25 +715,6 @@ function IssueManifest() {
                                       />
                                     </td>
                                     <td>{item.kitName}</td>
-                                    <td>
-                                      <div>
-                                        <img
-                                          src={
-                                            "https://cdn-icons-png.flaticon.com/128/4059/4059902.png"
-                                          }
-                                          alt="will-issue-icon"
-                                          style={{
-                                            width: 40,
-                                            height: 40,
-                                            margin: "auto",
-                                            cursor: "pointer",
-                                          }}
-                                          onClick={() =>
-                                            getKitQtyByPartId(item)
-                                          }
-                                        />
-                                      </div>
-                                    </td>
                                     <td>{item.partName}</td>
                                     <td>{item.partQty}</td>
                                     <td>
@@ -754,6 +736,25 @@ function IssueManifest() {
                                     <td>
                                       {/* Displaying Balance Quantity (adjust the logic based on your requirement) */}
                                       {item.balanceQty}
+                                    </td>
+                                    <td>
+                                      <div>
+                                        <img
+                                          src={
+                                            "https://cdn-icons-png.flaticon.com/128/4059/4059902.png"
+                                          }
+                                          alt="will-issue-icon"
+                                          style={{
+                                            width: 40,
+                                            height: 40,
+                                            margin: "auto",
+                                            cursor: "pointer",
+                                          }}
+                                          onClick={() =>
+                                            getKitQtyByPartId(item)
+                                          }
+                                        />
+                                      </div>
                                     </td>
                                     <td>
                                       <div>

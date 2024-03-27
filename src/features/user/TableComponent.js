@@ -249,12 +249,13 @@ function TableComponent({
         ];
       },
     },
+
     {
-      field: "id",
-      headerName: "Id",
+      field: "serial",
+      headerName: "S.No",
       width: 80,
       headerClassName: "custom-header-class",
-      // renderCell: (params) => params.rowIndex + 1,
+      // renderCell: (params) => params.id + 1,
     },
     ...fieldNames.map((fieldName, index) => ({
       field: fieldName,
@@ -292,7 +293,7 @@ function TableComponent({
           fontWeight: "bold",
           fontSize: 17,
           color: "white",
-          backgroundColor: "#34acdd", // Teal color
+          backgroundColor: "#29a3a3", // Teal color
           padding: "12px", // Add padding to header cells
         },
         "& .MuiDataGrid-row": {

@@ -1,16 +1,15 @@
-import * as React from "react";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import Axios from "axios";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
-import { FaStarOfLife } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
+import { default as Axios, default as axios } from "axios";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -148,11 +147,6 @@ function AddItemSpecification({ addItemSpecification }) {
       case "height":
         setHeight(value);
         break;
-      // case "dimUnit":
-      //   setDimUnit(value);
-      //   break;
-      // default:
-      //   break;
     }
   };
 

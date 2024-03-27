@@ -1,7 +1,4 @@
 /** Icons are imported separatly to reduce build time */
-import ArrowRightOnRectangleIcon from "@heroicons/react/24/outline/ArrowRightOnRectangleIcon";
-import DocumentDuplicateIcon from "@heroicons/react/24/outline/DocumentDuplicateIcon";
-import Squares2X2Icon from "@heroicons/react/24/outline/Squares2X2Icon";
 
 const iconClasses = `h-6 w-6`;
 const submenuIconClasses = `h-5 w-5`;
@@ -239,7 +236,18 @@ const routes = [
       },
     ],
   },
-
+  {
+    path: "/app/StockBranch", //no url needed as this has submenu
+    icon: (
+      <img
+        src="/report.png"
+        alt="StockBranch"
+        style={{ width: "29px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "6px" }}>Stock Branch</span>,
+  },
   {
     path: "", //no url needed as this has submenu
     icon: (
@@ -289,7 +297,7 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span style={{ marginLeft: "12px" }}>Bin Inward</span>,
+    name: <span style={{ marginLeft: "12px" }}>Asset Inward</span>,
     submenu: [
       {
         path: "/app/inwardmanifest", //no url needed as this has submenu
@@ -301,20 +309,8 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="">Bin Inward</span>,
+        name: <span className="">Asset Inward</span>,
       },
-      // {
-      //   path: "/app/inwardmanifest-report", //no url needed as this has submenu
-      //   icon: (
-      //     <img
-      //       src="/inwardManifestReport.png"
-      //       alt="InwardmanifestReport"
-      //       style={{ width: "30px", height: "auto" }}
-      //       className={{ submenuIconClasses }}
-      //     />
-      //   ),
-      //   name: <span className="ml-1">Inwardmanifest Report</span>,
-      // },
     ],
   },
 
@@ -328,7 +324,7 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span style={{ marginLeft: "12px" }}>Bin Outward</span>,
+    name: <span style={{ marginLeft: "12px" }}>Asset Outward</span>,
     submenu: [
       {
         path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
@@ -340,7 +336,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Bin Outward</span>,
+        name: <span className="ml-1">Asset Outward</span>,
       },
     ],
   },
@@ -502,6 +498,18 @@ const routes = [
           />
         ),
         name: <span className="">Expenses</span>,
+      },
+      {
+        path: "/app/ChargeCode", //no url needed as this has submenu
+        icon: (
+          <img
+            src="/expenses.png"
+            alt="Expenses"
+            style={{ width: "33px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Charge Code</span>,
       },
     ],
   },

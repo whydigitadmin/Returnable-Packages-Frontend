@@ -100,7 +100,8 @@ const EmptyRetrievalManifest = lazy(() =>
 );
 const DocumentType = lazy(() => import("../pages/protected/DocumentType"));
 const Services = lazy(() => import("../pages/protected/Services"));
-
+const ChargeCode = lazy(() => import("../pages/protected/ChargeCode"));
+const StockBranch = lazy(() => import("../pages/protected/StockBranch"));
 const routes = [
   {
     path: "/dashboard", // the url
@@ -390,6 +391,14 @@ const routes = [
   {
     path: "/EmptyRetrievalManifest",
     component: EmptyRetrievalManifest,
+  },
+  {
+    path: "/ChargeCode",
+    component: ChargeCode,
+  },
+  {
+    path: "/StockBranch",
+    component: StockBranch,
   },
 ];
 
