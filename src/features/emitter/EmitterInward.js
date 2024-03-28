@@ -8,6 +8,9 @@ import { IoMdClose } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TitleCard from "../../components/Cards/TitleCard";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function EmitterInward() {
   const [flowData, setFlowData] = React.useState([]);
@@ -140,10 +143,92 @@ function EmitterInward() {
     }
   };
 
+  // const handleUpdateInward = () => {
+  //   const errors = {};
+  //   if (!netQtyRecieved) {
+  //     errors.netQtyRecieved = "Kit Qty is required";
+  //   }
+  //   if (Object.keys(errors).length === 0) {
+  //     const requestData = {
+  //       id: issueItemInwardId,
+  //       issueItemId: itemId,
+  //       netQtyRecieved,
+  //       returnQty: returnQty ? returnQty : 0,
+  //       status: returnReason ? returnReason : 0,
+  //     };
+  //     axios
+  //       .put(
+  //         `${process.env.REACT_APP_API_URL}/api/emitter/emitterInward`,
+  //         requestData
+  //       )
+  //       .then((response) => {
+  //         console.log("Response for UPADTE INWARD:", response.data);
+  //         setPendingPopupOpenIssued(false);
+  //         getInwardDetails();
+  //         setNetQtyRecieved("");
+  //         setReturnQty("");
+  //         setReturnReason("");
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //       });
+  //   } else {
+  //     setErrors(errors);
+  //   }
+  // };
+
+  // const handleUpdateInward = () => {
+  //   const errors = {};
+  //   if (!netQtyRecieved) {
+  //     errors.netQtyRecieved = "Kit Qty is required";
+  //   }
+  //   const totalQuantity = Number(netQtyRecieved) + Number(returnQty);
+  //   if (totalQuantity > showNetQtyRecieved) {
+  //     errors.exceedIssuedQty = "Total quantity exceeds issued quantity";
+  //   }
+  //   if (Object.keys(errors).length === 0) {
+  //     const requestData = {
+  //       id: issueItemInwardId,
+  //       issueItemId: itemId,
+  //       netQtyRecieved,
+  //       returnQty: returnQty ? returnQty : 0,
+  //       status: returnReason ? returnReason : 0,
+  //     };
+  //     axios
+  //       .put(
+  //         `${process.env.REACT_APP_API_URL}/api/emitter/emitterInward`,
+  //         requestData
+  //       )
+  //       .then((response) => {
+  //         console.log("Response for UPDATE INWARD:", response.data);
+  //         setPendingPopupOpenIssued(false);
+  //         getInwardDetails();
+  //         setNetQtyRecieved("");
+  //         setReturnQty("");
+  //         setReturnReason("");
+  //         toast.success("Inward updated successfully");
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //         toast.error("Error updating inward");
+  //       });
+  //   } else {
+  //     setErrors(errors);
+  //     toast.error("Please fix the errors");
+  //   }
+  // };
+
   const handleUpdateInward = () => {
     const errors = {};
     if (!netQtyRecieved) {
       errors.netQtyRecieved = "Kit Qty is required";
+    }
+    const totalQuantity = Number(netQtyRecieved) + Number(returnQty);
+    if (totalQuantity > showNetQtyRecieved) {
+      toast.error(
+        `Total quantity exceeds issued quantity (${showNetQtyRecieved})`
+      );
+      return; // Stop execution if total quantity exceeds issued quantity
     }
     if (Object.keys(errors).length === 0) {
       const requestData = {
@@ -159,18 +244,21 @@ function EmitterInward() {
           requestData
         )
         .then((response) => {
-          console.log("Response for UPADTE INWARD:", response.data);
+          console.log("Response for UPDATE INWARD:", response.data);
           setPendingPopupOpenIssued(false);
           getInwardDetails();
           setNetQtyRecieved("");
           setReturnQty("");
           setReturnReason("");
+          toast.success("Inward updated successfully");
         })
         .catch((error) => {
           console.error("Error:", error);
+          toast.error("Error updating inward");
         });
     } else {
       setErrors(errors);
+      toast.error("Please fix the errors");
     }
   };
 
@@ -338,6 +426,9 @@ function EmitterInward() {
             open={isPendingPopupOpenIssued}
             onClose={closePendingPopupIssued}
           >
+            <div>
+              <ToastContainer />
+            </div>
             <div className="d-flex justify-content-between">
               <DialogTitle>Bin Inward</DialogTitle>
               <IoMdClose
