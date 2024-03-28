@@ -720,7 +720,7 @@ function IssueReq() {
     <>
       <div className="container-sm">
         {aleartState ? (
-          <ToastComponent content="Issue created successfully" />
+          <ToastComponent content="Issue created successfully" type="success" />
         ) : (
           ""
         )}

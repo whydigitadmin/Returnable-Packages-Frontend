@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
+import ToastComponent from "../../utils/ToastComponent";
 
 const DOCDATA = [
   {
@@ -20,7 +21,7 @@ const DOCDATA = [
 
 export const InwardManifest = () => {
   const [docdata, setDocData] = useState(DOCDATA);
-  const [docDate, setDocDate] = useState(null);
+  const [docDate, setDocDate] = useState(dayjs());
   const [toDate, setToDate] = useState(null);
   const [extDate, setExtDate] = useState(null);
   const [errors, setErrors] = useState({});
@@ -30,6 +31,7 @@ export const InwardManifest = () => {
   const [stockBranch, setStockBranch] = useState("");
   const [docId, setDocId] = useState("");
   const [allAsset, setAllAsset] = useState("");
+  const [aleartState, setAleartState] = useState(false);
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -183,12 +185,24 @@ export const InwardManifest = () => {
         )
         .then((response) => {
           console.log("Response:", response.data);
+          setAleartState(true);
           setDocData(DOCDATA);
           setDocDate(null);
-          setDocId(null);
+          setDocId("");
           setStock("");
           setErrors({});
-          setTableData(null);
+
+          setTableData([
+            {
+              id: 1,
+              skuDetail: "",
+              skucode: "",
+              skuQty: "",
+              stockValue: "",
+              stockLocation: "",
+              binLocation: "",
+            },
+          ]);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -201,6 +215,9 @@ export const InwardManifest = () => {
   return (
     <>
       <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
+        {aleartState && (
+          <ToastComponent content="Bin Inwarded successfully" type="success" />
+        )}
         <div className="row mt-3">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -240,6 +257,7 @@ export const InwardManifest = () => {
                   textField: { size: "small", clearable: true },
                 }}
                 format="DD/MM/YYYY"
+                disabled
               />
             </LocalizationProvider>
             {errors.docDate && (
@@ -282,7 +300,7 @@ export const InwardManifest = () => {
             className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
             onClick={handleAddRow}
           >
-            + Add Row
+            + Add
           </button>
         </div>
         <div className="row mt-2">
@@ -327,22 +345,39 @@ export const InwardManifest = () => {
                                 )
                               )
                             }
+                            disabled
                           />
                         </td>
                         <td className="border px-2 py-2">
                           <select
                             value={row.skuDetail}
-                            onChange={(e) =>
+                            onChange={(e) => {
+                              const selectedAssetName = e.target.value;
+                              const selectedAsset = allAsset.find(
+                                (asset) => asset.assetName === selectedAssetName
+                              );
+                              const assetCodeId = selectedAsset
+                                ? selectedAsset.assetCodeId
+                                : "";
+
                               setTableData((prev) =>
                                 prev.map((r) =>
                                   r.id === row.id
-                                    ? { ...r, skuDetail: e.target.value }
+                                    ? {
+                                        ...r,
+                                        skuDetail: selectedAssetName,
+                                        skucode: assetCodeId,
+                                      }
                                     : r
                                 )
-                              )
-                            }
+                              );
+                            }}
                           >
-                            {allAsset.length > 0 &&
+                            <option disabled selected>
+                              {" "}
+                              --Select--
+                            </option>
+                            {allAsset &&
                               allAsset.map((list) => (
                                 <option
                                   key={list.assetCodeId}
@@ -354,8 +389,7 @@ export const InwardManifest = () => {
                           </select>
                         </td>
                         <td className="border px-2 py-2">
-                          <input
-                            type="text"
+                          <select
                             value={row.skucode}
                             onChange={(e) =>
                               setTableData((prev) =>
@@ -366,7 +400,21 @@ export const InwardManifest = () => {
                                 )
                               )
                             }
-                          />
+                            disabled
+                          >
+                            <option disabled selected>
+                              --Select--
+                            </option>
+                            {allAsset.length > 0 &&
+                              allAsset.map((list) => (
+                                <option
+                                  key={list.assetCodeId}
+                                  value={list.assetCodeId}
+                                >
+                                  {list.assetCodeId}
+                                </option>
+                              ))}
+                          </select>
                         </td>
                         <td className="border px-2 py-2">
                           <input

@@ -36,7 +36,7 @@ function IssueManifest() {
   const [errors, setErrors] = useState("");
   const [emitter, setEmitter] = useState("");
   const [emitterId, setEmitterId] = useState("");
-  const [qty, setQty] = useState([]);
+  const [qty, setQty] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
   const [selectedWarehouseId, setSelectedWarehouseId] = useState();
@@ -60,8 +60,11 @@ function IssueManifest() {
   }, [emitterId]);
 
   const handleQtyChange = (e, index) => {
-    const newQty = [...qty];
-    newQty[index] = e.target.value;
+    const newQty = {
+      ...qty,
+      [index]: e.target.value,
+    };
+    // newQty[index] = e.target.value;
     setQty(newQty);
   };
 
@@ -71,7 +74,7 @@ function IssueManifest() {
 
   const closePendingPopup = () => {
     setPendingPopupOpen(false);
-    setQty("");
+    setQty({});
     setSelectedItemIds("");
   };
 
@@ -647,7 +650,7 @@ function IssueManifest() {
             >
               <div className="d-flex justify-content-between">
                 <DialogTitle>
-                  Issue Manifest For{" "}
+                  Bin Allotment For{" "}
                   {selectedIssueRequest?.irType === "IR_PART" ? "Part" : "Kit"}
                 </DialogTitle>
                 <IoMdClose
@@ -810,14 +813,17 @@ function IssueManifest() {
                         {/* <div className="ms-4">Kit No : </div> */}
                         <div className="ms-1">
                           {/* Displaying kitName and kitQty in a table */}
-                          <table className="table">
+                          <table
+                            className="table"
+                            style={{ marginLeft: "45px" }}
+                          >
                             <thead>
                               <tr>
                                 <th>Select</th>
 
                                 <th>Kit Name</th>
                                 <th>Kit Quantity</th>
-                                <th>Issue Quantity</th>
+                                <th>Issue Quantity1ss</th>
                                 <th>Balance Quantity</th>
                                 <th>Action</th>
                               </tr>

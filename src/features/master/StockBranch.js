@@ -1,24 +1,15 @@
+import EditIcon from "@mui/icons-material/Edit";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-import React, { useState, useMemo, useEffect } from "react";
-import { FaStarOfLife } from "react-icons/fa";
-import IconButton from "@mui/material/IconButton";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import EditIcon from "@mui/icons-material/Edit";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-  Paper,
-} from "@mui/material";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaStarOfLife } from "react-icons/fa";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -155,12 +146,12 @@ export const StockBranch = () => {
 
   const handleViewRow = (row) => {
     setSelectedRowData(row.original);
-    setOpenView(true);
+    // setOpenView(true);
   };
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.userId);
-    setEditEmitter(true);
+    // setEditEmitter(true);
   };
 
   const VisuallyHiddenInput = styled("input")({
