@@ -248,14 +248,14 @@ function UserCreation({ addUser, userEditId }) {
     }
   };
 
-  const handleLocationChange = (warehouseId, isChecked) => {
+  const handleLocationChange = (warehouselocation, isChecked) => {
     setWarehouse((prevWarehouse) => {
-      if (isChecked && !prevWarehouse.includes(warehouseId)) {
+      if (isChecked && !prevWarehouse.includes(warehouselocation)) {
         // Add warehouseId to the array if it's not already present
-        return [...prevWarehouse, warehouseId];
+        return [...prevWarehouse, warehouselocation];
       } else if (!isChecked) {
         // Remove warehouseId from the array
-        return prevWarehouse.filter((id) => id !== warehouseId);
+        return prevWarehouse.filter((id) => id !== warehouselocation);
       }
 
       // Return the unchanged array if isChecked is true and warehouseId is already present
@@ -264,47 +264,6 @@ function UserCreation({ addUser, userEditId }) {
   };
 
   // In the Assign Warehouse DialogContent
-  <DialogContent>
-    <DialogContentText className="d-flex flex-column">
-      <div className="row mb-3">
-        <div className="col-lg-12 col-md-12">
-          {warehouselocation ? (
-            <div>
-              {" "}
-              {warehouselocation.map((location) => (
-                <div className="form-check" key={location.warehouseId}>
-                  <input
-                    className="form-check-input"
-                    type="checkbox"
-                    id={location.warehouseId}
-                    value={location.warehouseId}
-                    checked={warehouse.includes(location.warehouseId)} // Here, use warehouse state to determine checked status
-                    onChange={(e) =>
-                      handleLocationChange(
-                        location.warehouseId,
-                        e.target.checked
-                      )
-                    }
-                  />
-
-                  <label
-                    className="form-check-label"
-                    htmlFor={location.warehouseId}
-                  >
-                    {location.warehouseLocation}
-                  </label>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div>
-              <center>Flow Not Available!</center>{" "}
-            </div>
-          )}
-        </div>
-      </div>
-    </DialogContentText>
-  </DialogContent>;
 
   function isValidEmail(email) {
     // Regular expression for email validation
