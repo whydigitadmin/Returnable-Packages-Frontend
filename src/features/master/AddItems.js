@@ -1,14 +1,14 @@
-import * as React from "react";
-import { useEffect, useState } from "react";
-import Switch from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
-import { default as Axios, default as axios } from "axios";
-import { FaStarOfLife } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
+import { default as Axios, default as axios } from "axios";
+import * as React from "react";
+import { useEffect, useState } from "react";
+import { FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -122,6 +122,7 @@ function AddItem({ addItem }) {
 
   const handleAsseCodeChange = (event) => {
     const selectedAssetCodeId = event.target.value;
+    console.log("Test", selectedAssetCodeId);
     setAssetCodeId(selectedAssetCodeId);
     setCodeSelected(true);
 
@@ -223,6 +224,9 @@ function AddItem({ addItem }) {
       if (response.status === 200) {
         setAssetCodeIdVO(
           response.data.paramObjectsMap.assetGroupVO.assetCodeId
+        );
+        setAssetCodeId(
+          response.data.paramObjectsMap.assetGroupVO.assetCodeId[0]
         );
       }
     } catch (error) {
@@ -494,19 +498,19 @@ function AddItem({ addItem }) {
           />
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Warehouse Location
               </span>
             </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
+          </div> */}
+          {/* <div className="col-lg-3 col-md-6">
             <select
               className="form-select form-sz w-full mb-2"
               onChange={handleWarehouseChange}
               value={warehouse}
-              disabled={selected}
+              // disabled={selected}
             >
               <option value="" disabled>
                 Select a Warehouse
@@ -518,7 +522,7 @@ function AddItem({ addItem }) {
                   </option>
                 ))}
             </select>
-          </div>
+          </div> */}
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
@@ -538,7 +542,7 @@ function AddItem({ addItem }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAssetCategoryChange}
               value={assetCategory}
-              disabled={categorySelected}
+              // disabled={categorySelected}
             >
               <option value="" disabled>
                 Select an Type
@@ -567,7 +571,7 @@ function AddItem({ addItem }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAssetNameChange}
               value={assetName}
-              disabled={nameSelected}
+              // disabled={nameSelected}
             >
               <option value="" disabled>
                 Select a Name
@@ -592,11 +596,12 @@ function AddItem({ addItem }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAsseCodeChange}
               value={assetCodeId}
-              disabled={codeSelected}
+              // disabled={codeSelected}
+              disabled
             >
-              <option value="" disabled>
+              {/* <option value="" disabled>
                 Select a Code
-              </option>
+              </option> */}
               {assetCodeIdVO.length > 0 &&
                 assetCodeIdVO.map((name) => (
                   <option key={name.id} value={name}>
@@ -623,7 +628,6 @@ function AddItem({ addItem }) {
                 name="assetQty"
                 value={assetQty}
                 onChange={handleCategoryChange}
-                disabled={showQuantity}
               />
             </div>
           </>
@@ -689,43 +693,40 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ width: 30 }}
+                style={{ width: 44 }}
                 name="length"
                 value={length}
                 placeholder={"L"}
-                disabled
                 className="input mb-2 input-bordered p-1 form-sz"
                 onChange={handleCategoryChange}
               />
               <span>
                 <input
                   placeholder="X"
-                  disabled
                   className="input mb-2 input-bordered disabled-input mx-1"
+                  disabled
                 />
               </span>
               <input
-                style={{ width: 30 }}
+                style={{ width: 44 }}
                 name="breath"
                 value={breath}
                 placeholder={"B"}
-                disabled
                 className="input mb-2 p-1 input-bordered form-sz"
                 onChange={handleCategoryChange}
               />
               <span>
                 <input
                   placeholder="X"
-                  disabled
                   className="input mb-2 input-bordered disabled-input mx-1"
+                  disabled
                 />
               </span>
               <input
-                style={{ width: 30 }}
+                style={{ width: 44 }}
                 name="height"
                 value={height}
                 placeholder={"H"}
-                disabled
                 className="input mb-2 p-1 input-bordered form-sz"
                 onChange={handleCategoryChange}
               />

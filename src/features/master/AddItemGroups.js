@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
-import { FaStarOfLife } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
-import { FaEdit, FaSave } from "react-icons/fa";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { FaEdit, FaSave, FaStarOfLife, FaTrash } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -209,6 +207,9 @@ function AddItemGroups({ addItem }) {
       if (response.status === 200) {
         setAssetCodeIdVO(
           response.data.paramObjectsMap.assetGroupVO.assetCodeId
+        );
+        setAssetCodeId(
+          response.data.paramObjectsMap.assetGroupVO.assetCodeId[0]
         );
       }
     } catch (error) {
@@ -533,7 +534,6 @@ function AddItemGroups({ addItem }) {
                   className="input input-bordered ps-2"
                   onChange={handleAssetCategoryChange}
                   value={assetCategory}
-                  disabled={selectedAssetCategory}
                 >
                   <option value="" selected>
                     Select an Asset Type
@@ -567,7 +567,6 @@ function AddItemGroups({ addItem }) {
                   className="input input-bordered ps-2"
                   onChange={handleAssetNameChange}
                   value={assetName}
-                  disabled={selectedName}
                 >
                   <option value="" disabled>
                     Select an Asset Name
@@ -601,11 +600,11 @@ function AddItemGroups({ addItem }) {
                   className="input input-bordered ps-2"
                   onChange={handleAsseCodeChange}
                   value={assetCodeId}
-                  disabled={selectedCode}
+                  disabled
                 >
-                  <option value="" disabled>
+                  {/* <option value="" disabled>
                     Select an Asset Code
-                  </option>
+                  </option> */}
                   {assetCodeIdVO.length > 0 &&
                     assetCodeIdVO.map((name) => (
                       <option key={name.id} value={name}>

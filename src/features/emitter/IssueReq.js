@@ -1204,7 +1204,7 @@ function IssueReq() {
                         style={{ borderRadius: 16 }}
                       >
                         <div className="text-xl font-semibold p-3">
-                          Bin Allotment Details
+                          Bin Request Summary
                         </div>
                         <div className="divider mt-0 mb-0"></div>
                         <div className="overflow-x-auto w-full "></div>

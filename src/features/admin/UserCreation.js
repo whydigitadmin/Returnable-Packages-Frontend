@@ -13,7 +13,6 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
-import CloseConfirmation from "../../utils/CloseConfirmation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -78,7 +77,7 @@ function UserCreation({ addUser, userEditId }) {
   const [phone, setPhone] = React.useState("");
   const [active, setActive] = React.useState(true);
   const [role, setRole] = React.useState("ROLE_USER");
-  const [warehouse, setWarehouse] = React.useState([]);
+  const [warehouse, setWarehouse] = React.useState({});
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
@@ -101,7 +100,7 @@ function UserCreation({ addUser, userEditId }) {
     getWarehouseLocationList();
   }, [warehouse]);
 
-  // GET USER DETAILS 
+  // GET USER DETAILS
   const getUserById = async () => {
     try {
       const response = await axios.get(
@@ -111,16 +110,18 @@ function UserCreation({ addUser, userEditId }) {
       if (response.status === 200) {
         setUserData(response.data.paramObjectsMap.userVO);
         console.log("Edit User Details", response.data.paramObjectsMap.userVO);
-        setFirstName(response.data.paramObjectsMap.userVO.firstName)
-        setEmail(response.data.paramObjectsMap.userVO.email)
-        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1)
-        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city)
-        setState(response.data.paramObjectsMap.userVO.userAddressVO.state)
-        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country)
-        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin)
-        setPhone(response.data.paramObjectsMap.userVO.pno)
-        setDisabledWarehouseIds(response.data.paramObjectsMap.userVO.accessWarehouse)
-        setWarehouse(response.data.paramObjectsMap.userVO.accessWarehouse)
+        setFirstName(response.data.paramObjectsMap.userVO.firstName);
+        setEmail(response.data.paramObjectsMap.userVO.email);
+        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
+        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
+        setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
+        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
+        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
+        setPhone(response.data.paramObjectsMap.userVO.pno);
+        setDisabledWarehouseIds(
+          response.data.paramObjectsMap.userVO.accessWarehouse
+        );
+        setWarehouse(response.data.paramObjectsMap.userVO.accessWarehouse);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -219,8 +220,7 @@ function UserCreation({ addUser, userEditId }) {
         .then((response) => {
           console.log("User Updated successfully!", response.data);
           setErrors("");
-          addUser(false)   // USER CREATION SCREEN CLOSE AFTER UPDATE 
-
+          addUser(false); // USER CREATION SCREEN CLOSE AFTER UPDATE
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
@@ -248,60 +248,63 @@ function UserCreation({ addUser, userEditId }) {
     }
   };
 
-  const handleLocationChange = (warehouseLocation, isChecked) => {
+  const handleLocationChange = (warehouseId, isChecked) => {
     setWarehouse((prevWarehouse) => {
-      if (isChecked && !prevWarehouse.includes(warehouseLocation)) {
-        // Add warehouseLocation to the array if it's not already present
-        return [...prevWarehouse, warehouseLocation];
+      if (isChecked && !prevWarehouse.includes(warehouseId)) {
+        // Add warehouseId to the array if it's not already present
+        return [...prevWarehouse, warehouseId];
       } else if (!isChecked) {
-        // Remove warehouseLocation from the array
-        return prevWarehouse.filter((wh) => wh !== warehouseLocation);
+        // Remove warehouseId from the array
+        return prevWarehouse.filter((id) => id !== warehouseId);
       }
 
-      // Return the unchanged array if isChecked is true and warehouseLocation is already present
+      // Return the unchanged array if isChecked is true and warehouseId is already present
       return prevWarehouse;
     });
   };
 
-  // const handleLocationChange = (warehouseLocation, isChecked) => {
-  //   setWarehouse((prevWarehouse) => {
-  //     if (isChecked) {
-  //       return [...prevWarehouse, warehouseLocation];
-  //     } else {
-  //       return prevWarehouse.filter((wh) => wh !== warehouseLocation);
-  //     }
-  //   });
-  //   console.log("isChecked", warehouse);
-  // };
+  // In the Assign Warehouse DialogContent
+  <DialogContent>
+    <DialogContentText className="d-flex flex-column">
+      <div className="row mb-3">
+        <div className="col-lg-12 col-md-12">
+          {warehouselocation ? (
+            <div>
+              {" "}
+              {warehouselocation.map((location) => (
+                <div className="form-check" key={location.warehouseId}>
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id={location.warehouseId}
+                    value={location.warehouseId}
+                    checked={warehouse.includes(location.warehouseId)} // Here, use warehouse state to determine checked status
+                    onChange={(e) =>
+                      handleLocationChange(
+                        location.warehouseId,
+                        e.target.checked
+                      )
+                    }
+                  />
 
-  // const notify = () => toast("User Created Successfully");
-
-  // const fetchData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/access/getAccessRightByOrgId`,
-  //       {
-  //         params: {
-  //           orgId: localStorage.getItem("orgId"),
-  //         },
-  //       }
-  //     );
-
-  //     if (response.status === 200) {
-  //       // Update table data with fetched data
-  //       // Consider updating the component state with the fetched data
-  //       // For example, setAccessRights(response.data);
-  //       notify();
-  //     }
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 401) {
-  //       // Handle 401 Unauthorized error
-  //     } else {
-  //       // For other errors, log the error to the console
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   }
-  // };
+                  <label
+                    className="form-check-label"
+                    htmlFor={location.warehouseId}
+                  >
+                    {location.warehouseLocation}
+                  </label>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div>
+              <center>Flow Not Available!</center>{" "}
+            </div>
+          )}
+        </div>
+      </div>
+    </DialogContentText>
+  </DialogContent>;
 
   function isValidEmail(email) {
     // Regular expression for email validation
@@ -316,20 +319,22 @@ function UserCreation({ addUser, userEditId }) {
     const allowedCharactersRegex = /^[a-zA-Z\s\-]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (name === "firstName" || name === "city" || name === "state" || name === "country") {
+    if (
+      name === "firstName" ||
+      name === "city" ||
+      name === "state" ||
+      name === "country"
+    ) {
       if (!allowedCharactersRegex.test(value)) {
-        filteredValue = value.replace(/[^a-zA-Z\s\-]+/g, '');
+        filteredValue = value.replace(/[^a-zA-Z\s\-]+/g, "");
       }
-    }
-    else if (name === "phone") {
-      filteredValue = value.replace(/\D/g, '').slice(0, 10);
-    }
-    else if (name === "pincode") {
-      filteredValue = value.replace(/\D/g, '').slice(0, 6);
-    }
-    else if (name === "email") {
+    } else if (name === "phone") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 10);
+    } else if (name === "pincode") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 6);
+    } else if (name === "email") {
       if (!emailRegex.test(value)) {
-        filteredValue = value.replace(/[^\w\s@.-]+/g, '');
+        filteredValue = value.replace(/[^\w\s@.-]+/g, "");
       }
     }
 
@@ -362,7 +367,6 @@ function UserCreation({ addUser, userEditId }) {
       case "phone":
         setPhone(filteredValue);
         break;
-
     }
   };
 
@@ -378,7 +382,7 @@ function UserCreation({ addUser, userEditId }) {
     setPhone("");
     setActive(true);
     setRole("ROLE_USER");
-    setWarehouse([]);
+    setWarehouse({});
     setErrors({});
     // notify();
   };
@@ -489,13 +493,22 @@ function UserCreation({ addUser, userEditId }) {
 
   // CLOSE BUTTON WITH CONFIRMATION
   const handleUserCreationClose = () => {
-    if (firstName || phone || address || city || state || country || pincode || warehouse > 0) {
+    if (
+      firstName ||
+      phone ||
+      address ||
+      city ||
+      state ||
+      country ||
+      pincode ||
+      warehouse > 0
+    ) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
-      addUser(false)   // USER CREATION SCREEN CLOSE AFTER UPDATE 
+      addUser(false); // USER CREATION SCREEN CLOSE AFTER UPDATE
     }
-  }
+  };
 
   const handleConfirmationClose = () => {
     setOpenConfirmationDialog(false);
@@ -529,7 +542,7 @@ function UserCreation({ addUser, userEditId }) {
             </label>
           </div>
 
-          <div className="col-lg-3 col-md-6 mb-2" >
+          <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
               // placeholder={"Enter"}
@@ -562,7 +575,6 @@ function UserCreation({ addUser, userEditId }) {
               value={email}
               onChange={handleInputChange}
               disabled={userEditId ? true : false}
-
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
@@ -597,7 +609,6 @@ function UserCreation({ addUser, userEditId }) {
               </div>
             </>
           )}
-
 
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -879,7 +890,6 @@ function UserCreation({ addUser, userEditId }) {
         </DialogActions>
       </Dialog>
       {/* {openConfirmationDialog && (<CloseConfirmation open={openConfirmationDialog} close={handleConfirmationYes} no={handleConfirmationClose} />)} */}
-
     </>
   );
 }
