@@ -237,6 +237,18 @@ const routes = [
     ],
   },
   {
+    path: "/app/AsstTagging", //no url needed as this has submenu
+    icon: (
+      <img
+        src="/report.png"
+        alt="AsstTagging"
+        style={{ width: "29px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "6px" }}>ASSET Tagging</span>,
+  },
+  {
     path: "/app/StockBranch", //no url needed as this has submenu
     icon: (
       <img

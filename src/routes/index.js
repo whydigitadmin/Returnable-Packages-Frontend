@@ -101,6 +101,7 @@ const EmptyRetrievalManifest = lazy(() =>
 const DocumentType = lazy(() => import("../pages/protected/DocumentType"));
 const Services = lazy(() => import("../pages/protected/Services"));
 const ChargeCode = lazy(() => import("../pages/protected/ChargeCode"));
+const AsstTagging = lazy(() => import("../pages/protected/AsstTagging"));
 const StockBranch = lazy(() => import("../pages/protected/StockBranch"));
 const routes = [
   {
@@ -395,6 +396,10 @@ const routes = [
   {
     path: "/ChargeCode",
     component: ChargeCode,
+  },
+  {
+    path: "/AsstTagging",
+    component: AsstTagging,
   },
   {
     path: "/StockBranch",

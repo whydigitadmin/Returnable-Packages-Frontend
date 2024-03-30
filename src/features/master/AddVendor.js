@@ -140,6 +140,7 @@ function AddVendor({ addVendors }) {
   const [vendorId, setVendorId] = React.useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressShow, setAddressShow] = React.useState(false);
+  // const [isAddressValid, setIsAddressValid] = React.useState(false);
 
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [newAddress, setNewAddress] = useState({
@@ -224,11 +225,40 @@ function AddVendor({ addVendors }) {
   //   }
   // };
 
+  // const handleAddressSubmit = async () => {
+  //   const addressWithVendorId = { ...newAddress, vendorId: vendorId };
+  //   if (isValidAddress()) {
+  //     setErrors1({}); // Clear any previous errors on successful submission
+  //     handleAddShippingAddress();
+  //   }
+  // };
+
   const handleAddressSubmit = async () => {
     const addressWithVendorId = { ...newAddress, vendorId: vendorId };
     if (isValidAddress()) {
       setErrors1({}); // Clear any previous errors on successful submission
       handleAddShippingAddress();
+      // setIsAddressValid(true);
+    } else {
+      // Display error messages for invalid fields
+      const updatedErrors = {};
+      if (newAddress.gstRegistrationStatus.trim() === "") {
+        updatedErrors.gstRegistrationStatus = true;
+      }
+      if (newAddress.street1.trim() === "") {
+        updatedErrors.street1 = true;
+      }
+      if (newAddress.state.trim() === "") {
+        updatedErrors.state = true;
+      }
+      if (newAddress.city.trim() === "") {
+        updatedErrors.city = true;
+      }
+      if (newAddress.pinCode.trim() === "") {
+        updatedErrors.pinCode = true;
+      }
+      setErrors1(updatedErrors);
+      // setIsAddressValid(false);
     }
   };
 
@@ -366,7 +396,7 @@ function AddVendor({ addVendors }) {
 
     console.log("test");
     if (!venderType) {
-      errors.venderType = "venderType is required";
+      errors.venderType = "VenderType is required";
     }
     if (!email) {
       errors.email = "Email is required";
@@ -375,10 +405,25 @@ function AddVendor({ addVendors }) {
       errors.entityLegalName = "EntityLegalName is required";
     }
     if (!displyName) {
-      errors.displyName = "displyName is required";
+      errors.displyName = "Display Name is required";
     }
     if (!phoneNumber) {
-      errors.phoneNumber = "phoneNumber is required";
+      errors.phoneNumber = "PhoneNumber is required";
+    }
+    if (!bank) {
+      errors.bank = "Bank is required";
+    }
+    if (!accountName) {
+      errors.accountName = "Account Name is required";
+    }
+    if (!accountNo) {
+      errors.accountNo = "Account No is required";
+    }
+    if (!branch) {
+      errors.branch = "Branch is required";
+    }
+    if (!ifscCode) {
+      errors.ifscCode = "Ifsc Code is required";
     }
 
     if (Object.keys(errors).length === 0) {
@@ -410,22 +455,22 @@ function AddVendor({ addVendors }) {
         .then((response) => {
           setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
           console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
-          setErrors({});
           setAddressShow(true);
-          setAccountNum("");
-          setBank("");
-          setDisplayName("");
-          setBranch("");
-          setIfscCode("");
           setErrors({});
+          // setAccountNum("");
+          // setBank("");
+          // setDisplayName("");
+          // setBranch("");
+          // setIfscCode("");
+          // setErrors({});
         })
         .catch((error) => {
           console.error("Error:", error);
         });
     } else {
       // If there are errors, update the state to display them
-      setErrors(errors);
       setIsSubmitting(false);
+      setErrors(errors);
     }
   };
 
@@ -699,7 +744,9 @@ function AddVendor({ addVendors }) {
               type="button"
               onClick={handleVender}
               disabled={addressShow === true}
-              style={{ cursor: addressShow ? "not-allowed" : "pointer" }}
+              style={{
+                cursor: addressShow ? "not-allowed" : "pointer",
+              }}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Save
@@ -849,6 +896,7 @@ function AddVendor({ addVendors }) {
                     value={bank}
                     name="bank"
                     onChange={handleInputChange}
+                    disabled={isSubmitting}
                   />
                   {errors.bank && (
                     <div className="error-text">{errors.bank}</div>
@@ -874,6 +922,7 @@ function AddVendor({ addVendors }) {
                     value={accountNo}
                     name="accountNo"
                     onChange={handleInputChange}
+                    disabled={isSubmitting}
                   />
                   {errors.accountNo && (
                     <div className="error-text">{errors.accountNo}</div>
@@ -899,6 +948,7 @@ function AddVendor({ addVendors }) {
                     value={accountName}
                     name="accountName"
                     onChange={handleInputChange}
+                    disabled={isSubmitting}
                   />
                   {errors.accountName && (
                     <div className="error-text">{errors.accountName}</div>
@@ -924,6 +974,7 @@ function AddVendor({ addVendors }) {
                     value={branch}
                     name="branch"
                     onChange={handleInputChange}
+                    disabled={isSubmitting}
                   />
                   {errors.branch && (
                     <div className="error-text">{errors.branch}</div>
@@ -949,6 +1000,7 @@ function AddVendor({ addVendors }) {
                     value={ifscCode}
                     name="ifscCode"
                     onChange={handleInputChange}
+                    disabled={isSubmitting}
                   />
                   {errors.ifscCode && (
                     <div className="error-text">{errors.ifscCode}</div>

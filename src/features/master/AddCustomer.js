@@ -310,13 +310,41 @@ function AddCustomer({ addcustomer }) {
   //   }
   // };
 
+  // const handleAddressSubmit = async () => {
+  //   const addressWithCustomerId = { ...newAddress, customerId: customerId };
+  //   if (isValidAddress()) {
+  //     // setErrors1({}); // Clear any previous errors on successful submission
+  //     handleAddShippingAddress();
+  //   }
+  //   setErrors1(updatedErrors); // Update errors for invalid fields
+  // };
+
   const handleAddressSubmit = async () => {
     const addressWithCustomerId = { ...newAddress, customerId: customerId };
+
     if (isValidAddress()) {
-      // setErrors1({}); // Clear any previous errors on successful submission
+      setErrors1({}); // Clear any previous errors on successful submission
       handleAddShippingAddress();
+    } else {
+      // Display error messages for invalid fields
+      const updatedErrors = {};
+      if (newAddress.gstRegistrationStatus.trim() === "") {
+        updatedErrors.gstRegistrationStatus = true;
+      }
+      if (newAddress.street1.trim() === "") {
+        updatedErrors.street1 = true;
+      }
+      if (newAddress.state.trim() === "") {
+        updatedErrors.state = true;
+      }
+      if (newAddress.city.trim() === "") {
+        updatedErrors.city = true;
+      }
+      if (newAddress.pinCode.trim() === "") {
+        updatedErrors.pinCode = true;
+      }
+      setErrors1(updatedErrors);
     }
-    // setErrors1(updatedErrors); // Update errors for invalid fields
   };
 
   const isValidBankAddress = () => {
@@ -342,16 +370,42 @@ function AddCustomer({ addcustomer }) {
     }));
   };
 
-  const handleBankSubmit = async () => {
-    const bankAddressWithCustomerId = {
-      ...newBankAddress,
-      customerId: customerId,
-    };
+  // const handleBankSubmit = async () => {
+  //   const bankAddressWithCustomerId = {
+  //     ...newBankAddress,
+  //     customerId: customerId,
+  //   };
 
-    // Check if all fields are filled
+  //   // Check if all fields are filled
+  //   if (isValidBankAddress()) {
+  //     setErrors2({}); // Clear any previous errors on successful submission
+  //     handleAddBankAddress();
+  //   }
+  // };
+
+  const handleBankSubmit = async () => {
     if (isValidBankAddress()) {
       setErrors2({}); // Clear any previous errors on successful submission
       handleAddBankAddress();
+    } else {
+      // Display error messages for invalid fields
+      const updatedErrors1 = {};
+      if (newBankAddress.bank.trim() === "") {
+        updatedErrors1.bank = true;
+      }
+      if (newBankAddress.accountNo.trim() === "") {
+        updatedErrors1.accountNo = true;
+      }
+      if (newBankAddress.accountName.trim() === "") {
+        updatedErrors1.accountName = true;
+      }
+      if (newBankAddress.branch.trim() === "") {
+        updatedErrors1.branch = true;
+      }
+      if (newBankAddress.ifscCode.trim() === "") {
+        updatedErrors1.ifscCode = true;
+      }
+      setErrors2(updatedErrors1);
     }
   };
 
@@ -404,6 +458,7 @@ function AddCustomer({ addcustomer }) {
   };
   const handleShippingClickClose = () => {
     setOpenShippingModal(false);
+    setErrors1({});
   };
 
   const handleBankClickOpen = () => {
@@ -411,6 +466,7 @@ function AddCustomer({ addcustomer }) {
   };
   const handleBankClickClose = () => {
     setOpenBankModal(false);
+    setErrors2({}); // Clear any previous errors on successful submission
   };
 
   const handleAddBankAddress = () => {
@@ -1388,7 +1444,7 @@ function AddCustomer({ addcustomer }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
-          <Button onClick={handleCancel}>Cancel</Button>
+          <Button onClick={handleShippingClickClose}>Cancel</Button>
           <Button
             component="label"
             variant="contained"

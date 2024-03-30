@@ -4,7 +4,7 @@ import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { FaStarOfLife } from "react-icons/fa";
+import { FaStarOfLife, FaTrash } from "react-icons/fa";
 
 const DOCDATA = [
   {
@@ -121,6 +121,17 @@ export const DocumentType = () => {
     }
   };
 
+  const handleDeleteRow = (id) => {
+    setTableData(tableData.filter((row) => row.id !== id));
+  };
+
+  const handleKeyDown = (e, row) => {
+    if (e.key === "Tab" && row.id === tableData[tableData.length - 1].id) {
+      e.preventDefault();
+      handleAddRow();
+    }
+  };
+
   return (
     <>
       <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
@@ -230,7 +241,7 @@ export const DocumentType = () => {
             className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-2 rounded"
             onClick={handleAddRow}
           >
-            + Add Row
+            + Add
           </button>
         </div>
         {/* Table */}
@@ -240,8 +251,9 @@ export const DocumentType = () => {
               <table className="w-full">
                 <thead>
                   <tr>
+                    <th className="px-2 py-2 bg-blue-500 text-white">Action</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">SID</th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">SCode</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">Prefix</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
                       Sequence
@@ -253,6 +265,15 @@ export const DocumentType = () => {
                 <tbody>
                   {tableData.map((row) => (
                     <tr key={row.id}>
+                      {/* Table cells */}
+                      <td className="border px-2 py-2">
+                        <button
+                          onClick={() => handleDeleteRow(row.id)}
+                          className="text-red-500"
+                        >
+                          <FaTrash style={{ fontSize: "18px" }} />
+                        </button>
+                      </td>
                       <td className="border px-2 py-2">
                         <input
                           type="text"
@@ -341,6 +362,7 @@ export const DocumentType = () => {
                               )
                             )
                           }
+                          onKeyDown={(e) => handleKeyDown(e, row)}
                         />
                       </td>
                     </tr>
