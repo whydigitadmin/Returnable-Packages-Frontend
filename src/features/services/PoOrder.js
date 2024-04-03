@@ -80,7 +80,7 @@ export const PoOrder = () => {
         itemId: row.itemId,
         qty: row.qty,
         rate: row.rate,
-        itemId: itemid,
+        itemId: row.itemid,
       })),
     };
 
@@ -106,7 +106,10 @@ export const PoOrder = () => {
         setSelfGST("");
         setGST("");
         setShipTo("");
+        setTerms("");
+        setAp("");
         setShiptoremarks("");
+        setTableData({});
       })
       .catch((error) => {
         console.error("Error:", error);
