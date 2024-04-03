@@ -17,6 +17,7 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import NoRecordsFound from "../../utils/NoRecordsFound";
 import ToastComponent from "../../utils/ToastComponent";
+import GetAvailKitQty from "./GetAvailKitQty";
 
 const steps = ["Issue manifest", "Mode of Transport "];
 
@@ -49,15 +50,17 @@ function IssueManifest() {
   const [maxPartQty, setMaxPartQty] = useState("");
   const [kitQuantity, setKitQuantity] = useState("");
   const [selectedItemKit, setSelectedItemKit] = useState("");
-
   const [warehouseLocationId, setWarehouseLocationId] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [availableKitQty, setAvailableKitQty] = useState("");
+
   useEffect(() => {
     getLocationList();
   }, []);
 
   useEffect(() => {
     getIssueRequest();
-  }, [emitterId]);
+  }, [emitterId, bills]);
 
   const handleQtyChange = (e, index) => {
     const newQty = {
@@ -115,32 +118,94 @@ function IssueManifest() {
 
   // randomStatus code
 
-  const handleIssueKit = () => {
-    const formData = {
-      approvedId: userId,
-      approverName: userDetail.firstName,
-      issueRequestId: selectedIssueRequest.id,
-      issueRequestItemApprovelDTO: selectedItemIds.map((itemId) => ({
-        issueItemId: itemId,
-        issuedQty: qty[itemId] || 0, // Assuming qty is an object with item IDs as keys
-      })),
-    };
+  // const handleIssueKit = () => {
+  //   for (const itemId of selectedItemIds) {
+  //     const issuedQty = qty[itemId];
+  //     if (!issuedQty || issuedQty <= 0) {
+  //       throw new Error("Issued quantity cannot be empty or zero");
+  //     }
+  //   }
 
-    axios
-      .post(
-        `${process.env.REACT_APP_API_URL}/api/emitter/issueRequestQtyApprovel`,
-        formData
-      )
-      .then((response) => {
-        console.log("Response:", response.data);
-        getIssueRequest(emitterId);
-        setToast(true);
-        closePendingPopup();
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  //   const formData = {
+  //     approvedId: userId,
+  //     approverName: userDetail.firstName,
+  //     issueRequestId: selectedIssueRequest.id,
+  //     issueRequestItemApprovelDTO: selectedItemIds.map((itemId) => ({
+  //       issueItemId: itemId,
+  //       issuedQty: qty[itemId] || 0, // Assuming qty is an object with item IDs as keys
+  //     })),
+  //   };
+
+  //   axios
+  //     .post(
+  //       `${process.env.REACT_APP_API_URL}/api/emitter/issueRequestQtyApprovel`,
+  //       formData
+  //     )
+  //     .then((response) => {
+  //       console.log("Response:", response.data);
+  //       getIssueRequest(emitterId);
+  //       setToast(true);
+  //       closePendingPopup();
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
+
+  const availQty = (qty) => {
+    console.log("AvailQty", qty);
+    setAvailableKitQty(qty);
   };
+
+  const handleIssueKit = () => {
+    console.log("Available", availableKitQty);
+    try {
+      // Check if any issued quantity is empty
+      // for (const itemId of selectedItemIds) {
+      //   const issuedQty = qty[itemId];
+      //   if (!issuedQty && issuedQty !== 0) {
+      //     return; // Exit the function if any issued quantity is empty
+      //   }
+      // }
+      for (const itemId of selectedItemIds) {
+        const issuedQty = qty[itemId];
+        if (!issuedQty && issuedQty !== 0) {
+          return; // Exit the function if any issued quantity is empty
+        }
+        if (issuedQty > availableKitQty) {
+          return;
+        }
+      }
+
+      // Prepare formData
+      const formData = {
+        approvedId: userId,
+        approverName: userDetail.firstName,
+        issueRequestId: selectedIssueRequest.id,
+        issueRequestItemApprovelDTO: selectedItemIds.map((itemId) => ({
+          issueItemId: itemId,
+          issuedQty: qty[itemId] || 0,
+        })),
+      };
+
+      // Make POST request only if issued quantity is not empty
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/emitter/issueRequestQtyApprovel`,
+          formData
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          getIssueRequest(emitterId);
+          setToast(true);
+          closePendingPopup();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } catch (error) {}
+  };
+
   // else {
   //   // If there are errors, update the state to display them
   //   setErrors(errors);
@@ -412,7 +477,8 @@ function IssueManifest() {
         .then((response) => {
           setErrors("");
           setKitQuantity("");
-          setToast(true);
+          getIssueRequest(emitterId);
+          closePendingPopup();
           closeInProgressPopup();
         })
         .catch((error) => {
@@ -436,8 +502,9 @@ function IssueManifest() {
         setMaxPartQty(
           response.data.paramObjectsMap.maxPartQtyPerKitVO.MaxPartQtyPerKitVO[0]
         );
+        getIssueRequest(emitterId);
 
-        console.log("check", maxPartQty);
+        console.log("check", emitterId);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -451,7 +518,10 @@ function IssueManifest() {
       );
 
       if (response.status === 200) {
-        setBills(response.data.paramObjectsMap.issueRequestVO);
+        const issueRequests = response.data.paramObjectsMap.issueRequestVO;
+        const reversedIssueRequests = issueRequests.reverse(); // Reverse the order of the array
+
+        setBills(reversedIssueRequests);
         setEmitterId(selectedEmitterId);
         console.log(
           "getIssueRequest",
@@ -563,6 +633,8 @@ function IssueManifest() {
                       <th>Req Qty</th>
                       <th>KIT NO</th>
                       <th>Part Name/No</th> */}
+                      {/* <th>Req Qty</th>
+                      <th>KIT NO</th> */}
                       <th>Status</th>
                     </tr>
                   </thead>
@@ -596,6 +668,8 @@ function IssueManifest() {
                                   <td rowSpan={issueRequest.issueItemVO.length}>
                                     {issueRequest.totalIssueItem}
                                   </td>
+                                  {/* <td>{issueRequest.kitQty}</td>
+                                  <td>{issueRequest.kitName}</td> */}
                                   {/* <td
                                   rowSpan={issueRequest.issueItemVO.length}
                                   className="text-center"
@@ -688,11 +762,15 @@ function IssueManifest() {
                               <tr>
                                 <th>Select</th>
                                 <th>Kit Name</th>
-
+                                <th>Available Qty</th>
                                 <th>Part Name</th>
-                                <th>Part Quantity</th>
-                                <th>Issue Quantity</th>
-                                <th>Balance Quantity</th>
+                                <th>Demand Qty</th>
+                                {selectedIssueRequest?.issueStatus !== 2 ? (
+                                  <th>Issue Qty</th>
+                                ) : (
+                                  <th>Issued Qty</th>
+                                )}
+                                <th>Balance Qty</th>
                                 <th>Update Kit Qty</th>
                                 <th>Action</th>
                               </tr>
@@ -718,28 +796,41 @@ function IssueManifest() {
                                       />
                                     </td>
                                     <td>{item.kitName}</td>
-                                    <td>{item.partName}</td>
-                                    <td>{item.partQty}</td>
                                     <td>
-                                      {/* Issue Quantity input box */}
-                                      <input
-                                        className="form-control form-sz mb-2"
-                                        placeholder="Issue Quantity"
-                                        name={`issueQty-${index}`}
-                                        value={qty[item.id] || ""}
-                                        disabled={
-                                          !selectedItemIds.includes(item.id) ||
-                                          selectedIssueRequest.issueStatus === 2
+                                      <GetAvailKitQty
+                                        item={item}
+                                        warehouseLocationId={
+                                          warehouseLocationId
                                         }
-                                        onChange={(e) =>
-                                          handleQtyChange(e, item.id)
-                                        }
+                                        availQty={availQty}
                                       />
                                     </td>
-                                    <td>
-                                      {/* Displaying Balance Quantity (adjust the logic based on your requirement) */}
-                                      {item.balanceQty}
-                                    </td>
+                                    <td>{item.partName}</td>
+                                    <td>{item.partQty}</td>
+                                    {selectedIssueRequest?.issueStatus !== 2 ? (
+                                      <td>
+                                        {/* Issue Quantity input box */}
+                                        <input
+                                          className="form-control form-sz mb-2"
+                                          placeholder="Issue Qty"
+                                          name={`issueQty-${index}`}
+                                          value={qty[item.id] || ""}
+                                          disabled={
+                                            !selectedItemIds.includes(
+                                              item.id
+                                            ) ||
+                                            selectedIssueRequest.issueStatus ===
+                                              2
+                                          }
+                                          onChange={(e) =>
+                                            handleQtyChange(e, item.id)
+                                          }
+                                        />
+                                      </td>
+                                    ) : (
+                                      <td>{item.issuedQty}</td>
+                                    )}
+                                    <td>{item.balanceQty}</td>
                                     <td>
                                       <div>
                                         <img
@@ -753,8 +844,10 @@ function IssueManifest() {
                                             margin: "auto",
                                             cursor: "pointer",
                                           }}
-                                          onClick={() =>
-                                            getKitQtyByPartId(item)
+                                          onClick={
+                                            item.issueStatus !== 2
+                                              ? () => getKitQtyByPartId(item)
+                                              : null
                                           }
                                         />
                                       </div>
@@ -815,16 +908,26 @@ function IssueManifest() {
                           {/* Displaying kitName and kitQty in a table */}
                           <table
                             className="table"
-                            style={{ marginLeft: "45px" }}
+                            style={{
+                              marginLeft:
+                                selectedIssueRequest?.issueStatus !== 2
+                                  ? "40px"
+                                  : "80px",
+                            }}
                           >
                             <thead>
                               <tr>
                                 <th>Select</th>
-
                                 <th>Kit Name</th>
-                                <th>Kit Quantity</th>
-                                <th>Issue Quantity1ss</th>
-                                <th>Balance Quantity</th>
+                                <th>Available Kit</th>
+                                <th>Demand Qty</th>
+                                {selectedIssueRequest?.issueStatus !== 2 ? (
+                                  <th>Issue Qty</th>
+                                ) : (
+                                  <th>Issued Qty</th>
+                                )}
+
+                                {/* <th>Balance Qty</th> */}
                                 <th>Action</th>
                               </tr>
                             </thead>
@@ -854,33 +957,46 @@ function IssueManifest() {
                                     </td>
 
                                     <td>{item.kitName}</td>
-                                    <td>{item.kitQty}</td>
                                     <td>
-                                      {/* Issue Quantity input box */}
-                                      <input
-                                        className="form-control form-sz mb-2"
-                                        placeholder="Issue Quantity"
-                                        name={`issueQty-${index}`}
-                                        value={qty[item.id] || ""}
-                                        disabled={
-                                          !selectedItemIds.includes(item.id) ||
-                                          selectedIssueRequest.issueStatus ===
-                                            2 ||
-                                          item.balanceQty === 0
+                                      <GetAvailKitQty
+                                        item={item}
+                                        warehouseLocationId={
+                                          warehouseLocationId
                                         }
-                                        onChange={(e) =>
-                                          handleQtyChange(e, item.id)
-                                        }
+                                        availQty={availQty}
                                       />
                                     </td>
-                                    <td>
-                                      {/* Displaying Balance Quantity (adjust the logic based on your requirement) */}
-                                      {item.balanceQty}
-                                    </td>
+                                    <td>{item.kitQty}</td>
+                                    {selectedIssueRequest?.issueStatus !== 2 ? (
+                                      <td>
+                                        {/* Issue Quantity input box */}
+                                        <input
+                                          className="form-control form-sz mb-2"
+                                          placeholder="Issue Qty"
+                                          style={{ width: "50%" }}
+                                          name={`issueQty-${index}`}
+                                          value={qty[item.id] || ""}
+                                          disabled={
+                                            !selectedItemIds.includes(
+                                              item.id
+                                            ) ||
+                                            selectedIssueRequest.issueStatus ===
+                                              2
+                                            // item.balanceQty === 0
+                                            // availableKit < item.kitQty // Disable if available quantity is less than demand quantity
+                                          }
+                                          onChange={(e) =>
+                                            handleQtyChange(e, item.id)
+                                          }
+                                        />
+                                      </td>
+                                    ) : (
+                                      <td>{item.issuedQty}</td>
+                                    )}
 
                                     <td>
                                       {/* Button for issuing part in this row */}
-                                      {item.balanceQty === 0 ? (
+                                      {item.approvedStatus ? (
                                         // <Button
                                         //   variant="contained"
                                         //   onClick={() => handleIssueKit(item)}

@@ -167,6 +167,30 @@ const routes = [
         name: <span className="">Vendors</span>,
       },
       {
+        path: "/app/CityMaster",
+        icon: (
+          <img
+            src="/city.png"
+            alt="Unit"
+            style={{ width: "34px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">City Master</span>,
+      },
+      {
+        path: "/app/KitCard",
+        icon: (
+          <img
+            src="/unit.png"
+            alt="KitCard"
+            style={{ width: "34px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Kit Card</span>,
+      },
+      {
         path: "/app/unit",
         icon: (
           <img
@@ -401,6 +425,30 @@ const routes = [
           />
         ),
         name: <span className="ml-1">Services</span>,
+      },
+      {
+        path: "/app/Terms", //no url needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/4497/4497103.png"
+            alt="Services"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Terms</span>,
+      },
+      {
+        path: "/app/PoOrder", //no url needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
+            alt="Services"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Po Order</span>,
       },
     ],
   },

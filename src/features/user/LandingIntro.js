@@ -16,18 +16,11 @@ function LandingIntro() {
             <h1 className="text-3xl text-center font-bold mb-10">
               Returnable Packages
             </h1>
-            <div className="d-flex float-right">
-              Powered by{" "}
-              <img
-                src="/wds_logo.png"
-                alt="Whydigit Logo"
-                style={{ width: "80px" }}
-              />
-            </div>
+
             {/* Importing pointers component */}
-            <TemplatePointers />
           </div>
         </div>
+        <TemplatePointers />
       </div>
     </>
   );

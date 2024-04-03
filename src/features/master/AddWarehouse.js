@@ -1,14 +1,14 @@
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
-import Axios from "axios";
-import React, { useState } from "react";
-import { FaStarOfLife } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
+import Axios from "axios";
+import React, { useEffect, useState } from "react";
+import { FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 5;
@@ -85,6 +85,8 @@ function AddWarehouse({ addWarehouse }) {
   const [pincode, setPincode] = useState("");
   const [gst, setGst] = useState("");
   const [active, setActive] = useState(true);
+  const [stockBranch, setStockBranch] = useState("");
+  const [stock, setStock] = useState("");
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
@@ -113,6 +115,29 @@ function AddWarehouse({ addWarehouse }) {
     );
   };
 
+  useEffect(() => {
+    getStockBranch();
+  }, []);
+
+  const getStockBranch = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setStockBranch(response.data.paramObjectsMap.branch);
+
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   // const handleCloseWarehouse = () => {
   //   addWarehouse(false);
   // };
@@ -194,6 +219,7 @@ function AddWarehouse({ addWarehouse }) {
         unit,
         orgId,
         active,
+        stockBranch: stock,
       };
       Axios.put(
         `${process.env.REACT_APP_API_URL}/api/warehouse/updateCreateWarehouse`,
@@ -491,6 +517,31 @@ function AddWarehouse({ addWarehouse }) {
               value={gst}
               onChange={handleInputChange}
             />
+            {errors.gst && <span className="error-text">{errors.gst}</span>}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Stock Branch
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={(e) => setStock(e.target.value)}
+              value={stock}
+            >
+              <option value="" disabled>
+                Select Stock Branch
+              </option>
+              {stockBranch.length > 0 &&
+                stockBranch.map((list) => (
+                  <option key={list.id} value={list.branchCode}>
+                    {list.branchCode}
+                  </option>
+                ))}
+            </select>
             {errors.gst && <span className="error-text">{errors.gst}</span>}
           </div>
 

@@ -87,7 +87,10 @@ function AddFlows({ addFlows }) {
   const [warehouseLocationValue, setWarehouseLocationValue] = useState("");
   const [openKitModal, setOpenKitModal] = React.useState(false);
   const [kitDTO, setKitDTO] = useState([]);
+  const [city, setCity] = React.useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [filteredCity, setFilteredCity] = useState([]);
+  const [displayName, setDisplayName] = useState("");
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -100,16 +103,59 @@ function AddFlows({ addFlows }) {
     getCustomersList();
     getAllKitData();
     getWarehouseLocationList();
+    getStateData();
   }, []);
+
+  useEffect(() => {
+    console.log("Selected emitter ID:", emitter);
+    console.log("emitterCustomersVO:", emitterCustomersVO);
+
+    // Use the latest state value of emitterCustomersVO
+    const selectedEmitter = emitterCustomersVO.find(
+      (item) => parseInt(item.id) === parseInt(emitter)
+    );
+
+    console.log("Selected emitter:", selectedEmitter);
+
+    if (selectedEmitter) {
+      setDisplayName(selectedEmitter.displayName);
+    } else {
+      console.warn("Selected emitter not found!");
+    }
+  }, [emitter, emitterCustomersVO]);
+
+  useEffect(() => {
+    // Function to generate the flow name based on the first two letters of emitter, origin, and destination
+    const generateFlowName = () => {
+      // Check if all values are available
+
+      console.log("Testtt", emitter, orgin, destination);
+      console.log("EmitterName", displayName);
+      if (emitter && origin && destination) {
+        const firstTwoEmitter = displayName.substring(0, 2).toUpperCase();
+        const firstTwoOrigin = orgin.substring(0, 3).toUpperCase();
+        const firstTwoDestination = destination.substring(0, 3).toUpperCase();
+        const generatedName = `${firstTwoEmitter}-${firstTwoOrigin}-${firstTwoDestination}`;
+        setFlowName(generatedName);
+      }
+    };
+
+    // Call the function when emitter, origin, or destination changes
+    generateFlowName();
+  }, [displayName, origin, destination]);
 
   const handleFlows = () => {
     addFlows(false);
   };
 
-  const handleEmitterChange = (event) => {
-    setEmitter(event.target.value);
-    getPartStudyId(event.target.value);
+  const handleEmitterChange = async (event) => {
+    const selectedEmitterId = event.target.value;
+    setEmitter(selectedEmitterId);
+
+    // Fetch part study ID
+    getPartStudyId(selectedEmitterId); // Assuming this function fetches the part study ID
   };
+
   const handlePartName = (event) => {
     setPartName(event.target.value);
     getPartStudyNo(event.target.value);
@@ -220,6 +266,15 @@ function AddFlows({ addFlows }) {
     }
   };
 
+  const handleCityChange = (e) => {
+    const selectedValue = e.target.value;
+    setOrgin(selectedValue);
+    // Filter out the selected value from the options of Source To dropdown
+    const filteredCity = city.filter((list) => list.cityCode !== selectedValue);
+    setDestination(""); // Reset the Source To dropdown value
+    setFilteredCity(filteredCity);
+  };
+
   const handleSave = () => {
     const errors = {};
     if (!flowName) {
@@ -268,6 +323,26 @@ function AddFlows({ addFlows }) {
         });
     } else {
       setErrors(errors);
+    }
+  };
+
+  const getStateData = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCity(response.data.paramObjectsMap.cityVO);
+        // setTableData(response.data.paramObjectsMap.cityVO);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -387,6 +462,7 @@ function AddFlows({ addFlows }) {
               name="flowName"
               value={flowName}
               onChange={handleInputChange}
+              disabled
             />
             {errors.flowName && (
               <span className="error-text mb-1">{errors.flowName}</span>
@@ -470,13 +546,22 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="orgin"
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleCityChange}
               value={orgin}
-              onChange={handleInputChange}
-            />
+              name="orgin"
+            >
+              <option value="" disabled>
+                Select an orgin
+              </option>
+              {city.length > 0 &&
+                city.map((list) => (
+                  <option key={list.id} value={list.cityCode}>
+                    {list.cityName}
+                  </option>
+                ))}
+            </select>
             {errors.orgin && (
               <span className="error-text mb-1">{errors.orgin}</span>
             )}
@@ -496,13 +581,22 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder={""}
-              name="destination"
-              value={destination}
+            <select
+              className="form-select form-sz w-full mb-2"
               onChange={handleInputChange}
-            />
+              value={destination}
+              name="destination"
+            >
+              <option value="" disabled>
+                Select an destination
+              </option>
+              {filteredCity.length > 0 &&
+                filteredCity.map((list) => (
+                  <option key={list.id} value={list.cityCode}>
+                    {list.cityName}
+                  </option>
+                ))}
+            </select>
             {errors.destination && (
               <span className="error-text mb-1">{errors.destination}</span>
             )}

@@ -24,7 +24,7 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { FaBoxes, FaCloudUploadAlt, FaTruck } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
 import { LuTimerReset } from "react-icons/lu";
 import { MdMapsHomeWork } from "react-icons/md";
 import AddFlows from "./AddFlows";
@@ -63,6 +63,7 @@ function Flows() {
   const [open, setOpen] = React.useState(false);
   const [addFlows, setAddFlows] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [city, setCity] = React.useState("");
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [createModalOpenView, setCreateModalOpenView] = useState(false);
   const handleClickOpen = () => {
@@ -214,9 +215,19 @@ function Flows() {
                   src="/upload.png"
                   alt="upload-icon"
                   title="upload"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
                 />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Bulk Upload</span>
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Bulk Upload
+                </span>
               </button>
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -227,9 +238,19 @@ function Flows() {
                   src="/new.png"
                   alt="new-icon"
                   title="new"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
                 />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Flow</span>
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Flow
+                </span>
               </button>
             </div>
           </div>

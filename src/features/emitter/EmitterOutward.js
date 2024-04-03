@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
-import { FaStarOfLife } from "react-icons/fa";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { FaArrowCircleLeft, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import TitleCard from "../../components/Cards/TitleCard";
 
@@ -122,7 +121,7 @@ export const EmitterOutward = () => {
     }
     if (Object.keys(errors).length === 0) {
       const requestData = {
-        emitterOutwarId,
+        issueItemId: emitterOutwarId,
         kitNO,
         kitQty,
       };
@@ -225,45 +224,46 @@ export const EmitterOutward = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {outwardVO.map((l, k) => {
-                    return (
-                      <tr key={k}>
-                        {/* <td>{getPaymentStatus(l.status)}</td> */}
-                        <td>
-                          <img
-                            src="/edit1.png"
-                            alt="Favorite"
-                            style={{
-                              width: "25px",
-                              height: "auto",
-                              marginRight: "6px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() =>
-                              handlePendingStatusClickIssued(
-                                l.kitNumber,
-                                l.netQtyReceived,
-                                l.outwardId
-                              )
-                            }
-                          />
-                        </td>
-                        <td>{l.rmNo}</td>
-                        <td>{l.rmDate}</td>
-                        <td>{l.imNo}</td>
-                        <td>{l.imDate}</td>
-                        <td>{l.inwardConfirmDate}</td>
-                        <td>{l.kitNumber}</td>
-                        <td>{l.netQtyReceived}</td>
-                        <td>{l.kitReturnQTY}</td>
-                        <td>{l.balanceQTY}</td>
-                        <td>{l.cycletime}</td>
-                      </tr>
-                    );
-                  })}
+                  {outwardVO &&
+                    outwardVO.map((l, k) => {
+                      return (
+                        <tr key={k}>
+                          {/* <td>{getPaymentStatus(l.status)}</td> */}
+                          <td>
+                            <img
+                              src="/edit1.png"
+                              alt="Favorite"
+                              style={{
+                                width: "25px",
+                                height: "auto",
+                                marginRight: "6px",
+                                cursor: "pointer",
+                              }}
+                              onClick={() =>
+                                handlePendingStatusClickIssued(
+                                  l.kitNumber,
+                                  l.netQtyReceived,
+                                  l.issueItemId
+                                )
+                              }
+                            />
+                          </td>
+                          <td>{l.rmNo}</td>
+                          <td>{l.rmDate}</td>
+                          <td>{l.imNo}</td>
+                          <td>{l.imDate}</td>
+                          <td>{l.inwardConfirmDate}</td>
+                          <td>{l.kitNumber}</td>
+                          <td>{l.netQtyReceived}</td>
+                          <td>{l.kitReturnQTY}</td>
+                          <td>{l.balanceQTY}</td>
+                          <td>{l.cycletime}</td>
+                        </tr>
+                      );
+                    })}
                 </tbody>
               </table>
-              {outwardVO.length === 0 && (
+              {outwardVO && outwardVO.length === 0 && (
                 <h4 className="text-base dark:text-slate-300 font-semibold fst-italic text-center mt-4">
                   No records to display..!!
                 </h4>

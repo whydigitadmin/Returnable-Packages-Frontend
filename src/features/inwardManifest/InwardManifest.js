@@ -27,7 +27,10 @@ export const InwardManifest = () => {
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [finYear, setFinYear] = useState("");
-  const [stock, setStock] = useState("");
+  const [stockFrom, setStockFrom] = useState("");
+  const [stockTo, setStockTo] = useState("");
+  const [filteredStockBranch, setFilteredStockBranch] = useState("");
+
   const [stockBranch, setStockBranch] = useState("");
   const [docId, setDocId] = useState("");
   const [allAsset, setAllAsset] = useState("");
@@ -62,6 +65,17 @@ export const InwardManifest = () => {
     getStockBranch();
     getAllAsset();
   }, []);
+
+  const handleStockFromChange = (e) => {
+    const selectedValue = e.target.value;
+    setStockFrom(selectedValue);
+    // Filter out the selected value from the options of Source To dropdown
+    const filteredBranches = stockBranch.filter(
+      (branch) => branch.branchCode !== selectedValue
+    );
+    setStockTo(""); // Reset the Source To dropdown value
+    setFilteredStockBranch(filteredBranches);
+  };
 
   const getAllAsset = async () => {
     try {
@@ -126,8 +140,12 @@ export const InwardManifest = () => {
     //   errors.type = "Type is required";
     // }
 
-    if (!stock) {
-      errors.stock = "Stock branch is required";
+    if (!stockFrom) {
+      errors.stockFrom = "Source from is required";
+    }
+
+    if (!stockTo) {
+      errors.stockFrom = "Source To is required";
     }
 
     if (!docId) {
@@ -175,7 +193,8 @@ export const InwardManifest = () => {
         assetInwardDetailDTO: tableFormData,
         docId,
         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-        stockBranch: stock,
+        stockBranch: stockTo,
+        stockFrom: stockFrom,
       };
 
       axios
@@ -189,7 +208,8 @@ export const InwardManifest = () => {
           setDocData(DOCDATA);
           setDocDate(null);
           setDocId("");
-          setStock("");
+          setStockFrom("");
+          setStockTo("");
           setErrors({});
 
           setTableData([
@@ -238,8 +258,6 @@ export const InwardManifest = () => {
               <span className="error-text mb-1">{errors.docId}</span>
             )}
           </div>
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -265,11 +283,12 @@ export const InwardManifest = () => {
             )}
           </div>
         </div>
+
         <div className="row">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Stock Branch
+                Source From
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -277,8 +296,8 @@ export const InwardManifest = () => {
           <div className="col-lg-3 col-md-6">
             <select
               className="form-select form-sz w-full mb-2"
-              onChange={(e) => setStock(e.target.value)}
-              value={stock}
+              onChange={handleStockFromChange}
+              value={stockFrom}
             >
               <option value="" disabled>
                 Select Stock Branch
@@ -290,8 +309,36 @@ export const InwardManifest = () => {
                   </option>
                 ))}
             </select>
-            {errors.stock && (
-              <span className="error-text mb-1">{errors.stock}</span>
+            {errors.stockFrom && (
+              <span className="error-text mb-1">{errors.stockFrom}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span className="label-text label-font-size text-base-content d-flex flex-row">
+                Source To
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={(e) => setStockTo(e.target.value)}
+              value={stockTo}
+            >
+              <option value="" disabled>
+                Select Stock Branch
+              </option>
+              {filteredStockBranch &&
+                filteredStockBranch.map((list) => (
+                  <option key={list.id} value={list.branchCode}>
+                    {list.branchCode}
+                  </option>
+                ))}
+            </select>
+            {errors.stockTo && (
+              <span className="error-text mb-1">{errors.stockTo}</span>
             )}
           </div>
         </div>
