@@ -2,13 +2,13 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
-import React, { useState } from "react";
-import { FaStarOfLife } from "react-icons/fa";
+import React, { useEffect, useState } from "react";
+import { FaStarOfLife, FaTrash } from "react-icons/fa";
 
 export const PoOrder = () => {
-  const [company, setCompany] = useState("");
-  const [address, setAddress] = useState("");
-  const [selfGST, setSelfGST] = useState("");
+  const [company, setCompany] = useState("AIPACKS");
+  const [address, setAddress] = useState("Bangalore");
+  const [selfGST, setSelfGST] = useState("29ABMCS1982P1ZA");
   const [poNo, setPoNo] = useState("");
   const [poDate, setPoDate] = useState(null);
   const [apId, setApId] = useState("");
@@ -22,7 +22,8 @@ export const PoOrder = () => {
   const [IGST, setIGST] = useState("");
   const [SGST, setGST] = useState("");
   const [CGST, setCGST] = useState("");
-  const [terms, setTerms] = useState("");
+  const [terms, setTerms] = useState("PO ORDER");
+  const [termsCode, setTermsCode] = useState([]);
 
   const [tableData, setTableData] = useState([
     {
@@ -47,6 +48,33 @@ export const PoOrder = () => {
       column6: "",
     };
     setTableData([...tableData, newRow]);
+  };
+
+  useEffect(() => {
+    getTermsData();
+  }, []);
+
+  const getTermsData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/terms`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        const termsCodes =
+          response.data.paramObjectsMap.termsAndConditionsVO.map(
+            (term) => term.termsCode
+          );
+        setTermsCode(termsCodes); // Setting multiple 'termsCode'
+        console.log("Terms Codes:", termsCodes);
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handleServiceSave = () => {
@@ -116,10 +144,14 @@ export const PoOrder = () => {
       });
   };
 
+  const handleDeleteRow = (id) => {
+    setTableData(tableData.filter((row) => row.id !== id));
+  };
+
   return (
     <div className="card w-full p-3 bg-base-100 shadow-xl mt-2">
       <div className="row mt-3">
-        <div className="col-lg-2 col-md-6">
+        {/* <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
               company
@@ -130,15 +162,13 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="Company"
             value={company}
             onChange={(e) => setCompany(e.target.value)}
+            disabled
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
-        </div>
-        <div className="col-lg-2 col-md-6">
+         
+        </div> */}
+        {/* <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
               Address
@@ -149,15 +179,13 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <textarea
             className="form-control form-sz mb-2"
-            placeholder="Address"
             value={address}
             onChange={(e) => setAddress(e.target.value)}
+            disabled
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
-        </div>
-        <div className="col-lg-2 col-md-6">
+        
+        </div> */}
+        {/* <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
               Self GST
@@ -168,28 +196,24 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="Self GST"
             value={selfGST}
             onChange={(e) => setSelfGST(e.target.value)}
+            disabled
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
-        </div>
+       
+        </div> */}
       </div>
       <div className="row">
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              Po Number
-              <FaStarOfLife className="must" />
+              <span style={{ color: "Red" }}>N</span>umber
             </span>
           </label>
         </div>
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="Po Number"
             value={poNo}
             onChange={(e) => setPoNo(e.target.value)}
           />
@@ -200,8 +224,7 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6 mt-2">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              Po Date
-              <FaStarOfLife className="must" />
+              <span style={{ color: "Red" }}>D</span>ate
             </span>
           </label>
         </div>
@@ -223,14 +246,13 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              AP ID <FaStarOfLife className="must" />
+              Vendor ID <FaStarOfLife className="must" />
             </span>
           </label>
         </div>
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="AP Id"
             value={apId}
             onChange={(e) => setApId(e.target.value)}
           />
@@ -243,7 +265,7 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              AP
+              Vendor
               <FaStarOfLife className="must" />
             </span>
           </label>
@@ -251,7 +273,6 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="AP"
             value={ap}
             onChange={(e) => setAp(e.target.value)}
           />
@@ -262,14 +283,13 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              AP Address <FaStarOfLife className="must" />
+              Vendor Address <FaStarOfLife className="must" />
             </span>
           </label>
         </div>
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="AP Id"
             value={apAddress}
             onChange={(e) => setAPAddress(e.target.value)}
           />
@@ -280,14 +300,13 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              AP GST <FaStarOfLife className="must" />
+              Vendor GST <FaStarOfLife className="must" />
             </span>
           </label>
         </div>
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="AP Id"
             value={apgst}
             onChange={(e) => setApGst(e.target.value)}
           />
@@ -308,7 +327,6 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="Ship To"
             value={shipto}
             onChange={(e) => setShipTo(e.target.value)}
           />
@@ -327,7 +345,6 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="Remarks"
             value={shiptoremarks}
             onChange={(e) => setShiptoremarks(e.target.value)}
           />
@@ -346,7 +363,6 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="GST Type"
             value={gstType}
             onChange={(e) => setGstType(e.target.value)}
           />
@@ -367,7 +383,6 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="IGST"
             value={IGST}
             onChange={(e) => setIGST(e.target.value)}
           />
@@ -386,7 +401,6 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="SGST"
             value={SGST}
             onChange={(e) => setGST(e.target.value)}
           />
@@ -405,7 +419,6 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <input
             className="form-control form-sz mb-2"
-            placeholder="CGST"
             value={CGST}
             onChange={(e) => setCGST(e.target.value)}
           />
@@ -424,15 +437,17 @@ export const PoOrder = () => {
           </label>
         </div>
         <div className="col-lg-2 col-md-6">
-          <input
-            className="form-control form-sz mb-2"
-            placeholder="Terms"
+          <select
+            className="form-select form-sz mb-2"
             value={terms}
             onChange={(e) => setTerms(e.target.value)}
-          />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+          >
+            {termsCode.map((term, index) => (
+              <option key={index} value={term}>
+                {term}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
@@ -451,6 +466,7 @@ export const PoOrder = () => {
             <table className="w-full">
               <thead>
                 <tr>
+                  <th className="px-2 py-2 bg-blue-500 text-white">Action</th>
                   <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
                   <th className="px-2 py-2 bg-blue-500 text-white">Item ID</th>
                   <th className="px-2 py-2 bg-blue-500 text-white">
@@ -468,6 +484,14 @@ export const PoOrder = () => {
                 {tableData &&
                   tableData.map((row) => (
                     <tr key={row.id}>
+                      <td className="border px-2 py-2">
+                        <button
+                          onClick={() => handleDeleteRow(row.id)}
+                          className="text-red-500"
+                        >
+                          <FaTrash style={{ fontSize: "18px" }} />
+                        </button>
+                      </td>
                       <td className="border px-2 py-2">
                         <input
                           type="text"

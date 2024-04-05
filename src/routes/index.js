@@ -107,6 +107,8 @@ const CityMaster = lazy(() => import("../pages/protected/CityMaster"));
 const KitCard = lazy(() => import("../pages/protected/KitCard"));
 const Terms = lazy(() => import("../pages/protected/Terms"));
 const PoOrder = lazy(() => import("../pages/protected/PoOrder"));
+const POD = lazy(() => import("../pages/protected/POD"));
+const Pdf = lazy(() => import("../pages/protected/Pdf"));
 const routes = [
   {
     path: "/dashboard", // the url
@@ -127,6 +129,14 @@ const routes = [
   {
     path: "/PoOrder",
     component: PoOrder,
+  },
+  {
+    path: "/POD",
+    component: POD,
+  },
+  {
+    path: "/Pdf",
+    component: Pdf,
   },
   {
     path: "/welcome", // the url

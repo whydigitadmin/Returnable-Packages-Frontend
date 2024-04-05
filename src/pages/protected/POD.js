@@ -1,16 +1,16 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { PoOrder } from "../../features/services/PoOrder";
+import { POD } from "../../features/services/POD";
 
 function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Purchase Order" }));
+    dispatch(setPageTitle({ title: "POD" }));
   }, []);
 
-  return <PoOrder />;
+  return <POD />;
 }
 
 export default InternalPage;

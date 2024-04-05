@@ -3,17 +3,8 @@ import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import UserGroupIcon from "@heroicons/react/24/outline/UserGroupIcon";
 import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
 import React from "react";
-import AmountStats from "../dashboard/components/AmountStats";
-import DashboardStats from "../dashboard/components/DashboardStats";
-import DoughnutChart from "../dashboard/components/DoughnutChart";
-import LineChart from "../dashboard/components/LineChart";
-import PageStats from "../dashboard/components/PageStats";
-import UserChannels from "../dashboard/components/UserChannels";
-import UserChannels1 from "../dashboard/components/UserChannels1";
-import Notification from "./Notification";
-import Calendar from "../calendar";
+import "react-toastify/dist/ReactToastify.css";
 import WelcomeEmitter from "./WelcomeEmitter";
-import EmitterTab from "./EmitterTab";
 
 const statsData = [
   {

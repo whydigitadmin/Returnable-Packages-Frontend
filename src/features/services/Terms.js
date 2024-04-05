@@ -43,6 +43,7 @@ export const Terms = () => {
   const [data, setData] = React.useState([]);
   const [tableData, setTableData] = useState([]);
   const [code, setCode] = useState("");
+  const [termsCode, setTermsCode] = useState("");
   const [description, setDescription] = useState("");
   const [printRemarks, setPrintRemarks] = useState("");
   const [effectiveFrom, setEffectiveFrom] = useState(null);
@@ -95,6 +96,9 @@ export const Terms = () => {
       case "printRemarks":
         setPrintRemarks(value);
         break;
+      case "termsCode":
+        setTermsCode(value);
+        break;
     }
   };
 
@@ -108,10 +112,13 @@ export const Terms = () => {
       errors.effectiveFrom = "Effective From is required";
     }
     if (!effectiveTo) {
-      errors.effectiveTo = "effective To is required";
+      errors.effectiveTo = "Effective To is required";
     }
     if (!printRemarks) {
-      errors.printRemarks = "printRemarks is required";
+      errors.printRemarks = "PrintRemarks is required";
+    }
+    if (!termsCode) {
+      errors.termsCode = "TermsCode is required";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -120,6 +127,7 @@ export const Terms = () => {
         effectiveFrom,
         effectiveTo,
         printRemarks,
+        termsCode,
         details: description,
       };
 
@@ -135,7 +143,9 @@ export const Terms = () => {
           setEffectiveFrom(null);
           setEffectiveTo(null);
           setPrintRemarks("");
+          setTermsCode("");
           setErrors({});
+          getTermsData();
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -171,7 +181,7 @@ export const Terms = () => {
       //     },
       //   },
       {
-        accessorKey: "scode",
+        accessorKey: "termsCode",
         header: "Code",
         size: 50,
         muiTableHeadCellProps: {
@@ -183,7 +193,7 @@ export const Terms = () => {
       },
       {
         accessorKey: "details",
-        header: "Description",
+        header: "Terms and Condition",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -241,7 +251,7 @@ export const Terms = () => {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Print Remarks
+                Code
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -250,16 +260,17 @@ export const Terms = () => {
             <input
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               type={"text"}
-              value={printRemarks}
-              name="printRemarks"
+              value={termsCode}
+              name="termsCode"
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />
-            {errors.printRemarks && (
-              <div className="error-text">{errors.printRemarks}</div>
+            {errors.termsCode && (
+              <div className="error-text">{errors.termsCode}</div>
             )}
           </div>
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -267,7 +278,7 @@ export const Terms = () => {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Description
+                Terms and conditions
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -331,6 +342,31 @@ export const Terms = () => {
             </LocalizationProvider>
             {errors.effectiveTo && (
               <span className="error-text mb-1">{errors.effectiveTo}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Print Remarks
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              type={"text"}
+              value={printRemarks}
+              name="printRemarks"
+              // placeholder={"Enter"}
+              onChange={handleInputChange}
+              className="input input-bordered p-2"
+            />
+            {errors.printRemarks && (
+              <div className="error-text">{errors.printRemarks}</div>
             )}
           </div>
 

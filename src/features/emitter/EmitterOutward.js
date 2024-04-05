@@ -6,6 +6,8 @@ import React, { useEffect, useState } from "react";
 import { FaArrowCircleLeft, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import TitleCard from "../../components/Cards/TitleCard";
 
 export const EmitterOutward = () => {
@@ -13,6 +15,7 @@ export const EmitterOutward = () => {
   const [flowData, setFlowData] = React.useState([]);
   const [kitNO, setKitNO] = React.useState("");
   const [kitQty, setKitQty] = React.useState();
+  const [balanceQty, setBalanceQty] = React.useState();
   const [netQtyReceived, setNetQtyReceived] = React.useState("");
   const [emitterOutwarId, setEmitterOutwarId] = React.useState("");
   const [displayFlowName, setDisplayFlowName] = React.useState();
@@ -48,7 +51,7 @@ export const EmitterOutward = () => {
         console.log("validFlows", validFlows);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error please try again!");
     }
   };
 
@@ -68,7 +71,7 @@ export const EmitterOutward = () => {
         setOutwardVO(response.data.paramObjectsMap.emitterOutwardVO);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error please try again!");
     }
   };
 
@@ -82,7 +85,7 @@ export const EmitterOutward = () => {
         setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error please try again!");
     }
   };
 
@@ -94,12 +97,14 @@ export const EmitterOutward = () => {
   const handlePendingStatusClickIssued = (
     kitNumber,
     netQtyReceived,
-    emitterOutwarId
+    emitterOutwarId,
+    balanceQTY
   ) => {
     setPendingPopupOpenIssued(true);
     setKitNO(kitNumber);
     setNetQtyReceived(netQtyReceived);
     setEmitterOutwarId(emitterOutwarId);
+    setBalanceQty(balanceQTY);
   };
 
   const handleInputChange = (event) => {
@@ -119,6 +124,10 @@ export const EmitterOutward = () => {
     if (!kitQty) {
       errors.kitQty = "kit Qty is required";
     }
+
+    if (kitQty > balanceQty) {
+      errors.kitQty = "kit qty is higher than balance qty";
+    }
     if (Object.keys(errors).length === 0) {
       const requestData = {
         issueItemId: emitterOutwarId,
@@ -135,9 +144,11 @@ export const EmitterOutward = () => {
           setPendingPopupOpenIssued(false);
           getOutwardDetails();
           setKitQty("");
+          setErrors("");
         })
         .catch((error) => {
           console.error("Error:", error);
+          toast.error("Network Error please try again!");
         });
     } else {
       setErrors(errors);
@@ -226,27 +237,44 @@ export const EmitterOutward = () => {
                 <tbody>
                   {outwardVO &&
                     outwardVO.map((l, k) => {
+                      const balanceQtyy = l.netQtyReceived - l.kitReturnQTY;
+                      const isUpdateBlocked =
+                        l.netQtyReceived === l.kitReturnQTY;
                       return (
                         <tr key={k}>
                           {/* <td>{getPaymentStatus(l.status)}</td> */}
                           <td>
-                            <img
-                              src="/edit1.png"
-                              alt="Favorite"
-                              style={{
-                                width: "25px",
-                                height: "auto",
-                                marginRight: "6px",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                handlePendingStatusClickIssued(
-                                  l.kitNumber,
-                                  l.netQtyReceived,
-                                  l.issueItemId
-                                )
-                              }
-                            />
+                            {isUpdateBlocked ? (
+                              <img
+                                src="/checked1.png"
+                                alt="Favorite"
+                                style={{
+                                  width: "25px",
+                                  height: "auto",
+                                  marginRight: "6px",
+                                  cursor: "no-drop", // Change cursor type
+                                }}
+                              />
+                            ) : (
+                              <img
+                                src="/edit1.png"
+                                alt="Favorite"
+                                style={{
+                                  width: "25px",
+                                  height: "auto",
+                                  marginRight: "6px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() =>
+                                  handlePendingStatusClickIssued(
+                                    l.kitNumber,
+                                    l.netQtyReceived,
+                                    l.issueItemId,
+                                    balanceQtyy
+                                  )
+                                }
+                              />
+                            )}
                           </td>
                           <td>{l.rmNo}</td>
                           <td>{l.rmDate}</td>
@@ -256,7 +284,7 @@ export const EmitterOutward = () => {
                           <td>{l.kitNumber}</td>
                           <td>{l.netQtyReceived}</td>
                           <td>{l.kitReturnQTY}</td>
-                          <td>{l.balanceQTY}</td>
+                          <td>{balanceQtyy}</td>
                           <td>{l.cycletime}</td>
                         </tr>
                       );
@@ -276,6 +304,9 @@ export const EmitterOutward = () => {
             open={isPendingPopupOpenIssued}
             onClose={closePendingPopupIssued}
           >
+            <div>
+              <ToastContainer />
+            </div>
             <div className="d-flex justify-content-between">
               <DialogTitle>Bin Outward</DialogTitle>
               <IoMdClose
@@ -287,11 +318,15 @@ export const EmitterOutward = () => {
               <div className="d-flex flex-column mb-4">
                 <div className="d-flex justify-content-between">
                   <p className="font-medium">
-                    Kit: <span className="font-bold">{kitNO}</span>
+                    Kit :&nbsp; <span className="font-bold">{kitNO}</span>
                   </p>
                   <p className="font-medium">
-                    Net Received Quantity:
+                    Net Received Quantity : &nbsp;
                     <span className="font-bold">{netQtyReceived}</span>
+                  </p>
+                  <p className="font-medium">
+                    Balance Qty : &nbsp;
+                    <span className="font-bold">{balanceQty}</span>
                   </p>
                 </div>
                 {/* <div className="d-flex justify-content-between">
