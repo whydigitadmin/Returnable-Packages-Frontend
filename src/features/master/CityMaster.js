@@ -141,7 +141,9 @@ export const CityMaster = () => {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton onClick={() => handleEditRow(row)}>
+            <IconButton
+            // onClick={() => handleEditRow(row)}
+            >
               <EditIcon />
             </IconButton>
           </div>

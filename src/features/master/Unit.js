@@ -189,7 +189,9 @@ function Unit() {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton onClick={() => handleEditRow(row)}>
+            <IconButton
+            // onClick={() => handleEditRow(row)}50
+            >
               <EditIcon />
             </IconButton>
           </div>
