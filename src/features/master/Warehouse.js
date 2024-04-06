@@ -10,7 +10,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
@@ -18,6 +18,19 @@ import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import AddWarehouse from "./AddWarehouse";
 import DashBoardComponent from "./DashBoardComponent";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const statsData = [
   {
@@ -51,6 +64,27 @@ function Warehouse() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [openView, setOpenView] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [edit, setEdit] = React.useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+
+  const handleEditRow = (row) => {
+    setSelectedRowId(row.original.warehouseId);
+    console.log("setSelectedRowID", row.original.warehouseId);
+    setEdit(true);
+  };
+
+  const handleViewClose = () => {
+    setOpenView(false);
+  };
+
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    console.log("setSelectedRowData", row.original);
+    setOpenView(true);
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -65,6 +99,7 @@ function Warehouse() {
 
   const handleBack = () => {
     setAdd(false);
+    setEdit(false);
     getWarehouseData();
   };
 
@@ -100,6 +135,30 @@ function Warehouse() {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
+      },
       {
         accessorKey: "warehouseId",
         header: "Warehouse Code",
@@ -211,114 +270,192 @@ function Warehouse() {
     columns,
   });
 
-  const handleSaveRowEdits = () => { };
-
-  const handleCancelRowEdits = () => { };
-
-  const handleEdit = (rowData) => {
-    // Implement your logic to handle the edit action for the specific row
-    console.log("Edit clicked for row:", rowData);
-  };
-
-  const handleDelete = (rowData) => {
-    // Implement your logic to handle the delete action for the specific row
-    console.log("Delete clicked for row:", rowData);
-  };
-
   return (
     <>
-      {add ? (
-        <AddWarehouse addWarehouse={handleBack} />
-      ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div>
-          <div className="">
-            <div className="flex justify-between mt-4">
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleClickOpen}
-              >
-                <img
-                  src="/upload.png"
-                  alt="pending-status-icon"
-                  title="add"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
-                />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Bulk Upload</span>
-              </button>
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleAddOpen}
-              >
-                <img
-                  src="/new.png"
-                  alt="pending-status-icon"
-                  title="add"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
-                />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Warehouse</span>
-              </button>
+      {(add && <AddWarehouse addWarehouse={handleBack} />) ||
+        (edit && (
+          <AddWarehouse
+            addWarehouse={handleBack}
+            editWarehouseId={selectedRowId}
+          />
+        )) || (
+          <div className="card w-full p-6 bg-base-100 shadow-xl">
+            <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+              {statsData.map((d, k) => {
+                return <DashBoardComponent key={k} {...d} colorIndex={k} />;
+              })}
             </div>
-          </div>
-          <div className="mt-4">
-            <MaterialReactTable table={table} />
-          </div>
-          <Dialog
-            fullWidth={true}
-            maxWidth={"sm"}
-            open={open}
-            onClose={handleClose}
-          >
-            <div className="d-flex justify-content-between">
-              <DialogTitle>Upload File</DialogTitle>
-              <IoMdClose
-                onClick={handleClose}
-                className="cursor-pointer w-8 h-8 mt-3 me-3"
-              />
+            <div className="">
+              <div className="flex justify-between mt-4">
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleClickOpen}
+                >
+                  <img
+                    src="/upload.png"
+                    alt="pending-status-icon"
+                    title="add"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Bulk Upload
+                  </span>
+                </button>
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleAddOpen}
+                >
+                  <img
+                    src="/new.png"
+                    alt="pending-status-icon"
+                    title="add"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Warehouse
+                  </span>
+                </button>
+              </div>
             </div>
-            <DialogContent>
-              <DialogContentText className="d-flex flex-column">
-                Choose a file to upload
-                <div className="d-flex justify-content-center">
-                  <div className="col-lg-4 text-center my-3">
+            <div className="mt-4">
+              <MaterialReactTable table={table} />
+            </div>
+            <Dialog
+              fullWidth={true}
+              maxWidth={"sm"}
+              open={open}
+              onClose={handleClose}
+            >
+              <div className="d-flex justify-content-between">
+                <DialogTitle>Upload File</DialogTitle>
+                <IoMdClose
+                  onClick={handleClose}
+                  className="cursor-pointer w-8 h-8 mt-3 me-3"
+                />
+              </div>
+              <DialogContent>
+                <DialogContentText className="d-flex flex-column">
+                  Choose a file to upload
+                  <div className="d-flex justify-content-center">
+                    <div className="col-lg-4 text-center my-3">
+                      <Button
+                        component="label"
+                        variant="contained"
+                        startIcon={<FaCloudUploadAlt />}
+                      >
+                        Upload file
+                        <VisuallyHiddenInput type="file" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="col-lg-4 mt-3">
                     <Button
+                      size="small"
                       component="label"
+                      className="text-form"
                       variant="contained"
-                      startIcon={<FaCloudUploadAlt />}
+                      startIcon={<FiDownload />}
                     >
-                      Upload file
-                      <VisuallyHiddenInput type="file" />
+                      Download Sample File
                     </Button>
                   </div>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions className="mb-2 me-2">
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button component="label" variant="contained">
+                  Submit
+                </Button>
+              </DialogActions>
+            </Dialog>
+            {/* VIEW MODAL */}
+            <Dialog
+              open={openView}
+              onClose={handleViewClose}
+              maxWidth="sm"
+              fullWidth
+            >
+              <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+                <div className="row">
+                  <div className="col-md-11">
+                    <Typography variant="h6">Warehouse Details</Typography>
+                  </div>
+                  <div className="col-md-1">
+                    <IconButton onClick={handleViewClose} aria-label="close">
+                      <CloseIcon />
+                    </IconButton>
+                  </div>
                 </div>
-                <div className="col-lg-4 mt-3">
-                  <Button
-                    size="small"
-                    component="label"
-                    className="text-form"
-                    variant="contained"
-                    startIcon={<FiDownload />}
-                  >
-                    Download Sample File
-                  </Button>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions className="mb-2 me-2">
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button component="label" variant="contained">
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      )}
+              </DialogTitle>
+              <DialogContent className="mt-4">
+                {selectedRowData && (
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>Warehouse Code</TableCell>
+                          <TableCell>{selectedRowData.warehouseId}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Warehouse Name</TableCell>
+                          <TableCell>
+                            {selectedRowData.warehouseLocation}
+                          </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Country</TableCell>
+                          <TableCell>{selectedRowData.country}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>State</TableCell>
+                          <TableCell>{selectedRowData.state}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>City</TableCell>
+                          <TableCell>{selectedRowData.city}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Address</TableCell>
+                          <TableCell>{selectedRowData.address}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Pincode</TableCell>
+                          <TableCell>{selectedRowData.pincode}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Gst</TableCell>
+                          <TableCell>{selectedRowData.gst}</TableCell>
+                        </TableRow>
+                        {/* <TableRow>
+                        <TableCell>Active</TableCell>
+                        <TableCell>{selectedRowData.active}</TableCell>
+                      </TableRow> */}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )}
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
     </>
   );
 }

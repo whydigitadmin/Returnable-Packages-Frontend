@@ -62,7 +62,10 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddItemSpecification({ addItemSpecification }) {
+function AddItemSpecification({
+  addItemSpecification,
+  editItemSpecificationId,
+}) {
   const [id, setId] = useState("");
   const [assetName, setAssetName] = useState("");
   const [assetCodeId, setAssetCodeId] = useState("");
@@ -87,6 +90,9 @@ function AddItemSpecification({ addItemSpecification }) {
 
   useEffect(() => {
     getAllAssetCategory();
+    {
+      editItemSpecificationId && getItemGroupByAssetCode();
+    }
   }, []);
 
   // ALL ASSET CATEGORY
@@ -111,23 +117,31 @@ function AddItemSpecification({ addItemSpecification }) {
     }
   };
 
-  // const getAllAssetCategory = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
-  //     );
+  const getItemGroupByAssetCode = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAssetGroupByAssetCode?assetCodeId=${editItemSpecificationId}&orgId=${orgId}`
+      );
 
-  //     if (response.status === 200) {
-  //       const assetCategories =
-  //         response.data.paramObjectsMap.assetCategoryVO.assetCategory;
-  //       setAssetCategoryVO(assetCategories);
-  //     }
-
-  //     console.log("Test", assetCategories);
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+      if (response.status === 200) {
+        // setUserData(response.data.paramObjectsMap.userVO);
+        console.log(
+          "Edit User Details",
+          response.data.paramObjectsMap.assetGroupVO
+        );
+        setAssetCategory(
+          response.data.paramObjectsMap.assetGroupVO.assetCategory
+        );
+        setAssetName(response.data.paramObjectsMap.assetGroupVO.assetName);
+        setAssetCodeId(response.data.paramObjectsMap.assetGroupVO.assetCodeId);
+        setLength(response.data.paramObjectsMap.assetGroupVO.length);
+        setBreath(response.data.paramObjectsMap.assetGroupVO.breath);
+        setHeight(response.data.paramObjectsMap.assetGroupVO.height);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
@@ -195,6 +209,57 @@ function AddItemSpecification({ addItemSpecification }) {
           setBreath("");
           setDimUnit("");
           setId("");
+          // addItemSpecification(true);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
+  };
+
+  // UPDATE ASSETCATEGORY
+  const handleUpdateAssetCategory = () => {
+    const errors = {};
+    if (!assetCodeId) {
+      errors.assetCodeId = "Code is required";
+    }
+    if (!assetName) {
+      errors.assetName = "Name is required";
+    }
+    if (!length) {
+      errors.length = "Length is required";
+    }
+    if (!breath) {
+      errors.breath = "Breath is required";
+    }
+    if (!height) {
+      errors.height = "Height is required";
+    }
+    // if (!dimUnit) {
+    //   errors.dimUnit = "Unit is required";
+    // }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        assetName,
+        length,
+        breath,
+        height,
+        dimUnit,
+        orgId,
+        assetCodeId,
+        active,
+        assetCategory,
+      };
+      Axios.put(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        formData
+      )
+        .then((response) => {
+          console.log("Response:", response.data);
+          addItemSpecification(false);
           // addItemSpecification(true);
         })
         .catch((error) => {
@@ -424,22 +489,34 @@ function AddItemSpecification({ addItemSpecification }) {
             </div>
           </div>
         </div>
-        <div className="d-flex flex-row mt-3">
-          <button
-            type="button"
-            onClick={handleAssetCategory}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleCloseAddItemSpecification}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
-        </div>
+        {editItemSpecificationId ? (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleUpdateAssetCategory}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Update
+            </button>
+          </div>
+        ) : (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleAssetCategory}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleCloseAddItemSpecification}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
 
       {/* CLOSE CONFIRMATION MODAL */}

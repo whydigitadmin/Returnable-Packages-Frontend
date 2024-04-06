@@ -17,6 +17,19 @@ import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import { FaStarOfLife } from "react-icons/fa";
 import AddItemSpecification from "./AddItemSpecification";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const statsData = [
   {
@@ -54,6 +67,27 @@ function ItemGroup() {
   const [active, setActive] = React.useState(true);
   const [data, setData] = React.useState([]);
   const [errors, setErrors] = useState({});
+  const [openView, setOpenView] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [edit, setEdit] = React.useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+
+  const handleViewClose = () => {
+    setOpenView(false);
+  };
+
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    console.log("setSelectedRowData", row.original);
+    setOpenView(true);
+  };
+
+  const handleEditRow = (row) => {
+    setSelectedRowId(row.original.assetCodeId);
+    console.log("setSelectedRowID", row.original.assetCodeId);
+    setEdit(true);
+  };
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -68,6 +102,7 @@ function ItemGroup() {
 
   const handleBack = () => {
     setAdd(false);
+    setEdit(false);
     getAllAssetGroup();
   };
 
@@ -158,6 +193,30 @@ function ItemGroup() {
   const columns = useMemo(
     () => [
       {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
+      },
+      {
         accessorKey: "id",
         header: "ID",
         size: 30,
@@ -234,17 +293,6 @@ function ItemGroup() {
           align: "center",
         },
       },
-      // {
-      //   accessorKey: "dimUnit",
-      //   header: "Dimension Unit",
-      //   size: 20,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
     ],
     []
   );
@@ -256,129 +304,217 @@ function ItemGroup() {
 
   return (
     <>
-      {add ? (
+      {/* {add ? (
         <AddItemSpecification addItemSpecification={handleBack} />
-      ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="">
-            <div className="flex justify-between">
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleClickOpen}
-              >
-                <img
-                  src="/new.png"
-                  alt="new-icon"
-                  title="new"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
-                />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Type</span>
-              </button>
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleAddOpen}
-              >
-                <img
-                  src="/new.png"
-                  alt="new-icon"
-                  title="new"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
-                />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Category</span>
-              </button>
+      ) : ( */}
+
+      {(add && <AddItemSpecification addItemSpecification={handleBack} />) ||
+        (edit && (
+          <AddItemSpecification
+            addItemSpecification={handleBack}
+            editItemSpecificationId={selectedRowId}
+          />
+        )) || (
+          <div className="card w-full p-6 bg-base-100 shadow-xl">
+            <div className="">
+              <div className="flex justify-between">
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleClickOpen}
+                >
+                  <img
+                    src="/new.png"
+                    alt="new-icon"
+                    title="new"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Type
+                  </span>
+                </button>
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleAddOpen}
+                >
+                  <img
+                    src="/new.png"
+                    alt="new-icon"
+                    title="new"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Category
+                  </span>
+                </button>
+              </div>
             </div>
-          </div>
-          <div className="mt-4">
-            <MaterialReactTable table={table} columns={columns} />
-          </div>
-          <Dialog
-            fullWidth={true}
-            maxWidth={"sm"}
-            open={open}
-            onClose={handleClose}
-          >
-            <div className="d-flex justify-content-between">
-              <DialogTitle>Type</DialogTitle>
-              <IoMdClose
-                onClick={handleClose}
-                className="cursor-pointer w-8 h-8 mt-3 me-3"
-              />
+            <div className="mt-4">
+              <MaterialReactTable table={table} columns={columns} />
             </div>
-            <DialogContent>
-              <DialogContentText className="d-flex flex-column">
+            <Dialog
+              fullWidth={true}
+              maxWidth={"sm"}
+              open={open}
+              onClose={handleClose}
+            >
+              <div className="d-flex justify-content-between">
+                <DialogTitle>Type</DialogTitle>
+                <IoMdClose
+                  onClick={handleClose}
+                  className="cursor-pointer w-8 h-8 mt-3 me-3"
+                />
+              </div>
+              <DialogContent>
+                <DialogContentText className="d-flex flex-column">
+                  <div className="row">
+                    <div className="col-lg-4 col-md-6 mb-2">
+                      <label className="label">
+                        <span
+                          className={
+                            "label-text label-font-size text-base-content d-flex flex-row"
+                          }
+                        >
+                          Name:
+                          <FaStarOfLife className="must" />
+                        </span>
+                      </label>
+                    </div>
+                    <div className="col-lg-6 col-md-6 mb-2">
+                      <input
+                        type={"text"}
+                        name="assetCategory"
+                        value={assetCategory}
+                        onChange={handleCategoryChange}
+                        placeholder={""}
+                        className="form-control form-sz mb-2"
+                      />
+                      {errors.assetCategory && (
+                        <span className="error-text">
+                          {errors.assetCategory}
+                        </span>
+                      )}
+                    </div>
+                    <div className="col-lg-4 col-md-6 mb-2">
+                      <label className="label">
+                        <span
+                          className={
+                            "label-text label-font-size text-base-content d-flex flex-row"
+                          }
+                        >
+                          Code:
+                          <FaStarOfLife className="must" />
+                        </span>
+                      </label>
+                    </div>
+                    <div className="col-lg-6 col-md-6 mb-2">
+                      <input
+                        type={"text"}
+                        value={assetCategoryId}
+                        name="assetCategoryId"
+                        onChange={handleCategoryChange}
+                        placeholder={""}
+                        className="form-control form-sz mb-2"
+                      />
+                      {errors.assetCategoryId && (
+                        <span className="error-text">
+                          {errors.assetCategoryId}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions className="mb-2 me-2">
+                <Button onClick={handleClose} className="text-sm">
+                  Cancel
+                </Button>
+                <button
+                  type="button"
+                  onClick={handleAddAssetCategory}
+                  className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Submit
+                </button>
+              </DialogActions>
+            </Dialog>
+            {/* VIEW MODAL */}
+            <Dialog
+              open={openView}
+              onClose={handleViewClose}
+              maxWidth="sm"
+              fullWidth
+            >
+              <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
                 <div className="row">
-                  <div className="col-lg-4 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        Name:
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
+                  <div className="col-md-11">
+                    <Typography variant="h6">Asset Group Details</Typography>
                   </div>
-                  <div className="col-lg-6 col-md-6 mb-2">
-                    <input
-                      type={"text"}
-                      name="assetCategory"
-                      value={assetCategory}
-                      onChange={handleCategoryChange}
-                      placeholder={""}
-                      className="form-control form-sz mb-2"
-                    />
-                    {errors.assetCategory && (
-                      <span className="error-text">{errors.assetCategory}</span>
-                    )}
-                  </div>
-                  <div className="col-lg-4 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        Code:
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-6 col-md-6 mb-2">
-                    <input
-                      type={"text"}
-                      value={assetCategoryId}
-                      name="assetCategoryId"
-                      onChange={handleCategoryChange}
-                      placeholder={""}
-                      className="form-control form-sz mb-2"
-                    />
-                    {errors.assetCategoryId && (
-                      <span className="error-text">
-                        {errors.assetCategoryId}
-                      </span>
-                    )}
+                  <div className="col-md-1">
+                    <IconButton onClick={handleViewClose} aria-label="close">
+                      <CloseIcon />
+                    </IconButton>
                   </div>
                 </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions className="mb-2 me-2">
-              <Button onClick={handleClose} className="text-sm">
-                Cancel
-              </Button>
-              <button
-                type="button"
-                onClick={handleAddAssetCategory}
-                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              >
-                Submit
-              </button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      )}
+              </DialogTitle>
+              <DialogContent className="mt-4">
+                {selectedRowData && (
+                  <TableContainer component={Paper}>
+                    <Table>
+                      <TableBody>
+                        <TableRow>
+                          <TableCell>User ID</TableCell>
+                          <TableCell>{selectedRowData.id}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Type</TableCell>
+                          <TableCell>{selectedRowData.assetCategory}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Asset</TableCell>
+                          <TableCell>{selectedRowData.assetName}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Code</TableCell>
+                          <TableCell>{selectedRowData.assetCodeId}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Length</TableCell>
+                          <TableCell>{selectedRowData.length}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Breath</TableCell>
+                          <TableCell>{selectedRowData.breath}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Height</TableCell>
+                          <TableCell>{selectedRowData.height}</TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                )}
+              </DialogContent>
+            </Dialog>
+          </div>
+        )}
     </>
   );
 }

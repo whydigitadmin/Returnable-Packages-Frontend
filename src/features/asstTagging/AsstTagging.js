@@ -1,6 +1,3 @@
-import EditIcon from "@mui/icons-material/Edit";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
@@ -16,6 +13,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+import JsBarcode from "jsbarcode";
+import QRCodeLib from "qrcode";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -94,6 +93,7 @@ export const AsstTagging = () => {
   );
   const [selectedBarcodeRows, setSelectedBarcodeRows] = useState([]);
   const [selectedQRCodeRows, setSelectedQRCodeRows] = useState([]);
+  const [cancelledAssets, setCancelledAssets] = useState([]);
 
   const handleOpenBarcodeScannerDialog = (tagCode) => {
     setSelectedBarcode(tagCode);
@@ -123,18 +123,15 @@ export const AsstTagging = () => {
     handleCloseQRCodeScannerDialog();
   };
 
-  const dataText = [
-    {
-      assetCode: "PLT",
-      asset: "Pallet",
-      tagCode: "AI24PLT0001",
-    },
-  ];
-
   useEffect(() => {
     getAllTagCode(assetValue, assetCodeValue, endNoValue, startNoValue);
     getAllAssetCode();
   }, [assetValue, assetCodeValue, endNoValue, startNoValue]);
+
+  useEffect(() => {
+    console.log("Asset List:", assetList);
+    console.log("Asset Name:", assetName);
+  }, [assetList, assetName]);
 
   const getAllTagCode = async (asset, assetcode, endno, startno) => {
     try {
@@ -263,6 +260,23 @@ export const AsstTagging = () => {
     }
   };
 
+  const handleCancelAsset = () => {
+    // Clear all input fields
+    setDocId("");
+    setToDate(null);
+    setAssetCode("");
+    setAssetName("");
+    setSeqFrom("");
+    setSeqTo("");
+    // Clear table fields
+    setTagCodeList([]);
+    // Clear selected rows
+    setSelectedBarcodeRows([]);
+    setSelectedQRCodeRows([]);
+    // Clear cancelled assets
+    setCancelledAssets([]);
+  };
+
   const handleGenerateTagcode = () => {
     getAllTagCode();
   };
@@ -315,105 +329,18 @@ export const AsstTagging = () => {
     }
   };
 
-  // Function to handle printing Barcode or QR Code based on selected rows and type
-  // const handlePrint = (selectedRows, type) => {
-  //   // Filter the tagCodeList based on the selected rows and type (Barcode or QR Code)
-  //   const selectedItems = tagCodeList.filter((_, index) =>
-  //     selectedRows.includes(index)
-  //   );
-
-  //   // Create a new window for printing
-  //   const printWindow = window.open("", "_blank");
-
-  //   // Generate the content to be printed based on the type
-  //   let content = "";
-  //   if (type === "Barcode") {
-  //     content = `
-  //     <html>
-  //       <head>
-  //         <title>Print Barcode</title>
-  //         <style>
-  //           /* Add custom styles for the printed content */
-  //           body { font-family: Arial, sans-serif; }
-  //           .barcode { margin-bottom: 20px; }
-  //           .scanner-image { max-width: 100px; max-height: 100px; }
-  //         </style>
-  //       </head>
-  //       <body>
-  //         <h2>Print Barcode</h2>
-  //         <div class="barcode">
-  //           ${selectedItems
-  //             .map(
-  //               (item) =>
-  //                 `<h3>Scanner: ${item.Scanner}</h3>
-  //                  <img class="scanner-image" src="${item.ScannerImage}" alt="Scanner Image" />
-  //                  <p>Barcode for ${item.TagCode}:</p>
-  //                  <img src="https://barcode.example.com/${item.TagCode}" alt="Barcode" />`
-  //             )
-  //             .join("")}
-  //         </div>
-  //       </body>
-  //     </html>
-  //   `;
-  //   } else if (type === "QR Code") {
-  //     content = `
-  //     <html>
-  //       <head>
-  //         <title>Print QR Code</title>
-  //         <style>
-  //           /* Add custom styles for the printed content */
-  //           body { font-family: Arial, sans-serif; }
-  //           .qrcode { margin-bottom: 20px; }
-  //           .scanner-image { max-width: 100px; max-height: 100px; }
-  //         </style>
-  //       </head>
-  //       <body>
-  //         <h2>Print QR Code</h2>
-  //         <div class="qrcode">
-  //           ${selectedItems
-  //             .map(
-  //               (item) =>
-  //                 `<h3>Scanner: ${item.Scanner}</h3>
-  //                  <img class="scanner-image" src="${item.ScannerImage}" alt="Scanner Image" />
-  //                  <p>QR Code for ${item.TagCode}:</p>
-  //                  <img src="https://qrcode.example.com/${item.TagCode}" alt="QR Code" />`
-  //             )
-  //             .join("")}
-  //         </div>
-  //       </body>
-  //     </html>
-  //   `;
-  //   }
-
-  //   // Write the content to the new window
-  //   printWindow.document.write(content);
-
-  //   // Close the document after printing
-  //   printWindow.document.close();
-
-  //   // Print the content
-  //   printWindow.print();
-
-  //   // Close the print window
-  //   printWindow.close();
-  // };
-
-  const handlePrint = (selectedRows, type) => {
-    // Filter the tagCodeList based on the selected rows and type (Barcode or QR Code)
+  const handlePrint = async (selectedRows, type) => {
     const selectedItems = tagCodeList.filter((_, index) =>
       selectedRows.includes(index)
     );
 
-    // Create a new window for printing
     const printWindow = window.open("", "_blank");
 
-    // Generate the content to be printed based on the type
     let content = `
         <html>
             <head>
                 <title>Print ${type}</title>
                 <style>
-                    /* Add custom styles for the printed content */
                     body { font-family: Arial, sans-serif; }
                     .scanner-image { max-width: 100px; max-height: 100px; }
                 </style>
@@ -422,41 +349,51 @@ export const AsstTagging = () => {
                 <h2>Print ${type}</h2>
     `;
 
-    // Add barcode or QR code images to the content
     selectedItems.forEach((item) => {
       content += `
             <div>
-                <h3>Scanner: ${item.Scanner}</h3>
                 <img class="scanner-image" src="${
                   item.ScannerImage
                 }" alt="Scanner Image" />
                 <p>${type} for ${item.TagCode}:</p>
-                ${
-                  type === "Barcode"
-                    ? `<ReactBarcode value="${item.TagCode}" />`
-                    : `<QRCode value="${item.TagCode}" />`
-                }
+                <canvas id="${type.toLowerCase()}-${item.TagCode}"></canvas>
             </div>
         `;
     });
 
-    // Close the HTML content
     content += `
             </body>
         </html>
     `;
 
-    // Write the content to the new window
     printWindow.document.write(content);
 
-    // Close the document after printing
+    selectedItems.forEach(async (item) => {
+      const canvas = printWindow.document.getElementById(
+        `${type.toLowerCase()}-${item.TagCode}`
+      );
+      if (type === "Barcode") {
+        JsBarcode(canvas, item.TagCode);
+      } else {
+        try {
+          await generateQRCode(canvas, item.TagCode);
+        } catch (error) {
+          console.error("Failed to generate QR code:", error);
+        }
+      }
+    });
+
     printWindow.document.close();
-
-    // Print the content
     printWindow.print();
-
-    // Close the print window
     printWindow.close();
+  };
+
+  const generateQRCode = async (canvas, text) => {
+    try {
+      await QRCodeLib.toCanvas(canvas, text); // Use renamed QRCodeLib
+    } catch (error) {
+      throw error;
+    }
   };
 
   return (
@@ -601,13 +538,13 @@ export const AsstTagging = () => {
         </button>
         <button
           type="button"
-          // onClick={handleCloseAddItemSpecification}
+          onClick={handleCancelAsset}
           className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
         >
           Cancel
         </button>
       </div>
-      <div className="d-flex flex-row mt-5">
+      <div className="d-flex flex-row mt-4">
         <button
           type="button"
           onClick={handleGenerateTagcode}
@@ -616,34 +553,34 @@ export const AsstTagging = () => {
           Generate Tagcode
         </button>
       </div>
-      <button onClick={() => handlePrint(selectedBarcodeRows, "Barcode")}>
-        Print Barcode
-      </button>
-      <button onClick={() => handlePrint(selectedQRCodeRows, "QR Code")}>
-        Print QR Code
-      </button>
+      <div className="row mt-4">
+        <div className="col-md-6 d-flex justify-content-start">
+          <button
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={() => handlePrint(selectedBarcodeRows, "Barcode")}
+          >
+            Print Barcode
+          </button>
+        </div>
+        <div className="col-md-6 d-flex justify-content-end">
+          <button
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={() => handlePrint(selectedQRCodeRows, "QR Code")}
+          >
+            Print QR Code
+          </button>
+        </div>
+      </div>
 
-      <div className="row mt-2">
+      <div
+        className="row mt-2"
+        style={{ overflowX: "auto", maxHeight: "400px" }}
+      >
         <div className="col-lg-12">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr>
-                  {/* <th className="px-2 py-2 bg-blue-500 text-white">
-                    {selectedRows.length === tagCodeList.length ? (
-                      <input
-                        type="checkbox"
-                        checked
-                        onChange={(e) => handleSelectAll(e.target.checked)}
-                      />
-                    ) : (
-                      <input
-                        type="checkbox"
-                        checked={false}
-                        onChange={(e) => handleSelectAll(e.target.checked)}
-                      />
-                    )}
-                  </th> */}
                   <th className="px-2 py-2 bg-blue-500 text-white">
                     Asset Code
                   </th>
@@ -652,20 +589,25 @@ export const AsstTagging = () => {
                   <th className="px-2 py-2 bg-blue-500 text-white">
                     <input
                       type="checkbox"
+                      style={{ cursor: "pointer" }}
                       checked={
                         selectedBarcodeRows.length === tagCodeList.length
                       }
                       onChange={(e) => handleSelectAllBarcode(e.target.checked)}
                     />
-
+                  </th>
+                  <th className="px-2 py-2 bg-blue-500 text-white">
                     <span className="ml-2">Bar Code</span>
                   </th>
                   <th className="px-2 py-2 bg-blue-500 text-white">
                     <input
                       type="checkbox"
+                      style={{ cursor: "pointer" }}
                       checked={selectedQRCodeRows.length === tagCodeList.length}
                       onChange={(e) => handleSelectAllQRCode(e.target.checked)}
                     />
+                  </th>
+                  <th className="px-2 py-2 bg-blue-500 text-white">
                     <span className="ml-2">QR Code</span>
                   </th>
                 </tr>
@@ -673,42 +615,40 @@ export const AsstTagging = () => {
               <tbody>
                 {tagCodeList.map((item, index) => (
                   <tr key={index}>
-                    {/* <td className="px-2 py-2">
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.includes(index)}
-                        onChange={() => handleSelectRow(index)}
-                      />
-                    </td> */}
                     <td className="px-2 py-2">{item.AssetCode}</td>
                     <td className="px-2 py-2">{item.Asset}</td>
                     <td className="px-2 py-2">{item.TagCode}</td>
+                    <td className="px-2 py-2">
+                      <input
+                        type="checkbox"
+                        style={{ cursor: "pointer" }}
+                        checked={selectedBarcodeRows.includes(index)}
+                        onChange={() => handleSelectBarcodeRow(index)}
+                      />
+                    </td>
                     <td className="px-2 py-2">
                       <Button
                         onClick={() =>
                           handleOpenBarcodeScannerDialog(item.TagCode)
                         }
                       >
-                        <input
-                          type="checkbox"
-                          checked={selectedBarcodeRows.includes(index)}
-                          onChange={() => handleSelectBarcodeRow(index)}
-                        />
                         <span className="ml-2">Scan Barcode</span>
                       </Button>
                     </td>
-
+                    <td className="px-2 py-2">
+                      <input
+                        type="checkbox"
+                        style={{ cursor: "pointer" }}
+                        checked={selectedQRCodeRows.includes(index)}
+                        onChange={() => handleSelectQRCodeRow(index)}
+                      />
+                    </td>
                     <td className="px-2 py-2">
                       <Button
                         onClick={() =>
                           handleOpenQRCodeScannerDialog(item.TagCode)
                         }
                       >
-                        <input
-                          type="checkbox"
-                          checked={selectedQRCodeRows.includes(index)}
-                          onChange={() => handleSelectQRCodeRow(index)}
-                        />
                         <span className="ml-2">Scan QR Code</span>
                       </Button>
                     </td>

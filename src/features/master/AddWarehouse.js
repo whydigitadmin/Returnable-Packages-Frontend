@@ -5,7 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import Axios from "axios";
+import { default as Axios, default as axios } from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
@@ -72,7 +72,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddWarehouse({ addWarehouse }) {
+function AddWarehouse({ addWarehouse, editWarehouseId }) {
   const [personName, setPersonName] = React.useState([]);
   const [code, setCode] = useState();
   const [unit, setUnit] = useState("");
@@ -85,11 +85,12 @@ function AddWarehouse({ addWarehouse }) {
   const [pincode, setPincode] = useState("");
   const [gst, setGst] = useState("");
   const [active, setActive] = useState(true);
-  const [stockBranch, setStockBranch] = useState("");
+  const [stockBranch, setStockBranch] = useState([]);
   const [stock, setStock] = useState("");
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [id, setId] = useState("");
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -117,7 +118,28 @@ function AddWarehouse({ addWarehouse }) {
 
   useEffect(() => {
     getStockBranch();
+    {
+      editWarehouseId && getWarehouse();
+    }
   }, []);
+
+  // const getStockBranch = async () => {
+  //   try {
+  //     const response = await Axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
+  //     );
+  //     console.log("API Response:", response);
+
+  //     if (Array.isArray(response.data.paramObjectsMap.branch)) {
+  //       setStockBranch(response.data.paramObjectsMap.branch);
+  //     } else {
+  //       // Handle error
+  //       console.error("API Error:", response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const getStockBranch = async () => {
     try {
@@ -127,9 +149,12 @@ function AddWarehouse({ addWarehouse }) {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        setStockBranch(response.data.paramObjectsMap.branch);
-
-        // Handle success
+        const branchData = response.data.paramObjectsMap.branch;
+        if (Array.isArray(branchData)) {
+          setStockBranch(branchData);
+        } else {
+          // Handle the case where branchData is not an array
+        }
       } else {
         // Handle error
         console.error("API Error:", response.data);
@@ -138,6 +163,37 @@ function AddWarehouse({ addWarehouse }) {
       console.error("Error fetching data:", error);
     }
   };
+
+  const getWarehouse = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseById/${editWarehouseId}`
+      );
+
+      if (response.status === 200) {
+        // setUserData(response.data.paramObjectsMap.userVO);
+        console.log(
+          "Edit User Details",
+          response.data.paramObjectsMap.warehouse
+        );
+        setId(response.data.paramObjectsMap.warehouse.warehouseId);
+        setLocationName(response.data.paramObjectsMap.warehouse.locationName);
+        setUnit(response.data.paramObjectsMap.warehouse.unit);
+        setName(response.data.paramObjectsMap.warehouse.warehouseLocation);
+        setCode(response.data.paramObjectsMap.warehouse.code);
+        setAddress(response.data.paramObjectsMap.warehouse.address);
+        setCity(response.data.paramObjectsMap.warehouse.city);
+        setState(response.data.paramObjectsMap.warehouse.state);
+        setCountry(response.data.paramObjectsMap.warehouse.country);
+        setPincode(response.data.paramObjectsMap.warehouse.pincode);
+        setGst(response.data.paramObjectsMap.warehouse.gst);
+        setStockBranch(response.data.paramObjectsMap.warehouse.stockBranch);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   // const handleCloseWarehouse = () => {
   //   addWarehouse(false);
   // };
@@ -229,6 +285,70 @@ function AddWarehouse({ addWarehouse }) {
           console.log("Response status:", response.status);
           console.log("Response data:", response.data);
           addWarehouse(true);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          // Handle error response
+          if (error.response) {
+            console.log("Response status:", error.response.status);
+            console.log("Response data:", error.response.data);
+          }
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setErrors(errors);
+    }
+  };
+
+  // Update
+  const handleUpdateWarehouse = () => {
+    const errors = {};
+    if (!name) {
+      errors.name = "Warehouse Name is required";
+    }
+    if (!locationName) {
+      errors.locationName = "Location Name is required";
+    }
+    if (!country) {
+      errors.country = "Country is required";
+    }
+    if (!state) {
+      errors.state = "State is required";
+    }
+    if (!city) {
+      errors.city = "City is required";
+    }
+    if (!address) {
+      errors.address = "Address is required";
+    }
+    if (!pincode) {
+      errors.pincode = "Pincode is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        warehouseId: id,
+        orgId,
+        warehouseLocation: name,
+        locationName,
+        address,
+        state,
+        pincode,
+        unit,
+        code,
+        city,
+        country,
+        gst,
+        active,
+        stockBranch: stock,
+      };
+      Axios.put(
+        `${process.env.REACT_APP_API_URL}/api/warehouse/updateCreateWarehouse`,
+        formData
+      )
+        .then((response) => {
+          console.log("Response status:", response.status);
+          console.log("Response data:", response.data);
+          addWarehouse(false);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -535,7 +655,8 @@ function AddWarehouse({ addWarehouse }) {
               <option value="" disabled>
                 Select Stock Branch
               </option>
-              {stockBranch.length > 0 &&
+              {Array.isArray(stockBranch) &&
+                stockBranch.length > 0 &&
                 stockBranch.map((list) => (
                   <option key={list.id} value={list.branchCode}>
                     {list.branchCode}
@@ -558,22 +679,34 @@ function AddWarehouse({ addWarehouse }) {
             />
           </div>
         </div>
-        <div className="d-flex flex-row mt-3">
-          <button
-            type="button"
-            onClick={handleWarehouse}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleCloseWarehouse}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
-        </div>
+        {editWarehouseId ? (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleUpdateWarehouse}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              update
+            </button>
+          </div>
+        ) : (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleWarehouse}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleCloseWarehouse}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
 
       {/* CLOSE CONFIRMATION MODAL */}

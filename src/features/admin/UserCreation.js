@@ -77,7 +77,7 @@ function UserCreation({ addUser, userEditId }) {
   const [phone, setPhone] = React.useState("");
   const [active, setActive] = React.useState(true);
   const [role, setRole] = React.useState("ROLE_USER");
-  const [warehouse, setWarehouse] = React.useState({});
+  const [warehouse, setWarehouse] = React.useState([]);
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
@@ -248,16 +248,35 @@ function UserCreation({ addUser, userEditId }) {
     }
   };
 
+  // const handleLocationChange = (warehouselocation, isChecked) => {
+  //   setWarehouse((prevWarehouse) => {
+  //     if (isChecked && !prevWarehouse.includes(warehouselocation)) {
+  //       // Add warehouseId to the array if it's not already present
+  //       return [...prevWarehouse, warehouselocation];
+  //     } else if (!isChecked) {
+  //       // Remove warehouseId from the array
+  //       return prevWarehouse.filter((id) => id !== warehouselocation);
+  //     }
+
+  //     // Return the unchanged array if isChecked is true and warehouseId is already present
+  //     return prevWarehouse;
+  //   });
+  // };
+
   const handleLocationChange = (warehouselocation, isChecked) => {
     setWarehouse((prevWarehouse) => {
-      if (isChecked && !prevWarehouse.includes(warehouselocation)) {
+      console.log("Previous Warehouse:", prevWarehouse);
+      if (
+        Array.isArray(prevWarehouse) &&
+        isChecked &&
+        !prevWarehouse.includes(warehouselocation)
+      ) {
         // Add warehouseId to the array if it's not already present
         return [...prevWarehouse, warehouselocation];
-      } else if (!isChecked) {
+      } else if (Array.isArray(prevWarehouse) && !isChecked) {
         // Remove warehouseId from the array
         return prevWarehouse.filter((id) => id !== warehouselocation);
       }
-
       // Return the unchanged array if isChecked is true and warehouseId is already present
       return prevWarehouse;
     });
@@ -803,7 +822,11 @@ function UserCreation({ addUser, userEditId }) {
                           type="checkbox"
                           id={location.warehouseId}
                           value={location.warehouseId}
-                          checked={warehouse.includes(location.warehouseId)}
+                          // checked={warehouse.includes(location.warehouseId)}
+                          checked={
+                            Array.isArray(warehouse) &&
+                            warehouse.includes(location.warehouseId)
+                          }
                           onChange={(e) =>
                             handleLocationChange(
                               location.warehouseId,

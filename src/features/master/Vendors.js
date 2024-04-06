@@ -18,6 +18,19 @@ import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { MdGroups } from "react-icons/md";
 import AddVendor from "./AddVendor";
 import DashBoardComponent from "./DashBoardComponent";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const statsData = [
   {
@@ -51,6 +64,18 @@ function Vendors() {
   const [addVendors, setAddVendors] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [openView, setOpenView] = React.useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  const handleViewClose = () => {
+    setOpenView(false);
+  };
+
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    console.log("setSelectedRowData", row.original);
+    setOpenView(true);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -82,6 +107,30 @@ function Vendors() {
   });
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
+      },
       {
         accessorKey: "id",
         header: "Sr No",
@@ -288,6 +337,51 @@ function Vendors() {
           </Dialog>
         </div>
       )}
+      {/* VIEW MODAL */}
+      <Dialog open={openView} onClose={handleViewClose} maxWidth="sm" fullWidth>
+        <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+          <div className="row">
+            <div className="col-md-11">
+              <Typography variant="h6">Warehouse Details</Typography>
+            </div>
+            <div className="col-md-1">
+              <IconButton onClick={handleViewClose} aria-label="close">
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </div>
+        </DialogTitle>
+        <DialogContent className="mt-4">
+          {selectedRowData && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Sr No</TableCell>
+                    <TableCell>{selectedRowData.id}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Vendor Display Name</TableCell>
+                    <TableCell>{selectedRowData.displyName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Vendor Type</TableCell>
+                    <TableCell>{selectedRowData.venderType}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Email</TableCell>
+                    <TableCell>{selectedRowData.email}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Phone</TableCell>
+                    <TableCell>{selectedRowData.phoneNumber}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

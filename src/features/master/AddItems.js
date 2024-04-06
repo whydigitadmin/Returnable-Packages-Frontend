@@ -60,7 +60,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddItem({ addItem }) {
+function AddItem({ addItem, editItemId }) {
   const [value, setValue] = useState("");
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
@@ -73,6 +73,7 @@ function AddItem({ addItem }) {
   const [brandVO, setBrandVO] = useState([]);
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
+  const [chargableWeight, setChargableWeight] = useState("");
   const [height, setHeight] = useState("");
   const [dimUnit, setDimUnit] = useState("");
   const [costPrice, setCostPrice] = useState("");
@@ -80,7 +81,7 @@ function AddItem({ addItem }) {
   const [expectedLife, setExpectedLife] = useState("");
   const [expectedTrips, setExpectedTrips] = useState("");
   const [hsnCode, setHsnCode] = useState("");
-  const [id, setId] = useState();
+  const [id, setId] = useState("");
   const [maintanencePeriod, setMaintanencePeriod] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [manufacturerVO, setManufacturerVO] = useState([]);
@@ -146,7 +147,49 @@ function AddItem({ addItem }) {
     getAllAssetCategory();
     getWarehouseLocationList();
     getAssetNamesByCategory();
+    editItemId && getItemByAssetCode();
   }, []);
+
+  const getItemByAssetCode = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAssetByOrgId?assetId=${editItemId}&orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        // setUserData(response.data.paramObjectsMap.userVO);
+        console.log("Edit User Details", response.data.paramObjectsMap.assetVO);
+        setId(response.data.paramObjectsMap.assetVO.id);
+        setAssetCategory(response.data.paramObjectsMap.assetVO.assetCategory);
+        setAssetName(response.data.paramObjectsMap.assetVO.assetName);
+        setAssetCodeId(response.data.paramObjectsMap.assetVO.assetCodeId);
+        setAssetQty(response.data.paramObjectsMap.assetVO.quantity);
+        setSkuFrom(response.data.paramObjectsMap.assetVO.skuFrom);
+        setSkuTo(response.data.paramObjectsMap.assetVO.skuTo);
+        setLength(response.data.paramObjectsMap.assetVO.length);
+        setBreath(response.data.paramObjectsMap.assetVO.breath);
+        setChargableWeight(
+          response.data.paramObjectsMap.assetVO.chargableWeight
+        );
+        setHeight(response.data.paramObjectsMap.assetVO.height);
+        setEanUpc(response.data.paramObjectsMap.assetVO.eanUpc);
+        setWeight(response.data.paramObjectsMap.assetVO.weight);
+        setValue(response.data.paramObjectsMap.assetVO.chargableWeight);
+        setExpectedLife(response.data.paramObjectsMap.assetVO.expectedLife);
+        setMaintanencePeriod(
+          response.data.paramObjectsMap.assetVO.maintanencePeriod
+        );
+        setExpectedTrips(response.data.paramObjectsMap.assetVO.expectedTrips);
+        setHsnCode(response.data.paramObjectsMap.assetVO.hsnCode);
+        setTaxRate(response.data.paramObjectsMap.assetVO.taxRate);
+        setCostPrice(response.data.paramObjectsMap.assetVO.costPrice);
+        setSellPrice(response.data.paramObjectsMap.assetVO.sellPrice);
+        setScrapValue(response.data.paramObjectsMap.assetVO.scrapValue);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getWarehouseLocationList = async () => {
     try {
@@ -292,6 +335,9 @@ function AddItem({ addItem }) {
       case "breath":
         setBreath(value);
         break;
+      case "chargableWeight":
+        setChargableWeight(value);
+        break;
       case "height":
         setHeight(value);
         break;
@@ -358,6 +404,7 @@ function AddItem({ addItem }) {
         assetName,
         brand,
         breath,
+        chargableWeight,
         costPrice,
         dimUnit,
         eanUpc,
@@ -379,6 +426,56 @@ function AddItem({ addItem }) {
         orgId,
       };
       Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
+        .then((response) => {
+          console.log("Response:", response.data);
+          addItem(false);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
+
+  const handleUpdateAsset = () => {
+    const errors = {};
+    // if (!weight) {
+    //   errors.weight = "Weight Name is required";
+    // }
+    if (!taxRate) {
+      errors.taxRate = "Tax Rate is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        active,
+        assetCategory,
+        assetCodeId,
+        assetName,
+        brand,
+        breath,
+        chargableWeight,
+        costPrice,
+        dimUnit,
+        eanUpc,
+        expectedLife,
+        expectedTrips,
+        height,
+        id,
+        length,
+        hsnCode,
+        maintanencePeriod,
+        manufacturer,
+        scrapValue,
+        sellPrice,
+        taxRate,
+        skuFrom,
+        skuTo,
+        weight,
+        weightUnit,
+        orgId,
+      };
+      Axios.put(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
         .then((response) => {
           console.log("Response:", response.data);
           addItem(false);
@@ -459,6 +556,7 @@ function AddItem({ addItem }) {
       skuTo ||
       length ||
       breath ||
+      chargableWeight ||
       height ||
       eanUpc ||
       weight ||
@@ -853,8 +951,8 @@ function AddItem({ addItem }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-row">
               <input
-                value={value}
-                name="value"
+                value={chargableWeight}
+                name="chargableWeight"
                 placeholder={""}
                 onChange={handleCategoryChange}
                 className="input mb-2 form-sz input-bordered w-full"
@@ -1013,22 +1111,34 @@ function AddItem({ addItem }) {
             />
           </div>
         </div>
-        <div className="d-flex flex-row mt-3">
-          <button
-            type="button"
-            onClick={handleAsset}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleAssetClose}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
-        </div>
+        {editItemId ? (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleUpdateAsset}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Update
+            </button>
+          </div>
+        ) : (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleAsset}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleAssetClose}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
 
       {/* CLOSE CONFIRMATION MODAL */}

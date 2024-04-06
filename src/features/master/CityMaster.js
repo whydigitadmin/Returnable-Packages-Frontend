@@ -5,6 +5,22 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 //import DashBoardComponent from "./DashBoardComponent";
 import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export const CityMaster = () => {
   const [open, setOpen] = React.useState(false);
@@ -18,6 +34,18 @@ export const CityMaster = () => {
     JSON.parse(localStorage.getItem("userDto"))
   );
   const [errors, setErrors] = useState({});
+  const [openView, setOpenView] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  const handleViewClose = () => {
+    setOpenView(false);
+  };
+
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    console.log("setSelectedRowData", row.original);
+    setOpenView(true);
+  };
 
   useEffect(() => {
     getCityData();
@@ -95,6 +123,30 @@ export const CityMaster = () => {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
+      },
       {
         accessorKey: "cityid",
         header: "ID",
@@ -266,6 +318,48 @@ export const CityMaster = () => {
             )}
           />
         </div>
+        {/* VIEW MODAL */}
+        <Dialog
+          open={openView}
+          onClose={handleViewClose}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+            <div className="row">
+              <div className="col-md-11">
+                <Typography variant="h6">Warehouse Details</Typography>
+              </div>
+              <div className="col-md-1">
+                <IconButton onClick={handleViewClose} aria-label="close">
+                  <CloseIcon />
+                </IconButton>
+              </div>
+            </div>
+          </DialogTitle>
+          <DialogContent className="mt-4">
+            {selectedRowData && (
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell>{selectedRowData.cityid}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>City</TableCell>
+                      <TableCell>{selectedRowData.cityName}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Code</TableCell>
+                      <TableCell>{selectedRowData.cityCode}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );

@@ -8,6 +8,22 @@ import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 //import DashBoardComponent from "./DashBoardComponent";
 import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
 const statsData = [
   {
@@ -44,6 +60,18 @@ function Unit() {
   const [unit, setUnit] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
+  const [openView, setOpenView] = useState(false);
+  const [selectedRowData, setSelectedRowData] = useState(null);
+
+  const handleViewClose = () => {
+    setOpenView(false);
+  };
+
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    console.log("setSelectedRowData", row.original);
+    setOpenView(true);
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -143,6 +171,30 @@ function Unit() {
 
   const columns = useMemo(
     () => [
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
+      },
       {
         accessorKey: "id",
         header: "ID",
@@ -276,6 +328,44 @@ function Unit() {
             )}
           />
         </div>
+        {/* VIEW MODAL */}
+        <Dialog
+          open={openView}
+          onClose={handleViewClose}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+            <div className="row">
+              <div className="col-md-11">
+                <Typography variant="h6">Warehouse Details</Typography>
+              </div>
+              <div className="col-md-1">
+                <IconButton onClick={handleViewClose} aria-label="close">
+                  <CloseIcon />
+                </IconButton>
+              </div>
+            </div>
+          </DialogTitle>
+          <DialogContent className="mt-4">
+            {selectedRowData && (
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>ID</TableCell>
+                      <TableCell>{selectedRowData.id}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Unit</TableCell>
+                      <TableCell>{selectedRowData.unit}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
