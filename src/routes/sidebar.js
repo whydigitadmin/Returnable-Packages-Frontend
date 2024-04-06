@@ -167,6 +167,18 @@ const routes = [
         name: <span className="">Vendors</span>,
       },
       {
+        path: "/app/Country",
+        icon: (
+          <img
+            src="/city.png"
+            alt="Country"
+            style={{ width: "34px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Country Master</span>,
+      },
+      {
         path: "/app/CityMaster",
         icon: (
           <img

@@ -104,6 +104,7 @@ const ChargeCode = lazy(() => import("../pages/protected/ChargeCode"));
 const AsstTagging = lazy(() => import("../pages/protected/AsstTagging"));
 const StockBranch = lazy(() => import("../pages/protected/StockBranch"));
 const CityMaster = lazy(() => import("../pages/protected/CityMaster"));
+const Country = lazy(() => import("../pages/protected/Country"));
 const KitCard = lazy(() => import("../pages/protected/KitCard"));
 const Terms = lazy(() => import("../pages/protected/Terms"));
 const PoOrder = lazy(() => import("../pages/protected/PoOrder"));
@@ -113,6 +114,10 @@ const routes = [
   {
     path: "/dashboard", // the url
     component: Dashboard, // view rendered
+  },
+  {
+    path: "/Country",
+    component: Country,
   },
   {
     path: "/CityMaster",
