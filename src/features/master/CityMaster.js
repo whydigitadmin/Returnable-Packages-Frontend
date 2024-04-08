@@ -36,6 +36,17 @@ export const CityMaster = () => {
   const [errors, setErrors] = useState({});
   const [openView, setOpenView] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [edit, setEdit] = React.useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+  const [updateLoading, setUpdateLoading] = useState(false); // Added state for update loading
+
+  const handleEditRow = (row) => {
+    setSelectedRowId(row.original.cityid);
+    setEdit(true);
+    setCity(row.original.cityName);
+    setCode(row.original.cityCode);
+    // console.log("Selected row id:", row.original.cityid);
+  };
 
   const handleViewClose = () => {
     setOpenView(false);
@@ -84,6 +95,11 @@ export const CityMaster = () => {
     }
   };
 
+  const handleCancel = () => {
+    setCity("");
+    setCode("");
+  };
+
   const handleCity = () => {
     console.log("test");
     const errors = {};
@@ -121,6 +137,37 @@ export const CityMaster = () => {
     }
   };
 
+  const handleUpdateCity = () => {
+    setUpdateLoading(true); // Set loading state
+
+    const formData = {
+      cityName: city,
+      cityCode: code,
+      cityid: selectedRowId,
+      orgId: orgId,
+      modifiedBy: userDetail.firstName,
+      active: true,
+      cancel: false,
+      country: "India",
+      state: "Tamilnadu",
+    };
+
+    axios
+      .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/city`, formData)
+      .then((response) => {
+        console.log("Update Response:", response.data);
+        getCityData();
+        setEdit(false);
+        setUpdateLoading(false); // Reset loading state
+        setCity("");
+        setCode("");
+      })
+      .catch((error) => {
+        console.error("Error updating data:", error);
+        setUpdateLoading(false); // Reset loading state on error
+      });
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -141,9 +188,7 @@ export const CityMaster = () => {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton
-            // onClick={() => handleEditRow(row)}
-            >
+            <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
             </IconButton>
           </div>
@@ -204,12 +249,6 @@ export const CityMaster = () => {
     <>
       {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div> */}
-
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -262,22 +301,34 @@ export const CityMaster = () => {
             />
             {errors.code && <div className="error-text">{errors.code}</div>}
           </div>
-          <div className="d-flex flex-row mt-3">
-            <button
-              type="button"
-              onClick={handleCity}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              //onClick={handleCloseWarehouse}
-              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Cancel
-            </button>
-          </div>
+          {edit ? (
+            <div className="d-flex flex-row mt-3">
+              <button
+                type="button"
+                onClick={handleUpdateCity}
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                {updateLoading ? "Updating..." : "Update"}
+              </button>
+            </div>
+          ) : (
+            <div className="d-flex flex-row mt-3">
+              <button
+                type="button"
+                onClick={handleCity}
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={handleCancel}
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="mt-4">

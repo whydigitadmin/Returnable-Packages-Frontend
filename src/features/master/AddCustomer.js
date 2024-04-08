@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaCloudUploadAlt, FaStarOfLife, FaTrash } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -101,7 +101,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddCustomer({ addcustomer }) {
+function AddCustomer({ addcustomer, editCustomerId }) {
   const [id, setId] = React.useState();
   const [value, setValue] = React.useState(0);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
@@ -159,6 +159,96 @@ function AddCustomer({ addcustomer }) {
     ifscCode: false,
   });
 
+  useEffect(() => {
+    {
+      editCustomerId && getCustomerId();
+    }
+    if (editCustomerId && openShippingModal) {
+      getCustomerId();
+    }
+  }, [openShippingModal]);
+
+  const getCustomerId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/customers/${editCustomerId}`
+      );
+
+      if (response.status === 200) {
+        const customersVO = response.data.paramObjectsMap.customersVO;
+        // const addressVO =
+        //   response.data.paramObjectsMap.customersVO.customersAddressVO;
+        console.log(
+          "Edit User Details",
+          response.data.paramObjectsMap.customersVO
+        );
+        console.log(
+          "customer Details",
+          response.data.paramObjectsMap.customersVO.customersAddressVO
+        );
+        setCustomerType(response.data.paramObjectsMap.customersVO.customerType);
+        setCustomerCode(response.data.paramObjectsMap.customersVO.customerCode);
+        setEntityLegalName(
+          response.data.paramObjectsMap.customersVO.entityLegalName
+        );
+        setDisplayName(response.data.paramObjectsMap.customersVO.displayName);
+        setEmail(response.data.paramObjectsMap.customersVO.email);
+        setPhoneNumber(response.data.paramObjectsMap.customersVO.phoneNumber);
+        setNewAddress({
+          // ...newAddress,
+          gstRegistrationStatus:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .gstRegistrationStatus,
+          street1:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .street1,
+          street2:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .street2,
+          state:
+            response.data.paramObjectsMap.customersVO.customersAddressVO.state,
+          city: response.data.paramObjectsMap.customersVO.customersAddressVO
+            .city,
+          pinCode:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .pinCode,
+          contactName:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .contactName,
+          phoneNumber:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .phoneNumber,
+          designation:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .designation,
+          email:
+            response.data.paramObjectsMap.customersVO.customersAddressVO.email,
+        });
+        console.log("new", newAddress);
+        const gstRegistrationStatus =
+          response.data.paramObjectsMap.customersVO.customersAddressVO
+            .gstRegistrationStatus;
+        if (gstRegistrationStatus) {
+          setNewAddress({
+            ...newAddress,
+            gstRegistrationStatus: gstRegistrationStatus,
+          });
+        }
+
+        setNewBankAddress({
+          ...newBankAddress,
+          bank: customersVO.customersBankDetailsVO.bank,
+          accountNo: customersVO.customersBankDetailsVO.accountNo,
+          accountName: customersVO.customersBankDetailsVO.accountName,
+          branch: customersVO.customersBankDetailsVO.branch,
+          ifscCode: customersVO.customersBankDetailsVO.ifscCode,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const isValidAddress = () => {
     return (
       newAddress.gstRegistrationStatus.trim() !== "" &&
@@ -169,8 +259,27 @@ function AddCustomer({ addcustomer }) {
     );
   };
 
+  function isValidEmail(email) {
+    // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
   const handleAddressInputChange = (e, field) => {
-    const value = e.target.value;
+    let value = e.target.value;
+
+    // Perform validations based on the field
+    if (field === "pinCode") {
+      // Allow only 6-digit numbers
+      value = value.replace(/\D/g, "").slice(0, 6); // Remove non-digit characters and limit to 6 digits
+    } else if (field === "phoneNumber") {
+      // Allow only 10-digit numbers
+      value = value.replace(/\D/g, "").slice(0, 10); // Remove non-digit characters and limit to 10 digits
+    } else if (name === "email") {
+      if (!emailRegex.test(value)) {
+        filteredValue = value.replace(/[^\w\s@.-]+/g, "");
+      }
+    }
     setNewAddress((prevState) => ({
       ...prevState,
       [field]: value,
@@ -342,6 +451,12 @@ function AddCustomer({ addcustomer }) {
       }
       if (newAddress.pinCode.trim() === "") {
         updatedErrors.pinCode = true;
+      }
+      if (newAddress.phoneNumber.trim() === "") {
+        updatedErrors.phoneNumber = true;
+      }
+      if (newAddress.email.trim() === "") {
+        updatedErrors.email = true;
       }
       setErrors1(updatedErrors);
     }
@@ -554,53 +669,48 @@ function AddCustomer({ addcustomer }) {
 
   const handleCustomerChange = (event) => {
     const { name, value } = event.target;
+    let errorsCopy = { ...errors };
+
+    // Validate phone number length
+    if (name === "phoneNumber" && value.length <= 10) {
+      setPhoneNumber(value);
+    } else {
+      // If the entered value exceeds 10 characters, don't update the state
+    }
     switch (name) {
-      case "customerActivatePortal":
-        setCustomerActivatePortal(value);
-        break;
-      case "customerCode":
-        setCustomerCode(value);
-        break;
-      case "entityLegalName":
-        setEntityLegalName(value);
-        break;
-      case "customerType":
-        setCustomerType(value);
-        break;
-      case "displayName":
-        setDisplayName(value);
-        break;
       case "email":
+        // Email validation using regular expression
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(value)) {
+          errorsCopy.email = "Invalid email address";
+        } else {
+          delete errorsCopy.email;
+        }
         setEmail(value);
         break;
-      case "phoneNumber":
-        setPhoneNumber(value);
+      default:
+        switch (name) {
+          case "customerActivatePortal":
+            setCustomerActivatePortal(value);
+            break;
+          case "customerCode":
+            setCustomerCode(value);
+            break;
+          case "entityLegalName":
+            setEntityLegalName(value);
+            break;
+          case "customerType":
+            setCustomerType(value);
+            break;
+          case "displayName":
+            setDisplayName(value);
+            break;
+          default:
+            break;
+        }
         break;
-      // case "gstNumber":
-      //   setGstNumber(value);
-      //   break;
-      // case "gstRegistrationStatus":
-      //   setGstRegistrationStatus(value);
-      //   break;
-      // case "street1":
-      //   setStreet1(value);
-      //   break;
-      // case "street2":
-      //   setStreet2(value);
-      //   break;
-      // case "state":
-      //   setState(value);
-      //   break;
-      // case "city":
-      //   setCity(value);
-      //   break;
-      // case "pincode":
-      //   setPincode(value);
-      //   break;
-      // case "contactName":
-      //   setContactName(value);
-      //   break;
     }
+    setErrors(errorsCopy);
   };
 
   const handleCustomer = () => {
@@ -619,11 +729,16 @@ function AddCustomer({ addcustomer }) {
     if (!displayName) {
       errors.displayName = "Display Name is required";
     }
+    // if (!email) {
+    //   errors.email = "Email is required";
+    // }
     if (!email) {
       errors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      errors.email = "Invalid email format";
     }
-    if (!phoneNumber) {
-      errors.phoneNumber = "Phone Number is required";
+    if (!phoneNumber || phoneNumber.length !== 10 || isNaN(phoneNumber)) {
+      errors.phoneNumber = "Please enter a valid 10-digit phone number";
     }
 
     console.log("Test", newAddress);
@@ -671,7 +786,7 @@ function AddCustomer({ addcustomer }) {
   };
 
   const handleCustomerClose = () => {
-    addcustomer(false);
+    addcustomer(true);
   };
 
   return (
@@ -1176,7 +1291,7 @@ function AddCustomer({ addcustomer }) {
                         fontSize: "0.800rem",
                         width: "100%",
                       }}
-                      type={"number"}
+                      type={"text"}
                       value={newAddress.gstNumber}
                       onChange={(e) => handleAddressInputChange(e, "gstNumber")}
                       className="input input-bordered p-2"
@@ -1246,7 +1361,7 @@ function AddCustomer({ addcustomer }) {
                   </span>
                 </label>
               </div>
-              <div className="col-lg-6 col-md-6">
+              {/* <div className="col-lg-6 col-md-6">
                 <select
                   name="Select Item"
                   style={{
@@ -1263,6 +1378,26 @@ function AddCustomer({ addcustomer }) {
                   <option value="Tamil Nadu">Tamil Nadu</option>
                   <option value="Goa">Goa</option>
                 </select>
+                {errors1.state && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    State is required
+                  </span>
+                )}
+              </div> */}
+              <div className="col-lg-6 col-md-6">
+                <textarea
+                  style={{
+                    fontSize: "0.800rem",
+                    borderColor: errors1.state ? "red" : "",
+                    height: 40, // Set the height of the textarea
+                    width: "100%", // Set the width of the textarea
+                    padding: "0.375rem 0.75rem", // Add padding to match the input style
+                    resize: "none", // Disable resizing
+                  }}
+                  className="form-control label label-text label-font-size text-base-content"
+                  value={newAddress.state}
+                  onChange={(e) => handleAddressInputChange(e, "state")}
+                ></textarea>
                 {errors1.state && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     State is required
@@ -1372,12 +1507,18 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
+                    borderColor: errors1.phoneNumber ? "red" : "",
                   }}
                   type={"number"}
                   value={newAddress.phoneNumber}
                   onChange={(e) => handleAddressInputChange(e, "phoneNumber")}
                   className="input input-bordered p-2"
                 />
+                {errors1.phoneNumber && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Phone Number is required
+                  </span>
+                )}
               </div>
             </div>
             <div className="row mb-3">
@@ -1412,12 +1553,18 @@ function AddCustomer({ addcustomer }) {
                     height: 40,
                     fontSize: "0.800rem",
                     width: "100%",
+                    borderColor: errors1.email ? "red" : "",
                   }}
                   type={"email"}
                   value={newAddress.email}
                   onChange={(e) => handleAddressInputChange(e, "email")}
                   className="input input-bordered p-2"
                 />
+                {errors1.email && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Email is required
+                  </span>
+                )}
               </div>
             </div>
             {/* Checkbox */}
