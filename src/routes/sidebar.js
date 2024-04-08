@@ -460,7 +460,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Po Order</span>,
+        name: <span className="ml-1">Purchase Order</span>,
       },
       {
         path: "/app/POD", //no url needed as this has submenu
