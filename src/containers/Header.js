@@ -3,7 +3,6 @@ import BellIcon from "@heroicons/react/24/outline/BellIcon";
 import React, { useEffect, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
-import { themeChange } from "theme-change";
 import { openRightDrawer } from "../features/common/rightDrawerSlice";
 import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
 
@@ -17,17 +16,18 @@ function Header() {
   );
 
   useEffect(() => {
-    themeChange(false);
-    if (currentTheme === null) {
-      if (
-        window.matchMedia &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches
-      ) {
-        setCurrentTheme("dark");
-      } else {
-        setCurrentTheme("light");
-      }
-    }
+    // themeChange(false);
+    // if (currentTheme === null) {
+    //   if (
+    //     window.matchMedia &&
+    //     window.matchMedia("(prefers-color-scheme: dark)").matches
+    //   ) {
+    //     setCurrentTheme("dark");
+    //   } else {
+    //     setCurrentTheme("light");
+    //   }
+    // }
+    setCurrentTheme("light");
     // 👆 false parameter is required for react project
   }, []);
 
@@ -84,12 +84,12 @@ function Header() {
                 also includes corporate and retro themes in tailwind.config file */}
 
           {/* <select className="select select-sm mr-4" data-choose-theme>
-                    <option disabled selected>Theme</option>
-                    <option value="light">Default</option>
-                    <option value="dark">Dark</option>
-                    <option value="corporate">Corporate</option>
-                    <option value="retro">Retro</option>
-                </select> */}
+            <option disabled selected>
+              Theme
+            </option>
+            <option value="light">Default</option>
+            <option value="dark">Dark</option>
+          </select> */}
 
           {/* Light and dark theme selection toogle **/}
           {/* <label className="swap ">
@@ -111,7 +111,8 @@ function Header() {
               }
             />
           </label> */}
-          {localStorage.getItem("userDetails") === "ROLE_EMITTER" ? (
+          {localStorage.getItem("userDetails") === "ROLE_EMITTER" ||
+          "ROLE_OEM" ? (
             ""
           ) : (
             <label>

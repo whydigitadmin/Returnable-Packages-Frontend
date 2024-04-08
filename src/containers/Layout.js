@@ -27,6 +27,11 @@ function Layout() {
     }
   }, [newNotificationMessage]);
 
+  // Conditional rendering for LeftSidebar based on user role
+  const userDetails = localStorage.getItem("userDetails");
+  const isUserRole =
+    userDetails === "ROLE_ADMIN" || userDetails === "ROLE_USER";
+
   return (
     <>
       {/* Left drawer - containing page content and side bar (always open) */}
@@ -37,13 +42,7 @@ function Layout() {
           className="drawer-toggle"
         />
         <PageContent />
-        {localStorage.getItem("userDetails") === "ROLE_ADMIN" ||
-        localStorage.getItem("userDetails") === "ROLE_USER" ? (
-          <LeftSidebar />
-        ) : (
-          ""
-        )}
-        {/* <LeftSidebar /> */}
+        {isUserRole && <LeftSidebar />}
       </div>
 
       {/* Right drawer - containing secondary content like notifications list etc.. */}

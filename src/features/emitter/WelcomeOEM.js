@@ -37,7 +37,7 @@ const statsData = [
   },
 ];
 
-function WelcomeEmitter() {
+function WelcomeOEM() {
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
@@ -76,7 +76,7 @@ function WelcomeEmitter() {
       </div>
       <div className="row" style={{ gap: "3%" }}>
         <div
-          className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2"
+          className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2 d-none d-lg-block mt-2"
           style={{ height: "400px" }}
         >
           <div className="">
@@ -93,11 +93,11 @@ function WelcomeEmitter() {
               {userDetail.firstName}
             </h4>
             {/* <p className="text-sm ms-2 mb-2">
-              Last login{" "}
-              <span>
-                {moment(userDetail.lastLogin).format("MMMM Do YYYY, h:mm:ss a")}
-              </span>
-            </p> */}
+      Last login{" "}
+      <span>
+        {moment(userDetail.lastLogin).format("MMMM Do YYYY, h:mm:ss a")}
+      </span>
+    </p> */}
             <p className="text-sm ms-2 mb-2">
               Last login{" "}
               <span>
@@ -109,15 +109,15 @@ function WelcomeEmitter() {
               </span>
             </p>
             {/* <p className="text-2xl ms-2">Tue</p>
-            <p className="text-5xl ms-5">Jan</p>
-            <p className="text-9xl text-right me-2 mb-3">17</p> */}
+    <p className="text-5xl ms-5">Jan</p>
+    <p className="text-9xl text-right me-2 mb-3">17</p> */}
           </div>
           <div className="">
             <div className="d-flex flex-row">
               {/* <FaLocationDot
-                className="text-xl font-semibold ms-2 w-7 h-7"
-                style={{ marginTop: 30 }}
-              /> */}
+        className="text-xl font-semibold ms-2 w-7 h-7"
+        style={{ marginTop: 30 }}
+      /> */}
               <img
                 src="/location.png"
                 style={{
@@ -132,160 +132,147 @@ function WelcomeEmitter() {
                 {displayName}
               </h4>
             </div>
-            {/* <h4 className="text-xl dark:text-slate-300 font-semibold ms-2 mb-3">
-              Gabriel
-            </h4> */}
-            {/* <p className="ms-2 mb-3">1
-              29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-              Pune, Maharashtra, 410501 India
-            </p> */}
           </div>
         </div>
-        <div className="col-lg-8 card bg-base-100 shadow-xl mb-4 ml-3">
-          {userDetails === "ROLE_OEM" ? (
-            <>
+
+        <div className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2 d-block d-lg-none">
+          <div className="text-center">
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                marginLeft: "15%",
+              }}
+            >
+              <h4 className="text-xl font-semibold mt-4 mb-2 ">WELCOME</h4>
+              {/* <h4 className="text-4xl font-bold mt-2 ms-2 mb-4">AIPACKS</h4> */}
+              <h4 className="text-xl font-semibold mt-4 mb-2 ml-4">
+                {userDetail.firstName}
+              </h4>
+            </div>
+            <p className="text-sm ms-2 mb-2">
+              Last login{" "}
+              <span>
+                {userDetail.lastLogin === null
+                  ? moment().format("MMMM Do YYYY, h:mm:ss a")
+                  : moment(userDetail.lastLogin).format(
+                      "MMMM Do YYYY, h:mm:ss a"
+                    )}
+              </span>
+            </p>
+          </div>
+          <div
+            className="col-12 d-flex mb-4 ml-2"
+            style={{ flexDirection: "row" }}
+          >
+            <div className="col-6">
+              <button
+                className="btn btn-sm normal-case btn-primary"
+                onClick={""}
+              >
+                {" "}
+                BAXY-WH-HOSUR
+              </button>
+            </div>
+
+            <div className="col-6">
+              <button
+                className="btn btn-sm normal-case btn-primary "
+                onClick={""}
+              >
+                {" "}
+                TAFE BANGALORE
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-lg-8 card bg-base-100 shadow-xl mb-4 mt-2">
+          <>
+            <div className="col-lg-12">
+              <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-6">
+                {statsData.map((d, k) => {
+                  return <DashboardStats key={k} {...d} colorIndex={k} />;
+                })}
+              </div>
+            </div>
+            <div className="grid lg:grid-cols-2 mt-2 md:grid-cols-2 grid-cols-1 gap-3">
               <div className="col-lg-12">
-                <div className="grid lg:grid-cols-2 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-                  {statsData.map((d, k) => {
-                    return <DashboardStats key={k} {...d} colorIndex={k} />;
-                  })}
-                </div>
+                <Link>
+                  <div className="card bg-base-100 shadow-xl p-3 mt-3">
+                    <div className="d-flex flex-row">
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/128/1376/1376786.png"
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          marginRight: "6px",
+                        }}
+                      />
+                      <h4 className="text-xl font-semibold">Gathering Empty</h4>
+                    </div>
+                  </div>
+                </Link>
               </div>
-              <div className="col-lg-4">
+              <div className="col-lg-12">
                 <Link to="/app/EmptyCount">
-                  <div
-                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
-                  >
-                    <div className="">
-                      <div className="d-flex flex-row">
-                        {/* <FaArrowCircleUp
-                        className="text-xl font-semibold me-2 w-7 h-7"
-                        style={{ marginTop: 2 }}
-                      /> */}
-                        <img
-                          src="/issue.png"
-                          style={{
-                            width: "32px",
-                            height: "32px",
-                            marginRight: "6px",
-                          }}
-                        />
-                        <h4 className="text-xl font-semibold">Bin Empty</h4>
-                      </div>
+                  <div className="card bg-base-100 shadow-xl p-3 mt-3">
+                    <div className="d-flex flex-row">
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/128/1585/1585197.png"
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          marginRight: "6px",
+                        }}
+                      />
+                      <h4 className="text-xl font-semibold">
+                        Retrival Manifest
+                      </h4>
                     </div>
                   </div>
                 </Link>
               </div>
-            </>
-          ) : (
-            <div className="row">
-              <div className="col-lg-4">
-                <Link to="/app/IssueReq">
-                  <div
-                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
-                  >
-                    <div className="">
-                      <div className="d-flex flex-row">
-                        {/* <FaArrowCircleUp
-                        className="text-xl font-semibold me-2 w-7 h-7"
-                        style={{ marginTop: 2 }}
-                      /> */}
-                        <img
-                          src="/issue.png"
-                          style={{
-                            width: "32px",
-                            height: "32px",
-                            marginRight: "6px",
-                          }}
-                        />
-                        <h4 className="text-xl font-semibold">Bin Request</h4>
-                      </div>
+              <div className="col-lg-12">
+                <Link>
+                  <div className="card bg-base-100 shadow-xl mb-2 p-3">
+                    <div className="d-flex flex-row">
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/128/5966/5966222.png"
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          marginRight: "6px",
+                        }}
+                      />
+                      <h4 className="text-xl font-semibold">
+                        Status Email & Whatsapp
+                      </h4>
                     </div>
                   </div>
                 </Link>
               </div>
-
-              <div className="col-lg-4">
-                <Link to="/app/EmitterInward">
-                  <div
-                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
-                  >
-                    <div className="">
-                      <div className="d-flex flex-row">
-                        <img
-                          src="/incoming.png"
-                          style={{
-                            width: "32px",
-                            height: "32px",
-                            marginRight: "6px",
-                          }}
-                        />
-                        <h4 className="text-xl font-semibold">Bin Inward</h4>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="col-lg-4">
-                <Link to="/app/EmitterOutward">
-                  <div
-                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
-                  >
-                    <div className="">
-                      <div className="d-flex flex-row">
-                        {/* <MdOutbound
-                        className="text-xl font-semibold me-2 w-7 h-7"
-                        style={{ marginTop: 2 }}
-                      /> */}
-                        <img
-                          src="/outgoing.png"
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            marginRight: "6px",
-                          }}
-                        />
-                        <h4 className="text-xl font-semibold">Bin Outward</h4>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-
-              <div className="col-lg-4">
-                <Link to="/app/StockAdjustment">
-                  <div
-                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
-                  >
-                    <div className="">
-                      <div className="d-flex flex-row">
-                        {/* <TbChartInfographic
-                        className="text-xl font-semibold me-2 w-8 h-8"
-                        style={{ marginTop: -6 }}
-                      /> */}
-                        <img
-                          src="/stock.png"
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            marginRight: "6px",
-                            marginTop: "-6",
-                          }}
-                        />
-                        <h4 className="text-xl font-semibold">Stock Report</h4>
-                      </div>
+              <div className="col-lg-12">
+                <Link>
+                  <div className="card bg-base-100 shadow-xl mb-3 p-3">
+                    <div className="d-flex flex-row">
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/128/12299/12299281.png"
+                        style={{
+                          width: "32px",
+                          height: "32px",
+                          marginRight: "6px",
+                        }}
+                      />
+                      <h4 className="text-xl font-semibold">
+                        Transporter Pickup
+                      </h4>
                     </div>
                   </div>
                 </Link>
               </div>
             </div>
-          )}
+          </>
         </div>
 
         {/* <div className="col-lg-9 card bg-base-100 shadow-xl mb-4"></div>
@@ -368,4 +355,4 @@ function WelcomeEmitter() {
   );
 }
 
-export default WelcomeEmitter;
+export default WelcomeOEM;

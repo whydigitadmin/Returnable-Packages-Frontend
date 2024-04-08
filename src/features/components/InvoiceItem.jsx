@@ -63,7 +63,7 @@ const InvoiceItem = ({
             type: "number",
             min: "1",
             placeholder: "Qty",
-            name: "Qty",
+            name: "qty",
             id: id,
             value: qty,
           }}
@@ -86,7 +86,7 @@ const InvoiceItem = ({
         <InvoiceField
           onEditItem={(event) => onEdtiItem(event)}
           cellData={{
-            type: "number",
+            type: "text",
             min: "1",
             name: "currency",
             placeholder: "currency",

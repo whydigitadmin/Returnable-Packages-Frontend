@@ -110,7 +110,7 @@ function IssueReq() {
         getAddressById(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -171,7 +171,8 @@ function IssueReq() {
         setGetKitIds(kitIds);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -222,7 +223,7 @@ function IssueReq() {
         console.log("validFlows", validFlows);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -265,7 +266,7 @@ function IssueReq() {
           formData
         )
         .then((response) => {
-          setAleartState(true);
+          // setAleartState(true);
           console.log("Response:", response.data);
           setKitFields([{ kitNo: "", qty: "" }]);
           setSelectedKitNumbers([""]);
@@ -273,9 +274,10 @@ function IssueReq() {
           setSelectedDate(null);
           getIssueRequest();
           setErrors("");
+          toast.success("Bin Requested Successfully");
         })
         .catch((error) => {
-          console.error("Error:", error);
+          toast.error("Network Error!");
         });
     } else {
       // If there are errors, update the state to display them
@@ -321,7 +323,8 @@ function IssueReq() {
         )
         .then((response) => {
           console.log("Response:", response.data);
-          setAleartState(true);
+          // setAleartState(true);
+          toast.success("Bin Requested Successfully");
           // setSelectedKitNumbers([""]);
           // setPartFields([{ partNo: "", qty: "" }]);
           // setSelectedPartNumbers([""]);
@@ -332,7 +335,7 @@ function IssueReq() {
           setErrors("");
         })
         .catch((error) => {
-          console.error("Error:", error);
+          toast.error("Network Error!");
         });
     } else {
       // If there are errors, update the state to display them
@@ -379,7 +382,7 @@ function IssueReq() {
         console("Testtt", kitData);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -718,6 +721,9 @@ function IssueReq() {
 
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <div className="container-sm">
         {aleartState ? (
           <ToastComponent content="Issue created successfully" type="success" />

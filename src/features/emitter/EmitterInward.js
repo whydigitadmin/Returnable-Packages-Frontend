@@ -1,16 +1,14 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
 import { Button, Dialog, DialogContent, DialogTitle } from "@mui/material";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContentText from "@mui/material/DialogContentText";
-import { FaStarOfLife } from "react-icons/fa";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { FaArrowCircleLeft, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import TitleCard from "../../components/Cards/TitleCard";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import TitleCard from "../../components/Cards/TitleCard";
 
 function EmitterInward() {
   const [flowData, setFlowData] = React.useState([]);
@@ -47,7 +45,7 @@ function EmitterInward() {
         setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -68,7 +66,7 @@ function EmitterInward() {
         console.log("validFlows", validFlows);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -90,7 +88,7 @@ function EmitterInward() {
         );
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -104,7 +102,7 @@ function EmitterInward() {
         setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      toast.error("Network Error!");
     }
   };
 
@@ -272,6 +270,9 @@ function EmitterInward() {
 
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">

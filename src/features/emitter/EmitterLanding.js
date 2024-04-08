@@ -3,8 +3,8 @@ import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import UserGroupIcon from "@heroicons/react/24/outline/UserGroupIcon";
 import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
 import React from "react";
-import "react-toastify/dist/ReactToastify.css";
 import WelcomeEmitter from "./WelcomeEmitter";
+import WelcomeOEM from "./WelcomeOEM";
 
 const statsData = [
   {
@@ -35,13 +35,17 @@ const statsData = [
 
 export const EmitterLanding = () => {
   return (
-    <div style={{ padding: "0% 8% 0% 8%" }}>
+    <div style={{ padding: "0% 5% 0% 5%" }}>
       {/* <div>EmitterLanding</div> */}
 
       {/* <Calendar /> */}
 
       <div className="">
-        <WelcomeEmitter />
+        {localStorage.getItem("userDetails") === "ROLE_OEM" ? (
+          <WelcomeOEM />
+        ) : (
+          <WelcomeEmitter />
+        )}
       </div>
       {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6 mb-4">
         {statsData.map((d, k) => {

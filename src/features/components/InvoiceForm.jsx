@@ -21,6 +21,7 @@ const InvoiceForm = () => {
   const [discount, setDiscount] = useState("");
   const [tax, setTax] = useState("");
   const [invoiceNumber, setInvoiceNumber] = useState(1);
+  const [todayDate, setTodayDate] = useState(today);
   const [vendorId, setVendorId] = useState("");
   const [vendor, setVendor] = useState("");
   const [vendorAddress, setVendorAddress] = useState("");
@@ -36,9 +37,9 @@ const InvoiceForm = () => {
       name: "",
       descripition: "",
       hsncode: "",
-      qty: 1,
+      qty: "",
       rate: "",
-      currency: "",
+      currency: "INR",
       exrate: "",
       price: "1.00",
     },
@@ -84,7 +85,7 @@ const InvoiceForm = () => {
         name: "",
         descripition: "",
         hsncode: "",
-        qty: 1,
+        qty: "",
         price: "1.00",
       },
     ]);
@@ -99,7 +100,7 @@ const InvoiceForm = () => {
         name: "",
         descripition: "",
         hsncode: "",
-        qty: 1,
+        qty: "",
         price: "1.00",
       },
     ]);
@@ -276,11 +277,12 @@ const InvoiceForm = () => {
                 onChange={(event) => setTerms(event.target.value)}
                 sx={{ width: "176px", marginRight: "6px" }}
               >
-                {termsCode.map((term, index) => (
-                  <MenuItem key={index} value={term}>
-                    {term}
-                  </MenuItem>
-                ))}
+                {termsCode &&
+                  termsCode.map((term, index) => (
+                    <MenuItem key={index} value={term}>
+                      {term}
+                    </MenuItem>
+                  ))}
               </Select>
             </FormControl>
           </Box>
@@ -364,6 +366,7 @@ const InvoiceForm = () => {
                   taxRate,
                   discountRate,
                   total,
+                  todayDate,
                 }}
                 items={items}
                 onAddNextInvoice={addNextInvoiceHandler}

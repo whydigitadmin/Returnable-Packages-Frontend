@@ -132,9 +132,8 @@ const InvoiceModal = ({
                       alt="AI Packs org logo"
                     />
                   </div>
-
                   <div
-                    className="col-6 text-right "
+                    className="col-5 text-right "
                     style={{
                       fontSize: "11px",
                       lineHeight: "0.5",
@@ -152,16 +151,18 @@ const InvoiceModal = ({
                     <br></br>
                     <h6>GSTIN: 29ABMCS1982P1ZA</h6>
                     <br></br>
-                  </div>
-
-                  <div className="col-3" style={{ fontSize: "12px" }}>
-                    <span>Invoice No:</span>
+                  </div>{" "}
+                  <div className="col-4 text-bold" style={{ fontSize: "12px" }}>
+                    <span>Invoice No :</span>
                     <span>{invoiceInfo.invoiceNumber}</span>
                     <br></br>
-                    <span>Vendor Id:</span>
+                    <span>Date:</span>
+                    <span>{invoiceInfo.todayDate}</span>
+                    <br></br>
+                    <span>Vendor Id :</span>
                     <span>{invoiceInfo.vendorId}</span>
                     <br></br>
-                    <span>Vendor:</span>
+                    <span>Vendor :</span>
                     <span>{invoiceInfo.vendor}</span>
                   </div>
                   {/* <div className="col-3 ml-1">

@@ -51,7 +51,7 @@ export const EmitterOutward = () => {
         console.log("validFlows", validFlows);
       }
     } catch (error) {
-      toast.error("Network Error please try again!");
+      toast.error("Network Error!");
     }
   };
 
@@ -71,7 +71,7 @@ export const EmitterOutward = () => {
         setOutwardVO(response.data.paramObjectsMap.emitterOutwardVO);
       }
     } catch (error) {
-      toast.error("Network Error please try again!");
+      toast.error("Network Error!");
     }
   };
 
@@ -85,7 +85,7 @@ export const EmitterOutward = () => {
         setDisplayFlowName(response.data.paramObjectsMap.flowVO.flowName);
       }
     } catch (error) {
-      toast.error("Network Error please try again!");
+      toast.error("Network Error!");
     }
   };
 
@@ -145,10 +145,11 @@ export const EmitterOutward = () => {
           getOutwardDetails();
           setKitQty("");
           setErrors("");
+          toast.success("Outward Qty updated");
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Network Error please try again!");
+          toast.error("Network Error!");
         });
     } else {
       setErrors(errors);
@@ -162,6 +163,9 @@ export const EmitterOutward = () => {
 
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
