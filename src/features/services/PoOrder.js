@@ -80,6 +80,51 @@ export const PoOrder = () => {
   const handleServiceSave = () => {
     const errors = {};
 
+    if (!address) {
+      errors.address = "Address is required";
+    }
+    if (!apAddress) {
+      errors.apAddress = "Address is required";
+    }
+    if (!apgst) {
+      errors.apgst = "GST is required";
+    }
+    if (!apId) {
+      errors.apId = "Vendor Id is required";
+    }
+    if (!CGST) {
+      errors.CGST = " CGST is required";
+    }
+    if (!company) {
+      errors.company = " Company is required";
+    }
+    if (!poDate) {
+      errors.poDate = " PO date is required";
+    }
+    if (!gstType) {
+      errors.gstType = " GST Type is required";
+    }
+    if (!IGST) {
+      errors.IGST = " IGST Type is required";
+    }
+    if (!poNo) {
+      errors.poNo = " PO Number is required";
+    }
+    if (!selfGST) {
+      errors.selfGST = " Self GST is required";
+    }
+    if (!SGST) {
+      errors.SGST = "SGST is required";
+    }
+    if (!shipto) {
+      errors.shipto = "SGST is required";
+    }
+    if (!shiptoremarks) {
+      errors.shiptoremarks = "Ship To Remarks is required";
+    }
+    if (!terms) {
+      errors.terms = "Terms is required";
+    }
     const formData = {
       active: true,
       address,
@@ -246,7 +291,7 @@ export const PoOrder = () => {
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              Vendor ID <FaStarOfLife className="must" />
+              <span style={{ color: "Red" }}>V</span>ender ID
             </span>
           </label>
         </div>

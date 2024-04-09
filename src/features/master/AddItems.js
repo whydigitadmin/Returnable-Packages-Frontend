@@ -779,6 +779,61 @@ function AddItem({ addItem, editItemId }) {
             />
           </div>
         </div>
+
+        <div className="row">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Po No
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleAsseCodeChange}
+              value={assetCodeId}
+              // disabled={codeSelected}
+            >
+              {/* <option value="" disabled>
+                Select a Code
+              </option> */}
+              {assetCodeIdVO.length > 0 &&
+                assetCodeIdVO.map((name) => (
+                  <option key={name.id} value={name}>
+                    {name}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                PO Date <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              disabled
+              type={"number"}
+              placeholder={""}
+              name="skuTo"
+              value={skuTo}
+              onChange={handleCategoryChange}
+            />
+          </div>
+        </div>
         <h1 className="text-xl font-semibold my-2">Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">

@@ -209,6 +209,9 @@ function AddItemSpecification({
           setBreath("");
           setDimUnit("");
           setId("");
+          setAssetCodeId("");
+          setAssetCategoryVO([]);
+          handleConfirmationYes();
           // addItemSpecification(true);
         })
         .catch((error) => {
@@ -361,6 +364,11 @@ function AddItemSpecification({
               name="assetName"
               value={assetName}
               onChange={handleCategoryChange}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
             />
             {errors.assetName && (
               <span className="error-text">{errors.assetName}</span>
@@ -384,6 +392,9 @@ function AddItemSpecification({
               name="assetCodeId"
               value={assetCodeId}
               onChange={handleCategoryChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
             />
             {errors.assetCodeId && (
               <span className="error-text">{errors.assetCodeId}</span>
@@ -404,8 +415,9 @@ function AddItemSpecification({
           <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
                 name="length"
+                type="number"
                 value={length}
                 placeholder={"L"}
                 onChange={handleCategoryChange}
@@ -419,8 +431,9 @@ function AddItemSpecification({
                 />
               </span>
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
                 name="breath"
+                type="number"
                 value={breath}
                 placeholder={"B"}
                 onChange={handleCategoryChange}
@@ -434,9 +447,10 @@ function AddItemSpecification({
                 />
               </span>
               <input
-                style={{ height: 40, fontSize: "0.800rem", width: 30 }}
+                style={{ height: 40, fontSize: "0.800rem", width: 50 }}
                 name="height"
                 value={height}
+                type="number"
                 placeholder={"H"}
                 onChange={handleCategoryChange}
                 className="input mb-2 p-1 input-bordered"

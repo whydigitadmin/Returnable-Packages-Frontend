@@ -87,7 +87,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   const [emitterData, setEmitterData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
-
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
   };
@@ -157,20 +156,22 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     const allowedCharactersRegex = /^[a-zA-Z\s\-]+$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    if (name === "firstName" || name === "city" || name === "state" || name === "country") {
+    if (
+      name === "firstName" ||
+      name === "city" ||
+      name === "state" ||
+      name === "country"
+    ) {
       if (!allowedCharactersRegex.test(value)) {
-        filteredValue = value.replace(/[^a-zA-Z\s\-]+/g, '');
+        filteredValue = value.replace(/[^a-zA-Z\s\-]+/g, "");
       }
-    }
-    else if (name === "phone") {
-      filteredValue = value.replace(/\D/g, '').slice(0, 10);
-    }
-    else if (name === "pincode") {
-      filteredValue = value.replace(/\D/g, '').slice(0, 6);
-    }
-    else if (name === "email") {
+    } else if (name === "phone") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 10);
+    } else if (name === "pincode") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 6);
+    } else if (name === "email") {
       if (!emailRegex.test(value)) {
-        filteredValue = value.replace(/[^\w\s@.-]+/g, '');
+        filteredValue = value.replace(/[^\w\s@.-]+/g, "");
       }
     }
 
@@ -226,7 +227,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     setSelectedFlow(null);
     setSelectedFlows([]);
     // notify();
-  }
+  };
 
   const handleUserCreation = () => {
     const errors = {};
@@ -350,7 +351,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     getCustomersList();
   }, [selectedFlows]); // This will be triggered whenever selectedFlows changes
 
-  // GET USER DETAILS 
+  // GET USER DETAILS
   const getEmitterById = async () => {
     try {
       const response = await axios.get(
@@ -359,15 +360,18 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
 
       if (response.status === 200) {
         setEmitterData(response.data.paramObjectsMap.userVO);
-        console.log("Edit Emitter Details", response.data.paramObjectsMap.userVO);
-        setFirstName(response.data.paramObjectsMap.userVO.firstName)
-        setEmail(response.data.paramObjectsMap.userVO.email)
-        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1)
-        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city)
-        setState(response.data.paramObjectsMap.userVO.userAddressVO.state)
-        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country)
-        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin)
-        setPhone(response.data.paramObjectsMap.userVO.pno)
+        console.log(
+          "Edit Emitter Details",
+          response.data.paramObjectsMap.userVO
+        );
+        setFirstName(response.data.paramObjectsMap.userVO.firstName);
+        setEmail(response.data.paramObjectsMap.userVO.email);
+        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
+        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
+        setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
+        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
+        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
+        setPhone(response.data.paramObjectsMap.userVO.pno);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -419,6 +423,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       accessRightsRoleId: 2,
       // accessWarehouse: warehouse,
       // accessaddId: 0,
+      accessFlowId: selectedFlows,
       active: active,
       email: email,
       emitterId: 0,
@@ -469,8 +474,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
         .then((response) => {
           console.log("User Updated successfully!", response.data);
           setErrors("");
-          addEmitter(false)   // EMITTER CREATION SCREEN CLOSE AFTER UPDATE 
-
+          addEmitter(false); // EMITTER CREATION SCREEN CLOSE AFTER UPDATE
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
@@ -482,13 +486,22 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
 
   // CLOSE BUTTON WITH CONFIRMATION
   const handleEmitterCreationClose = () => {
-    if (firstName || phone || address || city || state || country || pincode || flow > 0) {
+    if (
+      firstName ||
+      phone ||
+      address ||
+      city ||
+      state ||
+      country ||
+      pincode ||
+      flow > 0
+    ) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
-      addEmitter(false)
+      addEmitter(false);
     }
-  }
+  };
 
   const handleConfirmationClose = () => {
     setOpenConfirmationDialog(false);
@@ -507,7 +520,8 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           {/* <h1 className="text-xl font-semibold mb-3">User Details</h1> */}
           <IoMdClose
             onClick={handleEmitterCreationClose}
-            className="cursor-pointer w-8 h-8 mb-3" />
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-6">
@@ -647,7 +661,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-
                 Address
                 <FaStarOfLife className="must" />
               </span>
@@ -799,17 +812,18 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           </div>
         </div>
 
-        {emitterEditId ? (<div className="d-flex flex-row mt-3">
-          <button
-            type="button"
-            onClick={handleEmitterUpdate}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Update
-          </button>
-        </div>) : (
+        {emitterEditId ? (
           <div className="d-flex flex-row mt-3">
-
+            <button
+              type="button"
+              onClick={handleEmitterUpdate}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Update
+            </button>
+          </div>
+        ) : (
+          <div className="d-flex flex-row mt-3">
             <button
               type="button"
               onClick={handleUserCreation}
@@ -824,7 +838,8 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
             >
               Clear
             </button>
-          </div>)}
+          </div>
+        )}
       </div>
       <Dialog
         fullWidth={true}

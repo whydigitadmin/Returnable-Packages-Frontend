@@ -6,7 +6,7 @@ import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import DashboardStats from "../dashboard/components/DashboardStats";
 
@@ -64,9 +64,7 @@ function WelcomeOEM() {
         );
         console.log("userVO", response.data.paramObjectsMap.userVO);
       }
-    } catch (error) {
-      toast.error("Network Error!");
-    }
+    } catch (error) {}
   };
 
   return (
@@ -144,22 +142,27 @@ function WelcomeOEM() {
                 marginLeft: "15%",
               }}
             >
-              <h4 className="text-xl font-semibold mt-4 mb-2 ">WELCOME</h4>
+              <h4 className="text-xl font-semibold mt-4 mb-2 ">Welcome</h4>
               {/* <h4 className="text-4xl font-bold mt-2 ms-2 mb-4">AIPACKS</h4> */}
-              <h4 className="text-xl font-semibold mt-4 mb-2 ml-4">
-                {userDetail.firstName}
+              <h4
+                className="text-xl font-bold mt-4 mb-2 ml-2"
+                style={{ color: "green" }}
+              >
+                {userDetail.firstName} !
               </h4>
             </div>
-            <p className="text-sm ms-2 mb-2">
-              Last login{" "}
-              <span>
-                {userDetail.lastLogin === null
-                  ? moment().format("MMMM Do YYYY, h:mm:ss a")
-                  : moment(userDetail.lastLogin).format(
-                      "MMMM Do YYYY, h:mm:ss a"
-                    )}
-              </span>
-            </p>
+            <b>
+              <p className="text-sm ms-2 mb-2">
+                Last login{" "}
+                <span>
+                  {userDetail.lastLogin === null
+                    ? moment().format("MMMM Do YYYY, h:mm:ss a")
+                    : moment(userDetail.lastLogin).format(
+                        "MMMM Do YYYY, h:mm:ss a"
+                      )}
+                </span>
+              </p>
+            </b>
           </div>
           <div
             className="col-12 d-flex mb-4 ml-2"

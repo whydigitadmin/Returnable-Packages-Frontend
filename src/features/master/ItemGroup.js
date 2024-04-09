@@ -1,26 +1,6 @@
-import React, { useState, useEffect, useMemo } from "react";
-import Axios from "axios";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { styled } from "@mui/material/styles";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import { FaBoxOpen } from "react-icons/fa";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
-import { FaStarOfLife } from "react-icons/fa";
-import AddItemSpecification from "./AddItemSpecification";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import {
   Paper,
   Table,
@@ -29,7 +9,26 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
+import Axios from "axios";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaBoxOpen, FaStarOfLife } from "react-icons/fa";
+import { IoMdClose } from "react-icons/io";
+import { LuWarehouse } from "react-icons/lu";
+import { TbWeight } from "react-icons/tb";
+import AddItemSpecification from "./AddItemSpecification";
 
 const statsData = [
   {
@@ -124,7 +123,7 @@ function ItemGroup() {
               id: index + 1, // Auto-incrementing ID
             })
           );
-        setData(dataWithId);
+        setData(dataWithId.reverse());
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -133,6 +132,8 @@ function ItemGroup() {
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
+
+    console.log("Test11", event.target.value);
     switch (name) {
       case "assetCategory":
         setAssetCategory(value);
@@ -216,17 +217,17 @@ function ItemGroup() {
           </div>
         ),
       },
-      {
-        accessorKey: "id",
-        header: "ID",
-        size: 30,
-        muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
+      // {
+      //   accessorKey: "id",
+      //   header: "ID",
+      //   size: 30,
+      //   muiTableHeadCellProps: {
+      //     align: "first",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "first",
+      //   },
+      // },
       {
         accessorKey: "assetCategory",
         header: "Type",
@@ -404,6 +405,11 @@ function ItemGroup() {
                         value={assetCategory}
                         onChange={handleCategoryChange}
                         placeholder={""}
+                        onInput={(e) => {
+                          e.target.value = e.target.value
+                            .toUpperCase()
+                            .replace(/[^A-Z]/g, "");
+                        }}
                         className="form-control form-sz mb-2"
                       />
                       {errors.assetCategory && (
@@ -430,6 +436,9 @@ function ItemGroup() {
                         value={assetCategoryId}
                         name="assetCategoryId"
                         onChange={handleCategoryChange}
+                        onInput={(e) => {
+                          e.target.value = e.target.value.toUpperCase();
+                        }}
                         placeholder={""}
                         className="form-control form-sz mb-2"
                       />
