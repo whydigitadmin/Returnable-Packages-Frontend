@@ -101,6 +101,7 @@ function Customer() {
 
   const handleBack = () => {
     setAdd(false);
+    setEdit(false);
     getCustomerData();
   };
 

@@ -7,6 +7,7 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import ToastComponent from "../../utils/ToastComponent";
+import { FaTrash } from "react-icons/fa";
 
 const DOCDATA = [
   {
@@ -122,6 +123,10 @@ export const InwardManifest = () => {
     }
   };
 
+  const handleDeleteRow = (id) => {
+    setTableData(tableData.filter((row) => row.id !== id));
+  };
+
   const handleDoctypeSave = () => {
     const errors = {};
     // if (!docdata[0].Prefix) {
@@ -145,7 +150,7 @@ export const InwardManifest = () => {
     }
 
     if (!stockTo) {
-      errors.stockFrom = "Source To is required";
+      errors.stockTo = "Source To is required";
     }
 
     if (!docId) {
@@ -186,6 +191,8 @@ export const InwardManifest = () => {
 
     if (isTableDataEmpty) {
       errors.tableData = "Please fill all table fields";
+    } else {
+      delete errors.tableData;
     }
 
     if (Object.keys(errors).length === 0) {
@@ -356,6 +363,7 @@ export const InwardManifest = () => {
               <table className="w-full">
                 <thead>
                   <tr>
+                    <th className="px-2 py-2 bg-blue-500 text-white">Action</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
                       SKU Details
@@ -380,6 +388,14 @@ export const InwardManifest = () => {
                     tableData.map((row) => (
                       <tr key={row.id}>
                         <td className="border px-2 py-2">
+                          <button
+                            onClick={() => handleDeleteRow(row.id)}
+                            className="text-red-500"
+                          >
+                            <FaTrash style={{ fontSize: "18px" }} />
+                          </button>
+                        </td>
+                        <td className="border px-2 py-2">
                           <input
                             type="text"
                             value={row.id}
@@ -393,6 +409,7 @@ export const InwardManifest = () => {
                               )
                             }
                             disabled
+                            style={{ width: "100%" }}
                           />
                         </td>
                         <td className="border px-2 py-2">
@@ -476,6 +493,7 @@ export const InwardManifest = () => {
                                 )
                               )
                             }
+                            style={{ width: "100%" }}
                           />
                         </td>
                         <td className="border px-2 py-2">
