@@ -7,11 +7,8 @@ import { FaBoxOpen, FaStarOfLife } from "react-icons/fa";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 //import DashBoardComponent from "./DashBoardComponent";
-import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import {
   Paper,
   Table,
@@ -20,10 +17,14 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const statsData = [
   {
@@ -160,6 +161,10 @@ function Unit() {
           getWarehouseData();
           setUnit("");
           setErrors("");
+          toast.success("Unit Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -188,6 +193,10 @@ function Unit() {
         setUpdateLoading(false); // Reset loading state
         setUnit("");
         setErrors("");
+        toast.success("Unit Updation successfully", {
+          autoClose: 2000,
+          theme: "colored",
+        });
       })
       .catch((error) => {
         console.error("Error:", error);
@@ -224,26 +233,26 @@ function Unit() {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <IconButton onClick={() => handleViewRow(row)}>
+            {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
-            </IconButton>
+            </IconButton> */}
             <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
             </IconButton>
           </div>
         ),
       },
-      {
-        accessorKey: "id",
-        header: "ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
+      // {
+      //   accessorKey: "id",
+      //   header: "ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "first",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "first",
+      //   },
+      // },
       {
         accessorKey: "unit",
         header: "Unit",
@@ -276,6 +285,9 @@ function Unit() {
   return (
     <>
       {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
+      <div>
+        <ToastContainer />
+      </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
             {statsData.map((d, k) => {
@@ -302,6 +314,11 @@ function Unit() {
               type={"text"}
               value={unit}
               name="unit"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"

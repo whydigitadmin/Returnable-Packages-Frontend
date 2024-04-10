@@ -10,6 +10,8 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -211,8 +213,15 @@ function AddItemSpecification({
           setId("");
           setAssetCodeId("");
           setAssetCategoryVO([]);
-          handleConfirmationYes();
+
           // addItemSpecification(true);
+          toast.success("Specification Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            handleConfirmationYes();
+          }, 2000); // Adjust the delay time as needed
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -306,6 +315,9 @@ function AddItemSpecification({
 
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-3">Specification</h1>

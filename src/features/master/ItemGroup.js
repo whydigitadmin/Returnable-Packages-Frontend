@@ -28,6 +28,8 @@ import { FaBoxOpen, FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import AddItemSpecification from "./AddItemSpecification";
 
 const statsData = [
@@ -169,7 +171,11 @@ function ItemGroup() {
           console.log("Response:", response.data);
           setAssetCategory("");
           setAssetCategoryId("");
-          setOpen(false);
+          toast.success("Category Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          handleClose();
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -308,6 +314,9 @@ function ItemGroup() {
       {/* {add ? (
         <AddItemSpecification addItemSpecification={handleBack} />
       ) : ( */}
+      <div>
+        <ToastContainer />
+      </div>
 
       {(add && <AddItemSpecification addItemSpecification={handleBack} />) ||
         (edit && (

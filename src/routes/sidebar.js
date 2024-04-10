@@ -81,11 +81,6 @@ const routes = [
       //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
       //   name: "Access Rights",
       // },
-      // {
-      //   path: "/app/Branch",
-      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-      //   name: "Branch",
-      // },
     ],
   },
 
@@ -167,10 +162,35 @@ const routes = [
         name: <span className="">Vendors</span>,
       },
       {
+        path: "/app/Branch",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/11743/11743089.png"
+            alt="StockBranch"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: "Branch",
+      },
+
+      {
+        path: "/app/StockBranch", //no url needed as this has submenu
+        icon: (
+          <img
+            src="/report.png"
+            alt="StockBranch"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>Stock Branch</span>,
+      },
+      {
         path: "/app/Country",
         icon: (
           <img
-            src="/city.png"
+            src="https://cdn-icons-png.flaticon.com/128/2947/2947721.png"
             alt="Country"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -182,7 +202,7 @@ const routes = [
         path: "/app/CityMaster",
         icon: (
           <img
-            src="/city.png"
+            src="/city.png "
             alt="Unit"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -194,7 +214,7 @@ const routes = [
         path: "/app/KitCard",
         icon: (
           <img
-            src="/unit.png"
+            src="	https://cdn-icons-png.flaticon.com/128/2752/2752867.png"
             alt="KitCard"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -283,18 +303,6 @@ const routes = [
       />
     ),
     name: <span style={{ marginLeft: "6px" }}>ASSET Tagging</span>,
-  },
-  {
-    path: "/app/StockBranch", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/report.png"
-        alt="StockBranch"
-        style={{ width: "29px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "6px" }}>Stock Branch</span>,
   },
   {
     path: "", //no url needed as this has submenu

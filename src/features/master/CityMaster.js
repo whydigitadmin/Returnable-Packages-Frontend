@@ -4,11 +4,8 @@ import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 //import DashBoardComponent from "./DashBoardComponent";
-import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import {
   Paper,
   Table,
@@ -17,10 +14,14 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const CityMaster = () => {
   const [open, setOpen] = React.useState(false);
@@ -127,6 +128,10 @@ export const CityMaster = () => {
           setCity("");
           setCode("");
           setErrors("");
+          toast.success("City Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -161,6 +166,10 @@ export const CityMaster = () => {
         setUpdateLoading(false); // Reset loading state
         setCity("");
         setCode("");
+        toast.success("City Updation successfully", {
+          autoClose: 2000,
+          theme: "colored",
+        });
       })
       .catch((error) => {
         console.error("Error updating data:", error);
@@ -185,26 +194,26 @@ export const CityMaster = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <IconButton onClick={() => handleViewRow(row)}>
+            {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
-            </IconButton>
+            </IconButton> */}
             <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
             </IconButton>
           </div>
         ),
       },
-      {
-        accessorKey: "cityid",
-        header: "ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
+      // {
+      //   accessorKey: "cityid",
+      //   header: "ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "first",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "first",
+      //   },
+      // },
       {
         accessorKey: "cityName",
         header: "City",
@@ -248,6 +257,9 @@ export const CityMaster = () => {
   return (
     <>
       {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
+      <div>
+        <ToastContainer />
+      </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
@@ -257,7 +269,7 @@ export const CityMaster = () => {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                CityName
+                City
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -269,6 +281,11 @@ export const CityMaster = () => {
               type={"text"}
               value={city}
               name="city"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"
@@ -296,6 +313,9 @@ export const CityMaster = () => {
               value={code}
               name="code"
               // placeholder={"Enter"}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />

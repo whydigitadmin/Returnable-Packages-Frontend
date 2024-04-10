@@ -9,6 +9,9 @@ import * as React from "react";
 import { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -428,7 +431,13 @@ function AddItem({ addItem, editItemId }) {
       Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
         .then((response) => {
           console.log("Response:", response.data);
-          addItem(false);
+          toast.success("Asset Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            addItem(false);
+          }, 2000); // Adjust the delay time as needed
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -478,6 +487,11 @@ function AddItem({ addItem, editItemId }) {
       Axios.put(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
         .then((response) => {
           console.log("Response:", response.data);
+          toast.success("Asset Updated successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+
           addItem(false);
         })
         .catch((error) => {
@@ -587,6 +601,9 @@ function AddItem({ addItem, editItemId }) {
 
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
           {/* <h1 className="text-xl font-semibold mb-3">Create Asset</h1> */}
@@ -724,6 +741,7 @@ function AddItem({ addItem, editItemId }) {
               <input
                 className="form-control form-sz mb-2"
                 name="assetQty"
+                type="number"
                 value={assetQty}
                 onChange={handleCategoryChange}
               />
@@ -803,12 +821,12 @@ function AddItem({ addItem, editItemId }) {
               {/* <option value="" disabled>
                 Select a Code
               </option> */}
-              {assetCodeIdVO.length > 0 &&
+              {/* {assetCodeIdVO.length > 0 &&
                 assetCodeIdVO.map((name) => (
                   <option key={name.id} value={name}>
                     {name}
                   </option>
-                ))}
+                ))} */}
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -846,8 +864,9 @@ function AddItem({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6 col-sm-8 mb-2">
             <div className="d-flex flex-row">
               <input
-                style={{ width: 44 }}
+                style={{ width: 46 }}
                 name="length"
+                type="number"
                 value={length}
                 placeholder={"L"}
                 className="input mb-2 input-bordered p-1 form-sz"
@@ -861,9 +880,10 @@ function AddItem({ addItem, editItemId }) {
                 />
               </span>
               <input
-                style={{ width: 44 }}
+                style={{ width: 46 }}
                 name="breath"
                 value={breath}
+                type="number"
                 placeholder={"B"}
                 className="input mb-2 p-1 input-bordered form-sz"
                 onChange={handleCategoryChange}
@@ -876,9 +896,10 @@ function AddItem({ addItem, editItemId }) {
                 />
               </span>
               <input
-                style={{ width: 44 }}
+                style={{ width: 46 }}
                 name="height"
                 value={height}
+                type="number"
                 placeholder={"H"}
                 className="input mb-2 p-1 input-bordered form-sz"
                 onChange={handleCategoryChange}
@@ -908,6 +929,7 @@ function AddItem({ addItem, editItemId }) {
               placeholder=""
               className="input mb-2 input-bordered form-sz w-full"
               name="eanUpc"
+              type="number"
               value={eanUpc}
               onChange={handleCategoryChange}
             />
@@ -976,6 +998,7 @@ function AddItem({ addItem, editItemId }) {
               <input
                 placeholder=""
                 name="weight"
+                type="number"
                 className="input mb-2 input-bordered form-sz w-full"
                 value={weight}
                 onChange={handleCategoryChange}
@@ -1009,6 +1032,7 @@ function AddItem({ addItem, editItemId }) {
                 value={chargableWeight}
                 name="chargableWeight"
                 placeholder={""}
+                type="number"
                 onChange={handleCategoryChange}
                 className="input mb-2 form-sz input-bordered w-full"
               />
@@ -1041,6 +1065,7 @@ function AddItem({ addItem, editItemId }) {
               placeholder=""
               className="input mb-2 input-bordered form-sz w-full"
               name="expectedLife"
+              type="number"
               value={expectedLife}
               onChange={handleCategoryChange}
             />
@@ -1058,6 +1083,7 @@ function AddItem({ addItem, editItemId }) {
               className="input mb-2 input-bordered form-sz w-full"
               name="maintanencePeriod"
               value={maintanencePeriod}
+              type="number"
               onChange={handleCategoryChange}
             />
           </div>
@@ -1073,6 +1099,7 @@ function AddItem({ addItem, editItemId }) {
               placeholder=""
               className="input mb-2 input-bordered form-sz w-full"
               name="expectedTrips"
+              type="number"
               value={expectedTrips}
               onChange={handleCategoryChange}
             />
@@ -1090,6 +1117,7 @@ function AddItem({ addItem, editItemId }) {
               className="input mb-2 input-bordered form-sz w-full"
               name="hsnCode"
               value={hsnCode}
+              type="number"
               onChange={handleCategoryChange}
             />
           </div>
@@ -1110,6 +1138,7 @@ function AddItem({ addItem, editItemId }) {
               placeholder=""
               className="input mb-2 input-bordered form-sz w-full"
               name="taxRate"
+              type="number"
               value={taxRate}
               onChange={handleCategoryChange}
             />
@@ -1130,6 +1159,7 @@ function AddItem({ addItem, editItemId }) {
               className="input mb-2 input-bordered form-sz w-full"
               name="costPrice"
               value={costPrice}
+              type="number"
               onChange={handleCategoryChange}
             />
           </div>
@@ -1146,6 +1176,7 @@ function AddItem({ addItem, editItemId }) {
               className="input mb-2 input-bordered form-sz w-full"
               name="sellPrice"
               value={sellPrice}
+              type="number"
               onChange={handleCategoryChange}
             />
           </div>
@@ -1162,6 +1193,7 @@ function AddItem({ addItem, editItemId }) {
               className="input mb-2 input-bordered form-sz w-full"
               name="scrapValue"
               value={scrapValue}
+              type="number"
               onChange={handleCategoryChange}
             />
           </div>

@@ -9,6 +9,8 @@ import { default as Axios, default as axios } from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 5;
@@ -282,12 +284,19 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         formData
       )
         .then((response) => {
-          console.log("Response status:", response.status);
-          console.log("Response data:", response.data);
-          addWarehouse(true);
+          toast.success("Warehouse Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            addWarehouse(true);
+          }, 2000); // Adjust the delay time as needed
         })
         .catch((error) => {
-          console.error("Error:", error);
+          toast.error("Warehouse Creation failed", {
+            autoClose: 2000,
+            theme: "colored",
+          });
           // Handle error response
           if (error.response) {
             console.log("Response status:", error.response.status);
@@ -346,17 +355,19 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         formData
       )
         .then((response) => {
-          console.log("Response status:", response.status);
-          console.log("Response data:", response.data);
-          addWarehouse(false);
+          toast.success("Warehouse Updated successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            addWarehouse(false);
+          }, 2000); // Adjust the delay time as needed
         })
         .catch((error) => {
-          console.error("Error:", error);
-          // Handle error response
-          if (error.response) {
-            console.log("Response status:", error.response.status);
-            console.log("Response data:", error.response.data);
-          }
+          toast.error("Warehouse Updation failed", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         });
     } else {
       // If there are errors, update the state to display them
@@ -396,6 +407,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
 
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
           {/* <h1 className="text-xl font-semibold mb-3">Warehouse Details</h1> */}
@@ -424,6 +438,11 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               type={"text"}
               // placeholder={"Enter"}
               name="locationName"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
               value={locationName}
               onChange={handleInputChange}
             />
@@ -447,6 +466,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               className="form-control form-sz mb-2"
               type={"text"}
               // placeholder={"Enter"}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               name="unit"
               value={unit}
               onChange={handleInputChange}
@@ -470,6 +492,11 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               className="form-control form-sz mb-2"
               type={"text"}
               // placeholder={"Enter"}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
               name="name"
               value={name}
               onChange={handleInputChange}
@@ -494,6 +521,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               type={"text"}
               // placeholder={"Enter"}
               name="code"
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               value={code}
               onChange={handleInputChange}
             />
@@ -519,6 +549,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               // placeholder={"Enter"}
               name="address"
               value={address}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.address && (
@@ -544,6 +577,11 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               // placeholder={"Enter"}
               name="city"
               value={city}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
               onChange={handleInputChange}
             />
             {errors.city && <span className="error-text">{errors.city}</span>}
@@ -568,6 +606,11 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               name="state"
               value={state}
               onChange={handleInputChange}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
           </div>
@@ -590,6 +633,11 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               // placeholder={"Enter"}
               name="country"
               value={country}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
               onChange={handleInputChange}
             />
             {errors.country && (
@@ -615,6 +663,10 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               // placeholder={"Enter"}
               name="pincode"
               value={pincode}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, "");
+              }}
+              maxLength={10}
               onChange={handleInputChange}
             />
             {errors.pincode && (
@@ -635,6 +687,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               // placeholder={"Enter"}
               name="gst"
               value={gst}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.gst && <span className="error-text">{errors.gst}</span>}

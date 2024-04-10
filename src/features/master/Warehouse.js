@@ -1,27 +1,6 @@
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import { styled } from "@mui/material/styles";
-import axios from "axios";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import React, { useState, useEffect, useMemo } from "react";
-import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
-import { FiDownload } from "react-icons/fi";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
-import AddWarehouse from "./AddWarehouse";
-import DashBoardComponent from "./DashBoardComponent";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import {
   Paper,
   Table,
@@ -30,7 +9,28 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
+import { FiDownload } from "react-icons/fi";
+import { IoMdClose } from "react-icons/io";
+import { LuWarehouse } from "react-icons/lu";
+import { TbWeight } from "react-icons/tb";
+import AddWarehouse from "./AddWarehouse";
+import DashBoardComponent from "./DashBoardComponent";
 
 const statsData = [
   {
@@ -159,17 +159,17 @@ function Warehouse() {
           </div>
         ),
       },
-      {
-        accessorKey: "warehouseId",
-        header: "Warehouse Code",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "warehouseId",
+      //   header: "Warehouse Code",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
         accessorKey: "warehouseLocation",
         header: "Warehouse Name",

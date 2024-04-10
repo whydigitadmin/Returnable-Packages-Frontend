@@ -13,9 +13,11 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaCloudUploadAlt, FaStarOfLife, FaTrash } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -766,12 +768,20 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             "CustomerId:",
             response.data.paramObjectsMap.customersVO.id
           );
+
           // addcustomer(true);
           setAddressShow(true);
           setErrors({});
+          toast.success("customer Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         })
         .catch((error) => {
-          console.error("Error:", error);
+          toast.error("customer Creation failed", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         });
     } else {
       setErrors(errors);
@@ -793,6 +803,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
 
   return (
     <>
+      <div>
+        <ToastContainer />
+      </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
           <IoMdClose
@@ -851,6 +864,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               name="customerCode"
               onChange={handleCustomerChange}
               disabled={isSubmitting}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
             />
             {errors.customerCode && (
               <div className="error-text">{errors.customerCode}</div>
@@ -876,6 +892,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               name="entityLegalName"
               onChange={handleCustomerChange}
               disabled={isSubmitting}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
             />
             {errors.entityLegalName && (
               <div className="error-text">{errors.entityLegalName}</div>
@@ -901,6 +922,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               name="displayName"
               onChange={handleCustomerChange}
               disabled={isSubmitting}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
             />
             {errors.displayName && (
               <div className="error-text">{errors.displayName}</div>
@@ -948,6 +974,10 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               value={phoneNumber}
               name="phoneNumber"
               type="number"
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, "");
+              }}
+              maxLength={10}
               onChange={handleCustomerChange}
               disabled={isSubmitting}
             />
@@ -1297,6 +1327,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                       value={newAddress.gstNumber}
                       onChange={(e) => handleAddressInputChange(e, "gstNumber")}
                       className="input input-bordered p-2"
+                      onInput={(e) => {
+                        e.target.value = e.target.value.toUpperCase();
+                      }}
                     />
                   </div>
                 </div>
@@ -1324,6 +1357,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street1}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  }}
                   onChange={(e) => handleAddressInputChange(e, "street1")}
                 ></textarea>
                 {errors1.street1 && (
@@ -1346,6 +1382,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street2}
                   onChange={(e) => handleAddressInputChange(e, "street2")}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  }}
                 ></textarea>
               </div>
             </div>
@@ -1396,6 +1435,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     padding: "0.375rem 0.75rem", // Add padding to match the input style
                     resize: "none", // Disable resizing
                   }}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                  }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.state}
                   onChange={(e) => handleAddressInputChange(e, "state")}
@@ -1430,6 +1474,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors1.city ? "red" : "",
                   }}
                   type={"text"}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                  }}
                   value={newAddress.city}
                   onChange={(e) => handleAddressInputChange(e, "city")}
                   className="input input-bordered p-2"
@@ -1463,6 +1512,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     width: "100%",
                     borderColor: errors1.pinCode ? "red" : "",
                   }}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/\D/g, "");
+                  }}
                   type={"number"}
                   value={newAddress.pinCode}
                   onChange={(e) => handleAddressInputChange(e, "pinCode")}
@@ -1491,6 +1543,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   }}
                   type={"text"}
                   value={newAddress.contactName}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                  }}
                   onChange={(e) => handleAddressInputChange(e, "contactName")}
                   className="input input-bordered p-2"
                 />
@@ -1512,6 +1569,10 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors1.phoneNumber ? "red" : "",
                   }}
                   type={"number"}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/\D/g, "");
+                  }}
+                  maxLength={10}
                   value={newAddress.phoneNumber}
                   onChange={(e) => handleAddressInputChange(e, "phoneNumber")}
                   className="input input-bordered p-2"
@@ -1526,7 +1587,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             <div className="row mb-3">
               <div className="col-lg-6 col-md-6">
                 <label className="label label-text label-font-size text-base-content">
-                  Destination
+                  Designation
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
@@ -1540,6 +1601,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   value={newAddress.designation}
                   onChange={(e) => handleAddressInputChange(e, "designation")}
                   className="input input-bordered p-2"
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                  }}
                 />
               </div>
             </div>
@@ -1641,6 +1707,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.bank ? "red" : "",
                   }}
                   type={"text"}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                  }}
                   value={newBankAddress.bank}
                   onChange={(e) => handleBankInputChange(e, "bank")}
                   className="input input-bordered p-2"
@@ -1672,6 +1743,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     fontSize: "0.800rem",
                     width: "100%",
                     borderColor: errors2.accountNo ? "red" : "",
+                  }}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/\D/g, "");
                   }}
                   type={"text"}
                   value={newBankAddress.accountNo}
@@ -1707,6 +1781,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.accountName ? "red" : "",
                   }}
                   type={"text"}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                  }}
                   value={newBankAddress.accountName}
                   onChange={(e) => handleBankInputChange(e, "accountName")}
                   className="input input-bordered p-2"
@@ -1740,6 +1819,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.branch ? "red" : "",
                   }}
                   type={"text"}
+                  onInput={(e) => {
+                    e.target.value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z]/g, "");
+                  }}
                   value={newBankAddress.branch}
                   onChange={(e) => handleBankInputChange(e, "branch")}
                   className="input input-bordered p-2"
@@ -1773,6 +1857,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.ifscCode ? "red" : "",
                   }}
                   type={"text"}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.toUpperCase();
+                  }}
                   value={newBankAddress.ifscCode}
                   onChange={(e) => handleBankInputChange(e, "ifscCode")}
                   className="input input-bordered p-2"
