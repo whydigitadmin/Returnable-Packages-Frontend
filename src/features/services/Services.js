@@ -1,12 +1,17 @@
 import { Box } from "@mui/material";
 import { styled } from "@mui/material/styles";
-
-import { MaterialReactTable } from "material-react-table";
+import EditIcon from "@mui/icons-material/Edit";
+import { MaterialReactTable, useMaterialReactTable, } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaBoxOpen, FaStarOfLife } from "react-icons/fa";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import axios from "axios";
+import IconButton from "@mui/material/IconButton";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 const statsData = [
   {
@@ -42,8 +47,12 @@ function Services() {
   const [tableData, setTableData] = useState([]);
   const [code, setCode] = useState("");
   const [description, setDescription] = useState("");
+  const [selectedRowId, setSelectedRowId] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState("");
+  const [userDetail, setUserDetail] = useState(
+    JSON.parse(localStorage.getItem("userDto"))
+  );
 
   const handleClose = () => {
     setOpen(false);
@@ -56,8 +65,27 @@ function Services() {
   });
 
   useEffect(() => {
-    // getWarehouseData();
+    getAllServiceData();
   }, []);
+
+  const getAllServiceData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/Services?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.Services);
+
+      } else {
+
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -71,7 +99,7 @@ function Services() {
     }
   };
 
-  const handleServiceSave = () => {
+  const handleUpdateService = () => {
     const errors = {};
     if (!code) {
       errors.code = "Code is required";
@@ -81,9 +109,12 @@ function Services() {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        // id,
+        id: selectedRowId,
         code,
         description,
+        orgid: orgId,
+        createdBy: userDetail.firstName,
+
       };
 
       axios
@@ -95,9 +126,58 @@ function Services() {
           console.log("Response:", response.data);
           setCode("");
           setDescription("");
+          setErrors({})
+          getAllServiceData()
+          setSelectedRowId("")
+          toast.success("Service updated successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
+          toast.error("Service Failed to Update");
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
+  const handleSaveService = () => {
+    const errors = {};
+    if (!code) {
+      errors.code = "Code is required";
+    }
+    if (!description) {
+      errors.description = "Description is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        code,
+        description,
+        orgid: orgId,
+        createdBy: userDetail.firstName,
+
+      };
+
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/master/updateCreateService`,
+          formData
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          setCode("");
+          setDescription("");
+          setErrors({})
+          toast.success("Service saved successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          getAllServiceData();
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error("service Failed to Save");
         });
     } else {
       setErrors(errors);
@@ -119,16 +199,28 @@ function Services() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "id",
-        header: "ID",
+        accessorKey: "actions",
+        header: "Actions",
         size: 50,
         muiTableHeadCellProps: {
-          align: "first",
+          align: "center",
         },
         muiTableBodyCellProps: {
-          align: "first",
+          align: "center",
         },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
       },
+
       {
         accessorKey: "code",
         header: "Code",
@@ -169,6 +261,17 @@ function Services() {
     []
   );
 
+  const table = useMaterialReactTable({
+    data,
+    columns,
+  });
+  const handleEditRow = (row) => {
+    setErrors({});
+    setSelectedRowId(row.original.id);
+    setDescription(row.original.description)
+    setCode(row.original.code)
+  };
+
   return (
     <>
       {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
@@ -192,7 +295,10 @@ function Services() {
               type={"text"}
               value={code}
               name="code"
-              // placeholder={"Enter"}
+              maxLength={2}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase().replace(/[^A-Za-z]/g, '');
+              }}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />
@@ -216,7 +322,9 @@ function Services() {
               type={"text"}
               value={description}
               name="description"
-              // placeholder={"Enter"}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />
@@ -224,58 +332,40 @@ function Services() {
               <div className="error-text">{errors.description}</div>
             )}
           </div>
-          <div className="d-flex flex-row mt-3">
+          {selectedRowId ? (<div className="d-flex flex-row mt-3">
             <button
               type="button"
-              onClick={handleServiceSave}
+              onClick={handleUpdateService}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
-              Save
+              Update
             </button>
-          </div>
+          </div>) : (
+            <div className="d-flex flex-row mt-3">
+              <button
+                type="button"
+                onClick={handleSaveService}
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                // onClick={handleSaveService}
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+
         </div>
 
         <div className="mt-4">
-          <MaterialReactTable
-            displayColumnDefOptions={{
-              "mrt-row-actions": {
-                muiTableHeadCellProps: {
-                  align: "center",
-                },
-                size: 80,
-              },
-            }}
-            columns={columns}
-            data={tableData}
-            editingMode="modal"
-            enableColumnOrdering
-            renderRowActions={({ row, table }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "1rem",
-                  justifyContent: "flex-end",
-                }}
-              >
-                {/* <Tooltip arrow placement="right" title="Edit">
-                  <IconButton style={{ color: "blue" }}>
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-
-                <Tooltip arrow placement="right" title="View">
-                  <IconButton
-                    color="primary"
-                    // onClick={() => handleView(row.original)}
-                  >
-                    <VisibilityIcon />
-                  </IconButton>
-                </Tooltip> */}
-              </Box>
-            )}
-          />
+          <MaterialReactTable table={table} />
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 }

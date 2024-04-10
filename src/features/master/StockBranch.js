@@ -10,6 +10,11 @@ import {
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
+
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -77,18 +82,25 @@ export const StockBranch = () => {
 
   const handleStockChange = (event) => {
     const { name, value } = event.target;
+    let formatedCode = value.replace(/[^a-zA-Z0-9-\/\\]/g, '');
+    let formatedBranch = value.replace(/[^a-zA-Z]/g, '');
     switch (name) {
       case "branch":
-        setBranch(value);
+        setBranch(formatedBranch.toUpperCase());
         break;
       case "code":
-        setCode(value);
+        setCode(formatedCode.toUpperCase());
+        break;
+      default:
         break;
     }
   };
 
+
+
   useEffect(() => {
     getAllStockbranch();
+
   }, []);
 
   const getAllStockbranch = async () => {
@@ -112,7 +124,6 @@ export const StockBranch = () => {
     if (!branch) {
       errors.branch = "Branch is required";
     }
-
     if (!branchCode) {
       errors.branchCode = "Code is required";
     }
@@ -135,9 +146,58 @@ export const StockBranch = () => {
           setCode("");
           setErrors({});
           getAllStockbranch();
+          toast.success("Bin Inward Saved Successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+
+
         })
         .catch((error) => {
           console.error("Error:", error);
+          toast.error("Failed to Save Bin Inward. Please try again.");
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
+  const handleUpdate = () => {
+    const errors = {};
+
+    if (!branch) {
+      errors.branch = "Branch is required";
+    }
+    if (!branchCode) {
+      errors.branchCode = "Code is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        active: true,
+        id: selectedRowId,
+        branchCode,
+        branch,
+        createdby: userDetail.firstName,
+      };
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/master/updateStockBranch`,
+          formData
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          setBranch("");
+          setCode("");
+          setErrors({});
+          getAllStockbranch();
+          toast.success("Stock Branch updated successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error("Failed to update Stock Branch. Please try again.");
         });
     } else {
       setErrors(errors);
@@ -146,12 +206,13 @@ export const StockBranch = () => {
 
   const handleViewRow = (row) => {
     setSelectedRowData(row.original);
-    // setOpenView(true);
   };
 
   const handleEditRow = (row) => {
-    setSelectedRowId(row.original.userId);
-    // setEditEmitter(true);
+    setErrors({});
+    setSelectedRowId(row.original.id);
+    setBranch(row.original.branch)
+    setCode(row.original.branchCode)
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -183,9 +244,7 @@ export const StockBranch = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            {/* <IconButton onClick={() => handleViewRow(row)}>
-              <VisibilityIcon />
-            </IconButton> */}
+
             <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
             </IconButton>
@@ -241,11 +300,9 @@ export const StockBranch = () => {
           <input
             className="form-control form-sz"
             type={"text"}
-            // placeholder={"Enter"}
             name="branch"
             value={branch}
             onChange={handleStockChange}
-            //   disabled={isSubmitting}
           />
           {errors.branch && <span className="error-text">{errors.branch}</span>}
         </div>
@@ -264,11 +321,9 @@ export const StockBranch = () => {
           <input
             className="form-control form-sz"
             type={"text"}
-            // placeholder={"Enter"}
             name="code"
             value={branchCode}
             onChange={handleStockChange}
-            //   disabled={isSubmitting}
           />
           {errors.branchCode && (
             <span className="error-text">{errors.branchCode}</span>
@@ -287,25 +342,39 @@ export const StockBranch = () => {
           />
         </div>
       </div>
-      <div className="d-flex flex-row mt-3">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          // onClick={handleCloseAddItemSpecification}
-          className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-        >
-          Cancel
-        </button>
-      </div>
+      {selectedRowId ? (
+        <div className="d-flex flex-row mt-3">
+          <button
+            type="button"
+            onClick={handleUpdate}
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            Update
+          </button>
+        </div>) : (
+        <div className="d-flex flex-row mt-3">
+          <button
+            type="button"
+            onClick={handleSave}
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            Cancel
+          </button>
+        </div>)}
+
+
+
       <div className="mt-4">
         <MaterialReactTable table={table} />
       </div>
+      <ToastContainer />
     </div>
+
   );
 };
