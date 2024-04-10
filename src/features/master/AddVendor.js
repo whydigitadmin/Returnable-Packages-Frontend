@@ -448,7 +448,7 @@ function AddVendor({ addVendors, editVendorId }) {
         setPhoneNumber(value);
         break;
       case "accountName":
-        setDisplayName(value);
+        setDisplyName(value);
         break;
       case "accountNo":
         setAccountNum(value);
@@ -593,7 +593,7 @@ function AddVendor({ addVendors, editVendorId }) {
           console.log("Response:", response.data);
           setAccountNum("");
           setBank("");
-          setDisplayName("");
+          setDisplyName("");
           setBranch("");
           setIfscCode("");
           setErrors({});
