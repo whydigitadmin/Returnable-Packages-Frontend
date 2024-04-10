@@ -1,12 +1,14 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 
 export const KitCard = () => {
   const [kitCode, setKitCode] = useState("");
   const [errors, setErrors] = useState({});
   const [kitData, setKitData] = useState(null);
+  const [kitVO, setKitVO] = useState("");
   const [hoveredImage, setHoveredImage] = useState(null);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
   const imgAssets = [
     "https://www.vidhataindia.com/wp-content/uploads/2017/11/SlideImg3.png",
@@ -17,6 +19,32 @@ export const KitCard = () => {
     const { value } = event.target;
     setKitCode(value);
     setErrors({});
+  };
+
+  useEffect(() => {
+    getAllKit();
+  }, []);
+
+  const getAllKit = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        const kitCodes = response.data.paramObjectsMap.KitVO.map(
+          (kit) => kit.kitCode
+        );
+        setKitVO(kitCodes);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handleSave = () => {
@@ -50,14 +78,24 @@ export const KitCard = () => {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              type="text"
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleInputChange}
               value={kitCode}
               name="kit"
-              onChange={handleInputChange}
-              className="input input-bordered p-2"
-            />
+              // disabled={codeSelected}
+            >
+              <option value="" disabled>
+                {" "}
+                Select kit
+              </option>
+              {kitVO &&
+                kitVO.map((kitCode, index) => (
+                  <option key={index} value={kitCode}>
+                    {kitCode}
+                  </option>
+                ))}
+            </select>
             {errors.kitCode && (
               <div className="error-text">{errors.kitCode}</div>
             )}
@@ -84,43 +122,46 @@ export const KitCard = () => {
             </button>
           </div>
         </div>
-        {kitData && (
-          <div className="overflow-x-auto w-full mt-4">
-            <table className="table w-full">
-              <thead>
-                <tr>
-                  <th>Asset</th>
-                  <th>Asset Category</th>
-                  <th>Asset Name</th>
-                  <th>Quantity</th>
-                </tr>
-              </thead>
-              <tbody>
-                {kitData.kitAssetVO.map((asset, index) => (
-                  <tr key={asset.id}>
-                    <td style={{ position: "relative" }}>
-                      <img
-                        src={imgAssets[index % imgAssets.length]}
-                        alt="Mechanical Image"
-                        style={{
-                          width: "50px",
-                          height: "50px",
-                        }}
-                        onMouseEnter={() =>
-                          setHoveredImage(imgAssets[index % imgAssets.length])
-                        }
-                        onMouseLeave={() => setHoveredImage(null)}
-                      />
-                    </td>
-                    <td>{asset.assetCategory}</td>
-                    <td>{asset.assetName}</td>
-                    <td>{asset.quantity}</td>
+
+        <div>
+          {kitData && (
+            <div className="overflow-x-auto w-full mt-4">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th>Asset</th>
+                    <th>Asset Category</th>
+                    <th>Asset Name</th>
+                    <th>Quantity</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {kitData.kitAssetVO.map((asset, index) => (
+                    <tr key={asset.id}>
+                      <td style={{ position: "relative" }}>
+                        <img
+                          src={imgAssets[index % imgAssets.length]}
+                          alt="Mechanical Image"
+                          style={{
+                            width: "50px",
+                            height: "50px",
+                          }}
+                          onMouseEnter={() =>
+                            setHoveredImage(imgAssets[index % imgAssets.length])
+                          }
+                          onMouseLeave={() => setHoveredImage(null)}
+                        />
+                      </td>
+                      <td>{asset.assetCategory}</td>
+                      <td>{asset.assetName}</td>
+                      <td>{asset.quantity}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
