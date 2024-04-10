@@ -180,11 +180,18 @@ function IssueManifest() {
 
       for (const itemId of selectedItemIds) {
         const issuedQty = qty[itemId];
+
+        console.log("isssued qty ", issuedQty);
         if (!issuedQty && issuedQty !== 0) {
+          toast.error("Please Enter Qty", {
+            autoClose: 3000,
+            theme: "colored",
+          });
           return; // Exit the function if any issued quantity is empty
         }
 
         if (issuedQty > availableKitQty) {
+          console.log("isssued qty 1 ", issuedQty);
           toast.error(
             "Invalid quantity: Issued quantity cannot be greater than available quantity",
             {

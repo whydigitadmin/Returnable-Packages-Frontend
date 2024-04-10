@@ -16,6 +16,8 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife, FaTrash } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -448,7 +450,7 @@ function AddVendor({ addVendors, editVendorId }) {
         setPhoneNumber(value);
         break;
       case "accountName":
-        setDisplyName(value);
+        setAccountName(value);
         break;
       case "accountNo":
         setAccountNum(value);
@@ -538,9 +540,16 @@ function AddVendor({ addVendors, editVendorId }) {
           // setBranch("");
           // setIfscCode("");
           // setErrors({});
+          toast.success("Vendor Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         })
         .catch((error) => {
-          console.error("Error:", error);
+          toast.error("Network Error", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         });
     } else {
       // If there are errors, update the state to display them
@@ -838,15 +847,15 @@ function AddVendor({ addVendors, editVendorId }) {
                 onChange={handleChange}
                 aria-label="basic tabs example"
               >
+                <Tab className="text-form" label="Address" {...a11yProps(1)} />
                 <Tab
                   className="text-form"
                   label="Bank Details"
-                  {...a11yProps(1)}
+                  {...a11yProps(0)}
                 />
-                <Tab className="text-form" label="Address" {...a11yProps(0)} />
               </Tabs>
             </Box>
-            <CustomTabPanel value={value} index={1}>
+            <CustomTabPanel value={value} index={0}>
               <div className="row d-flex justify-content-center">
                 <div className="col-md-12">
                   <button
@@ -943,7 +952,7 @@ function AddVendor({ addVendors, editVendorId }) {
                 ))}
               </div>
             </CustomTabPanel>
-            <CustomTabPanel value={value} index={0}>
+            <CustomTabPanel value={value} index={1}>
               <div className="row">
                 <div className="col-lg-3 col-md-6 mb-2">
                   <label className="label">
@@ -1413,7 +1422,6 @@ function AddVendor({ addVendors, editVendorId }) {
                           fontSize: "0.800rem",
                           width: "100%",
                         }}
-                        type={"number"}
                         value={newAddress.gstNumber}
                         onInput={(e) => {
                           e.target.value = e.target.value.toUpperCase();

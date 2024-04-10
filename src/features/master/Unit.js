@@ -117,8 +117,8 @@ function Unit() {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.unitVO);
-        setTableData(response.data.paramObjectsMap.unitVO);
+        setData(response.data.paramObjectsMap.unitVO.reverse());
+        setTableData(response.data.paramObjectsMap.unitVO.reverse());
         // Handle success
       } else {
         // Handle error

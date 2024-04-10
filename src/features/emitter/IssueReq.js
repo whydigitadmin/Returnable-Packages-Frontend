@@ -223,7 +223,7 @@ function IssueReq() {
         console.log("validFlows", validFlows);
       }
     } catch (error) {
-      toast.error("Network Error!");
+      // toast.error("Network Error!");
     }
   };
 
@@ -274,7 +274,10 @@ function IssueReq() {
           setSelectedDate(null);
           getIssueRequest();
           setErrors("");
-          toast.success("Bin Requested Successfully");
+          toast.success("Bin Requested Successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         })
         .catch((error) => {
           toast.error("Network Error!");
@@ -324,7 +327,10 @@ function IssueReq() {
         .then((response) => {
           console.log("Response:", response.data);
           // setAleartState(true);
-          toast.success("Bin Requested Successfully");
+          toast.success("Bin Requested Successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
           // setSelectedKitNumbers([""]);
           // setPartFields([{ partNo: "", qty: "" }]);
           // setSelectedPartNumbers([""]);
@@ -382,7 +388,7 @@ function IssueReq() {
         console("Testtt", kitData);
       }
     } catch (error) {
-      toast.error("Network Error!");
+      // toast.error("Network Error!");
     }
   };
 

@@ -225,7 +225,7 @@ function Vendors() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.vendorVO);
+        setData(response.data.paramObjectsMap.vendorVO.reverse());
       }
     } catch (error) {
       console.error("Error fetching data:", error);

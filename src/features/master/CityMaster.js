@@ -71,8 +71,8 @@ export const CityMaster = () => {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.cityVO);
-        setTableData(response.data.paramObjectsMap.cityVO);
+        setData(response.data.paramObjectsMap.cityVO.reverse());
+        setTableData(response.data.paramObjectsMap.cityVO.reverse());
         // Handle success
       } else {
         // Handle error
