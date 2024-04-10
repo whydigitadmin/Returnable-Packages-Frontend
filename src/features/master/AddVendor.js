@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaStarOfLife, FaTrash } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -101,7 +101,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddVendor({ addVendors }) {
+function AddVendor({ addVendors, editVendorId }) {
   const [value, setValue] = React.useState(0);
   const [openBillingModal, setOpenBillingModal] = React.useState(false);
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
@@ -117,7 +117,7 @@ function AddVendor({ addVendors }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [active, setActive] = useState(true);
   const [venderActivePortal, setVenderActivePortal] = useState(true);
-  const [accountName, setDisplayName] = useState("");
+  const [accountName, setAccountName] = useState("");
   const [accountNo, setAccountNum] = useState("");
   const [bank, setBank] = useState("");
   const [branch, setBranch] = useState("");
@@ -320,6 +320,76 @@ function AddVendor({ addVendors }) {
       marginRight: "10px",
       color: "#555",
     },
+  };
+
+  useEffect(() => {
+    {
+      editVendorId && getVendorId();
+    }
+  }, []);
+
+  const getVendorId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/Vendor/${editVendorId}`
+      );
+
+      if (response.status === 200) {
+        console.log(
+          "Edit User Details",
+          response.data.paramObjectsMap.vendorVO
+        );
+        setVenderType(response.data.paramObjectsMap.vendorVO.venderType);
+        setEntityLegalName(
+          response.data.paramObjectsMap.vendorVO.entityLegalName
+        );
+        setDisplyName(response.data.paramObjectsMap.vendorVO.displyName);
+        setEmail(response.data.paramObjectsMap.vendorVO.email);
+        setPhoneNumber(response.data.paramObjectsMap.vendorVO.phoneNumber);
+        setNewAddress({
+          // ...newAddress,
+          gstRegistrationStatus:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .gstRegistrationStatus,
+          street1:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .street1,
+          street2:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .street2,
+          state:
+            response.data.paramObjectsMap.customersVO.customersAddressVO.state,
+          city: response.data.paramObjectsMap.customersVO.customersAddressVO
+            .city,
+          pinCode:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .pinCode,
+          contactName:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .contactName,
+          phoneNumber:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .phoneNumber,
+          designation:
+            response.data.paramObjectsMap.customersVO.customersAddressVO
+              .designation,
+          email:
+            response.data.paramObjectsMap.customersVO.customersAddressVO.email,
+        });
+        console.log("new", newAddress);
+        const gstRegistrationStatus =
+          response.data.paramObjectsMap.customersVO.customersAddressVO
+            .gstRegistrationStatus;
+        if (gstRegistrationStatus) {
+          setNewAddress({
+            ...newAddress,
+            gstRegistrationStatus: gstRegistrationStatus,
+          });
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
   const handleChange = (event, newValue) => {

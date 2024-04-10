@@ -66,6 +66,14 @@ function Vendors() {
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [openView, setOpenView] = React.useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [edit, setEdit] = React.useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
+
+  const handleEditRow = (row) => {
+    setSelectedRowId(row.original.id);
+    console.log("setSelectedRowID", row.original.id);
+    setEdit(true);
+  };
 
   const handleViewClose = () => {
     setOpenView(false);
@@ -87,6 +95,7 @@ function Vendors() {
 
   const handleBack = () => {
     setAddVendors(false);
+    setEdit(false);
     getVendorData();
   };
 
@@ -125,9 +134,7 @@ function Vendors() {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton
-            // onClick={() => handleEditRow(row)}
-            >
+            <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
             </IconButton>
           </div>
@@ -227,124 +234,125 @@ function Vendors() {
 
   return (
     <>
-      {addVendors ? (
-        <AddVendor addVendors={handleBack} />
-      ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div>
-          <div className="">
-            <div className="flex justify-between mt-4">
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleClickOpen}
-              >
-                <img
-                  src="/upload.png"
-                  alt="upload-icon"
-                  title="upload"
-                  style={{
-                    width: 30,
-                    height: 30,
-                    margin: "auto",
-                    hover: "pointer",
-                  }}
-                />
-                <span
-                  className="text-form text-base"
-                  style={{ marginLeft: "10px" }}
-                >
-                  Bulk Upload
-                </span>
-              </button>
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleAddVendors}
-              >
-                <img
-                  src="/new.png"
-                  alt="new-icon"
-                  title="new"
-                  style={{
-                    width: 30,
-                    height: 30,
-                    margin: "auto",
-                    hover: "pointer",
-                  }}
-                />
-                <span
-                  className="text-form text-base"
-                  style={{ marginLeft: "10px" }}
-                >
-                  Vendor
-                </span>
-              </button>
+      {(addVendors && <AddVendor addVendors={handleBack} />) ||
+        (edit && (
+          <AddVendor addVendors={handleBack} editVendorId={selectedRowId} />
+        )) || (
+          <div className="card w-full p-6 bg-base-100 shadow-xl">
+            <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+              {statsData.map((d, k) => {
+                return <DashBoardComponent key={k} {...d} colorIndex={k} />;
+              })}
             </div>
-          </div>
-          <div className="mt-4">
-            <MaterialReactTable table={table} />
-          </div>
-          <Dialog
-            fullWidth={true}
-            maxWidth={"sm"}
-            open={open}
-            onClose={handleClose}
-          >
-            <div className="d-flex justify-content-between">
-              <DialogTitle>Upload File</DialogTitle>
-              <IoMdClose
-                onClick={handleClose}
-                className="cursor-pointer w-8 h-8 mt-3 me-3"
-              />
+            <div className="">
+              <div className="flex justify-between mt-4">
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleClickOpen}
+                >
+                  <img
+                    src="/upload.png"
+                    alt="upload-icon"
+                    title="upload"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Bulk Upload
+                  </span>
+                </button>
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleAddVendors}
+                >
+                  <img
+                    src="/new.png"
+                    alt="new-icon"
+                    title="new"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Vendor
+                  </span>
+                </button>
+              </div>
             </div>
-            <DialogContent>
-              <DialogContentText className="d-flex flex-column">
-                Choose a file to upload
-                <div className="d-flex justify-content-center">
-                  <div className="col-lg-4 text-center my-3">
+            <div className="mt-4">
+              <MaterialReactTable table={table} />
+            </div>
+            <Dialog
+              fullWidth={true}
+              maxWidth={"sm"}
+              open={open}
+              onClose={handleClose}
+            >
+              <div className="d-flex justify-content-between">
+                <DialogTitle>Upload File</DialogTitle>
+                <IoMdClose
+                  onClick={handleClose}
+                  className="cursor-pointer w-8 h-8 mt-3 me-3"
+                />
+              </div>
+              <DialogContent>
+                <DialogContentText className="d-flex flex-column">
+                  Choose a file to upload
+                  <div className="d-flex justify-content-center">
+                    <div className="col-lg-4 text-center my-3">
+                      <Button
+                        component="label"
+                        variant="contained"
+                        startIcon={<FaCloudUploadAlt />}
+                      >
+                        Upload file
+                        <VisuallyHiddenInput type="file" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="col-lg-4 mt-3">
                     <Button
+                      size="small"
                       component="label"
+                      className="text-form"
                       variant="contained"
-                      startIcon={<FaCloudUploadAlt />}
+                      startIcon={<FiDownload />}
                     >
-                      Upload file
-                      <VisuallyHiddenInput type="file" />
+                      Download Sample File
                     </Button>
                   </div>
-                </div>
-                <div className="col-lg-4 mt-3">
-                  <Button
-                    size="small"
-                    component="label"
-                    className="text-form"
-                    variant="contained"
-                    startIcon={<FiDownload />}
-                  >
-                    Download Sample File
-                  </Button>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions className="mb-2 me-2">
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button component="label" variant="contained">
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      )}
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions className="mb-2 me-2">
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button component="label" variant="contained">
+                  Submit
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </div>
+        )}
       {/* VIEW MODAL */}
       <Dialog open={openView} onClose={handleViewClose} maxWidth="sm" fullWidth>
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
           <div className="row">
             <div className="col-md-11">
-              <Typography variant="h6">Warehouse Details</Typography>
+              <Typography variant="h6">Vendors Details</Typography>
             </div>
             <div className="col-md-1">
               <IconButton onClick={handleViewClose} aria-label="close">
