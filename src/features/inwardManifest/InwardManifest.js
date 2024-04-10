@@ -8,6 +8,8 @@ import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import ToastComponent from "../../utils/ToastComponent";
 import { FaTrash } from "react-icons/fa";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const DOCDATA = [
   {
@@ -39,24 +41,24 @@ export const InwardManifest = () => {
   const [tableData, setTableData] = useState([
     {
       id: 1,
-      column1: "",
-      column2: "",
-      column3: "",
-      column4: "",
-      column5: "",
-      column6: "",
+      sku: "",
+      code: "",
+      qty: "",
+      stockValue: "",
+      stockLoc: "",
+      binLoc: "Bulk",
     },
   ]);
 
   const handleAddRow = () => {
     const newRow = {
       id: tableData.length + 1,
-      column1: "",
-      column2: "",
-      column3: "",
-      column4: "",
-      column5: "",
-      column6: "",
+      sku: "",
+      code: "",
+      qty: "",
+      stockValue: "",
+      stockLoc: "",
+      binLoc: "Bulk",
     };
     setTableData([...tableData, newRow]);
   };
@@ -127,7 +129,7 @@ export const InwardManifest = () => {
     setTableData(tableData.filter((row) => row.id !== id));
   };
 
-  const handleDoctypeSave = () => {
+  const handleSave = () => {
     const errors = {};
     // if (!docdata[0].Prefix) {
     //   errors.prefix = "Prefix is required";
@@ -160,6 +162,12 @@ export const InwardManifest = () => {
     if (!docDate) {
       errors.docDate = "To Date is required";
     }
+    if (tableData[0].code === "") {
+      errors.code = "Code field is Required";
+    }
+    if (tableData[0].qty === "") {
+      errors.qty = "QTY field is Required";
+    }
 
     // const tableFormData = tableData.map((row) => ({
     //   scode: row.scode,
@@ -170,23 +178,26 @@ export const InwardManifest = () => {
     // }));
 
     const tableFormData = tableData.map((row) => ({
-      skuDetail: row.skuDetail,
-      skucode: row.skucode,
-      skuQty: row.skuQty,
+      skuDetail: row.sku,
+      skucode: row.code,
+      skuQty: row.qty,
       stockValue: row.stockValue,
-      stockLocation: row.stockLocation,
-      binLocation: row.binLocation,
+      stockLocation: row.stockLoc,
+      binLocation: "test",
+      // stockValue: row.stockValue,
+      // stockLocation: row.stockLoc,
+      // binLocation: row.binLoc,
     }));
 
     // Check if any table fields are empty
     const isTableDataEmpty = tableFormData.some(
       (row) =>
-        row.skuDetail === "" ||
-        row.skucode === "" ||
-        row.skuQty === "" ||
+        row.sku === "" ||
+        row.code === "" ||
+        row.qty === "" ||
         row.stockValue === "" ||
-        row.stockLocation === "" ||
-        row.binLocation === ""
+        row.stockLoc === "" ||
+        row.binLoc === ""
     );
 
     if (isTableDataEmpty) {
@@ -211,7 +222,7 @@ export const InwardManifest = () => {
         )
         .then((response) => {
           console.log("Response:", response.data);
-          setAleartState(true);
+          // setAleartState(true);
           setDocData(DOCDATA);
           setDocDate(null);
           setDocId("");
@@ -222,17 +233,23 @@ export const InwardManifest = () => {
           setTableData([
             {
               id: 1,
-              skuDetail: "",
-              skucode: "",
-              skuQty: "",
+              sku: "",
+              code: "",
+              qty: "",
               stockValue: "",
-              stockLocation: "",
-              binLocation: "",
+              stockLoc: "",
+              binLoc: "",
             },
           ]);
+          toast.success("Stock Branch Updated Successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
         })
         .catch((error) => {
           console.error("Error:", error);
+          toast.error("Failed to update user. Please try again.");
+
         });
     } else {
       setErrors(errors);
@@ -242,9 +259,9 @@ export const InwardManifest = () => {
   return (
     <>
       <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
-        {aleartState && (
+        {/* {aleartState && (
           <ToastComponent content="Bin Inwarded successfully" type="success" />
-        )}
+        )} */}
         <div className="row mt-3">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -366,12 +383,12 @@ export const InwardManifest = () => {
                     <th className="px-2 py-2 bg-blue-500 text-white">Action</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
-                      SKU Details
+                      SKU
                     </th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
-                      SKU Code
+                      Code
                     </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">Qty</th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">QTY</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
                       Stock Value
                     </th>
@@ -414,7 +431,7 @@ export const InwardManifest = () => {
                         </td>
                         <td className="border px-2 py-2">
                           <select
-                            value={row.skuDetail}
+                            value={row.sku}
                             onChange={(e) => {
                               const selectedAssetName = e.target.value;
                               const selectedAsset = allAsset.find(
@@ -428,10 +445,10 @@ export const InwardManifest = () => {
                                 prev.map((r) =>
                                   r.id === row.id
                                     ? {
-                                        ...r,
-                                        skuDetail: selectedAssetName,
-                                        skucode: assetCodeId,
-                                      }
+                                      ...r,
+                                      sku: selectedAssetName,
+                                      code: assetCodeId,
+                                    }
                                     : r
                                 )
                               );
@@ -453,58 +470,61 @@ export const InwardManifest = () => {
                           </select>
                         </td>
                         <td className="border px-2 py-2">
-                          <select
-                            value={row.skucode}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, skucode: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
+                          <input
+                            type="text"
+                            value={row.code}
                             disabled
-                          >
-                            <option disabled selected>
-                              --Select--
-                            </option>
-                            {allAsset.length > 0 &&
-                              allAsset.map((list) => (
-                                <option
-                                  key={list.assetCodeId}
-                                  value={list.assetCodeId}
-                                >
-                                  {list.assetCodeId}
-                                </option>
-                              ))}
-                          </select>
+                            style={{ width: "100%", border: errors && errors.code ? "1px solid red" : "1px solid #ccc" }}
+                            key={`code-${row.id}`}
+                          />
                         </td>
+
                         <td className="border px-2 py-2">
                           <input
                             type="text"
-                            value={row.skuQty}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, skuQty: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
+                            value={row.qty}
+                            onChange={(e) => {
+                              const inputValue = e.target.value;
+                              if (inputValue == "" || /^\d+$/.test(inputValue) && inputValue.length <= 8) {
+                                setTableData((prev) =>
+                                  prev.map((r) =>
+                                    r.id === row.id ? { ...r, qty: inputValue } : r
+                                  )
+                                );
+                              }
+                            }}
+                            style={{ width: "100%", border: errors && errors.qty ? "1px solid red" : "1px solid #ccc" }}
+                            key={`QTY-${row.id}`}
+                          />
+                        </td>
+
+                        <td className="border px-2 py-2">
+                          <input
+                            type="text"
+                            value={row.stockValue}
+                            onChange={(e) => {
+                              const inputValue = e.target.value;
+                              if (inputValue == "" || /^\d+$/.test(inputValue) && inputValue.length <= 8) {
+                                setTableData((prev) =>
+                                  prev.map((r) =>
+                                    r.id === row.id ? { ...r, stockValue: inputValue } : r
+                                  )
+                                );
+                              }
+                            }}
                             style={{ width: "100%" }}
                           />
                         </td>
                         <td className="border px-2 py-2">
                           <input
                             type="text"
-                            value={row.stockValue}
+                            value={stockTo}
+                            disabled
                             onChange={(e) =>
                               setTableData((prev) =>
                                 prev.map((r) =>
                                   r.id === row.id
-                                    ? { ...r, stockValue: e.target.value }
+                                    ? { ...r, stockLoc: e.target.value }
                                     : r
                                 )
                               )
@@ -514,27 +534,12 @@ export const InwardManifest = () => {
                         <td className="border px-2 py-2">
                           <input
                             type="text"
-                            value={row.stockLocation}
+                            value={row.binLoc}
                             onChange={(e) =>
                               setTableData((prev) =>
                                 prev.map((r) =>
                                   r.id === row.id
-                                    ? { ...r, stockLocation: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                          />
-                        </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.binLocation}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, binLocation: e.target.value }
+                                    ? { ...r, binLoc: e.target.value }
                                     : r
                                 )
                               )
@@ -557,12 +562,13 @@ export const InwardManifest = () => {
           <button
             type="button"
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            onClick={handleDoctypeSave}
+            onClick={handleSave}
           >
             Save
           </button>
         </div>
       </div>
+      <ToastContainer />
     </>
   );
 };
