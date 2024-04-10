@@ -1,9 +1,22 @@
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import {
@@ -14,23 +27,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
 import { MdGroups } from "react-icons/md";
 import AddVendor from "./AddVendor";
 import DashBoardComponent from "./DashBoardComponent";
-import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 
 const statsData = [
   {
@@ -140,17 +140,17 @@ function Vendors() {
           </div>
         ),
       },
-      {
-        accessorKey: "id",
-        header: "Sr No",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "first",
-        },
-        muiTableBodyCellProps: {
-          align: "first",
-        },
-      },
+      // {
+      //   accessorKey: "id",
+      //   header: "Sr No",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "first",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "first",
+      //   },
+      // },
       {
         accessorKey: "displyName",
         header: "Vendor Display Name",

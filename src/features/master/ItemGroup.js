@@ -417,7 +417,7 @@ function ItemGroup() {
                         onInput={(e) => {
                           e.target.value = e.target.value
                             .toUpperCase()
-                            .replace(/[^A-Z]/g, "");
+                            .replace(/[^A-Z\s]/g, "");
                         }}
                         className="form-control form-sz mb-2"
                       />

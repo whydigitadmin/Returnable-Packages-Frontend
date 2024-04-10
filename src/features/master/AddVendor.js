@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FaStarOfLife, FaTrash } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
@@ -714,6 +714,11 @@ function AddVendor({ addVendors, editVendorId }) {
               value={entityLegalName}
               onChange={handleInputChange}
               disabled={isSubmitting}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+              }}
             />
             {errors.entityLegalName && (
               <span className="error-text">{errors.entityLegalName}</span>
@@ -740,6 +745,11 @@ function AddVendor({ addVendors, editVendorId }) {
               value={displyName}
               onChange={handleInputChange}
               disabled={isSubmitting}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z\s]/g, "");
+              }}
             />
             {errors.displyName && (
               <span className="error-text">{errors.displyName}</span>
@@ -785,6 +795,10 @@ function AddVendor({ addVendors, editVendorId }) {
               value={phoneNumber}
               onChange={handleInputChange}
               disabled={isSubmitting}
+              maxLength={10}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, "");
+              }}
             />
             {errors.phoneNumber && (
               <span className="error-text">{errors.phoneNumber}</span>
@@ -952,6 +966,11 @@ function AddVendor({ addVendors, editVendorId }) {
                     name="bank"
                     onChange={handleInputChange}
                     disabled={isSubmitting}
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                    }}
                   />
                   {errors.bank && (
                     <div className="error-text">{errors.bank}</div>
@@ -977,6 +996,10 @@ function AddVendor({ addVendors, editVendorId }) {
                     value={accountNo}
                     name="accountNo"
                     onChange={handleInputChange}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.replace(/\D/g, "");
+                    }}
+                    maxLength={30}
                     disabled={isSubmitting}
                   />
                   {errors.accountNo && (
@@ -1002,6 +1025,11 @@ function AddVendor({ addVendors, editVendorId }) {
                     // placeholder="Enter"
                     value={accountName}
                     name="accountName"
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                    }}
                     onChange={handleInputChange}
                     disabled={isSubmitting}
                   />
@@ -1030,6 +1058,11 @@ function AddVendor({ addVendors, editVendorId }) {
                     name="branch"
                     onChange={handleInputChange}
                     disabled={isSubmitting}
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                    }}
                   />
                   {errors.branch && (
                     <div className="error-text">{errors.branch}</div>
@@ -1053,6 +1086,9 @@ function AddVendor({ addVendors, editVendorId }) {
                     className="form-control form-sz"
                     // placeholder="Enter"
                     value={ifscCode}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.toUpperCase();
+                    }}
                     name="ifscCode"
                     onChange={handleInputChange}
                     disabled={isSubmitting}
@@ -1379,6 +1415,9 @@ function AddVendor({ addVendors, editVendorId }) {
                         }}
                         type={"number"}
                         value={newAddress.gstNumber}
+                        onInput={(e) => {
+                          e.target.value = e.target.value.toUpperCase();
+                        }}
                         onChange={(e) =>
                           handleAddressInputChange(e, "gstNumber")
                         }
@@ -1411,6 +1450,9 @@ function AddVendor({ addVendors, editVendorId }) {
                     className="form-control label label-text label-font-size text-base-content"
                     value={newAddress.street1}
                     onChange={(e) => handleAddressInputChange(e, "street1")}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.toUpperCase();
+                    }}
                   ></textarea>
                   {errors1.street1 && (
                     <span style={{ color: "red", fontSize: "12px" }}>
@@ -1431,6 +1473,9 @@ function AddVendor({ addVendors, editVendorId }) {
                     style={{ fontSize: "0.800rem" }}
                     className="form-control label label-text label-font-size text-base-content"
                     value={newAddress.street2}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.toUpperCase();
+                    }}
                     onChange={(e) => handleAddressInputChange(e, "street2")}
                   ></textarea>
                 </div>
@@ -1450,22 +1495,23 @@ function AddVendor({ addVendors, editVendorId }) {
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
-                  <select
-                    name="Select Item"
+                  <input
                     style={{
                       height: 40,
                       fontSize: "0.800rem",
                       width: "100%",
                       borderColor: errors1.state ? "red" : "",
                     }}
-                    className="input input-bordered ps-2"
+                    type={"text"}
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                    }}
                     value={newAddress.state}
                     onChange={(e) => handleAddressInputChange(e, "state")}
-                  >
-                    <option value=""></option>
-                    <option value="Tamil Nadu">Tamil Nadu</option>
-                    <option value="Goa">Goa</option>
-                  </select>
+                    className="input input-bordered p-2"
+                  />
                   {errors1.state && (
                     <span style={{ color: "red", fontSize: "12px" }}>
                       State is required
@@ -1496,6 +1542,11 @@ function AddVendor({ addVendors, editVendorId }) {
                       borderColor: errors1.city ? "red" : "",
                     }}
                     type={"text"}
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                    }}
                     value={newAddress.city}
                     onChange={(e) => handleAddressInputChange(e, "city")}
                     className="input input-bordered p-2"
@@ -1556,6 +1607,11 @@ function AddVendor({ addVendors, editVendorId }) {
                       width: "100%",
                     }}
                     type={"text"}
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                    }}
                     value={newAddress.contactName}
                     onChange={(e) => handleAddressInputChange(e, "contactName")}
                     className="input input-bordered p-2"
@@ -1577,6 +1633,7 @@ function AddVendor({ addVendors, editVendorId }) {
                       width: "100%",
                     }}
                     type={"number"}
+                    maxLength={10}
                     value={newAddress.phoneNumber}
                     onChange={(e) => handleAddressInputChange(e, "phoneNumber")}
                     className="input input-bordered p-2"
@@ -1598,6 +1655,11 @@ function AddVendor({ addVendors, editVendorId }) {
                     }}
                     type={"text"}
                     value={newAddress.designation}
+                    onInput={(e) => {
+                      e.target.value = e.target.value
+                        .toUpperCase()
+                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                    }}
                     onChange={(e) => handleAddressInputChange(e, "designation")}
                     className="input input-bordered p-2"
                   />

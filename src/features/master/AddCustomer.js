@@ -895,7 +895,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
             />
             {errors.entityLegalName && (
@@ -925,7 +925,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
             />
             {errors.displayName && (
@@ -1438,7 +1438,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   onInput={(e) => {
                     e.target.value = e.target.value
                       .toUpperCase()
-                      .replace(/[^A-Z]/g, "");
+                      .replace(/[^A-Z\s]/g, "");
                   }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.state}
@@ -1477,7 +1477,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   onInput={(e) => {
                     e.target.value = e.target.value
                       .toUpperCase()
-                      .replace(/[^A-Z]/g, "");
+                      .replace(/[^A-Z\s]/g, "");
                   }}
                   value={newAddress.city}
                   onChange={(e) => handleAddressInputChange(e, "city")}
@@ -1546,7 +1546,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   onInput={(e) => {
                     e.target.value = e.target.value
                       .toUpperCase()
-                      .replace(/[^A-Z]/g, "");
+                      .replace(/[^A-Z\s]/g, "");
                   }}
                   onChange={(e) => handleAddressInputChange(e, "contactName")}
                   className="input input-bordered p-2"
@@ -1604,7 +1604,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   onInput={(e) => {
                     e.target.value = e.target.value
                       .toUpperCase()
-                      .replace(/[^A-Z]/g, "");
+                      .replace(/[^A-Z\s]/g, "");
                   }}
                 />
               </div>
@@ -1710,7 +1710,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   onInput={(e) => {
                     e.target.value = e.target.value
                       .toUpperCase()
-                      .replace(/[^A-Z]/g, "");
+                      .replace(/[^A-Z\s]/g, "");
                   }}
                   value={newBankAddress.bank}
                   onChange={(e) => handleBankInputChange(e, "bank")}
@@ -1784,7 +1784,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   onInput={(e) => {
                     e.target.value = e.target.value
                       .toUpperCase()
-                      .replace(/[^A-Z]/g, "");
+                      .replace(/[^A-Z\s]/g, "");
                   }}
                   value={newBankAddress.accountName}
                   onChange={(e) => handleBankInputChange(e, "accountName")}
@@ -1822,7 +1822,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   onInput={(e) => {
                     e.target.value = e.target.value
                       .toUpperCase()
-                      .replace(/[^A-Z]/g, "");
+                      .replace(/[^A-Z\s]/g, "");
                   }}
                   value={newBankAddress.branch}
                   onChange={(e) => handleBankInputChange(e, "branch")}

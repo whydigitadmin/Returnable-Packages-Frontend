@@ -113,7 +113,7 @@ function Items() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.assetVO);
+        setData(response.data.paramObjectsMap.assetVO.reverse());
       }
     } catch (error) {
       console.error("Error fetching data:", error);

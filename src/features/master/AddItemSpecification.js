@@ -379,7 +379,7 @@ function AddItemSpecification({
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
             />
             {errors.assetName && (

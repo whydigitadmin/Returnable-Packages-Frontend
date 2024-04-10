@@ -15,8 +15,10 @@ import TitleCard from "../../components/Cards/TitleCard";
 
 import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import NoRecordsFound from "../../utils/NoRecordsFound";
-import ToastComponent from "../../utils/ToastComponent";
+
 import GetAvailKitQty from "./GetAvailKitQty";
 
 const steps = ["Issue manifest", "Mode of Transport "];
@@ -45,7 +47,6 @@ function IssueManifest() {
     JSON.parse(localStorage.getItem("userDto"))
   );
   const [demoState, setDemoState] = useState(false);
-  const [toast, setToast] = useState(false);
   const [selectedItemIds, setSelectedItemIds] = useState([]);
   const [maxPartQty, setMaxPartQty] = useState("");
   const [kitQuantity, setKitQuantity] = useState("");
@@ -167,13 +168,44 @@ function IssueManifest() {
       //     return; // Exit the function if any issued quantity is empty
       //   }
       // }
+      // for (const itemId of selectedItemIds) {
+      //   const issuedQty = qty[itemId];
+      //   if (!issuedQty && issuedQty !== 0) {
+      //     return; // Exit the function if any issued quantity is empty
+      //   }
+      //   if (issuedQty > availableKitQty) {
+      //     return;
+      //   }
+      // }
+
       for (const itemId of selectedItemIds) {
         const issuedQty = qty[itemId];
         if (!issuedQty && issuedQty !== 0) {
           return; // Exit the function if any issued quantity is empty
         }
+
         if (issuedQty > availableKitQty) {
-          return;
+          toast.error(
+            "Invalid quantity: Issued quantity cannot be greater than available quantity",
+            {
+              autoClose: 3000,
+              theme: "colored",
+            }
+          );
+          return; // Exit the function if any issued quantity is greater than available quantity
+        }
+        const kitQty = selectedIssueRequest?.issueItemVO.find(
+          (item) => item.id === itemId
+        )?.kitQty;
+        if (issuedQty > kitQty) {
+          toast.error(
+            "Invalid quantity: Issued quantity cannot be greater than demand quantity",
+            {
+              autoClose: 3000,
+              theme: "colored",
+            }
+          );
+          return; // Exit the function if any issued quantity is greater than demand quantity
         }
       }
 
@@ -197,8 +229,8 @@ function IssueManifest() {
         .then((response) => {
           console.log("Response:", response.data);
           getIssueRequest(emitterId);
-          setToast(true);
           closePendingPopup();
+          toast.success("Bin issued successfully");
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -722,6 +754,9 @@ function IssueManifest() {
               open={isPendingPopupOpen}
               onClose={closePendingPopup}
             >
+              <div>
+                <ToastContainer />
+              </div>
               <div className="d-flex justify-content-between">
                 <DialogTitle>
                   Bin Allotment For{" "}
@@ -1111,9 +1146,9 @@ function IssueManifest() {
           </>
           <div>
             {" "}
-            {toast && (
+            {/* {toast && (
               <ToastComponent content="Quantity issued" type="success" />
-            )}
+            )} */}
           </div>
         </div>
       </div>

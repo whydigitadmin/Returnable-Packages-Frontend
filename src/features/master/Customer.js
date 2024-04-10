@@ -1,9 +1,22 @@
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import {
@@ -14,23 +27,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
+import { IoMdClose } from "react-icons/io";
 import { MdGroups } from "react-icons/md";
 import AddCustomer from "./AddCustomer";
 import DashBoardComponent from "./DashBoardComponent";
-import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-} from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 
 const statsData = [
   {
@@ -244,7 +244,7 @@ function Customer() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.customersVO);
+        setData(response.data.paramObjectsMap.customersVO.reverse());
       }
     } catch (error) {
       console.error("Error fetching data:", error);

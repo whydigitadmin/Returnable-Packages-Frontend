@@ -114,7 +114,7 @@ function Warehouse() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.WarehouseVO);
+        setData(response.data.paramObjectsMap.WarehouseVO.reverse());
       }
     } catch (error) {
       console.error("Error fetching data:", error);

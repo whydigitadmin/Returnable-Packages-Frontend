@@ -441,7 +441,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
               value={locationName}
               onChange={handleInputChange}
@@ -495,7 +495,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
               name="name"
               value={name}
@@ -580,7 +580,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
               onChange={handleInputChange}
             />
@@ -609,7 +609,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
@@ -636,7 +636,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onInput={(e) => {
                 e.target.value = e.target.value
                   .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
+                  .replace(/[^A-Z\s]/g, "");
               }}
               onChange={handleInputChange}
             />
