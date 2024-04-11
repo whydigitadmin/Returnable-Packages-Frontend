@@ -199,6 +199,18 @@ const routes = [
         name: <span className="">Country Master</span>,
       },
       {
+        path: "/app/State",
+        icon: (
+          <img
+            src="/city.png"
+            alt="Unit"
+            style={{ width: "34px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">State Master</span>,
+      },
+      {
         path: "/app/CityMaster",
         icon: (
           <img
