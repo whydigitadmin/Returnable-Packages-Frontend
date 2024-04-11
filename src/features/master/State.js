@@ -4,11 +4,8 @@ import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 //import DashBoardComponent from "./DashBoardComponent";
-import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import {
     Paper,
     Table,
@@ -17,10 +14,14 @@ import {
     TableContainer,
     TableRow,
 } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const State = () => {
     const [open, setOpen] = React.useState(false);
@@ -36,6 +37,16 @@ export const State = () => {
     const [errors, setErrors] = useState({});
     const [openView, setOpenView] = useState(false);
     const [selectedRowData, setSelectedRowData] = useState(null);
+    const [edit, setEdit] = React.useState(false);
+    const [selectedRowId, setSelectedRowId] = useState(null);
+    const [updateLoading, setUpdateLoading] = useState(false); // Added state for update loading
+
+    const handleEditRow = (row) => {
+        setSelectedRowId(row.original.id);
+        setEdit(true);
+        setState(row.original.stateName);
+        setCode(row.original.stateCode);
+    };
 
     const handleViewClose = () => {
         setOpenView(false);
@@ -59,8 +70,8 @@ export const State = () => {
             console.log("API Response:", response);
 
             if (response.status === 200) {
-                setData(response.data.paramObjectsMap.stateVO);
-                setTableData(response.data.paramObjectsMap.stateVO);
+                setData(response.data.paramObjectsMap.stateVO.reverse());
+                setTableData(response.data.paramObjectsMap.stateVO.reverse());
                 // Handle success
             } else {
                 // Handle error
@@ -84,6 +95,11 @@ export const State = () => {
         }
     };
 
+    const handleCancel = () => {
+        setState("");
+        setCode("");
+    };
+
     const handleState = () => {
         console.log("test");
         const errors = {};
@@ -93,13 +109,12 @@ export const State = () => {
         if (Object.keys(errors).length === 0) {
             const formData = {
                 stateName: state,
-                stateCode: code,
+                StateCode: code,
                 orgId,
                 createdBy: userDetail.firstName,
                 modifiedBy: userDetail.firstName,
                 active: true,
                 cancel: false,
-                country: "India",
             };
             console.log("test1", formData);
             axios
@@ -110,6 +125,10 @@ export const State = () => {
                     setState("");
                     setCode("");
                     setErrors("");
+                    toast.success("State Created successfully", {
+                        autoClose: 2000,
+                        theme: "colored",
+                    });
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -118,6 +137,40 @@ export const State = () => {
             // If there are errors, update the state to display them
             setErrors(errors);
         }
+    };
+
+    const handleUpdateState = () => {
+        setUpdateLoading(true); // Set loading state
+
+        const formData = {
+            stateName: state,
+            stateCode: code,
+            id: selectedRowId,
+            orgId: orgId,
+            modifiedBy: userDetail.firstName,
+            active: true,
+            cancel: false,
+            country: "India",
+        };
+
+        axios
+            .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/state`, formData)
+            .then((response) => {
+                console.log("Update Response:", response.data);
+                getStateData();
+                setEdit(false);
+                setUpdateLoading(false); // Reset loading state
+                setState("");
+                setCode("");
+                toast.success("State Updation successfully", {
+                    autoClose: 2000,
+                    theme: "colored",
+                });
+            })
+            .catch((error) => {
+                console.error("Error updating data:", error);
+                setUpdateLoading(false); // Reset loading state on error
+            });
     };
 
     const columns = useMemo(
@@ -137,27 +190,14 @@ export const State = () => {
                 enableEditing: false,
                 Cell: ({ row }) => (
                     <div>
-                        <IconButton onClick={() => handleViewRow(row)}>
-                            <VisibilityIcon />
-                        </IconButton>
-                        <IconButton
-                        // onClick={() => handleEditRow(row)}
-                        >
+                        {/* <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton> */}
+                        <IconButton onClick={() => handleEditRow(row)}>
                             <EditIcon />
                         </IconButton>
                     </div>
                 ),
-            },
-            {
-                accessorKey: "id",
-                header: "ID",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "first",
-                },
-                muiTableBodyCellProps: {
-                    align: "first",
-                },
             },
             {
                 accessorKey: "stateName",
@@ -202,13 +242,10 @@ export const State = () => {
     return (
         <>
             {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
+            <div>
+                <ToastContainer />
+            </div>
             <div className="card w-full p-6 bg-base-100 shadow-xl">
-                {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div> */}
-
                 <div className="row">
                     <div className="col-lg-3 col-md-6 mb-2">
                         <label className="label">
@@ -217,7 +254,7 @@ export const State = () => {
                                     "label-text label-font-size text-base-content d-flex flex-row"
                                 }
                             >
-                                StateName
+                                State
                                 <FaStarOfLife className="must" />
                             </span>
                         </label>
@@ -229,6 +266,11 @@ export const State = () => {
                             type={"text"}
                             value={state}
                             name="state"
+                            onInput={(e) => {
+                                e.target.value = e.target.value
+                                    .toUpperCase()
+                                    .replace(/[^A-Z]/g, "");
+                            }}
                             // placeholder={"Enter"}
                             onChange={handleInputChange}
                             className="input input-bordered p-2"
@@ -256,27 +298,42 @@ export const State = () => {
                             value={code}
                             name="code"
                             // placeholder={"Enter"}
+                            onInput={(e) => {
+                                e.target.value = e.target.value.toUpperCase();
+                            }}
                             onChange={handleInputChange}
                             className="input input-bordered p-2"
                         />
                         {errors.code && <div className="error-text">{errors.code}</div>}
                     </div>
-                    <div className="d-flex flex-row mt-3">
-                        <button
-                            type="button"
-                            onClick={handleState}
-                            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                        >
-                            Save
-                        </button>
-                        <button
-                            type="button"
-                            //onClick={handleCloseWarehouse}
-                            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                        >
-                            Cancel
-                        </button>
-                    </div>
+                    {edit ? (
+                        <div className="d-flex flex-row mt-3">
+                            <button
+                                type="button"
+                                onClick={handleUpdateState}
+                                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                            >
+                                {updateLoading ? "Updating..." : "Update"}
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="d-flex flex-row mt-3">
+                            <button
+                                type="button"
+                                onClick={handleState}
+                                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                            >
+                                Save
+                            </button>
+                            <button
+                                type="button"
+                                onClick={handleCancel}
+                                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    )}
                 </div>
 
                 <div className="mt-4">
