@@ -10,9 +10,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
-
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -87,7 +87,6 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [selectedFlows, setSelectedFlows] = useState([]);
   const [oemData, setOemData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
-
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -296,6 +295,7 @@ function OemCreation({ addEmitter, oemEditId }) {
       userAddressDTO: {
         address1: address,
         address2: "", // You may need to provide a default value
+        city: city,
         country: country,
         location: city,
         pin: pincode,
@@ -318,11 +318,16 @@ function OemCreation({ addEmitter, oemEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("User saved successfully!", response.data);
+          console.log("OEM saved successfully!", response.data);
+          toast.success("OEM saved successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
           handleNew();
         })
         .catch((error) => {
-          console.error("Error saving user:", error.message);
+          console.error("Error saving OEM:", error.message);
+          toast.error("Failed to save OEM. Please try again.");
         });
     } else {
       // Set errors state to display validation errors
@@ -332,7 +337,7 @@ function OemCreation({ addEmitter, oemEditId }) {
 
   //UPDATE EMITTER
   const handleOemUpdate = () => {
-    console.log("ok")
+    console.log("ok");
     const errors = {};
     if (!firstName) {
       errors.firstName = "First Name is required";
@@ -391,7 +396,7 @@ function OemCreation({ addEmitter, oemEditId }) {
       userId: oemEditId, // You may need to provide a default value
     };
 
-    console.log("OEM Payload:", userPayload)
+    console.log("OEM Payload:", userPayload);
 
     const token = localStorage.getItem("token");
     let headers = {
@@ -422,13 +427,19 @@ function OemCreation({ addEmitter, oemEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("User Updated successfully!", response.data);
+          console.log("OEM Updated successfully!", response.data);
           setErrors("");
-          addEmitter(false)   // OEMUSER CREATION SCREEN CLOSE AFTER UPDATE 
-
+          toast.success("OEM Updated successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            addEmitter(false);
+          }, 3000);
         })
         .catch((error) => {
-          console.error("Error saving user:", error.message);
+          console.error("Error update OEM:", error.message);
+          toast.error("Failed to update OEM. Please try again.");
         });
     } else {
       setErrors(errors);
@@ -453,10 +464,12 @@ function OemCreation({ addEmitter, oemEditId }) {
   useEffect(() => {
     console.log("value", selectedFlows);
     getCustomersList();
-    getOemById();
+    {
+      oemEditId && getOemById();
+    }
   }, [selectedFlows]); // This will be triggered whenever selectedFlows changes
 
-  // GET USER DETAILS 
+  // GET USER DETAILS
   const getOemById = async () => {
     try {
       const response = await axios.get(
@@ -465,15 +478,18 @@ function OemCreation({ addEmitter, oemEditId }) {
 
       if (response.status === 200) {
         setOemData(response.data.paramObjectsMap.userVO);
-        console.log("Edit OEM USER Details", response.data.paramObjectsMap.userVO);
-        setFirstName(response.data.paramObjectsMap.userVO.firstName)
-        setEmail(response.data.paramObjectsMap.userVO.email)
-        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1)
-        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city)
-        setState(response.data.paramObjectsMap.userVO.userAddressVO.state)
-        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country)
-        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin)
-        setPhone(response.data.paramObjectsMap.userVO.pno)
+        console.log(
+          "Edit OEM USER Details",
+          response.data.paramObjectsMap.userVO
+        );
+        setFirstName(response.data.paramObjectsMap.userVO.firstName);
+        setEmail(response.data.paramObjectsMap.userVO.email);
+        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
+        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
+        setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
+        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
+        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
+        setPhone(response.data.paramObjectsMap.userVO.pno);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -486,13 +502,22 @@ function OemCreation({ addEmitter, oemEditId }) {
 
   // CLOSE BUTTON WITH CONFIRMATION
   const handleEmitterCreationClose = () => {
-    if (firstName || phone || address || city || state || country || pincode || flow > 0) {
+    if (
+      firstName ||
+      phone ||
+      address ||
+      city ||
+      state ||
+      country ||
+      pincode ||
+      flow > 0
+    ) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
-      addEmitter(false)
+      addEmitter(false);
     }
-  }
+  };
 
   const handleConfirmationClose = () => {
     setOpenConfirmationDialog(false);
@@ -505,6 +530,7 @@ function OemCreation({ addEmitter, oemEditId }) {
 
   return (
     <>
+      <ToastContainer />
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
           <IoMdClose
@@ -582,6 +608,9 @@ function OemCreation({ addEmitter, oemEditId }) {
               // placeholder={"Enter"}
               name="firstName"
               value={firstName}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.firstName && (
@@ -661,6 +690,9 @@ function OemCreation({ addEmitter, oemEditId }) {
               // placeholder={"Enter"}
               name="address"
               value={address}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.address && (
@@ -686,6 +718,9 @@ function OemCreation({ addEmitter, oemEditId }) {
               // placeholder={"Enter"}
               name="city"
               value={city}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.city && <span className="error-text">{errors.city}</span>}
@@ -709,6 +744,9 @@ function OemCreation({ addEmitter, oemEditId }) {
               // placeholder={"Enter"}
               name="state"
               value={state}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
@@ -732,6 +770,9 @@ function OemCreation({ addEmitter, oemEditId }) {
               // placeholder={"Enter"}
               name="country"
               value={country}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.country && (
@@ -827,7 +868,6 @@ function OemCreation({ addEmitter, oemEditId }) {
             </button>
           </div>
         )}
-
       </div>
       <Dialog
         fullWidth={true}

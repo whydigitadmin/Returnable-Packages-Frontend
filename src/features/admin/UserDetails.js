@@ -177,17 +177,17 @@ export const UserDetails = () => {
           </div>
         ),
       },
-      {
-        accessorKey: "userId",
-        header: "User ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "userId",
+      //   header: "User ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
         accessorKey: "firstName",
         header: "User Name",
@@ -400,14 +400,14 @@ export const UserDetails = () => {
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
-                  <TableRow>
+                  {/* <TableRow>
                     <TableCell>User ID</TableCell>
                     <TableCell>{selectedRowData.userId}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>User Name</TableCell>
                     <TableCell>{selectedRowData.firstName}</TableCell>
-                  </TableRow>
+                  </TableRow> */}
                   <TableRow>
                     <TableCell>Email ID</TableCell>
                     <TableCell>{selectedRowData.email}</TableCell>

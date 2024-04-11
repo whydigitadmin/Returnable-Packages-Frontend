@@ -11,8 +11,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
-import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -98,9 +99,36 @@ function UserCreation({ addUser, userEditId }) {
       getUserById();
     }
     getWarehouseLocationList();
-  }, [warehouse]);
+  }, []);
 
   // GET USER DETAILS
+  // const getUserById = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/auth/user/${userEditId}`
+  //     );
+
+  //     if (response.status === 200) {
+  //       setUserData(response.data.paramObjectsMap.userVO);
+  //       console.log("Edit User Details", response.data.paramObjectsMap.userVO);
+  //       setFirstName(response.data.paramObjectsMap.userVO.firstName);
+  //       setEmail(response.data.paramObjectsMap.userVO.email);
+  //       setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
+  //       setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
+  //       setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
+  //       setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
+  //       setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
+  //       setPhone(response.data.paramObjectsMap.userVO.pno);
+  //       setDisabledWarehouseIds(
+  //         response.data.paramObjectsMap.userVO.accessWarehouse
+  //       );
+  //       setWarehouse(response.data.paramObjectsMap.userVO.accessWarehouse);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
   const getUserById = async () => {
     try {
       const response = await axios.get(
@@ -108,20 +136,21 @@ function UserCreation({ addUser, userEditId }) {
       );
 
       if (response.status === 200) {
-        setUserData(response.data.paramObjectsMap.userVO);
-        console.log("Edit User Details", response.data.paramObjectsMap.userVO);
-        setFirstName(response.data.paramObjectsMap.userVO.firstName);
-        setEmail(response.data.paramObjectsMap.userVO.email);
-        setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
-        setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
-        setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
-        setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
-        setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
-        setPhone(response.data.paramObjectsMap.userVO.pno);
-        setDisabledWarehouseIds(
-          response.data.paramObjectsMap.userVO.accessWarehouse
-        );
-        setWarehouse(response.data.paramObjectsMap.userVO.accessWarehouse);
+        const userData = response.data.paramObjectsMap.userVO;
+        setUserData(userData);
+        console.log("Edit User Details", userData);
+        setFirstName(userData.firstName);
+        setEmail(userData.email);
+        setAddress(userData.userAddressVO.address1);
+        setCity(userData.userAddressVO.city);
+        setState(userData.userAddressVO.state);
+        setCountry(userData.userAddressVO.country);
+        setPincode(userData.userAddressVO.pin);
+        setPhone(userData.pno);
+        // Set warehouse data
+        const userWarehouses = userData.accessWarehouse || [];
+        setWarehouse(userWarehouses);
+        // setDisabledWarehouseIds(userWarehouses); // Uncomment if needed
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -167,7 +196,7 @@ function UserCreation({ addUser, userEditId }) {
     // }
     const userPayload = {
       accessRightsRoleId: 2,
-      // accessWarehouse: warehouse,
+      accessWarehouse: warehouse,
       // accessaddId: 0,
       active: active,
       email: email,
@@ -219,11 +248,18 @@ function UserCreation({ addUser, userEditId }) {
         )
         .then((response) => {
           console.log("User Updated successfully!", response.data);
-          setErrors("");
-          addUser(false); // USER CREATION SCREEN CLOSE AFTER UPDATE
+          // toast.success("User updated successfully!");
+          toast.success("User updated successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            addUser(false);
+          }, 3000); // Adjust the delay time as needed
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
+          toast.error("Failed to update user. Please try again.");
         });
     } else {
       setErrors(errors);
@@ -258,6 +294,25 @@ function UserCreation({ addUser, userEditId }) {
   //       return prevWarehouse.filter((id) => id !== warehouselocation);
   //     }
 
+  //     // Return the unchanged array if isChecked is true and warehouseId is already present
+  //     return prevWarehouse;
+  //   });
+  // };
+
+  // const handleLocationChange = (warehouselocation, isChecked) => {
+  //   setWarehouse((prevWarehouse) => {
+  //     console.log("Previous Warehouse:", prevWarehouse);
+  //     if (
+  //       Array.isArray(prevWarehouse) &&
+  //       isChecked &&
+  //       !prevWarehouse.includes(warehouselocation)
+  //     ) {
+  //       // Add warehouseId to the array if it's not already present
+  //       return [...prevWarehouse, warehouselocation];
+  //     } else if (Array.isArray(prevWarehouse) && !isChecked) {
+  //       // Remove warehouseId from the array
+  //       return prevWarehouse.filter((id) => id !== warehouselocation);
+  //     }
   //     // Return the unchanged array if isChecked is true and warehouseId is already present
   //     return prevWarehouse;
   //   });
@@ -436,6 +491,7 @@ function UserCreation({ addUser, userEditId }) {
       userAddressDTO: {
         address1: address,
         address2: "", // You may need to provide a default value
+        city: city,
         country: country,
         location: city,
         pin: pincode,
@@ -459,10 +515,16 @@ function UserCreation({ addUser, userEditId }) {
         )
         .then((response) => {
           console.log("User saved successfully!", response.data);
+          // toast.success("User saved successfully!");
+          toast.success("User saved successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
           handleNew();
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
+          toast.error("Error saving user: " + error.message);
         });
     } else {
       setErrors(errors);
@@ -526,6 +588,9 @@ function UserCreation({ addUser, userEditId }) {
               // placeholder={"Enter"}
               name="firstName"
               value={firstName}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.firstName && (
@@ -606,6 +671,9 @@ function UserCreation({ addUser, userEditId }) {
               // placeholder={"Enter"}
               name="address"
               value={address}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.address && (
@@ -630,6 +698,9 @@ function UserCreation({ addUser, userEditId }) {
               // placeholder={"Enter"}
               name="city"
               value={city}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.city && <span className="error-text">{errors.city}</span>}
@@ -652,6 +723,9 @@ function UserCreation({ addUser, userEditId }) {
               // placeholder={"Enter"}
               name="state"
               value={state}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
@@ -674,6 +748,9 @@ function UserCreation({ addUser, userEditId }) {
               // placeholder={"Enter"}
               name="country"
               value={country}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.country && (
@@ -763,7 +840,7 @@ function UserCreation({ addUser, userEditId }) {
             />
           </div>
         </div>
-
+        <ToastContainer />
         {userEditId ? (
           <div className="d-flex flex-row mt-3">
             <button
@@ -793,7 +870,6 @@ function UserCreation({ addUser, userEditId }) {
           </div>
         )}
       </div>
-
       {/* ASSIGN WAREHOUSE MODAL */}
       <Dialog
         fullWidth={true}
@@ -824,6 +900,11 @@ function UserCreation({ addUser, userEditId }) {
                           value={location.warehouseId}
                           // checked={warehouse.includes(location.warehouseId)}
                           checked={
+                            Array.isArray(warehouse) &&
+                            warehouse.includes(location.warehouseId)
+                          }
+                          disabled={
+                            userEditId && // Check if it's edit time
                             Array.isArray(warehouse) &&
                             warehouse.includes(location.warehouseId)
                           }

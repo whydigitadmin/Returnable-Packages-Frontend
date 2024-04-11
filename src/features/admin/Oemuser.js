@@ -172,39 +172,39 @@ const Oemuser = () => {
         ),
       },
 
-      {
-        accessorKey: "userId",
-        header: "User ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "customersVO.id",
-        header: "Emitter ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "customersVO.entityLegalName",
-        header: "Entity Legal Name",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "userId",
+      //   header: "User ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "customersVO.id",
+      //   header: "Emitter ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "customersVO.entityLegalName",
+      //   header: "Entity Legal Name",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
         accessorKey: "firstName",
         header: "Emitter Name",
@@ -261,9 +261,9 @@ const Oemuser = () => {
     columns,
   });
 
-  const handleSaveRowEdits = () => { };
+  const handleSaveRowEdits = () => {};
 
-  const handleCancelRowEdits = () => { };
+  const handleCancelRowEdits = () => {};
 
   const handleEdit = (rowData) => {
     // Implement your logic to handle the edit action for the specific row
@@ -403,7 +403,7 @@ const Oemuser = () => {
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
           <div className="row">
             <div className="col-md-11">
-              <Typography variant="h6">User Details</Typography>
+              <Typography variant="h6">OEM User Details</Typography>
             </div>
             <div className="col-md-1">
               <IconButton onClick={handleViewClose} aria-label="close">
@@ -416,29 +416,15 @@ const Oemuser = () => {
           {selectedRowData && (
             <TableContainer component={Paper}>
               <Table>
-                {/* <TableBody>
-                                    <TableRow>
-                                        <TableCell>User Name</TableCell>
-                                        <TableCell>{selectedRowData.firstName}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Email ID</TableCell>
-                                        <TableCell>{selectedRowData.email}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>Phone</TableCell>
-                                        <TableCell>{selectedRowData.pno}</TableCell>
-                                    </TableRow>
-                                </TableBody> */}
                 <TableBody>
-                  <TableRow>
+                  {/* <TableRow>
                     <TableCell>User ID</TableCell>
                     <TableCell>{selectedRowData.userId}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Emitter ID</TableCell>
-                    <TableCell>{selectedRowData.customersVO.id}</TableCell>
-                  </TableRow>
+                    <TableCell>{selectedRowData.id}</TableCell>
+                  </TableRow> */}
                   <TableRow>
                     <TableCell>User Name</TableCell>
                     <TableCell>{selectedRowData.firstName}</TableCell>

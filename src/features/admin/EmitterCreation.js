@@ -10,6 +10,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
 
@@ -78,7 +79,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   const [role, setRole] = React.useState("ROLE_EMITTER");
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
-  const [emitter, setEmitter] = useState();
+  const [emitter, setEmitter] = useState(null);
   const [flow, setFlow] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
@@ -294,6 +295,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       userAddressDTO: {
         address1: address,
         address2: "", // You may need to provide a default value
+        city: city,
         country: country,
         location: city,
         pin: pincode,
@@ -316,11 +318,16 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("User saved successfully!", response.data);
+          console.log("Emitter saved successfully!", response.data);
+          toast.success("Emitter saved successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
           handleNew();
         })
         .catch((error) => {
-          console.error("Error saving user:", error.message);
+          console.error("Error saving emitter:", error.message);
+          toast.error("Failed to create emitter. Please try again.");
         });
     } else {
       // Set errors state to display validation errors
@@ -364,8 +371,16 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           "Edit Emitter Details",
           response.data.paramObjectsMap.userVO
         );
+        setEmitter(
+          response.data.paramObjectsMap.userVO.customersVO.displayName
+        );
+        console.log(
+          "emitter",
+          response.data.paramObjectsMap.userVO.customersVO.displayName
+        );
         setFirstName(response.data.paramObjectsMap.userVO.firstName);
         setEmail(response.data.paramObjectsMap.userVO.email);
+        0;
         setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
         setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
         setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
@@ -472,12 +487,19 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("User Updated successfully!", response.data);
+          console.log("Emitter Updated successfully!", response.data);
           setErrors("");
-          addEmitter(false); // EMITTER CREATION SCREEN CLOSE AFTER UPDATE
+          toast.success("Emitter updated successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            addEmitter(false);
+          }, 3000);
         })
         .catch((error) => {
-          console.error("Error saving user:", error.message);
+          console.error("Error update emitter:", error.message);
+          toast.error("Failed to update emitter. Please try again.");
         });
     } else {
       setErrors(errors);
@@ -515,7 +537,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        {/* <ToastContainer /> */}
+        <ToastContainer />
         <div className="d-flex justify-content-end">
           {/* <h1 className="text-xl font-semibold mb-3">User Details</h1> */}
           <IoMdClose
@@ -593,6 +615,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               // placeholder={"Enter"}
               name="firstName"
               value={firstName}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.firstName && (
@@ -673,6 +698,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               // placeholder={"Enter"}
               name="address"
               value={address}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.address && (
@@ -698,6 +726,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               // placeholder={"Enter"}
               name="city"
               value={city}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.city && <span className="error-text">{errors.city}</span>}
@@ -721,6 +752,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               // placeholder={"Enter"}
               name="state"
               value={state}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
@@ -744,6 +778,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               // placeholder={"Enter"}
               name="country"
               value={country}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
               onChange={handleInputChange}
             />
             {errors.country && (
