@@ -79,7 +79,7 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [role, setRole] = React.useState("ROLE_OEM");
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
-  const [emitter, setEmitter] = useState();
+  const [emitter, setEmitter] = useState("");
   const [flow, setFlow] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
@@ -446,6 +446,21 @@ function OemCreation({ addEmitter, oemEditId }) {
     }
   };
 
+  // const handleFlowSelection = (flow, isChecked) => {
+  //   setSelectedFlows((prevWarehouse) => {
+  //     if (isChecked && !prevWarehouse.includes(flow)) {
+  //       // Add warehouseLocation to the array if it's not already present
+  //       return [...prevWarehouse, flow];
+  //     } else if (!isChecked) {
+  //       // Remove warehouseLocation from the array
+  //       return prevWarehouse.filter((wh) => wh !== flow);
+  //     }
+
+  //     // Return the unchanged array if isChecked is true and warehouseLocation is already present
+  //     return prevWarehouse;
+  //   });
+  // };
+
   const handleFlowSelection = (flow, isChecked) => {
     setSelectedFlows((prevWarehouse) => {
       if (isChecked && !prevWarehouse.includes(flow)) {
@@ -482,6 +497,7 @@ function OemCreation({ addEmitter, oemEditId }) {
           "Edit OEM USER Details",
           response.data.paramObjectsMap.userVO
         );
+        setEmitter(response.data.paramObjectsMap.userVO.customersVO.id);
         setFirstName(response.data.paramObjectsMap.userVO.firstName);
         setEmail(response.data.paramObjectsMap.userVO.email);
         setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
@@ -490,6 +506,7 @@ function OemCreation({ addEmitter, oemEditId }) {
         setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
         setPhone(response.data.paramObjectsMap.userVO.pno);
+        getEmitterFlow(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -887,7 +904,6 @@ function OemCreation({ addEmitter, oemEditId }) {
             <div className="col-lg-12 col-md-12">
               {flow.length > 0 ? (
                 <div>
-                  {" "}
                   {flow.map((flowItem) => (
                     <div key={flowItem.id} className="mb-2">
                       <input

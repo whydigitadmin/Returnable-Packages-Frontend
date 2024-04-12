@@ -68,7 +68,7 @@ export const EmitterOutward = () => {
       );
       console.log("Response from API:", response.data);
       if (response.status === 200) {
-        setOutwardVO(response.data.paramObjectsMap.emitterOutwardVO);
+        setOutwardVO(response.data.paramObjectsMap.emitterOutwardVO.reverse());
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -325,7 +325,7 @@ export const EmitterOutward = () => {
                     Kit :&nbsp; <span className="font-bold">{kitNO}</span>
                   </p>
                   <p className="font-medium">
-                    Net Received Quantity : &nbsp;
+                    Net Received Qty : &nbsp;
                     <span className="font-bold">{netQtyReceived}</span>
                   </p>
                   <p className="font-medium">

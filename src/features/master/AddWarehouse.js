@@ -84,6 +84,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
+  const [countryData, setCountryData] = useState([]);
+  const [stateData, setStateData] = useState([]);
+  const [cityData, setCityData] = useState([]);
   const [pincode, setPincode] = useState("");
   const [gst, setGst] = useState("");
   const [active, setActive] = useState(true);
@@ -123,25 +126,73 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     {
       editWarehouseId && getWarehouse();
     }
+    getCountryData();
   }, []);
 
-  // const getStockBranch = async () => {
-  //   try {
-  //     const response = await Axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
-  //     );
-  //     console.log("API Response:", response);
+  useEffect(() => {
+    getStateData();
+    getCityData();
+  }, [country, state]);
 
-  //     if (Array.isArray(response.data.paramObjectsMap.branch)) {
-  //       setStockBranch(response.data.paramObjectsMap.branch);
-  //     } else {
-  //       // Handle error
-  //       console.error("API Error:", response.data);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+  const getCountryData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCountryData(response.data.paramObjectsMap.countryVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getStateData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?country=${country}&orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setStateData(response.data.paramObjectsMap.stateVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getCityData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city/getByStateAndCountry?country=${country}&orgId=${orgId}&state=${state}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCityData(response.data.paramObjectsMap.cityVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getStockBranch = async () => {
     try {
@@ -248,6 +299,12 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     if (!locationName) {
       errors.locationName = "Location Name Name is required";
     }
+    if (!code) {
+      errors.code = "Code is required";
+    }
+    if (!unit) {
+      errors.unit = "Unit is required";
+    }
     if (!country) {
       errors.country = "Country is required";
     }
@@ -262,6 +319,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     }
     if (!pincode) {
       errors.pincode = "Pincode is required";
+    }
+    if (!stock) {
+      errors.stock = "Stock branch is required";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -529,7 +589,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             />
             {errors.code && <span className="error-text">{errors.code}</span>}
           </div>
-
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -565,27 +624,34 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                City
+                Country
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"text"}
-              // placeholder={"Enter"}
-              name="city"
-              value={city}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+            <select
+              className="form-select form-sz w-full mb-2"
               onChange={handleInputChange}
-            />
-            {errors.city && <span className="error-text">{errors.city}</span>}
+              value={country}
+              name="country"
+            >
+              <option value="" disabled>
+                Select country
+              </option>
+              {Array.isArray(countryData) &&
+                countryData.length > 0 &&
+                countryData.map((list) => (
+                  <option key={list.id} value={list.country}>
+                    {list.country}
+                  </option>
+                ))}
+            </select>
+            {errors.country && (
+              <span className="error-text">{errors.country}</span>
+            )}
           </div>
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -599,19 +665,23 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"text"}
-              // placeholder={"Enter"}
-              name="state"
-              value={state}
+            <select
+              className="form-select form-sz w-full mb-2"
               onChange={handleInputChange}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
-            />
+              value={state}
+              name="state"
+            >
+              <option value="" disabled>
+                Select state
+              </option>
+              {Array.isArray(stateData) &&
+                stateData.length > 0 &&
+                stateData.map((list) => (
+                  <option key={list.id} value={list.stateName}>
+                    {list.stateName}
+                  </option>
+                ))}
+            </select>
             {errors.state && <span className="error-text">{errors.state}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -621,28 +691,30 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Country
+                City
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"text"}
-              // placeholder={"Enter"}
-              name="country"
-              value={country}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+            <select
+              className="form-select form-sz w-full mb-2"
               onChange={handleInputChange}
-            />
-            {errors.country && (
-              <span className="error-text">{errors.country}</span>
-            )}
+              value={city}
+              name="city"
+            >
+              <option value="" disabled>
+                Select city
+              </option>
+              {Array.isArray(cityData) &&
+                cityData.length > 0 &&
+                cityData.map((list, index) => (
+                  <option key={index} value={list.cityName}>
+                    {list.cityName}
+                  </option>
+                ))}
+            </select>
+            {errors.city && <span className="error-text">{errors.city}</span>}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -697,7 +769,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Stock Branch
+                Stock Branch <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -718,9 +790,8 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
                   </option>
                 ))}
             </select>
-            {errors.gst && <span className="error-text">{errors.gst}</span>}
+            {errors.stock && <span className="error-text">{errors.stock}</span>}
           </div>
-
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>

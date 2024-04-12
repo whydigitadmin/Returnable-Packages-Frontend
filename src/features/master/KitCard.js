@@ -10,9 +10,27 @@ export const KitCard = () => {
   const [hoveredImage, setHoveredImage] = useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
-  const imgAssets = [
-    "https://www.vidhataindia.com/wp-content/uploads/2017/11/SlideImg3.png",
-    "https://media.istockphoto.com/id/528918828/photo/automotive-engine-3d-illustration.jpg?s=612x612&w=0&k=20&c=M8AZRuzrAK-aVAY_Gf5PaVjgbQ8PCqAmxeJH64Jsb28=",
+  const dummyAssets = [
+    {
+      assetName: "PALLET",
+      imageUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWn58GsDht5XZiUJAqzQQXdIaPuznQ3QCb-A&usqp=CAU",
+    },
+    {
+      assetName: "LID",
+      imageUrl:
+        "https://https://static.wixstatic.com/media/73b018_db17d09a…l_c,q_85,usm_0.66_1.00_0.01,enc_auto/Picture1.png.com/asset2.jpg",
+    },
+    {
+      assetName: "SIDEWALL",
+      imageUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS-ZWDbdcChmgZ_h3CWKPdQKAXC5vBNztPOdw&usqp=CAU",
+    },
+    {
+      assetName: "NoImage",
+      imageUrl:
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzCTMhnLo43ZCkuSoHwfvO8sj3nLMJLU9_EA&usqp=CAU",
+    },
   ];
 
   const handleInputChange = (event) => {
@@ -136,27 +154,39 @@ export const KitCard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {kitData.kitAssetVO.map((asset, index) => (
-                    <tr key={asset.id}>
-                      <td style={{ position: "relative" }}>
-                        <img
-                          src={imgAssets[index % imgAssets.length]}
-                          alt="Mechanical Image"
-                          style={{
-                            width: "50px",
-                            height: "50px",
-                          }}
-                          onMouseEnter={() =>
-                            setHoveredImage(imgAssets[index % imgAssets.length])
-                          }
-                          onMouseLeave={() => setHoveredImage(null)}
-                        />
-                      </td>
-                      <td>{asset.assetCategory}</td>
-                      <td>{asset.assetName}</td>
-                      <td>{asset.quantity}</td>
-                    </tr>
-                  ))}
+                  {kitData.kitAssetVO.map((asset, index) => {
+                    // Find the corresponding dummy asset for the current asset
+                    const dummyAsset = dummyAssets.find(
+                      (dummy) => dummy.assetName === asset.assetName
+                    );
+
+                    // Set the image URL based on whether a corresponding dummy asset was found
+                    const imageUrl = dummyAsset
+                      ? dummyAsset.imageUrl
+                      : dummyAssets.find(
+                          (asset) => asset.assetName === "NoImage"
+                        ).imageUrl;
+
+                    return (
+                      <tr key={asset.id}>
+                        <td style={{ position: "relative" }}>
+                          <img
+                            src={imageUrl}
+                            alt="Mechanical Image"
+                            style={{
+                              width: "50px",
+                              height: "50px",
+                            }}
+                            onMouseEnter={() => setHoveredImage(imageUrl)}
+                            onMouseLeave={() => setHoveredImage(null)}
+                          />
+                        </td>
+                        <td>{asset.assetCategory}</td>
+                        <td>{asset.assetName}</td>
+                        <td>{asset.quantity}</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

@@ -40,6 +40,10 @@ export const CityMaster = () => {
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false); // Added state for update loading
+  const [countryData, setCountryData] = useState([]);
+  const [stateData, setStateData] = useState([]);
+  const [state, setState] = useState("");
+  const [country, setCountry] = useState("");
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.cityid);
@@ -61,7 +65,52 @@ export const CityMaster = () => {
 
   useEffect(() => {
     getCityData();
+    getCountryData();
   }, []);
+
+  useEffect(() => {
+    getStateData();
+  }, [country]);
+
+  const getCountryData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCountryData(response.data.paramObjectsMap.countryVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getStateData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?country=${country}&orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setStateData(response.data.paramObjectsMap.stateVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getCityData = async () => {
     try {
@@ -93,6 +142,12 @@ export const CityMaster = () => {
       case "code":
         setCode(value);
         break;
+      case "country":
+        setCountry(value);
+        break;
+      case "state":
+        setState(value);
+        break;
     }
   };
 
@@ -107,6 +162,15 @@ export const CityMaster = () => {
     if (!city) {
       errors.city = "City Name is required";
     }
+    if (!state) {
+      errors.state = "State is required";
+    }
+    if (!country) {
+      errors.country = "Country is required";
+    }
+    if (!code) {
+      errors.code = "Code is required";
+    }
     if (Object.keys(errors).length === 0) {
       const formData = {
         cityName: city,
@@ -116,8 +180,8 @@ export const CityMaster = () => {
         modifiedBy: userDetail.firstName,
         active: true,
         cancel: false,
-        country: "India",
-        state: "Tamilnadu",
+        country: country,
+        state: state,
       };
       console.log("test1", formData);
       axios
@@ -127,6 +191,8 @@ export const CityMaster = () => {
           getCityData();
           setCity("");
           setCode("");
+          setCountry("");
+          setState("");
           setErrors("");
           toast.success("City Created successfully", {
             autoClose: 2000,
@@ -262,6 +328,72 @@ export const CityMaster = () => {
       </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Country
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleInputChange}
+              value={country}
+              name="country"
+            >
+              <option value="" disabled>
+                Select country
+              </option>
+              {Array.isArray(countryData) &&
+                countryData.length > 0 &&
+                countryData.map((list) => (
+                  <option key={list.id} value={list.country}>
+                    {list.country}
+                  </option>
+                ))}
+            </select>
+            {errors.country && (
+              <span className="error-text">{errors.country}</span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                State
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleInputChange}
+              value={state}
+              name="state"
+            >
+              <option value="" disabled>
+                Select state
+              </option>
+              {Array.isArray(stateData) &&
+                stateData.length > 0 &&
+                stateData.map((list) => (
+                  <option key={list.id} value={list.stateName}>
+                    {list.stateName}
+                  </option>
+                ))}
+            </select>
+            {errors.state && <span className="error-text">{errors.state}</span>}
+          </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span

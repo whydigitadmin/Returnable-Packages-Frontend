@@ -371,22 +371,21 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           "Edit Emitter Details",
           response.data.paramObjectsMap.userVO
         );
-        setEmitter(
-          response.data.paramObjectsMap.userVO.customersVO.displayName
-        );
+        setEmitter(response.data.paramObjectsMap.userVO.customersVO.id);
+
         console.log(
           "emitter",
           response.data.paramObjectsMap.userVO.customersVO.displayName
         );
         setFirstName(response.data.paramObjectsMap.userVO.firstName);
         setEmail(response.data.paramObjectsMap.userVO.email);
-        0;
         setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
         setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
         setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
         setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
         setPhone(response.data.paramObjectsMap.userVO.pno);
+        getEmitterFlow(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

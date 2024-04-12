@@ -54,6 +54,7 @@ function IssueManifest() {
   const [warehouseLocationId, setWarehouseLocationId] = useState("");
   const [loading, setLoading] = useState(false);
   const [availableKitQty, setAvailableKitQty] = useState("");
+  const [isErrorShown, setIsErrorShown] = useState(false);
 
   useEffect(() => {
     getLocationList();
@@ -190,8 +191,9 @@ function IssueManifest() {
           return; // Exit the function if any issued quantity is empty
         }
 
-        if (issuedQty > availableKitQty) {
-          console.log("isssued qty 1 ", issuedQty);
+        if (issuedQty > availableKitQty && !isErrorShown) {
+          console.log("issued qty 1 ", issuedQty);
+          console.log("available qty 1 ", availableKitQty);
           toast.error(
             "Invalid quantity: Issued quantity cannot be greater than available quantity",
             {
@@ -199,7 +201,11 @@ function IssueManifest() {
               theme: "colored",
             }
           );
+          setIsErrorShown(true); // Set isErrorShown to true to indicate that the error has been shown
           return; // Exit the function if any issued quantity is greater than available quantity
+        } else {
+          // Reset isErrorShown if issuedQty becomes less than or equal to availableKitQty
+          setIsErrorShown(false);
         }
         const kitQty = selectedIssueRequest?.issueItemVO.find(
           (item) => item.id === itemId
@@ -1087,13 +1093,12 @@ function IssueManifest() {
                   <div className="col-lg-6 mt-3 font-bold text-xl"></div>
                   <div className="your-form-container d-flex flex-wrap"></div>
                 </DialogContentText>
+                <DialogContentText>
+                  <center className="text-dark mb-2">
+                    Issued by AIPACKS - Karthi-19/01/2024-10:00AM
+                  </center>
+                </DialogContentText>
               </DialogContent>
-
-              <DialogContentText>
-                <center className="text-dark mb-2">
-                  Issued by AIPACKS - Karthi-19/01/2024-10:00AM
-                </center>
-              </DialogContentText>
             </Dialog>
 
             {/* Inprogress Modal */}

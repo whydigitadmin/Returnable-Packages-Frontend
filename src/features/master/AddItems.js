@@ -102,6 +102,9 @@ function AddItem({ addItem, editItemId }) {
   const [showQuantity, setShowQuantity] = useState(true);
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [warehouse, setWarehouse] = useState("");
+  const [poVO, setPoVO] = useState([]);
+  const [poNo, setPoNo] = useState("");
+  const [poDate, setPoDate] = useState("");
   const [selected, setSelected] = useState(false);
   const [categorySelected, setCategorySelected] = useState(false);
   const [nameSelected, setNameSelected] = useState(false);
@@ -150,6 +153,7 @@ function AddItem({ addItem, editItemId }) {
     getAllAssetCategory();
     getWarehouseLocationList();
     getAssetNamesByCategory();
+    getPOList();
     editItemId && getItemByAssetCode();
   }, []);
 
@@ -202,6 +206,21 @@ function AddItem({ addItem, editItemId }) {
 
       if (response.status === 200) {
         setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
+      }
+      // console.log("list", response.data.paramObjectsMap.WarehouseLocation);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getPOList = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getPoNoByCreateAsset?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setPoVO(response.data.paramObjectsMap.pono);
       }
       // console.log("list", response.data.paramObjectsMap.WarehouseLocation);
     } catch (error) {
@@ -383,6 +402,15 @@ function AddItem({ addItem, editItemId }) {
       case "weightUnit":
         setWeightUnit(value);
         break;
+      case "poNo":
+        setPoNo(value);
+        const selectedPo = poVO.find((po) => po.pono === value);
+        const selectedPoDate = selectedPo ? selectedPo.podate : ""; // Get the date of the selected PO
+        setPoDate(selectedPoDate);
+        break;
+      case "poDate":
+        setPoDate(value);
+        break;
       case "orgId":
         setOrgId(value);
         break;
@@ -427,6 +455,8 @@ function AddItem({ addItem, editItemId }) {
         weight,
         weightUnit,
         orgId,
+        poDate,
+        poNo,
       };
       Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
         .then((response) => {
@@ -814,19 +844,20 @@ function AddItem({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleAsseCodeChange}
-              value={assetCodeId}
+              onChange={handleCategoryChange}
+              value={poNo}
+              name="poNo"
               // disabled={codeSelected}
             >
-              {/* <option value="" disabled>
+              <option value="" disabled>
                 Select a Code
-              </option> */}
-              {/* {assetCodeIdVO.length > 0 &&
-                assetCodeIdVO.map((name) => (
-                  <option key={name.id} value={name}>
-                    {name}
+              </option>
+              {poVO.length > 0 &&
+                poVO.map((name, index) => (
+                  <option key={index} value={name.pono}>
+                    {name.pono}
                   </option>
-                ))} */}
+                ))}
             </select>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -844,10 +875,10 @@ function AddItem({ addItem, editItemId }) {
             <input
               className="form-control form-sz mb-2"
               disabled
-              type={"number"}
+              type={"text"}
               placeholder={""}
-              name="skuTo"
-              value={skuTo}
+              name="poDate"
+              value={poDate}
               onChange={handleCategoryChange}
             />
           </div>

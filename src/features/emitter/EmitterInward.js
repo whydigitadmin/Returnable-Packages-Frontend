@@ -84,7 +84,7 @@ function EmitterInward() {
       );
       if (response.status === 200) {
         setInwardVO(
-          response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO
+          response.data.paramObjectsMap.vwEmitterInwardVO.vwEmitterInwardVO.reverse()
         );
       }
     } catch (error) {
@@ -438,9 +438,7 @@ function EmitterInward() {
               />
             </div>
             <DialogContent>
-              <p className="font-bold mb-4">
-                Issued Quantity {showNetQtyRecieved}
-              </p>
+              <p className="font-bold mb-4">Issued Qty {showNetQtyRecieved}</p>
               <div className="row">
                 <div className="col-lg-4 col-md-4 mb-2">
                   <label className="label">

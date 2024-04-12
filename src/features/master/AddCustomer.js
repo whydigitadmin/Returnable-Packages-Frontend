@@ -1402,29 +1402,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   </span>
                 </label>
               </div>
-              {/* <div className="col-lg-6 col-md-6">
-                <select
-                  name="Select Item"
-                  style={{
-                    height: 40,
-                    fontSize: "0.800rem",
-                    width: "100%",
-                    borderColor: errors1.state ? "red" : "",
-                  }}
-                  className="input input-bordered ps-2"
-                  value={newAddress.state}
-                  onChange={(e) => handleAddressInputChange(e, "state")}
-                >
-                  <option value=""></option>
-                  <option value="Tamil Nadu">Tamil Nadu</option>
-                  <option value="Goa">Goa</option>
-                </select>
-                {errors1.state && (
-                  <span style={{ color: "red", fontSize: "12px" }}>
-                    State is required
-                  </span>
-                )}
-              </div> */}
               <div className="col-lg-6 col-md-6">
                 <textarea
                   style={{
