@@ -367,8 +367,9 @@ const routes = [
     ),
     name: <span style={{ marginLeft: "12px" }}>Asset Inward</span>,
     submenu: [
+
       {
-        path: "/app/inwardmanifest", //no url needed as this has submenu
+        path: "/app/inwardmanifestdetails", //no url needed as this has submenu
         icon: (
           <img
             src="/inward1.png"
@@ -377,7 +378,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="">Asset Inward</span>,
+        name: <span className="">Asset Inward Details</span>,
       },
     ],
   },
@@ -482,8 +483,9 @@ const routes = [
         ),
         name: <span className="ml-1">Purchase Order</span>,
       },
+
       {
-        path: "/app/POD", //no url needed as this has submenu
+        path: "/app/poddetails", //no url needed as this has submenu
         icon: (
           <img
             src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
@@ -492,7 +494,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">POD</span>,
+        name: <span className="ml-1">POD Details</span>,
       },
       {
         path: "/app/Pdf", //no url needed as this has submenu

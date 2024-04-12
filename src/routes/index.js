@@ -19,7 +19,8 @@ const IssueManifest = lazy(() => import("../pages/protected/IssueManifest"));
 const IssueManifestReport = lazy(() =>
   import("../pages/protected/IssueManifestReport")
 );
-const InwardManifest = lazy(() => import("../pages/protected/InwardManifest"));
+// const InwardManifest = lazy(() => import("../pages/protected/InwardManifest"));
+const InwardManifestDetails = lazy(() => import("../pages/protected/InwardManifestDetails"));
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
 const Charts = lazy(() => import("../pages/protected/Charts"));
@@ -109,7 +110,8 @@ const Country = lazy(() => import("../pages/protected/Country"));
 const KitCard = lazy(() => import("../pages/protected/KitCard"));
 const Terms = lazy(() => import("../pages/protected/Terms"));
 const PoOrder = lazy(() => import("../pages/protected/PoOrder"));
-const POD = lazy(() => import("../pages/protected/POD"));
+// const POD = lazy(() => import("../pages/protected/POD"));
+const PodDetails = lazy(() => import("../pages/protected/PodDetails"));
 const Pdf = lazy(() => import("../pages/protected/Pdf"));
 const routes = [
   {
@@ -140,9 +142,13 @@ const routes = [
     path: "/PoOrder",
     component: PoOrder,
   },
+  // {
+  //   path: "/POD",
+  //   component: POD,
+  // },
   {
-    path: "/POD",
-    component: POD,
+    path: "/poddetails",
+    component: PodDetails,
   },
   {
     path: "/Pdf",
@@ -177,9 +183,13 @@ const routes = [
     component: IssueManifestReport,
   },
   {
-    path: "/inwardmanifest",
-    component: InwardManifest,
+    path: "/inwardmanifestdetails",
+    component: InwardManifestDetails,
   },
+  // {
+  //   path: "/inwardmanifest",
+  //   component: InwardManifest,
+  // },
   {
     path: "/warehouse",
     component: Warehouse,

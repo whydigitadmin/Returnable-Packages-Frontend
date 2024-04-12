@@ -6,10 +6,11 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-import ToastComponent from "../../utils/ToastComponent";
 import { FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { IoMdClose } from "react-icons/io";
+
 
 const DOCDATA = [
   {
@@ -22,7 +23,8 @@ const DOCDATA = [
   },
 ];
 
-export const InwardManifest = () => {
+// export const InwardManifest = () => {
+function InwardManifest({ addInwardManifeast }) {
   const [docdata, setDocData] = useState(DOCDATA);
   const [docDate, setDocDate] = useState(dayjs());
   const [toDate, setToDate] = useState(null);
@@ -212,7 +214,8 @@ export const InwardManifest = () => {
         docId,
         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
         stockBranch: stockTo,
-        stockFrom: stockFrom,
+        sourceFrom: stockFrom,
+        orgId,
       };
 
       axios
@@ -256,12 +259,19 @@ export const InwardManifest = () => {
     }
   };
 
+  const handleInwardmanifeastClose = () => {
+    addInwardManifeast(false)
+  }
   return (
     <>
       <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
-        {/* {aleartState && (
-          <ToastComponent content="Bin Inwarded successfully" type="success" />
-        )} */}
+
+        <div className="d-flex justify-content-end">
+          <IoMdClose
+            onClick={handleInwardmanifeastClose}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
         <div className="row mt-3">
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">

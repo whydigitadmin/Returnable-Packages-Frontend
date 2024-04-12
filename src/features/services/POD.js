@@ -8,10 +8,10 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import PropTypes from "prop-types";
 import React, { useState } from "react";
-
+import { IoMdClose } from "react-icons/io";
 import { FaStarOfLife, FaTrash } from "react-icons/fa";
 
-export const POD = () => {
+function POD({ addPod }) {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(null);
   const [refNo, setRefNo] = useState("");
@@ -154,8 +154,18 @@ export const POD = () => {
     };
   }
 
+  const handlePodClose = () => {
+    addPod(false)
+  }
+
   return (
     <div className="card w-full p-3 bg-base-100 shadow-xl mt-2">
+      <div className="d-flex justify-content-end">
+        <IoMdClose
+          onClick={handlePodClose}
+          className="cursor-pointer w-8 h-8 mb-3"
+        />
+      </div>
       <div className="row mt-3">
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
@@ -170,6 +180,9 @@ export const POD = () => {
             placeholder="Doc Id"
             value={docId}
             onChange={(e) => setDocId(e.target.value)}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+            }}
           />
           {/* {errors.docId && (
               <span className="error-text mb-1">{errors.docId}</span>
@@ -214,6 +227,9 @@ export const POD = () => {
             placeholder="Ref No"
             value={refNo}
             onChange={(e) => setRefNo(e.target.value)}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+            }}
           />
           {/* {errors.docId && (
               <span className="error-text mb-1">{errors.docId}</span>
@@ -258,6 +274,9 @@ export const POD = () => {
             placeholder="kit code"
             value={kitCode}
             onChange={(e) => setKitCode(e.target.value)}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+            }}
           />
           {/* {errors.docId && (
               <span className="error-text mb-1">{errors.docId}</span>
@@ -266,7 +285,7 @@ export const POD = () => {
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              kit Qty
+              Kit QTY
               <FaStarOfLife className="must" />
             </span>
           </label>
@@ -277,6 +296,9 @@ export const POD = () => {
             placeholder="Kit Qty"
             value={kitQty}
             onChange={(e) => setKitQty(e.target.value)}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+            }}
           />
           {/* {errors.docId && (
               <span className="error-text mb-1">{errors.docId}</span>
@@ -287,7 +309,7 @@ export const POD = () => {
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              kit R Qty
+              Kit R QTY
               <FaStarOfLife className="must" />
             </span>
           </label>
@@ -298,6 +320,9 @@ export const POD = () => {
             placeholder="kit return qty"
             value={kitRQty}
             onChange={(e) => setKitRQty(e.target.value)}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+            }}
           />
           {/* {errors.docId && (
               <span className="error-text mb-1">{errors.docId}</span>
@@ -357,16 +382,16 @@ export const POD = () => {
                           S.No
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
-                          assetCode
+                          Asset Code
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
                           Description
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
-                          Allot Qty
+                          Allot QTY
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
-                          Accept Qty
+                          Accept QTY
                         </th>
                       </tr>
                     </thead>
@@ -417,12 +442,12 @@ export const POD = () => {
                             <td className="border px-2 py-2">
                               <input
                                 type="text"
-                                value={row.description}
+                                value={row.desc}
                                 onChange={(e) =>
                                   setTableData((prev) =>
                                     prev.map((r) =>
                                       r.id === row.id
-                                        ? { ...r, description: e.target.value }
+                                        ? { ...r, desc: e.target.value }
                                         : r
                                     )
                                   )
@@ -502,16 +527,16 @@ export const POD = () => {
                           S.No
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
-                          assetCode
+                          Asset Code
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
                           Description
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
-                          Rejected Qty
+                          Rejected QTY
                         </th>
                         <th className="px-2 py-2 bg-blue-500 text-white">
-                          Ruturn Qty
+                          Ruturn QTY
                         </th>
                       </tr>
                     </thead>
@@ -547,12 +572,12 @@ export const POD = () => {
                             <td className="border px-2 py-2">
                               <input
                                 type="text"
-                                value={row.rassetCode}
+                                value={row.assetCode}
                                 onChange={(e) =>
                                   setTableData1((prev) =>
                                     prev.map((r) =>
                                       r.id === row.id
-                                        ? { ...r, rassetCode: e.target.value }
+                                        ? { ...r, assetCode: e.target.value }
                                         : r
                                     )
                                   )
@@ -562,12 +587,12 @@ export const POD = () => {
                             <td className="border px-2 py-2">
                               <input
                                 type="text"
-                                value={row.rdescription}
+                                value={row.desc}
                                 onChange={(e) =>
                                   setTableData1((prev) =>
                                     prev.map((r) =>
                                       r.id === row.id
-                                        ? { ...r, rdescription: e.target.value }
+                                        ? { ...r, desc: e.target.value }
                                         : r
                                     )
                                   )
@@ -577,12 +602,12 @@ export const POD = () => {
                             <td className="border px-2 py-2">
                               <input
                                 type="text"
-                                value={row.rejectedQty}
+                                value={row.rejQty}
                                 onChange={(e) =>
                                   setTableData1((prev) =>
                                     prev.map((r) =>
                                       r.id === row.id
-                                        ? { ...r, rejectedQty: e.target.value }
+                                        ? { ...r, rejQty: e.target.value }
                                         : r
                                     )
                                   )
@@ -626,3 +651,4 @@ export const POD = () => {
     </div>
   );
 };
+export default POD;

@@ -102,11 +102,22 @@ export const Terms = () => {
     }
   };
 
-  const handleServiceSave = () => {
-    const errors = {};
+  const handleNew = () => {
+    setDescription("");
+    setEffectiveFrom(null);
+    setEffectiveTo(null);
+    setPrintRemarks("");
+    setTermsCode("");
+    setErrors({});
+  }
 
+  const handleSaveTerms = () => {
+    const errors = {};
+    if (!termsCode) {
+      errors.termsCode = "Terms Code is required";
+    }
     if (!description) {
-      errors.description = "Description is required";
+      errors.description = "T&C is required";
     }
     if (!effectiveFrom) {
       errors.effectiveFrom = "Effective From is required";
@@ -115,11 +126,9 @@ export const Terms = () => {
       errors.effectiveTo = "Effective To is required";
     }
     if (!printRemarks) {
-      errors.printRemarks = "PrintRemarks is required";
+      errors.printRemarks = "Print Remarks is required";
     }
-    if (!termsCode) {
-      errors.termsCode = "TermsCode is required";
-    }
+
     if (Object.keys(errors).length === 0) {
       const formData = {
         // id,
@@ -262,7 +271,10 @@ export const Terms = () => {
               type={"text"}
               value={termsCode}
               name="termsCode"
-              // placeholder={"Enter"}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+              }}
+
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />
@@ -278,7 +290,7 @@ export const Terms = () => {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Terms and conditions
+                Terms and Conditions
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -288,7 +300,6 @@ export const Terms = () => {
               style={{ fontSize: "0.800rem", width: "100%" }}
               value={description}
               name="description"
-              // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />
@@ -373,10 +384,17 @@ export const Terms = () => {
           <div className="d-flex flex-row mt-3">
             <button
               type="button"
-              onClick={handleServiceSave}
+              onClick={handleSaveTerms}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
               Save
+            </button>
+            <button
+              type="button"
+              onClick={handleNew}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
             </button>
           </div>
         </div>
