@@ -556,7 +556,7 @@ export const AsstTagging = () => {
       {/* <div className="d-flex flex-row mt-4">
 
       </div> */}
-      <div className="row mt-4">
+      {/* <div className="row mt-4">
         <div className="col-md-6 d-flex justify-content-start">
           <button
             className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -573,7 +573,7 @@ export const AsstTagging = () => {
             Print QR Code
           </button>
         </div>
-      </div>
+      </div> */}
 
       <div
         className="row mt-2"
@@ -601,6 +601,16 @@ export const AsstTagging = () => {
                   </th>
                   <th className="px-2 py-2 bg-blue-500 text-white">
                     <span className="ml-2">Bar Code</span>
+                    <span className="ml-2">
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() =>
+                          handlePrint(selectedBarcodeRows, "Barcode")
+                        }
+                      >
+                        Print
+                      </button>
+                    </span>
                   </th>
                   <th className="px-2 py-2 bg-blue-500 text-white">
                     <input
@@ -612,6 +622,19 @@ export const AsstTagging = () => {
                   </th>
                   <th className="px-2 py-2 bg-blue-500 text-white">
                     <span className="ml-2">QR Code</span>
+                    <span className="ml-2">
+                      <button
+                        className="btn btn-secondary btn-sm"
+                        onClick={() =>
+                          handlePrint(selectedQRCodeRows, "QR Code")
+                        }
+                      >
+                        Print
+                      </button>
+                    </span>
+                  </th>
+                  <th className="px-2 py-2 bg-blue-500 text-white">
+                    RFID Code
                   </th>
                 </tr>
               </thead>
