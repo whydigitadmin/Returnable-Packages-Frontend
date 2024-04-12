@@ -526,6 +526,23 @@ export const AsstTagging = () => {
           />
           {errors.seqTo && <span className="error-text">{errors.seqTo}</span>}
         </div>
+        <div className="col-lg-3 col-md-3">
+          <label className="label mb-4">
+            <span className="label-text label-font-size text-base-content d-flex flex-row">
+              RFID
+              {/* <FaStarOfLife className="must" /> &nbsp; */}
+            </span>
+          </label>
+        </div>
+        <div className="col-lg-3 col-md-3">
+          <input
+            className="form-control form-sz"
+            type="text"
+            // value={seqTo}
+            // onChange={(e) => setSeqTo(e.target.value)}
+          />
+          {/* {errors.seqTo && <span className="error-text">{errors.seqTo}</span>} */}
+        </div>
       </div>
 
       <div className="d-flex flex-row mt-3">
