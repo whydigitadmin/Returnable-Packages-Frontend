@@ -32,7 +32,8 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import POD from "./POD";
+// import POD from "./POD";
+import ProofofDelivery from "./ProofofDelivery";
 
 const statsData = [
   {
@@ -251,7 +252,7 @@ export const PodDetails = () => {
 
   return (
     <>
-      {(addPod && <POD addPod={handleBack} />) ||
+      {(addPod && <ProofofDelivery addPod={handleBack} />) ||
         (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             {/* DASHBOARD COMPONENT */}

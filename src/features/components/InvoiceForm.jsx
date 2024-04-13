@@ -29,8 +29,13 @@ const InvoiceForm = () => {
   const [shipTo, setShipTo] = useState("");
   const [shipToRemarks, setShipToRemarks] = useState("");
   const [gstType, setGstType] = useState("");
+  const [iGst, setIGst] = useState("");
+  const [cGst, setCGst] = useState("");
+  const [sGst, setSGst] = useState("");
   const [terms, setTerms] = useState("");
   const [termsCode, setTermsCode] = useState("");
+  const [errors, setErrors] = React.useState({});
+
   const [items, setItems] = useState([
     {
       id: uid(6),
@@ -72,10 +77,168 @@ const InvoiceForm = () => {
     }
   };
 
+  const handleValidation = () => {
+    const newErrors = {};
+
+    if (!invoiceNumber) {
+      newErrors.invoiceNumber = "InvoiceNumber is required";
+    }
+    if (!vendorId) {
+      newErrors.vendorId = "Vendor Id is required";
+    }
+    if (!vendor) {
+      newErrors.vendor = "Vendor is required";
+    }
+    if (!vendorAddress) {
+      newErrors.vendorAddress = "Vendor Address is required";
+    }
+    if (!vendorGst) {
+      newErrors.vendorGst = "Vendor GST is required";
+    }
+    if (!shipTo) {
+      newErrors.shipTo = "Ship To is required";
+    }
+    if (!shipToRemarks) {
+      newErrors.shipToRemarks = "Ship To Remarks is required";
+    }
+    if (!gstType) {
+      newErrors.gstType = "GST Type is required";
+    }
+    if (!terms) {
+      newErrors.terms = "Terms is required";
+    }
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  }
+
+  // const handleServiceSave = () => {
+  //   const errors = {};
+
+  //   if (!invoiceNumber) {
+  //     errors.invoiceNumber = "InvoiceNumber is required";
+  //   }
+  //   if (!vendorId) {
+  //     errors.vendorId = "Vendor Id is required";
+  //   }
+  //   if (!vendor) {
+  //     errors.vendor = "Vendor is required";
+  //   }
+  //   if (!vendorAddress) {
+  //     errors.vendorAddress = "Vendor Address is required";
+  //   }
+  //   if (!vendorGst) {
+  //     errors.vendorGst = "Vendor GST is required";
+  //   }
+  //   if (!shipTo) {
+  //     errors.shipTo = "Ship To is required";
+  //   }
+  //   if (!shipToRemarks) {
+  //     errors.shipToRemarks = "Ship To Remarks is required";
+  //   }
+  //   if (!gstType) {
+  //     errors.gstType = "GST Type is required";
+  //   }
+  //   if (!terms) {
+  //     errors.terms = "Terms is required";
+  //   }
+
+
+  //   const formData = {
+  //     date: todayDate,
+  //     poNo: invoiceNumber,
+  //     apId: vendorId,
+  //     // :vendor,
+  //     apAddress: vendorAddress,
+  //     apGst: vendorGst,
+  //     shipTo: shipTo,
+  //     shipToRemarks: shipToRemarks,
+  //     gstType: gstType,
+  //     terms: terms,
+
+
+  //     active: true,
+  //     address,
+  //     apAddress,
+  //     apGst: apgst,
+  //     apId,
+  //     cancel: false,
+  //     cgst: CGST,
+  //     company,
+  //     date: poDate,
+  //     gstType: gstType,
+  //     igst: IGST,
+  //     orgId,
+  //     poNo,
+  //     selfGst: selfGST,
+  //     sgst: SGST,
+  //     shipTo: shipto,
+  //     shipToRemarks: shiptoremarks,
+  //     terms,
+  //     po1DTO: tableData.map((row) => ({
+  //       itemId: row.itemid,
+  //       description: row.description,
+  //       hsnCode: row.hsncode,
+  //       qty: row.qty,
+  //       rate: row.rate,
+  //       currency: row.currency,
+  //       exRate: row.exrate,
+  //       amount: row.amount,
+  //     })),
+  //   };
+
+  //   axios
+  //     .put(
+  //       `${process.env.REACT_APP_API_URL}/api/master/updateCreatePo`,
+  //       formData
+  //     )
+  //     .then((response) => {
+  //       console.log("Response:", response.data);
+
+  //       setAddress("");
+  //       setAPAddress("");
+  //       setApGst("");
+  //       setApId("");
+  //       // setErrors({});
+  //       setCGST("");
+  //       setCompany("");
+  //       setPoDate(null);
+  //       setGstType("");
+  //       setIGST("");
+  //       setPoNo("");
+  //       setSelfGST("");
+  //       setGST("");
+  //       setShipTo("");
+  //       setTerms("");
+  //       setAp("");
+  //       setShiptoremarks("");
+  //       setTableData({});
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error:", error);
+  //     });
+  // };
+
+  //   const reviewInvoiceHandler = (event) => {
+  // if(handleValidation) {
+  //     event.preventDefault();
+  //     setIsOpen(true);
+  // }
+  //     // handleValidation();
+
+  //   };
+
+
   const reviewInvoiceHandler = (event) => {
-    event.preventDefault();
-    setIsOpen(true);
+    const isValid = handleValidation(); // Call handleValidation function
+
+    if (isValid) {
+      console.log("validation fn called")
+      event.preventDefault();
+      setIsOpen(true);
+    }
   };
+
 
   const addNextInvoiceHandler = () => {
     setInvoiceNumber((prevNumber) => incrementString(prevNumber));
@@ -92,6 +255,7 @@ const InvoiceForm = () => {
   };
 
   const addItemHandler = () => {
+    console.log("old items:", items)
     const id = uid(6);
     setItems((prevItem) => [
       ...prevItem,
@@ -129,14 +293,32 @@ const InvoiceForm = () => {
     setItems(newItems);
   };
 
+  const handleGstTypeChange = (event) => {
+    const selectedGstType = event.target.value;
+    setGstType(selectedGstType);
+
+    if (selectedGstType === "intra") {
+      setIGst("");
+      iGstRate = 0;
+    }
+    else {
+      setCGst("");
+      setSGst("");
+      cGstRate = 0;
+      sGstRate = 0;
+    }
+  };
+
   const subtotal = items.reduce((prev, curr) => {
     if (curr.name.trim().length > 0)
       return prev + Number(curr.price * Math.floor(curr.qty));
     else return prev;
   }, 0);
   const taxRate = (tax * subtotal) / 100;
-  const discountRate = (discount * subtotal) / 100;
-  const total = subtotal + discountRate + taxRate;
+  const iGstRate = (iGst * subtotal) / 100;
+  const cGstRate = (cGst * subtotal) / 100;
+  const sGstRate = (sGst * subtotal) / 100;
+  const total = gstType === "intra" ? subtotal + iGstRate + cGstRate + sGstRate : subtotal + iGstRate;
 
   return (
     <form
@@ -154,7 +336,7 @@ const InvoiceForm = () => {
               Invoice Number:
             </label>
             <input
-              required
+              // required
               className="max-w-[130px]"
               type="number"
               name="invoiceNumber"
@@ -164,6 +346,10 @@ const InvoiceForm = () => {
               value={invoiceNumber}
               onChange={(event) => setInvoiceNumber(event.target.value)}
             />
+
+            {errors.invoiceNumber && (
+              <span className="error-text">{errors.invoiceNumber}</span>
+            )}
           </div>
         </div>
         {/* <h1 className="text-center text-lg font-bold">INVOICE</h1> */}
@@ -190,6 +376,9 @@ const InvoiceForm = () => {
               value={vendorId}
               onChange={(event) => setVendorId(event.target.value)}
             />
+            {errors.vendorId && (
+              <span className="error-text">{errors.vendorId}</span>
+            )}
             <TextField
               label="Vendor"
               id="filled-size-small"
@@ -261,7 +450,8 @@ const InvoiceForm = () => {
                 labelId="gstType-label"
                 id="gstType"
                 value={gstType}
-                onChange={(event) => setGstType(event.target.value)}
+                // onChange={(event) => setGstType(event.target.value)}
+                onChange={handleGstTypeChange}
                 sx={{ width: "176px", marginRight: "6px" }}
               >
                 <MenuItem value="inter">Inter</MenuItem>
@@ -352,6 +542,7 @@ const InvoiceForm = () => {
         >
           Add Item
         </button>
+        {/* PRINT PREVIEW SECTION */}
         <div className="row">
           <div className="col-5">
             <div className="sticky top-0 z-10 space-y-4 divide-y divide-gray-900/10 pb-8 md:pt-6 md:pl-4">
@@ -359,17 +550,25 @@ const InvoiceForm = () => {
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
                 invoiceInfo={{
+                  todayDate,
                   invoiceNumber,
                   vendorId,
                   vendor,
+                  vendorAddress,
+                  vendorGst,
+                  shipTo,
+                  shipToRemarks,
+                  gstType,
+                  terms,
                   subtotal,
                   taxRate,
-                  discountRate,
+                  iGstRate,
+                  cGstRate,
+                  sGstRate,
                   total,
-                  todayDate,
                 }}
                 items={items}
-                onAddNextInvoice={addNextInvoiceHandler}
+              // onAddNextInvoice={addNextInvoiceHandler}
               />
               {gstType === "intra" && (
                 <Box
@@ -393,8 +592,8 @@ const InvoiceForm = () => {
                     min="0"
                     step="0.01"
                     placeholder="0.0"
-                    value={discount}
-                    onChange={(event) => setDiscount(event.target.value)}
+                    value={cGst}
+                    onChange={(event) => setCGst(event.target.value)}
                   />
                   <TextField
                     label="SGST"
@@ -407,8 +606,8 @@ const InvoiceForm = () => {
                     min="0.01"
                     step="0.01"
                     placeholder="0.0"
-                    value={tax}
-                    onChange={(event) => setTax(event.target.value)}
+                    value={sGst}
+                    onChange={(event) => setSGst(event.target.value)}
                   />
                 </Box>
               )}
@@ -436,8 +635,8 @@ const InvoiceForm = () => {
                     min="0"
                     step="0.01"
                     placeholder="0.0"
-                    value={discount}
-                    onChange={(event) => setDiscount(event.target.value)}
+                    value={iGst}
+                    onChange={(event) => setIGst(event.target.value)}
                   />
                 </Box>
               )}
@@ -461,13 +660,13 @@ const InvoiceForm = () => {
                 <div className="flex w-full justify-between md:w-1/2">
                   <span className="font-bold">CGST</span>
                   <span>
-                    ({discount || "0"}%){discountRate.toFixed(2)}
+                    ({cGst || "0"}%){cGstRate.toFixed(2)}
                   </span>
                 </div>
                 <div className="flex w-full justify-between md:w-1/2">
                   <span className="font-bold">SGST</span>
                   <span>
-                    ({tax || "0"}%){taxRate.toFixed(2)}
+                    ({sGst || "0"}%){sGstRate.toFixed(2)}
                   </span>
                 </div>
               </>
@@ -477,7 +676,7 @@ const InvoiceForm = () => {
               <div className="flex w-full justify-between md:w-1/2">
                 <span className="font-bold">IGST</span>
                 <span>
-                  ({discount || "0"}%){discountRate.toFixed(2)}
+                  ({iGst || "0"}%){iGstRate.toFixed(2)}
                 </span>
               </div>
             )}

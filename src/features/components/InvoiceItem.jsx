@@ -120,6 +120,7 @@ const InvoiceItem = ({
             placeholder: "Price",
             id: id,
             value: price,
+            // value: qty * rate,
           }}
         />
       </td>
