@@ -8,6 +8,7 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  Paper,
 } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
@@ -29,6 +30,8 @@ import { LuTimerReset } from "react-icons/lu";
 import { MdMapsHomeWork } from "react-icons/md";
 import AddFlows from "./AddFlows";
 import DashBoardComponent from "./DashBoardComponent";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
 
 const statsData = [
   {
@@ -107,6 +110,11 @@ function Flows() {
     setCreateModalOpenView(true);
   };
 
+  const handleViewRow = (row) => {
+    setSelectedRowData(row.original);
+    setOpen(true);
+  };
+
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
     clipPath: "inset(50%)",
@@ -120,16 +128,35 @@ function Flows() {
   });
   const columns = useMemo(
     () => [
+      // {
+      //   accessorKey: "id",
+      //   header: "Sr No",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "first",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "first",
+      //   },
+      // },
       {
-        accessorKey: "id",
-        header: "Sr No",
+        accessorKey: "actions",
+        header: "Actions",
         size: 50,
         muiTableHeadCellProps: {
-          align: "first",
+          align: "center",
         },
         muiTableBodyCellProps: {
-          align: "first",
+          align: "center",
         },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <IconButton onClick={() => handleViewRow(row)}>
+            <VisibilityIcon />
+          </IconButton>
+        ),
       },
       {
         accessorKey: "flowName",
@@ -326,7 +353,7 @@ function Flows() {
             </DialogActions>
           </Dialog>
 
-          <Dialog
+          {/* <Dialog
             open={Boolean(selectedRowData)}
             onClose={() => setSelectedRowData(null)}
           >
@@ -362,9 +389,62 @@ function Flows() {
               )}
             </DialogContent>
             <Button onClick={() => setSelectedRowData(null)}>Close</Button>
-          </Dialog>
+          </Dialog> */}
         </div>
       )}
+      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+        <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+          <div className="row">
+            <div className="col-md-11">
+              <Typography variant="h6">Flow Details</Typography>
+            </div>
+            <div className="col-md-1">
+              <IconButton onClick={handleClose} aria-label="close">
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </div>
+        </DialogTitle>
+        <DialogContent className="mt-4">
+          {selectedRowData && (
+            <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Flow Name</TableCell>
+                    <TableCell>{selectedRowData.flowName}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Emitter</TableCell>
+                    <TableCell>{selectedRowData.emitter}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Receiver</TableCell>
+                    <TableCell>{selectedRowData.receiver}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Origin</TableCell>
+                    <TableCell>{selectedRowData.orgin}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Destination</TableCell>
+                    <TableCell>{selectedRowData.destination}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Warehouse Handling Location</TableCell>
+                    <TableCell>{selectedRowData.warehouseLocation}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

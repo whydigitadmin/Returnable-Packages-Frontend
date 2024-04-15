@@ -111,8 +111,6 @@ function AddVendor({ addVendors, editVendorId }) {
   const [data, setData] = React.useState([]);
   const [errors, setErrors] = useState({});
   const [venderType, setVenderType] = useState("");
-  const [firstName, setFirstName] = useState();
-  const [lastName, setLastName] = useState();
   const [email, setEmail] = useState("");
   const [entityLegalName, setEntityLegalName] = useState("");
   const [displyName, setDisplyName] = useState("");
@@ -124,25 +122,16 @@ function AddVendor({ addVendors, editVendorId }) {
   const [bank, setBank] = useState("");
   const [branch, setBranch] = useState("");
   const [ifscCode, setIfscCode] = useState("");
-  const [tableData, setTableData] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [isPrimary, setIsPrimary] = useState(false);
-  const [gstRegistrationStatus, setGstRegistrationStatus] = React.useState("");
-  const [gstNumber, setGstNumber] = React.useState("");
-  const [street1, setStreet1] = React.useState("");
-  const [street2, setStreet2] = React.useState("");
-  const [state, setState] = React.useState("");
-  const [city, setCity] = React.useState("");
-  const [pinCode, setPincode] = React.useState("");
-  const [contactName, setContactName] = React.useState("");
-  const [phone, setPhone] = useState("");
-  const [designation, setDestination] = React.useState("");
   const [emailAddress, setEmailAddress] = React.useState("");
   const [id, setId] = React.useState();
   const [vendorId, setVendorId] = React.useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressShow, setAddressShow] = React.useState(false);
   // const [isAddressValid, setIsAddressValid] = React.useState(false);
+  const [countryData, setCountryData] = useState([]);
+  const [stateData, setStateData] = useState([]);
+  const [cityData, setCityData] = useState([]);
 
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [newAddress, setNewAddress] = useState({
@@ -150,6 +139,7 @@ function AddVendor({ addVendors, editVendorId }) {
     gstNumber: "",
     street1: "",
     street2: "",
+    country: "",
     state: "",
     city: "",
     pinCode: "",
@@ -157,7 +147,7 @@ function AddVendor({ addVendors, editVendorId }) {
     phoneNumber: "",
     designation: "",
     email: emailAddress,
-    isPrimary: false,
+    // isPrimary: false,
   });
   const [errors1, setErrors1] = useState({
     gstRegistrationStatus: false,
@@ -183,6 +173,7 @@ function AddVendor({ addVendors, editVendorId }) {
       gstNumber: "",
       street1: "",
       street2: "",
+      country: "",
       state: "",
       city: "",
       pinCode: "",
@@ -190,7 +181,7 @@ function AddVendor({ addVendors, editVendorId }) {
       phoneNumber: "",
       designation: "",
       email: "",
-      isPrimary: false,
+      // isPrimary: false,
     });
     // Clear all error messages
     setErrors1({
@@ -250,6 +241,9 @@ function AddVendor({ addVendors, editVendorId }) {
       if (newAddress.street1.trim() === "") {
         updatedErrors.street1 = true;
       }
+      if (newAddress.country.trim() === "") {
+        updatedErrors.country = true;
+      }
       if (newAddress.state.trim() === "") {
         updatedErrors.state = true;
       }
@@ -264,8 +258,32 @@ function AddVendor({ addVendors, editVendorId }) {
     }
   };
 
+  // const handleAddressInputChange = (e, field) => {
+  //   const value = e.target.value;
+  //   setNewAddress((prevState) => ({
+  //     ...prevState,
+  //     [field]: value,
+  //   }));
+  //   // Clear error when user starts typing in a field
+  //   setErrors1((prevErrors) => ({
+  //     ...prevErrors,
+  //     [field]: false,
+  //   }));
+  // };
+
   const handleAddressInputChange = (e, field) => {
-    const value = e.target.value;
+    let value = e.target.value;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    // Perform validations based on the field
+    if (field === "pinCode") {
+      // Allow only 6-digit numbers
+      value = value.replace(/\D/g, "").slice(0, 6); // Remove non-digit characters and limit to 6 digits
+    } else if (field === "phoneNumber") {
+      // Allow only 10-digit numbers
+      value = value.replace(/\D/g, "").slice(0, 10); // Remove non-digit characters and limit to 10 digits
+    } else if (field === "email") {
+    }
     setNewAddress((prevState) => ({
       ...prevState,
       [field]: value,
@@ -276,6 +294,7 @@ function AddVendor({ addVendors, editVendorId }) {
       [field]: false,
     }));
   };
+
   const handleAddShippingAddress = () => {
     const addressWithVendorId = { ...newAddress, vendorId: vendorId };
     setShippingAddresses([...shippingAddresses, addressWithVendorId]);
@@ -284,6 +303,7 @@ function AddVendor({ addVendors, editVendorId }) {
       gstNumber: "",
       street1: "",
       street2: "",
+      country: "",
       state: "",
       city: "",
       pinCode: "",
@@ -291,7 +311,7 @@ function AddVendor({ addVendors, editVendorId }) {
       phoneNumber: "",
       designation: "",
       email: emailAddress,
-      isPrimary: false,
+      // isPrimary: false,
     });
     setOpenShippingModal(false);
   };
@@ -328,7 +348,73 @@ function AddVendor({ addVendors, editVendorId }) {
     {
       editVendorId && getVendorId();
     }
+    getCountryData();
   }, []);
+
+  useEffect(() => {
+    getStateData();
+    getCityData();
+  }, [newAddress.country, newAddress.state]);
+
+  const getCountryData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCountryData(response.data.paramObjectsMap.countryVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getStateData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?country=${newAddress.country}&orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setStateData(response.data.paramObjectsMap.stateVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getCityData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city/getByStateAndCountry?country=${newAddress.country}&orgId=${orgId}&state=${newAddress.state}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCityData(response.data.paramObjectsMap.cityVO);
+        //console.log(response.data.paramObjectsMap.countryVO)
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getVendorId = async () => {
     try {
@@ -911,6 +997,10 @@ function AddVendor({ addVendors, editVendorId }) {
                       <span>{address.street2}</span>
                     </div>
                     <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Country:</span>
+                      <span>{address.country}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>State:</span>
                       <span>{address.state}</span>
                     </div>
@@ -944,10 +1034,10 @@ function AddVendor({ addVendors, editVendorId }) {
                       </span>
                       <span>{address.phoneNumber}</span>
                     </div>
-                    <div style={styles.submittedDataItem}>
+                    {/* <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Primary:</span>
                       <span>{address.isPrimary ? "Yes" : "No"}</span>
-                    </div>
+                    </div> */}
                   </div>
                 ))}
               </div>
@@ -1488,6 +1578,37 @@ function AddVendor({ addVendors, editVendorId }) {
                   ></textarea>
                 </div>
               </div>
+              <div className="row">
+                <div className="col-lg-6 col-md-6">
+                  <label className="label label-text label-font-size text-base-content">
+                    Country
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6 mb-2">
+                  <select
+                    className="form-select form-sz w-full mb-2"
+                    onChange={(e) => handleAddressInputChange(e, "country")}
+                    value={newAddress.country}
+                    name="country"
+                  >
+                    <option value="" disabled>
+                      Select country
+                    </option>
+                    {Array.isArray(countryData) &&
+                      countryData.length > 0 &&
+                      countryData.map((list) => (
+                        <option key={list.id} value={list.country}>
+                          {list.country}
+                        </option>
+                      ))}
+                  </select>
+                  {errors1.country && (
+                    <span style={{ color: "red", fontSize: "12px" }}>
+                      Country is required
+                    </span>
+                  )}
+                </div>
+              </div>
               {/* State */}
               <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
@@ -1503,7 +1624,7 @@ function AddVendor({ addVendors, editVendorId }) {
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
-                  <input
+                  {/* <input
                     style={{
                       height: 40,
                       fontSize: "0.800rem",
@@ -1519,7 +1640,24 @@ function AddVendor({ addVendors, editVendorId }) {
                     value={newAddress.state}
                     onChange={(e) => handleAddressInputChange(e, "state")}
                     className="input input-bordered p-2"
-                  />
+                  /> */}
+                  <select
+                    className="form-select form-sz w-full"
+                    onChange={(e) => handleAddressInputChange(e, "state")}
+                    value={newAddress.state}
+                    name="state"
+                  >
+                    <option value="" disabled>
+                      Select state
+                    </option>
+                    {Array.isArray(stateData) &&
+                      stateData.length > 0 &&
+                      stateData.map((list) => (
+                        <option key={list.id} value={list.stateName}>
+                          {list.stateName}
+                        </option>
+                      ))}
+                  </select>
                   {errors1.state && (
                     <span style={{ color: "red", fontSize: "12px" }}>
                       State is required
@@ -1542,7 +1680,7 @@ function AddVendor({ addVendors, editVendorId }) {
                   </label>
                 </div>
                 <div className="col-lg-6 col-md-6">
-                  <input
+                  {/* <input
                     style={{
                       height: 40,
                       fontSize: "0.800rem",
@@ -1558,7 +1696,24 @@ function AddVendor({ addVendors, editVendorId }) {
                     value={newAddress.city}
                     onChange={(e) => handleAddressInputChange(e, "city")}
                     className="input input-bordered p-2"
-                  />
+                  /> */}
+                  <select
+                    className="form-select form-sz w-full mb-2"
+                    onChange={(e) => handleAddressInputChange(e, "city")}
+                    value={newAddress.city}
+                    name="city"
+                  >
+                    <option value="" disabled>
+                      Select city
+                    </option>
+                    {Array.isArray(cityData) &&
+                      cityData.length > 0 &&
+                      cityData.map((list, index) => (
+                        <option key={index} value={list.cityName}>
+                          {list.cityName}
+                        </option>
+                      ))}
+                  </select>
                   {errors1.city && (
                     <span style={{ color: "red", fontSize: "12px" }}>
                       City is required
@@ -1587,6 +1742,9 @@ function AddVendor({ addVendors, editVendorId }) {
                       fontSize: "0.800rem",
                       width: "100%",
                       borderColor: errors1.pinCode ? "red" : "",
+                    }}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.replace(/\D/g, "");
                     }}
                     type={"number"}
                     value={newAddress.pinCode}
@@ -1694,7 +1852,7 @@ function AddVendor({ addVendors, editVendorId }) {
                 </div>
               </div>
               {/* Checkbox */}
-              <div className="row mb-3">
+              {/* <div className="row mb-3">
                 <div className="col-lg-6 col-md-6">
                   <div className="d-flex flex-row">
                     <input
@@ -1713,7 +1871,7 @@ function AddVendor({ addVendors, editVendorId }) {
                     </label>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </DialogContentText>
           </DialogContent>
           <DialogActions className="mb-2 me-2">
@@ -1723,7 +1881,7 @@ function AddVendor({ addVendors, editVendorId }) {
               variant="contained"
               onClick={handleAddressSubmit}
             >
-              Submit
+              Add
             </Button>
           </DialogActions>
         </Dialog>

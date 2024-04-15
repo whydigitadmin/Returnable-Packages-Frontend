@@ -23,7 +23,7 @@ function AddItemGroups({ addItem }) {
   const [partQuantity, setPartQuantity] = useState();
   const [showPartQuantity, setShowPartQuantity] = useState(false);
   const [errors, setErrors] = useState({});
-  const [kitCode, setKitCode] = useState();
+  const [kitCode, setKitCode] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [kitAssetDTO, setKitAssetDTO] = useState([]);
   const [selectedAssetCategory, setSelectedAssetCategory] = useState(false);
@@ -84,13 +84,51 @@ function AddItemGroups({ addItem }) {
     setSelectedName(false);
     setSelectedCode(false);
   };
+  // const handleKitId = (event) => {
+  //   setKitCode(event.target.value);
+  // };
+
+  // const handleKitId = (event) => {
+  //   const { value } = event.target;
+  //   setKitCode(value);
+
+  //   // Check if the entered kit ID already exists
+  //   const kitExists = kitAssetDTO.some((asset) => asset.kitCode === value);
+  //   if (kitExists || kitAssetDTO.some((asset) => asset.kitCode === value)) {
+  //     // Display toast message for existing kit ID
+  //     toast.error("The Kit ID already exists.", {
+  //       position: "top-center",
+  //     });
+  //   } else {
+  //     // Update the kit code state if it doesn't exist
+  //     setKitCode(value);
+  //   }
+  // };
+
   const handleKitId = (event) => {
-    setKitCode(event.target.value);
+    const { value } = event.target;
+
+    // Check if the entered kit ID already exists
+    console.log("kit", value);
+    const kitExists = kitAssetDTO.some((asset) => asset.kitCode === value);
+    console.log("kitee", kitExists);
+
+    if (kitExists) {
+      console.log("test", kitExists);
+      // Display toast message for existing kit ID
+      toast.error("The Kit ID already exists.", {
+        position: "top-center",
+      });
+    } else {
+      // Update the kit code state only if it doesn't exist
+      setKitCode(value);
+    }
   };
 
   const handleQuantityEditChange = (event, index) => {
     const { value } = event.target;
     const updatedKitAssetDTO = [...kitAssetDTO];
+
     updatedKitAssetDTO[index].quantity = value;
     setKitAssetDTO(updatedKitAssetDTO);
   };
@@ -141,6 +179,8 @@ function AddItemGroups({ addItem }) {
     if (codeExists) {
       // Display toast message for code already exists
       toast.error("The Asset code already exists.", {
+        autoClose: 2000,
+        theme: "colored",
         position: "top-center",
       });
     } else {
@@ -217,6 +257,97 @@ function AddItemGroups({ addItem }) {
     }
   };
 
+  // const handleKitCreation = async () => {
+  //   const errors = {};
+  //   if (!kitCode) {
+  //     errors.kitCode = "Kit Id is required";
+  //   }
+  //   if (!partQuantity) {
+  //     errors.partQuantity = "Part Quantity is required";
+  //   }
+  //   if (kitAssetDTO.length === 0) {
+  //     errors.kitAssetDTO = "Please add at least one asset detail";
+  //   }
+
+  //   if (Object.keys(errors).length === 0) {
+  //     try {
+  //       const kitData = {
+  //         kitCode,
+  //         partQuantity,
+  //         kitAssetDTO,
+  //         orgId,
+  //         // Add other properties from your form if needed
+  //       };
+  //       const response = await axios.post(
+  //         `${process.env.REACT_APP_API_URL}/api/master/createkit`,
+  //         kitData
+  //       );
+  //       console.log("Kit created successfully:", response.data);
+  //       toast.success("Kit created successfully!", {
+  //         autoClose: 2000,
+  //         theme: "colored",
+  //       });
+  //       // Add any further actions you want to take after successful kit creation
+  //       setTimeout(() => {
+  //         handleItem();
+  //       }, 3000);
+  //     } catch (error) {
+  //       console.error("Error creating kit:", error);
+  //       toast.error("Kit created Failed!", {
+  //         autoClose: 2000,
+  //         theme: "colored",
+  //       });
+  //     }
+  //   } else {
+  //     setErrors(errors);
+  //   }
+  // };
+
+  // const handleKitCreation = () => {
+  //   const errors = {};
+  //   if (!kitCode) {
+  //     errors.kitCode = "Kit Id is required";
+  //   }
+  //   if (!partQuantity) {
+  //     errors.partQuantity = "Part Quantity is required";
+  //   }
+  //   if (kitAssetDTO.length === 0) {
+  //     errors.kitAssetDTO = "Please add at least one asset detail";
+  //   }
+
+  //   if (Object.keys(errors).length === 0) {
+  //     const kitData = {
+  //       kitCode,
+  //       partQuantity,
+  //       kitAssetDTO,
+  //       orgId,
+  //       // Add other properties from your form if needed
+  //     };
+  //     axios
+  //       .post(`${process.env.REACT_APP_API_URL}/api/master/createkit`, kitData)
+  //       .then((response) => {
+  //         console.log("Kit created successfully:", response.data);
+  //         toast.success("Kit created successfully!", {
+  //           autoClose: 2000,
+  //           theme: "colored",
+  //         });
+  //         // Add any further actions you want to take after successful kit creation
+  //         setTimeout(() => {
+  //           handleItem();
+  //         }, 3000);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error creating kit:", error);
+  //         toast.error("Kit creation failed!", {
+  //           autoClose: 2000,
+  //           theme: "colored",
+  //         });
+  //       });
+  //   } else {
+  //     setErrors(errors);
+  //   }
+  // };
+
   const handleKitCreation = async () => {
     const errors = {};
     if (!kitCode) {
@@ -228,6 +359,7 @@ function AddItemGroups({ addItem }) {
     if (kitAssetDTO.length === 0) {
       errors.kitAssetDTO = "Please add at least one asset detail";
     }
+
     if (Object.keys(errors).length === 0) {
       try {
         const kitData = {
@@ -241,11 +373,29 @@ function AddItemGroups({ addItem }) {
           `${process.env.REACT_APP_API_URL}/api/master/createkit`,
           kitData
         );
-        console.log("Kit created successfully:", response.data);
-        // Add any further actions you want to take after successful kit creation
-        handleItem();
+        if (response.data.status === "Error" || !response.data.status) {
+          console.error("Error creating kit:", response.data.paramObjectsMap);
+          toast.error("Kit creation failed!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        } else {
+          console.log("Kit created successfully:", response.data);
+          toast.success("Kit created successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          // Add any further actions you want to take after successful kit creation
+          setTimeout(() => {
+            handleItem();
+          }, 3000);
+        }
       } catch (error) {
         console.error("Error creating kit:", error);
+        toast.error("Kit creation failed!", {
+          autoClose: 2000,
+          theme: "colored",
+        });
       }
     } else {
       setErrors(errors);
@@ -291,8 +441,34 @@ function AddItemGroups({ addItem }) {
   //   setOpenAssetModal(true);
   // };
 
+  // const handleKitId = (event) => {
+  //   const { value } = event.target;
+
+  //   // Check if the entered kit ID is the same as the previous one
+  //   if (value === kitCode) {
+  //     toast.error("You entered the same Kit ID again.", {
+  //       position: "top-center",
+  //     });
+  //     return; // Stop further execution
+  //   }
+
+  //   // Check if the entered kit ID already exists
+  //   const kitExists = kitAssetDTO.some((asset) => asset.kitCode === value);
+  //   if (kitExists) {
+  //     // Display toast message for existing kit ID
+  //     toast.error("The Kit ID already exists.", {
+  //       position: "top-center",
+  //     });
+  //   } else {
+  //     // Update the kit code state if it doesn't exist
+  //     setKitCode(value);
+  //   }
+  // };
+
   return (
     <>
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
+
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
           <IoMdClose
@@ -317,8 +493,9 @@ function AddItemGroups({ addItem }) {
             <input
               className="form-control form-sz mb-2 p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 uppercase"
               name="kitCode"
+              type="text"
               value={kitCode}
-              onChange={handleKitId}
+              onInput={handleKitId}
               placeholder={"PLS0000/MMYY/0000"}
               required
             />
@@ -342,6 +519,7 @@ function AddItemGroups({ addItem }) {
             <input
               className="form-control form-sz mb-2"
               name="partQuantity"
+              type="number"
               value={partQuantity}
               onChange={handlePartQuantityChange}
             />
@@ -393,21 +571,21 @@ function AddItemGroups({ addItem }) {
               <table className="table w-full">
                 <thead>
                   <tr>
-                    <th className="text-center">Type</th>
-                    <th className="text-center">Name</th>
-                    <th className="text-center">Code</th>
-                    <th className="text-center">Quantity</th>
-                    <th className="text-center">Part/Insert</th>
-                    <th className="text-center">Actions</th>
+                    <th className="">Type</th>
+                    <th className="">Name</th>
+                    <th className="">Code</th>
+                    <th className="">Quantity</th>
+                    {/* <th className="">Part/Insert</th> */}
+                    <th className="">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {kitAssetDTO.map((asset, index) => (
                     <tr key={index}>
-                      <td className="text-center">{asset.assetCategory}</td>
-                      <td className="text-center">{asset.assetName}</td>
-                      <td className="text-center">{asset.assetCodeId}</td>
-                      <td className="text-center">
+                      <td className="">{asset.assetCategory}</td>
+                      <td className="">{asset.assetName}</td>
+                      <td className="">{asset.assetCodeId}</td>
+                      <td className="">
                         {asset.isEditable ? (
                           <input
                             type="number"
@@ -424,7 +602,7 @@ function AddItemGroups({ addItem }) {
                           asset.quantity
                         )}
                       </td>
-                      {/* <td className="text-center">
+                      {/* <td className="">
                         {asset.isEditable ? (
                           <input
                             type="number"
@@ -443,35 +621,42 @@ function AddItemGroups({ addItem }) {
                           asset.partQuantity
                         )}
                       </td> */}
-                      <div className="d-flex">
-                        <div className="col-4 text-center">
-                          <td>
+                      {/* <div className="d-flex">
+                        <div className="col-4 text-center"> */}
+                      <td>
+                        <div className="row">
+                          <div className="col-md-2">
                             {asset.isEditable ? (
                               <FaSave
                                 onClick={() => handleSaveRow(index)}
                                 className="cursor-pointer w-6 h-6"
-                                style={{ marginLeft: 10 }}
+                                // style={{ marginLeft: 10 }}
                               />
                             ) : (
                               <FaEdit
                                 onClick={() => handleToggleEdit(index)}
                                 className="cursor-pointer w-6 h-6"
-                                style={{ marginLeft: 10 }}
+                                // style={{ marginLeft: 10 }}
                               />
                             )}
-                            {/* <br /> */}
-                          </td>
-                        </div>
-                        <div className="col-8 text-center">
-                          <td>
+                          </div>
+
+                          {/* <br /> */}
+                          {/* </td> */}
+                          {/* </div> */}
+                          {/* <div className="col-8 "> */}
+                          {/* <td> */}
+                          <div className="col-md-2">
                             <FaTrash
                               onClick={() => handleDeleteRow(index)}
                               className="cursor-pointer w-6 h-6"
-                              style={{ marginLeft: 10 }}
+                              // style={{ marginLeft: 10 }}
                             />
-                          </td>
+                          </div>
                         </div>
-                      </div>
+                      </td>
+                      {/* </div> */}
+                      {/* </div> */}
                     </tr>
                   ))}
                 </tbody>
@@ -497,7 +682,6 @@ function AddItemGroups({ addItem }) {
         </div>
         <br></br>
       </div>
-
       <Dialog
         fullWidth={true}
         maxWidth={"md"}
@@ -505,7 +689,11 @@ function AddItemGroups({ addItem }) {
         onClose={handleAssetClose}
       >
         <div>
-          <ToastContainer />
+          <ToastContainer
+            position="top-center"
+            autoClose={3000}
+            hideProgressBar
+          />
         </div>
         <div className="d-flex justify-content-between">
           <DialogTitle>Add Asset Details</DialogTitle>
@@ -631,6 +819,7 @@ function AddItemGroups({ addItem }) {
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
                   className="form-control form-sz mb-2"
+                  type="number"
                   name="assetQty"
                   value={assetQty}
                   onChange={handleQuantityChange}

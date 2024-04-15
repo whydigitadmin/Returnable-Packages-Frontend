@@ -54,6 +54,8 @@ function CreateKit() {
   const [selectedKitDetails, setSelectedKitDetails] = React.useState(null);
   const [kitAssetCategory, setKitAssetCategory] = React.useState(null);
   const [serialNumber, setSerialNumber] = React.useState(0);
+  const [kitCode, setKitCode] = React.useState(null);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -107,6 +109,10 @@ function CreateKit() {
 
         // Set the data state with kits including the serial number
         setData(kitsWithSerialNumber);
+
+        const kitCodes = kits.map((kit) => kit.kitCode);
+        setKitCode(kitCodes);
+        console.log("code", kitCodes);
         console.log("Updated data inside getAllKitData:", kitsWithSerialNumber);
       }
     } catch (error) {
@@ -145,7 +151,7 @@ function CreateKit() {
         renderCell: (rowData) => rowData.serialNumber,
       },
       {
-        accessorKey: "id",
+        accessorKey: "kitCode",
         header: "Kit ID",
         size: 30,
         muiTableHeadCellProps: {
@@ -244,9 +250,19 @@ function CreateKit() {
                   src="/upload.png"
                   alt="pending-status-icon"
                   title="add"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
                 />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Bulk Upload</span>
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Bulk Upload
+                </span>
               </button>
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -258,18 +274,27 @@ function CreateKit() {
                   src="/new.png"
                   alt="pending-status-icon"
                   title="add"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
                 />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Kit</span>
-
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Kit
+                </span>
               </button>
             </div>
           </div>
-          {/* <div className="row">
-            <div className="col-lg-6 mt-4">
+          <div className="row">
+            <div className="col-lg-12 mt-4">
               <MaterialReactTable table={table} />
             </div>
-          </div> */}
+          </div>
           <Dialog
             fullWidth={true}
             maxWidth={"sm"}
@@ -328,11 +353,13 @@ function CreateKit() {
             <DialogContent>
               {selectedKitDetails && (
                 <div>
-                  <p className="kit-detail">Kit ID: {selectedKitDetails.id}</p>
+                  <p className="kit-detail">
+                    <strong>Kit ID :</strong> {selectedKitDetails.kitCode}
+                  </p>
 
                   {kitAssetCategory && (
                     <div>
-                      <p className="kit-detail">Kit Asset Category:</p>
+                      {/* <p className="kit-detail">Kit Asset Category:</p> */}
                       <table className="asset-table">
                         <thead>
                           <tr>

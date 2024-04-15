@@ -398,6 +398,8 @@ function AddFlows({ addFlows }) {
       if (existingKit) {
         toast.error("This kit and part number combination already exists", {
           position: toast.POSITION.TOP_CENTER,
+          autoClose: 2000,
+          theme: "colored",
         });
       } else {
         const existingPartNumber = kitDTO.find(
@@ -406,6 +408,8 @@ function AddFlows({ addFlows }) {
         if (existingPartNumber) {
           toast.error("This part number is already assigned to another kit", {
             position: toast.POSITION.TOP_CENTER,
+            autoClose: 2000,
+            theme: "colored",
           });
         } else {
           const newKitDetails = {
@@ -510,7 +514,7 @@ function AddFlows({ addFlows }) {
                 }
               >
                 Receiver
-                {/* <FaStarOfLife className="must" /> */}
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -530,6 +534,9 @@ function AddFlows({ addFlows }) {
                   </option>
                 ))}
             </select>
+            {errors.receiver && (
+              <span className="error-text mb-1">{errors.receiver}</span>
+            )}
           </div>
 
           {/* orgin field */}
