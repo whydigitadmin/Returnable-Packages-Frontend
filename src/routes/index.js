@@ -3,6 +3,7 @@
 import { lazy } from "react";
 import "./style.css";
 
+
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
@@ -112,6 +113,7 @@ const Terms = lazy(() => import("../pages/protected/Terms"));
 const PoOrder = lazy(() => import("../pages/protected/PoOrder"));
 // const POD = lazy(() => import("../pages/protected/POD"));
 const PodDetails = lazy(() => import("../pages/protected/PodDetails"));
+const ProofofDispatchDetails = lazy(() => import("../pages/protected/ProofofDispatchDetails"));
 const Pdf = lazy(() => import("../pages/protected/Pdf"));
 const routes = [
   {
@@ -149,6 +151,10 @@ const routes = [
   {
     path: "/poddetails",
     component: PodDetails,
+  },
+  {
+    path: "/proofofdispatchdetails",
+    component: ProofofDispatchDetails,
   },
   {
     path: "/Pdf",

@@ -16,7 +16,7 @@ import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
 import { styled } from "@mui/material/styles";
 
 
-function ProofofDelivery({ addPod }) {
+function ProofofDispatch({ addPod }) {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(null);
   const [refNo, setRefNo] = useState("");
@@ -396,4 +396,4 @@ function ProofofDelivery({ addPod }) {
     </div>
   );
 };
-export default ProofofDelivery;
+export default ProofofDispatch;

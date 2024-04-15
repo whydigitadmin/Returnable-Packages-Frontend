@@ -32,7 +32,8 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import ProofofDelivery from "./ProofofDelivery";
+// import ProofofDelivery from "./ProofofDelivery";
+import ProofofDispatch from "./ProofofDispatch";
 
 const statsData = [
   {
@@ -62,7 +63,7 @@ const statsData = [
   },
 ];
 
-export const PodDetails = () => {
+export const ProofofDispatchDetails = () => {
   const [addPod, setAddPod] = React.useState(false);
   // const [editUser, setEditUser] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -251,7 +252,7 @@ export const PodDetails = () => {
 
   return (
     <>
-      {(addPod && <ProofofDelivery addPod={handleBack} />) ||
+      {(addPod && <ProofofDispatch addPod={handleBack} />) ||
         (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             {/* DASHBOARD COMPONENT */}
@@ -309,7 +310,7 @@ export const PodDetails = () => {
                     className="text-form text-base"
                     style={{ marginLeft: "10px" }}
                   >
-                    POD
+                    Dispatch
                   </span>
                 </button>
               </div>
@@ -429,4 +430,4 @@ export const PodDetails = () => {
   );
 };
 
-export default PodDetails;
+export default ProofofDispatchDetails;

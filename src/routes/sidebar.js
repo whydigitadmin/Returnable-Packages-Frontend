@@ -497,6 +497,18 @@ const routes = [
         name: <span className="ml-1">POD Details</span>,
       },
       {
+        path: "/app/proofofdispatchdetails", //no url needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
+            alt="Services"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="ml-1">Proof of Dispatch Details</span>,
+      },
+      {
         path: "/app/Pdf", //no url needed as this has submenu
         icon: (
           <img
