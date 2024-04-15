@@ -514,12 +514,12 @@ function AddVendor({ addVendors, editVendorId }) {
     // console.log("test", value);
 
     switch (name) {
-      case "firstName":
-        setFirstName(value);
-        break;
-      case "lastName":
-        setLastName(value);
-        break;
+      // case "firstName":
+      //   setFirstName(value);
+      //   break;
+      // case "lastName":
+      //   setLastName(value);
+      //   break;
       case "venderType":
         setVenderType(value);
         break;
