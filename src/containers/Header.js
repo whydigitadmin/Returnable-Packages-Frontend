@@ -166,6 +166,10 @@ function Header() {
                 <Link to={"/app/preferences"}>Preferences</Link>
               </li> */}
               <li className="">
+                <Link to={"/app/welcome"}>My Tasks</Link>
+              </li>
+              <div className="divider mt-0 mb-0"></div>
+              <li className="">
                 <Link to={"/app/changepwd"}>Change Password</Link>
               </li>
               <div className="divider mt-0 mb-0"></div>

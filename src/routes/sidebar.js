@@ -94,73 +94,57 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span className="ml-2">Master</span>,
+    name: <span className="ml-2">General</span>,
     submenu: [
-      {
-        path: "/app/itemGroup",
-        icon: (
-          <img
-            src="/asset.png"
-            alt="AssetGroup"
-            style={{ width: "32px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span>Asset Group</span>,
-      },
       // {
-      //   path: "/app/manufacturerDetails",
-      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-      //   name: "Manufacture",
+      //   path: "/app/itemGroup",
+      //   icon: (
+      //     <img
+      //       src="/asset.png"
+      //       alt="AssetGroup"
+      //       style={{ width: "32px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span>Asset Group</span>,
       // },
-      {
-        path: "/app/items",
-        icon: (
-          <img
-            src="/createAsset.png"
-            alt="CreateAssets"
-            style={{ width: "33px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span>Create Assets</span>,
-      },
-      {
-        path: "/app/warehouse",
-        icon: (
-          <img
-            src="/warehouse.png"
-            alt="Warehouse"
-            style={{ width: "28px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Warehouse</span>,
-      },
-      {
-        path: "/app/customer",
-        icon: (
-          <img
-            src="/customer.png"
-            alt="Customer"
-            style={{ width: "32px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="">Customer</span>,
-      },
-      {
-        path: "/app/vendors",
-        icon: (
-          <img
-            src="/vendor.png"
-            alt="Vendors"
-            style={{ width: "33px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="">Vendors</span>,
-      },
+      // {
+      //   path: "/app/items",
+      //   icon: (
+      //     <img
+      //       src="/createAsset.png"
+      //       alt="CreateAssets"
+      //       style={{ width: "33px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span>Create Assets</span>,
+      // },
+
+      // {
+      //   path: "/app/customer",
+      //   icon: (
+      //     <img
+      //       src="/customer.png"
+      //       alt="Customer"
+      //       style={{ width: "32px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="">Customer</span>,
+      // },
+      // {
+      //   path: "/app/vendors",
+      //   icon: (
+      //     <img
+      //       src="/vendor.png"
+      //       alt="Vendors"
+      //       style={{ width: "33px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="">Vendors</span>,
+      // },
       {
         path: "/app/Branch",
         icon: (
@@ -222,17 +206,18 @@ const routes = [
         ),
         name: <span className="">City Master</span>,
       },
+
       {
-        path: "/app/KitCard",
+        path: "/app/warehouse",
         icon: (
           <img
-            src="	https://cdn-icons-png.flaticon.com/128/2752/2752867.png"
-            alt="KitCard"
-            style={{ width: "34px", height: "auto" }}
+            src="/warehouse.png"
+            alt="Warehouse"
+            style={{ width: "28px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="">Kit Card</span>,
+        name: <span className="ml-1">Warehouse</span>,
       },
       {
         path: "/app/unit",
@@ -246,11 +231,6 @@ const routes = [
         ),
         name: <span className="">Unit</span>,
       },
-      // {
-      //   path: "/app/warehouseLocation",
-      //   icon: <ArrowRightOnRectangleIcon className={submenuIconClasses} />,
-      //   name: "Warehouse Location",
-      // },
     ],
   },
 
@@ -258,14 +238,63 @@ const routes = [
     path: "", //no url needed as this has submenu
     icon: (
       <img
-        src="/operational.png"
-        alt="Operational"
-        style={{ width: "34px", height: "auto" }}
+        src="/master.png"
+        alt="Master"
+        style={{ width: "32px", height: "auto" }}
         className={`${iconClasses} inline`}
       />
     ),
-    name: <span style={{ marginLeft: "7px" }}>Engineering</span>,
+    name: <span className="ml-2">Operational</span>,
     submenu: [
+      {
+        path: "/app/itemGroup",
+        icon: (
+          <img
+            src="/asset.png"
+            alt="AssetGroup"
+            style={{ width: "32px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Asset Group</span>,
+      },
+      {
+        path: "/app/items",
+        icon: (
+          <img
+            src="/createAsset.png"
+            alt="CreateAssets"
+            style={{ width: "33px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Create Assets</span>,
+      },
+
+      {
+        path: "/app/customer",
+        icon: (
+          <img
+            src="/customer.png"
+            alt="Customer"
+            style={{ width: "32px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Customer</span>,
+      },
+      {
+        path: "/app/vendors",
+        icon: (
+          <img
+            src="/vendor.png"
+            alt="Vendors"
+            style={{ width: "33px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Vendors</span>,
+      },
       {
         path: "/app/createkit",
         icon: (
@@ -302,57 +331,192 @@ const routes = [
         ),
         name: <span className="ml-1">Flows</span>,
       },
-    ],
-  },
-  {
-    path: "/app/AsstTagging", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/report.png"
-        alt="AsstTagging"
-        style={{ width: "29px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "6px" }}>ASSET Tagging</span>,
-  },
-  {
-    path: "", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/issueManifest.png"
-        alt="IssueManifest"
-        style={{ width: "33px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span className="ml-2">Bin Allotment</span>,
-    submenu: [
       {
-        path: "/app/issuemanifest", //no url needed as this has submenu
+        path: "/app/KitCard",
         icon: (
           <img
-            src="/issuemanifest1.png"
-            alt="Issuemanifest"
-            style={{ width: "30px", height: "auto" }}
+            src="	https://cdn-icons-png.flaticon.com/128/2752/2752867.png"
+            alt="KitCard"
+            style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Bin Allotment</span>,
+        name: <span className="">Kit Card</span>,
+      },
+      {
+        path: "/app/AsstTagging", //no url needed as this has submenu
+        icon: (
+          <img
+            src="/report.png"
+            alt="AsstTagging"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>ASSET Tagging</span>,
       },
       // {
-      //   path: "/app/issuemanifest-report", //no url needed as this has submenu
+      //   path: "/app/Branch",
       //   icon: (
       //     <img
-      //       src="/issuemanifestReport.png"
-      //       alt="IssuemanifestReport"
-      //       style={{ width: "30px", height: "auto" }}
+      //       src="https://cdn-icons-png.flaticon.com/128/11743/11743089.png"
+      //       alt="StockBranch"
+      //       style={{ width: "29px", height: "auto" }}
+      //       className={`${iconClasses} inline`}
+      //     />
+      //   ),
+      //   name: "Branch",
+      // },
+
+      // {
+      //   path: "/app/StockBranch", //no url needed as this has submenu
+      //   icon: (
+      //     <img
+      //       src="/report.png"
+      //       alt="StockBranch"
+      //       style={{ width: "29px", height: "auto" }}
+      //       className={`${iconClasses} inline`}
+      //     />
+      //   ),
+      //   name: <span style={{ marginLeft: "6px" }}>Stock Branch</span>,
+      // },
+      // {
+      //   path: "/app/Country",
+      //   icon: (
+      //     <img
+      //       src="https://cdn-icons-png.flaticon.com/128/2947/2947721.png"
+      //       alt="Country"
+      //       style={{ width: "34px", height: "auto" }}
       //       className={{ submenuIconClasses }}
       //     />
       //   ),
-      //   name: <span className="ml-1">Issuemanifest Report</span>,
+      //   name: <span className="">Country Master</span>,
+      // },
+      // {
+      //   path: "/app/State",
+      //   icon: (
+      //     <img
+      //       src="/city.png"
+      //       alt="Unit"
+      //       style={{ width: "34px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="">State Master</span>,
+      // },
+      // {
+      //   path: "/app/CityMaster",
+      //   icon: (
+      //     <img
+      //       src="/city.png "
+      //       alt="Unit"
+      //       style={{ width: "34px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="">City Master</span>,
+      // },
+      // // {
+      // //   path: "/app/KitCard",
+      // //   icon: (
+      // //     <img
+      // //       src="	https://cdn-icons-png.flaticon.com/128/2752/2752867.png"
+      // //       alt="KitCard"
+      // //       style={{ width: "34px", height: "auto" }}
+      // //       className={{ submenuIconClasses }}
+      // //     />
+      // //   ),
+      // //   name: <span className="">Kit Card</span>,
+      // // },
+      // {
+      //   path: "/app/warehouse",
+      //   icon: (
+      //     <img
+      //       src="/warehouse.png"
+      //       alt="Warehouse"
+      //       style={{ width: "28px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="ml-1">Warehouse</span>,
+      // },
+      // {
+      //   path: "/app/unit",
+      //   icon: (
+      //     <img
+      //       src="/unit.png"
+      //       alt="Unit"
+      //       style={{ width: "34px", height: "auto" }}
+      //       className={{ submenuIconClasses }}
+      //     />
+      //   ),
+      //   name: <span className="">Unit</span>,
       // },
     ],
+  },
+
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/operational.png"
+  //       alt="Operational"
+  //       style={{ width: "34px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span style={{ marginLeft: "7px" }}>Engineering</span>,
+  //   submenu: [
+  //     {
+  //       path: "/app/createkit",
+  //       icon: (
+  //         <img
+  //           src="/createkit.png"
+  //           alt="CreateKit"
+  //           style={{ width: "31px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span>Create Kit</span>,
+  //     },
+  //     {
+  //       path: "/app/partstudy", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="/part.png"
+  //           alt="PartStudy"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="">Part Study</span>,
+  //     },
+  //     {
+  //       path: "/app/flows",
+  //       icon: (
+  //         <img
+  //           src="/flow.png"
+  //           alt="Flows"
+  //           style={{ width: "26px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Flows</span>,
+  //     },
+  //   ],
+  // },
+
+  {
+    path: "/app/issuemanifest", //no url needed as this has submenu
+    icon: (
+      <img
+        src="/issuemanifest1.png"
+        alt="Issuemanifest"
+        style={{ width: "30px", height: "auto" }}
+        className={{ submenuIconClasses }}
+      />
+    ),
+    name: <span className="ml-1">Bin Allotment</span>,
   },
 
   {
@@ -367,7 +531,6 @@ const routes = [
     ),
     name: <span style={{ marginLeft: "12px" }}>Asset Inward</span>,
     submenu: [
-
       {
         path: "/app/inwardmanifestdetails", //no url needed as this has submenu
         icon: (
@@ -495,18 +658,6 @@ const routes = [
           />
         ),
         name: <span className="ml-1">POD Details</span>,
-      },
-      {
-        path: "/app/proofofdispatchdetails", //no url needed as this has submenu
-        icon: (
-          <img
-            src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
-            alt="Services"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Proof of Dispatch Details</span>,
       },
       {
         path: "/app/Pdf", //no url needed as this has submenu

@@ -1,20 +1,23 @@
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
-import axios from "axios";
-import React, { useEffect, useMemo, useState } from "react";
-import { FaStarOfLife } from "react-icons/fa";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import ReactBarcode from "react-barcode";
-import QRCode from "qrcode.react";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogTitle from "@mui/material/DialogTitle";
-import DialogContent from "@mui/material/DialogContent";
-import DialogActions from "@mui/material/DialogActions";
+import axios from "axios";
 import JsBarcode from "jsbarcode";
 import QRCodeLib from "qrcode";
+import QRCode from "qrcode.react";
+import React, { useEffect, useState } from "react";
+import ReactBarcode from "react-barcode";
+import { FaStarOfLife } from "react-icons/fa";
+import { MdPrint } from "react-icons/md";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -88,6 +91,7 @@ export const AsstTagging = () => {
   const [assetCode, setAssetCode] = useState("");
   const [seqFrom, setSeqFrom] = useState("");
   const [seqTo, setSeqTo] = useState("");
+  const [generateFlag, setGenerateFlag] = useState(false);
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
@@ -133,23 +137,48 @@ export const AsstTagging = () => {
     console.log("Asset Name:", assetName);
   }, [assetList, assetName]);
 
-  const getAllTagCode = async (asset, assetcode, endno, startno) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&endno=${seqTo}&startno=${seqFrom}`
-      );
+  const getAllTagCode = async () => {
+    const errors = {};
+    if (!docId || !docId.trim()) {
+      errors.docId = "Document ID is required";
+    }
+    if (!toDate) {
+      errors.toDate = "Doc Date is required";
+    }
+    if (!assetCode) {
+      errors.assetCode = "Asset Code is required";
+    }
+    if (!assetName || !assetName.trim()) {
+      errors.assetName = "Asset Name is required";
+    }
+    if (!seqFrom || !seqFrom.trim()) {
+      errors.seqFrom = "Seq From is required";
+    }
+    if (!seqTo || !seqTo.trim()) {
+      errors.seqTo = "Seq To is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&endno=${seqTo}&startno=${seqFrom}`
+        );
 
-      if (response.status === 200) {
-        const tagcodes = response.data.paramObjectsMap.tagcode;
-        if (Array.isArray(tagcodes)) {
-          setTagCodeList(tagcodes);
-        } else {
-          setTagCodeList([]);
+        if (response.status === 200) {
+          const tagcodes = response.data.paramObjectsMap.tagcode;
+          setGenerateFlag(true);
+          setErrors({});
+          if (Array.isArray(tagcodes)) {
+            setTagCodeList(tagcodes);
+          } else {
+            setTagCodeList([]);
+          }
+          console.log("Test", tagcodes);
         }
-        console.log("Test", tagcodes);
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } else {
+      setErrors(errors);
     }
   };
 
@@ -218,6 +247,7 @@ export const AsstTagging = () => {
           asset: item.Asset,
           assetCode: item.AssetCode,
           tagCode: item.TagCode,
+          rfId: item.RFIDCode,
         }));
 
         // Now proceed to save the data
@@ -252,6 +282,10 @@ export const AsstTagging = () => {
         setAssetName("");
 
         setErrors({});
+        toast.success("Asset tagging successfully", {
+          autoClose: 2000,
+          theme: "colored",
+        });
       } catch (error) {
         console.error("Error:", error);
       }
@@ -275,6 +309,7 @@ export const AsstTagging = () => {
     setSelectedQRCodeRows([]);
     // Clear cancelled assets
     setCancelledAssets([]);
+    setGenerateFlag(false);
   };
 
   const handleGenerateTagcode = () => {
@@ -396,8 +431,22 @@ export const AsstTagging = () => {
     }
   };
 
+  const handleRFIDCodeChange = (newRFIDCode, rowIndex) => {
+    // Update the tagCodeList array with the new RFID code at the specified index
+    setTagCodeList((prevTagCodeList) => {
+      // Make a copy of the previous state to avoid mutating it directly
+      const updatedTagCodeList = [...prevTagCodeList];
+      // Update the RFID code of the specified row
+      updatedTagCodeList[rowIndex].RFIDCode = newRFIDCode;
+      return updatedTagCodeList;
+    });
+  };
+
   return (
     <div className="card w-full p-6 bg-base-100 shadow-xl">
+      <div>
+        <ToastContainer />
+      </div>
       <div className="row">
         {/* Doc Id */}
         <div className="col-lg-3 col-md-3">
@@ -526,49 +575,36 @@ export const AsstTagging = () => {
           />
           {errors.seqTo && <span className="error-text">{errors.seqTo}</span>}
         </div>
-        <div className="col-lg-3 col-md-3">
-          <label className="label mb-4">
-            <span className="label-text label-font-size text-base-content d-flex flex-row">
-              RFID
-              {/* <FaStarOfLife className="must" /> &nbsp; */}
-            </span>
-          </label>
-        </div>
-        <div className="col-lg-3 col-md-3">
-          <input
-            className="form-control form-sz"
-            type="text"
-            // value={seqTo}
-            // onChange={(e) => setSeqTo(e.target.value)}
-          />
-          {/* {errors.seqTo && <span className="error-text">{errors.seqTo}</span>} */}
-        </div>
       </div>
 
       <div className="d-flex flex-row mt-3">
-        <button
-          type="button"
-          onClick={handleSave}
-          className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-        >
-          Save
-        </button>
-        <button
-          type="button"
-          onClick={handleCancelAsset}
-          className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-        >
-          Cancel
-        </button>
-
-        <button
-          type="button"
-          style={{ marginLeft: "50px" }}
-          onClick={handleGenerateTagcode}
-          className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-        >
-          Generate Tagcode
-        </button>
+        {generateFlag && (
+          <div>
+            <button
+              type="button"
+              onClick={handleSave}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleCancelAsset}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
+        {!generateFlag && (
+          <button
+            type="button"
+            onClick={handleGenerateTagcode}
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+          >
+            Generate Tagcode
+          </button>
+        )}
       </div>
       {/* <div className="d-flex flex-row mt-4">
 
@@ -625,7 +661,7 @@ export const AsstTagging = () => {
                           handlePrint(selectedBarcodeRows, "Barcode")
                         }
                       >
-                        Print
+                        <MdPrint style={{ fontSize: "20px" }} />
                       </button>
                     </span>
                   </th>
@@ -646,7 +682,7 @@ export const AsstTagging = () => {
                           handlePrint(selectedQRCodeRows, "QR Code")
                         }
                       >
-                        Print
+                        <MdPrint style={{ fontSize: "20px" }} />
                       </button>
                     </span>
                   </th>
@@ -694,6 +730,16 @@ export const AsstTagging = () => {
                       >
                         <span className="ml-2">Scan QR Code</span>
                       </Button>
+                    </td>
+                    <td className="px-2 py-2">
+                      <input
+                        type="text"
+                        value={item.RFIDCode}
+                        onChange={(e) =>
+                          handleRFIDCodeChange(e.target.value, index)
+                        }
+                        className="px-2 py-1 border rounded"
+                      />
                     </td>
                   </tr>
                 ))}

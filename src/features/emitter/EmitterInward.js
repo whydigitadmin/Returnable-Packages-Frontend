@@ -26,6 +26,7 @@ function EmitterInward() {
   const [isPendingPopupOpenIssued, setPendingPopupOpenIssued] = useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [viewAllClicked, setViewAllClicked] = useState(false);
 
   useEffect(() => {
     getDisplayName();
@@ -63,7 +64,6 @@ function EmitterInward() {
           )
           .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
-        console.log("validFlows", validFlows);
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -141,81 +141,6 @@ function EmitterInward() {
     }
   };
 
-  // const handleUpdateInward = () => {
-  //   const errors = {};
-  //   if (!netQtyRecieved) {
-  //     errors.netQtyRecieved = "Kit Qty is required";
-  //   }
-  //   if (Object.keys(errors).length === 0) {
-  //     const requestData = {
-  //       id: issueItemInwardId,
-  //       issueItemId: itemId,
-  //       netQtyRecieved,
-  //       returnQty: returnQty ? returnQty : 0,
-  //       status: returnReason ? returnReason : 0,
-  //     };
-  //     axios
-  //       .put(
-  //         `${process.env.REACT_APP_API_URL}/api/emitter/emitterInward`,
-  //         requestData
-  //       )
-  //       .then((response) => {
-  //         console.log("Response for UPADTE INWARD:", response.data);
-  //         setPendingPopupOpenIssued(false);
-  //         getInwardDetails();
-  //         setNetQtyRecieved("");
-  //         setReturnQty("");
-  //         setReturnReason("");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error:", error);
-  //       });
-  //   } else {
-  //     setErrors(errors);
-  //   }
-  // };
-
-  // const handleUpdateInward = () => {
-  //   const errors = {};
-  //   if (!netQtyRecieved) {
-  //     errors.netQtyRecieved = "Kit Qty is required";
-  //   }
-  //   const totalQuantity = Number(netQtyRecieved) + Number(returnQty);
-  //   if (totalQuantity > showNetQtyRecieved) {
-  //     errors.exceedIssuedQty = "Total quantity exceeds issued quantity";
-  //   }
-  //   if (Object.keys(errors).length === 0) {
-  //     const requestData = {
-  //       id: issueItemInwardId,
-  //       issueItemId: itemId,
-  //       netQtyRecieved,
-  //       returnQty: returnQty ? returnQty : 0,
-  //       status: returnReason ? returnReason : 0,
-  //     };
-  //     axios
-  //       .put(
-  //         `${process.env.REACT_APP_API_URL}/api/emitter/emitterInward`,
-  //         requestData
-  //       )
-  //       .then((response) => {
-  //         console.log("Response for UPDATE INWARD:", response.data);
-  //         setPendingPopupOpenIssued(false);
-  //         getInwardDetails();
-  //         setNetQtyRecieved("");
-  //         setReturnQty("");
-  //         setReturnReason("");
-  //         toast.success("Inward updated successfully");
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error:", error);
-  //         toast.error("Error updating inward");
-  //       });
-  //   } else {
-  //     setErrors(errors);
-  //     toast.error("Please fix the errors");
-  //   }
-  // };
-
   const handleUpdateInward = () => {
     const errors = {};
     if (!netQtyRecieved) {
@@ -266,6 +191,12 @@ function EmitterInward() {
     setReturnQty("");
     setReturnReason("");
     setErrors("");
+  };
+
+  // Function to handle click on "View all" button
+  const handleViewAllClick = () => {
+    // Set the state variable to true
+    setViewAllClicked(!viewAllClicked);
   };
 
   return (
@@ -322,6 +253,19 @@ function EmitterInward() {
               </div>
             </div>
           </div>
+          <div
+            style={{
+              textAlign: "end",
+              marginRight: "20px",
+            }}
+          >
+            <button
+              className="btn btn-sm normal-case btn-primary"
+              onClick={handleViewAllClick}
+            >
+              View all
+            </button>
+          </div>
           <TitleCard title="" topMargin="mt-2">
             <div className="overflow-x-auto w-full ">
               <table className="table w-full">
@@ -344,74 +288,111 @@ function EmitterInward() {
                   </tr>
                 </thead>
                 <tbody>
-                  {inwardVO.map((l, k) => {
-                    return (
-                      <tr key={k}>
-                        <td>
-                          {l.netRecAcceptStatus ? (
-                            <img
-                              src="/edit1.png"
-                              alt="Favorite"
-                              style={{
-                                width: "25px",
-                                height: "auto",
-                                marginRight: "6px",
-                                cursor: "not-allowed",
-                              }}
-                            />
-                          ) : (
-                            <img
-                              src="/edit1.png"
-                              alt="Favorite"
-                              style={{
-                                width: "25px",
-                                height: "auto",
-                                marginRight: "6px",
-                                cursor: "pointer",
-                              }}
-                              onClick={() =>
-                                handlePendingStatusClickIssued(
-                                  l.issueItemInwardId,
-                                  l.itemId,
-                                  l.issuedQty
-                                )
-                              }
-                            />
-                          )}
-                          {/* <img
-                            src="/edit1.png"
-                            alt="Favorite"
-                            style={{
-                              width: "25px",
-                              height: "auto",
-                              marginRight: "6px",
-                              cursor: "pointer",
-                            }}
-                            onClick={() =>
-                              handlePendingStatusClickIssued(
-                                l.issueItemInwardId,
-                                l.itemId,
-                                l.issuedQty
-                              )
-                            }
-                          /> */}
-                        </td>
-                        <td>{l.requestId}</td>
-                        <td>{l.requestedDate}</td>
-                        <td>{l.demandDate}</td>
-                        <td>{l.issueItemInwardId}</td>
-                        <td>{l.reachedDate}</td>
-                        <td>{l.kitName}</td>
-                        <td>{l.flowName}</td>
-                        <td>{l.kitQty}</td>
-                        <td>{l.issuedQty}</td>
-                        <td>{l.netQtyRecieved}</td>
-                        <td>{l.returnQty}</td>
-                        <td>{l.tat}</td>
-                        <td>{l.partName}</td>
-                      </tr>
-                    );
-                  })}
+                  {viewAllClicked &&
+                    inwardVO
+                      .slice()
+                      .sort((a, b) => (a.netRecAcceptStatus === false ? -1 : 1))
+                      .map((l, k) => (
+                        <tr key={k}>
+                          <td>
+                            {l.netRecAcceptStatus ? (
+                              <img
+                                src="/checked1.png"
+                                alt="Favorite"
+                                style={{
+                                  width: "25px",
+                                  height: "auto",
+                                  marginRight: "6px",
+                                  cursor: "not-allowed",
+                                }}
+                              />
+                            ) : (
+                              <img
+                                src="/edit1.png"
+                                alt="Favorite"
+                                style={{
+                                  width: "25px",
+                                  height: "auto",
+                                  marginRight: "6px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() =>
+                                  handlePendingStatusClickIssued(
+                                    l.issueItemInwardId,
+                                    l.itemId,
+                                    l.issuedQty
+                                  )
+                                }
+                              />
+                            )}
+                          </td>
+                          <td>{l.requestId}</td>
+                          <td>{l.requestedDate}</td>
+                          <td>{l.demandDate}</td>
+                          <td>{l.issueItemInwardId}</td>
+                          <td>{l.reachedDate}</td>
+                          <td>{l.kitName}</td>
+                          <td>{l.flowName}</td>
+                          <td>{l.kitQty}</td>
+                          <td>{l.issuedQty}</td>
+                          <td>{l.netQtyRecieved}</td>
+                          <td>{l.returnQty}</td>
+                          <td>{l.tat}</td>
+                          <td>{l.partName}</td>
+                        </tr>
+                      ))}
+                  {!viewAllClicked &&
+                    inwardVO.map((l, k) =>
+                      viewAllClicked || !l.netRecAcceptStatus ? (
+                        <tr key={k}>
+                          <td>
+                            {l.netRecAcceptStatus ? (
+                              <img
+                                src="/checked1.png"
+                                alt="Favorite"
+                                style={{
+                                  width: "25px",
+                                  height: "auto",
+                                  marginRight: "6px",
+                                  cursor: "not-allowed",
+                                }}
+                              />
+                            ) : (
+                              <img
+                                src="/edit1.png"
+                                alt="Favorite"
+                                style={{
+                                  width: "25px",
+                                  height: "auto",
+                                  marginRight: "6px",
+                                  cursor: "pointer",
+                                }}
+                                onClick={() =>
+                                  handlePendingStatusClickIssued(
+                                    l.issueItemInwardId,
+                                    l.itemId,
+                                    l.issuedQty
+                                  )
+                                }
+                              />
+                            )}
+                          </td>
+                          <td>{l.requestId}</td>
+                          <td>{l.requestedDate}</td>
+                          <td>{l.demandDate}</td>
+                          <td>{l.issueItemInwardId}</td>
+                          <td>{l.reachedDate}</td>
+                          <td>{l.kitName}</td>
+                          <td>{l.flowName}</td>
+                          <td>{l.kitQty}</td>
+                          <td>{l.issuedQty}</td>
+                          <td>{l.netQtyRecieved}</td>
+                          <td>{l.returnQty}</td>
+                          <td>{l.tat}</td>
+                          <td>{l.partName}</td>
+                        </tr>
+                      ) : null
+                    )}
                 </tbody>
               </table>
               {inwardVO.length === 0 && (

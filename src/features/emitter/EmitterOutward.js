@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TitleCard from "../../components/Cards/TitleCard";
+import NoRecordsFound from "../../utils/NoRecordsFound";
 
 export const EmitterOutward = () => {
   const [selectedFlow, setSelectedFlow] = React.useState("");
@@ -26,6 +27,7 @@ export const EmitterOutward = () => {
   const [userId, setUserId] = useState(
     JSON.parse(localStorage.getItem("userId"))
   );
+  const [viewAllClicked, setViewAllClicked] = useState(false);
 
   useEffect(() => {
     getAddressById();
@@ -117,6 +119,11 @@ export const EmitterOutward = () => {
         }
         break;
     }
+  };
+
+  const handleViewAllClick = () => {
+    // Set the state variable to true
+    setViewAllClicked(!viewAllClicked);
   };
 
   const handleUpdateInward = () => {
@@ -215,6 +222,20 @@ export const EmitterOutward = () => {
               </div>
             </div>
           </div>
+          <div
+            style={{
+              textAlign: "end",
+              marginRight: "20px",
+            }}
+          >
+            <button
+              className="btn btn-sm normal-case btn-primary"
+              onClick={handleViewAllClick}
+            >
+              View all
+            </button>
+          </div>
+
           <TitleCard title="" topMargin="mt-2">
             <div className="overflow-x-auto w-full ">
               <table className="table w-full">
@@ -223,85 +244,145 @@ export const EmitterOutward = () => {
                     <th>Update</th>
                     <th>Rm No</th>
                     <th>RM DATE</th>
-                    {/* <th>Demand Date</th> */}
                     <th>IM No</th>
                     <th>IM Date</th>
                     <th>REC Date</th>
                     <th>KIT</th>
-                    {/* <th>kit Qty</th> */}
                     <th>Net Rec Qty</th>
                     <th>Return Qty</th>
                     <th>Bal Qty</th>
                     <th>Cycle Time (days) </th>
-                    {/* <th>Emitter Inv no</th>
-                    <th>Previous dispatch</th>
-                    <th>O2O - TAT</th> */}
                   </tr>
                 </thead>
                 <tbody>
-                  {outwardVO &&
-                    outwardVO.map((l, k) => {
-                      const balanceQtyy = l.netQtyReceived - l.kitReturnQTY;
-                      const isUpdateBlocked =
-                        l.netQtyReceived === l.kitReturnQTY;
-                      return (
-                        <tr key={k}>
-                          {/* <td>{getPaymentStatus(l.status)}</td> */}
-                          <td>
-                            {isUpdateBlocked ? (
-                              <img
-                                src="/checked1.png"
-                                alt="Favorite"
-                                style={{
-                                  width: "25px",
-                                  height: "auto",
-                                  marginRight: "6px",
-                                  cursor: "no-drop", // Change cursor type
-                                }}
-                              />
-                            ) : (
-                              <img
-                                src="/edit1.png"
-                                alt="Favorite"
-                                style={{
-                                  width: "25px",
-                                  height: "auto",
-                                  marginRight: "6px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  handlePendingStatusClickIssued(
-                                    l.kitNumber,
-                                    l.netQtyReceived,
-                                    l.issueItemId,
-                                    balanceQtyy
-                                  )
-                                }
-                              />
-                            )}
-                          </td>
-                          <td>{l.rmNo}</td>
-                          <td>{l.rmDate}</td>
-                          <td>{l.imNo}</td>
-                          <td>{l.imDate}</td>
-                          <td>{l.inwardConfirmDate}</td>
-                          <td>{l.kitNumber}</td>
-                          <td>{l.netQtyReceived}</td>
-                          <td>{l.kitReturnQTY}</td>
-                          <td>{balanceQtyy}</td>
-                          <td>{l.cycletime}</td>
-                        </tr>
-                      );
-                    })}
+                  {viewAllClicked
+                    ? [
+                        ...outwardVO
+                          .filter((l) => l.netQtyReceived !== l.kitReturnQTY)
+                          .map((l, k) => {
+                            const balanceQtyy =
+                              l.netQtyReceived - l.kitReturnQTY;
+                            return (
+                              <tr key={k}>
+                                <td>
+                                  <img
+                                    src="/edit1.png"
+                                    alt="Favorite"
+                                    style={{
+                                      width: "25px",
+                                      height: "auto",
+                                      marginRight: "6px",
+                                      cursor: "pointer",
+                                    }}
+                                    onClick={() =>
+                                      handlePendingStatusClickIssued(
+                                        l.kitNumber,
+                                        l.netQtyReceived,
+                                        l.issueItemId,
+                                        balanceQtyy
+                                      )
+                                    }
+                                  />
+                                </td>
+                                <td>{l.rmNo}</td>
+                                <td>{l.rmDate}</td>
+                                <td>{l.imNo}</td>
+                                <td>{l.imDate}</td>
+                                <td>{l.inwardConfirmDate}</td>
+                                <td>{l.kitNumber}</td>
+                                <td>{l.netQtyReceived}</td>
+                                <td>{l.kitReturnQTY}</td>
+                                <td>{balanceQtyy}</td>
+                                <td>{l.cycletime}</td>
+                              </tr>
+                            );
+                          }),
+                        ...outwardVO
+                          .filter((l) => l.netQtyReceived === l.kitReturnQTY)
+                          .map((l, k) => {
+                            const balanceQtyy =
+                              l.netQtyReceived - l.kitReturnQTY;
+                            return (
+                              <tr key={k}>
+                                <td>
+                                  <img
+                                    src="/checked1.png"
+                                    alt="Favorite"
+                                    style={{
+                                      width: "25px",
+                                      height: "auto",
+                                      marginRight: "6px",
+                                      cursor: "no-drop",
+                                    }}
+                                  />
+                                </td>
+                                <td>{l.rmNo}</td>
+                                <td>{l.rmDate}</td>
+                                <td>{l.imNo}</td>
+                                <td>{l.imDate}</td>
+                                <td>{l.inwardConfirmDate}</td>
+                                <td>{l.kitNumber}</td>
+                                <td>{l.netQtyReceived}</td>
+                                <td>{l.kitReturnQTY}</td>
+                                <td>{balanceQtyy}</td>
+                                <td>{l.cycletime}</td>
+                              </tr>
+                            );
+                          }),
+                      ]
+                    : outwardVO
+                        .filter((l) => l.netQtyReceived !== l.kitReturnQTY)
+                        .map((l, k) => {
+                          const balanceQtyy = l.netQtyReceived - l.kitReturnQTY;
+                          return (
+                            <tr key={k}>
+                              <td>
+                                <img
+                                  src="/edit1.png"
+                                  alt="Favorite"
+                                  style={{
+                                    width: "25px",
+                                    height: "auto",
+                                    marginRight: "6px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() =>
+                                    handlePendingStatusClickIssued(
+                                      l.kitNumber,
+                                      l.netQtyReceived,
+                                      l.issueItemId,
+                                      balanceQtyy
+                                    )
+                                  }
+                                />
+                              </td>
+                              <td>{l.rmNo}</td>
+                              <td>{l.rmDate}</td>
+                              <td>{l.imNo}</td>
+                              <td>{l.imDate}</td>
+                              <td>{l.inwardConfirmDate}</td>
+                              <td>{l.kitNumber}</td>
+                              <td>{l.netQtyReceived}</td>
+                              <td>{l.kitReturnQTY}</td>
+                              <td>{balanceQtyy}</td>
+                              <td>{l.cycletime}</td>
+                            </tr>
+                          );
+                        })}
                 </tbody>
               </table>
-              {outwardVO && outwardVO.length === 0 && (
+              {outwardVO.length === 0 && (
                 <h4 className="text-base dark:text-slate-300 font-semibold fst-italic text-center mt-4">
-                  No records to display..!!
+                  <NoRecordsFound
+                    message={
+                      viewAllClicked ? "No Records Found" : "No Pending Outward"
+                    }
+                  />
                 </h4>
               )}
             </div>
           </TitleCard>
+
           <Dialog
             fullWidth={true}
             maxWidth={"sm"}
