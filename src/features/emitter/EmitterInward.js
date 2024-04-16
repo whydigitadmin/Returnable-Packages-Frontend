@@ -9,6 +9,9 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TitleCard from "../../components/Cards/TitleCard";
+import NoRecordsFound from "../../utils/NoRecordsFound";
+
+const ItemsPerPage = 10;
 
 function EmitterInward() {
   const [flowData, setFlowData] = React.useState([]);
@@ -34,6 +37,19 @@ function EmitterInward() {
       getInwardDetails();
     }
   }, [emitterId, selectedFlow]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(inwardVO.length / ItemsPerPage);
+
+  // Function to handle page changes
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Calculate start and end index of items for the current page
+  const startIndex = (currentPage - 1) * ItemsPerPage;
+  const endIndex = Math.min(startIndex + ItemsPerPage, inwardVO.length);
 
   const getDisplayName = async () => {
     try {
@@ -89,6 +105,17 @@ function EmitterInward() {
       }
     } catch (error) {
       toast.error("Network Error!");
+    }
+  };
+
+  const chipColorClass = (issuedQty, kitQty) => {
+    const fulfillmentPercentage = (issuedQty / kitQty) * 100;
+    if (fulfillmentPercentage >= 80) {
+      return "bg-green-500";
+    } else if (fulfillmentPercentage >= 50) {
+      return "bg-yellow-500";
+    } else {
+      return "bg-red-500";
     }
   };
 
@@ -217,7 +244,7 @@ function EmitterInward() {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-28">
+            <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-18">
               <div className="p-2">
                 <div className="d-flex flex-row">
                   <img
@@ -247,26 +274,30 @@ function EmitterInward() {
                       ))}
                   </select>
                 </div>
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
+                {/* <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
                   {displayFlowName}
-                </h4>
+                </h4> */}
               </div>
             </div>
           </div>
-          <div
-            style={{
-              textAlign: "end",
-              marginRight: "20px",
-            }}
-          >
-            <button
-              className="btn btn-sm normal-case btn-primary"
-              onClick={handleViewAllClick}
+          {inwardVO.length > 0 && (
+            <div
+              style={{
+                textAlign: "end",
+                marginRight: "20px",
+                marginBottom: "-2%",
+                zIndex: "1",
+              }}
             >
-              View all
-            </button>
-          </div>
-          <TitleCard title="" topMargin="mt-2">
+              <button
+                className="btn btn-sm normal-case btn-primary"
+                onClick={handleViewAllClick}
+              >
+                {viewAllClicked ? "View Less" : "View More"}
+              </button>
+            </div>
+          )}
+          <TitleCard title="" topMargin="mt-0">
             <div className="overflow-x-auto w-full ">
               <table className="table w-full">
                 <thead>
@@ -290,57 +321,69 @@ function EmitterInward() {
                 <tbody>
                   {viewAllClicked &&
                     inwardVO
-                      .slice()
+                      .slice(startIndex, endIndex)
                       .sort((a, b) => (a.netRecAcceptStatus === false ? -1 : 1))
-                      .map((l, k) => (
-                        <tr key={k}>
-                          <td>
-                            {l.netRecAcceptStatus ? (
-                              <img
-                                src="/checked1.png"
-                                alt="Favorite"
-                                style={{
-                                  width: "25px",
-                                  height: "auto",
-                                  marginRight: "6px",
-                                  cursor: "not-allowed",
-                                }}
-                              />
-                            ) : (
-                              <img
-                                src="/edit1.png"
-                                alt="Favorite"
-                                style={{
-                                  width: "25px",
-                                  height: "auto",
-                                  marginRight: "6px",
-                                  cursor: "pointer",
-                                }}
-                                onClick={() =>
-                                  handlePendingStatusClickIssued(
-                                    l.issueItemInwardId,
-                                    l.itemId,
-                                    l.issuedQty
-                                  )
-                                }
-                              />
-                            )}
-                          </td>
-                          <td>{l.requestId}</td>
-                          <td>{l.requestedDate}</td>
-                          <td>{l.demandDate}</td>
-                          <td>{l.issueItemInwardId}</td>
-                          <td>{l.reachedDate}</td>
-                          <td>{l.kitName}</td>
-                          <td>{l.flowName}</td>
-                          <td>{l.kitQty}</td>
-                          <td>{l.issuedQty}</td>
-                          <td>{l.netQtyRecieved}</td>
-                          <td>{l.returnQty}</td>
-                          <td>{l.tat}</td>
-                          <td>{l.partName}</td>
-                        </tr>
-                      ))}
+                      .map((l, k) => {
+                        return (
+                          <tr key={k}>
+                            <td>
+                              {l.netRecAcceptStatus ? (
+                                <img
+                                  src="/checked1.png"
+                                  alt="Favorite"
+                                  style={{
+                                    width: "25px",
+                                    height: "auto",
+                                    marginRight: "6px",
+                                    cursor: "not-allowed",
+                                  }}
+                                />
+                              ) : (
+                                <img
+                                  src="/edit1.png"
+                                  alt="Favorite"
+                                  style={{
+                                    width: "25px",
+                                    height: "auto",
+                                    marginRight: "6px",
+                                    cursor: "pointer",
+                                  }}
+                                  onClick={() =>
+                                    handlePendingStatusClickIssued(
+                                      l.issueItemInwardId,
+                                      l.itemId,
+                                      l.issuedQty
+                                    )
+                                  }
+                                />
+                              )}
+                            </td>
+                            <td>{l.requestId}</td>
+                            <td>{l.requestedDate}</td>
+                            <td>{l.demandDate}</td>
+                            <td>{l.issueItemInwardId}</td>
+                            <td>{l.reachedDate}</td>
+                            <td>{l.kitName}</td>
+                            <td>{l.flowName}</td>
+                            <td>{l.kitQty}</td>
+                            <td
+                              className={`bg-chip  bg-green-500 ${chipColorClass(
+                                l.issuedQty,
+                                l.kitQty
+                              )}`}
+                            >
+                              {l.issuedQty} (
+                              {((l.issuedQty / l.kitQty) * 100).toFixed(2)}%)
+                            </td>
+
+                            <td>{l.netQtyRecieved}</td>
+                            <td>{l.returnQty}</td>
+                            <td>{l.tat}</td>
+                            <td>{l.partName}</td>
+                          </tr>
+                        );
+                      })}
+
                   {!viewAllClicked &&
                     inwardVO.map((l, k) =>
                       viewAllClicked || !l.netRecAcceptStatus ? (
@@ -385,7 +428,15 @@ function EmitterInward() {
                           <td>{l.kitName}</td>
                           <td>{l.flowName}</td>
                           <td>{l.kitQty}</td>
-                          <td>{l.issuedQty}</td>
+                          <td
+                            className={`bg-chip  bg-green-500 ${chipColorClass(
+                              l.issuedQty,
+                              l.kitQty
+                            )}`}
+                          >
+                            {l.issuedQty} (
+                            {((l.issuedQty / l.kitQty) * 100).toFixed(2)}%)
+                          </td>
                           <td>{l.netQtyRecieved}</td>
                           <td>{l.returnQty}</td>
                           <td>{l.tat}</td>
@@ -395,10 +446,37 @@ function EmitterInward() {
                     )}
                 </tbody>
               </table>
+              {viewAllClicked && (
+                <div className="pagination">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handlePageChange(index + 1)}
+                      className={currentPage === index + 1 ? "active" : ""}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
               {inwardVO.length === 0 && (
-                <h4 className="text-base dark:text-slate-300 font-semibold text-center fst-italic mt-4">
-                  No records to display..!!
-                </h4>
+                <NoRecordsFound
+                  message={
+                    viewAllClicked ? "No Records Found" : "No Pending Outward"
+                  }
+                />
               )}
             </div>
           </TitleCard>
@@ -447,6 +525,35 @@ function EmitterInward() {
                   {errors.netQtyRecieved && (
                     <span className="error-text">{errors.netQtyRecieved}</span>
                   )}
+                </div>
+
+                <div className="col-lg-4 col-md-4 mb-2">
+                  <label className="label">
+                    <span
+                      className={
+                        "label-text label-font-size text-base-content d-flex flex-row"
+                      }
+                    >
+                      Return Sku
+                      {/* <FaStarOfLife className="must" /> */}
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-6 col-md-6 mb-2">
+                  <select
+                    className="form-select form-sz w-full"
+                    value={""}
+                    // onChange={(e) => handleKitNoChange(e, index)}
+                  >
+                    <option value="" disabled selected>
+                      Select a SKU
+                    </option>
+
+                    <option value={""}>pallet</option>
+                  </select>
+                  {/* {errors.returnQty && (
+                    <span className="error-text">{errors.returnQty}</span>
+                  )} */}
                 </div>
                 <div className="col-lg-4 col-md-4 mb-2">
                   <label className="label">

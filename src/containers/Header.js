@@ -15,6 +15,8 @@ function Header() {
     localStorage.getItem("theme")
   );
 
+  const userDetails = localStorage.getItem("userDetails");
+
   useEffect(() => {
     // themeChange(false);
     // if (currentTheme === null) {
@@ -80,7 +82,7 @@ function Header() {
         </div>
 
         <div className="order-last">
-          {/* Multiple theme selection, uncomment this if you want to enable multiple themes selection, 
+          {/* Multiple theme selection, uncomment this if you want to enable multiple themes selection,
                 also includes corporate and retro themes in tailwind.config file */}
 
           {/* <select className="select select-sm mr-4" data-choose-theme>
@@ -165,10 +167,12 @@ function Header() {
               <li className="">
                 <Link to={"/app/preferences"}>Preferences</Link>
               </li> */}
-              <li className="">
-                <Link to={"/app/welcome"}>My Tasks</Link>
-              </li>
-              <div className="divider mt-0 mb-0"></div>
+
+              {userDetails === "ROLE_ADMIN" && (
+                <li className="">
+                  <Link to={"/app/welcome"}>My Tasks</Link>
+                </li>
+              )}
               <li className="">
                 <Link to={"/app/changepwd"}>Change Password</Link>
               </li>

@@ -18,9 +18,9 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NoRecordsFound from "../../utils/NoRecordsFound";
-
 import GetAvailKitQty from "./GetAvailKitQty";
 
+const ITEMS_PER_PAGE = 10;
 const steps = ["Issue manifest", "Mode of Transport "];
 
 function IssueManifest() {
@@ -73,6 +73,20 @@ function IssueManifest() {
     setQty(newQty);
   };
 
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate the index range for the current page
+  const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
+
+  // Slice the bills array to display only items for the current page
+  const currentBills = bills.slice(indexOfFirstItem, indexOfLastItem);
+
+  const totalPages = Math.ceil(bills.length / ITEMS_PER_PAGE);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
   const openPendingPopup = () => {
     setPendingPopupOpen(true);
   };
@@ -683,9 +697,9 @@ function IssueManifest() {
                       <th>Status</th>
                     </tr>
                   </thead>
-                  {bills.length > 0 && (
+                  {currentBills.length > 0 && (
                     <tbody>
-                      {bills
+                      {currentBills
                         .sort((a, b) => {
                           // Move items with issueStatus === 0 to the beginning
                           if (a.issueStatus === 0 && b.issueStatus !== 0)
@@ -775,7 +789,31 @@ function IssueManifest() {
                     </tbody>
                   )}
                 </table>
-
+                {bills.length > 0 && (
+                  <div className="pagination">
+                    <button
+                      onClick={() => handlePageChange(currentPage - 1)}
+                      disabled={currentPage === 1}
+                    >
+                      Previous
+                    </button>
+                    {Array.from({ length: totalPages }).map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => handlePageChange(index + 1)}
+                        className={currentPage === index + 1 ? "active" : ""}
+                      >
+                        {index + 1}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => handlePageChange(currentPage + 1)}
+                      disabled={currentPage === totalPages}
+                    >
+                      Next
+                    </button>
+                  </div>
+                )}
                 {bills.length === 0 && (
                   <NoRecordsFound message="No Records to diaplay!" />
                 )}

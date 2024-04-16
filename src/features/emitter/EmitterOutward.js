@@ -11,6 +11,8 @@ import "react-toastify/dist/ReactToastify.css";
 import TitleCard from "../../components/Cards/TitleCard";
 import NoRecordsFound from "../../utils/NoRecordsFound";
 
+const ItemsPerPage = 10; // Define the number of items to display per page
+
 export const EmitterOutward = () => {
   const [selectedFlow, setSelectedFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
@@ -35,6 +37,20 @@ export const EmitterOutward = () => {
       getOutwardDetails();
     }
   }, [selectedFlow]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate the total number of pages based on the total number of items and items per page
+  const totalPages = Math.ceil(outwardVO.length / ItemsPerPage);
+
+  // Function to handle page changes
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Calculate start and end index of items for the current page
+  const startIndex = (currentPage - 1) * ItemsPerPage;
+  const endIndex = Math.min(startIndex + ItemsPerPage, outwardVO.length);
 
   const getAddressById = async () => {
     try {
@@ -186,7 +202,7 @@ export const EmitterOutward = () => {
                 </Link>
               </div>
             </div>
-            <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-28">
+            <div className="col-lg-5 card bg-base-100 shadow-xl mt-3 h-18">
               <div className="p-1">
                 <div className="d-flex flex-row">
                   <img
@@ -216,25 +232,29 @@ export const EmitterOutward = () => {
                       ))}
                   </select>
                 </div>
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-1">
+                {/* <h4 className="text-xl dark:text-slate-300 font-semibold ms-1">
                   {displayFlowName}
-                </h4>
+                </h4> */}
               </div>
             </div>
           </div>
-          <div
-            style={{
-              textAlign: "end",
-              marginRight: "20px",
-            }}
-          >
-            <button
-              className="btn btn-sm normal-case btn-primary"
-              onClick={handleViewAllClick}
+          {outwardVO.length > 0 && (
+            <div
+              style={{
+                textAlign: "end",
+                marginRight: "20px",
+                marginBottom: "-3%",
+                zIndex: "1",
+              }}
             >
-              View all
-            </button>
-          </div>
+              <button
+                className="btn btn-sm normal-case btn-primary"
+                onClick={handleViewAllClick}
+              >
+                {viewAllClicked ? "View Less" : "View More"}
+              </button>
+            </div>
+          )}
 
           <TitleCard title="" topMargin="mt-2">
             <div className="overflow-x-auto w-full ">
@@ -258,6 +278,7 @@ export const EmitterOutward = () => {
                   {viewAllClicked
                     ? [
                         ...outwardVO
+                          .slice(startIndex, endIndex)
                           .filter((l) => l.netQtyReceived !== l.kitReturnQTY)
                           .map((l, k) => {
                             const balanceQtyy =
@@ -298,6 +319,7 @@ export const EmitterOutward = () => {
                             );
                           }),
                         ...outwardVO
+                          .slice(startIndex, endIndex)
                           .filter((l) => l.netQtyReceived === l.kitReturnQTY)
                           .map((l, k) => {
                             const balanceQtyy =
@@ -331,6 +353,7 @@ export const EmitterOutward = () => {
                           }),
                       ]
                     : outwardVO
+                        .slice(startIndex, endIndex)
                         .filter((l) => l.netQtyReceived !== l.kitReturnQTY)
                         .map((l, k) => {
                           const balanceQtyy = l.netQtyReceived - l.kitReturnQTY;
@@ -371,6 +394,32 @@ export const EmitterOutward = () => {
                         })}
                 </tbody>
               </table>
+              {viewAllClicked && (
+                <div className="pagination">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </button>
+                  {Array.from({ length: totalPages }).map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handlePageChange(index + 1)}
+                      className={currentPage === index + 1 ? "active" : ""}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
+
               {outwardVO.length === 0 && (
                 <h4 className="text-base dark:text-slate-300 font-semibold fst-italic text-center mt-4">
                   <NoRecordsFound

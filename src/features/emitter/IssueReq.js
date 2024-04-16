@@ -2,7 +2,6 @@ import CloseIcon from "@material-ui/icons/Close";
 
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
   Dialog,
   DialogContent,
@@ -43,6 +42,8 @@ import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
 
+const ItemsPerPage = 10;
+
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
   const [kitFields, setKitFields] = React.useState([{ kitNo: "", qty: "" }]);
@@ -80,6 +81,9 @@ function IssueReq() {
   const qtyInputRef = useRef(null);
   const [duplicateKitError, setDuplicateKitError] = useState(false);
   const [duplicatePartError, setDuplicatePartError] = useState(false);
+  const [selectedKit, setSelectedKit] = useState(null);
+  const [selectedPart, setSelectedPart] = useState(null);
+  const [kitQtyy, setKitQtyy] = useState("");
 
   // useEffect(() => {
   //   // Initialize mode and value when component mounts
@@ -97,6 +101,20 @@ function IssueReq() {
       qtyInputRef.current.focus();
     }
   }, [kitFields, partFields]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // Calculate the total number of pages based on the total number of items and items per page
+  const totalPages = Math.ceil(bills.length / ItemsPerPage);
+
+  // Function to handle page changes
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  // Calculate start and end index of items for the current page
+  const startIndex = (currentPage - 1) * ItemsPerPage;
+  const endIndex = Math.min(startIndex + ItemsPerPage, bills.length);
 
   const getDisplayName = async () => {
     try {
@@ -304,7 +322,6 @@ function IssueReq() {
     if (partQtyErrors) {
       errors.partQty = "part is required";
     }
-
     if (Object.keys(errors).length === 0) {
       const formData = {
         demandDate: selectedDate1,
@@ -365,6 +382,7 @@ function IssueReq() {
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
             id: kit.id,
             kitName: kit.kitName,
+            partName: kit.partName,
           }));
 
         // Setting kitData in the state using a callback function
@@ -375,6 +393,8 @@ function IssueReq() {
             id: part.id,
             partName: part.partNumber,
             partValue: part.partName,
+            kitName: part.kitName,
+            partQty: part.partQty,
             // partNo:part.partNo
           }));
 
@@ -436,6 +456,11 @@ function IssueReq() {
     newFields[index].qty = e.target.value;
     setPartFields(newFields);
     qtyInputRef.current.focus();
+
+    const kitQty = partData[index].partQty; // Example kit quantity
+
+    const calculatedKitQty = Math.floor(e.target.value / kitQty);
+    setKitQtyy(calculatedKitQty);
   };
 
   const handleQtyChange = (e, index) => {
@@ -522,6 +547,11 @@ function IssueReq() {
     const selectedKitNo = e.target.value;
 
     // Check if the selected kit already exists
+
+    const selectedKitName = e.target.value;
+    const kit = kitData.find((kit) => kit.kitName === selectedKitName);
+    setSelectedKit(kit);
+
     const isDuplicate = kitFields.some(
       (field, i) => index !== i && field.kitNo === selectedKitNo
     );
@@ -553,6 +583,10 @@ function IssueReq() {
 
   const handlePartNoChange = (e, index) => {
     const selectedPartNo = e.target.value;
+
+    const selectedPartName = e.target.value;
+    const part = partData.find((part) => part.partName === selectedPartName);
+    setSelectedPart(part);
 
     // Check if the selected part number already exists
     const isDuplicate = partFields.some(
@@ -957,7 +991,7 @@ function IssueReq() {
                             value={field.kitNo}
                             onChange={(e) => handleKitNoChange(e, index)}
                           >
-                            <option value="" disabled>
+                            <option value="" disabled selected>
                               Select a kit
                             </option>
                             {kitData &&
@@ -967,8 +1001,13 @@ function IssueReq() {
                                 </option>
                               ))}
                           </select>
-                          <div></div>
+                          <div className="mt-2 badge badge-success">
+                            {selectedKit && (
+                              <p>Part : {selectedKit.partName}</p>
+                            )}
+                          </div>
                         </div>
+
                         {errors.kitNo && (
                           <span className="error-text">{errors.kitNo}</span>
                         )}
@@ -1111,6 +1150,11 @@ function IssueReq() {
                                 </option>
                               ))}
                           </select>
+                          <div className="mt-2 badge badge-success">
+                            {selectedPart && (
+                              <p>Kit : {selectedPart.kitName}</p>
+                            )}
+                          </div>
                         </div>
                         {errors.partNo && (
                           <span className="error-text">{errors.partNo}</span>
@@ -1140,6 +1184,11 @@ function IssueReq() {
                             value={field.qty}
                             onChange={(e) => handlePartQtyChange(e, index)}
                           />
+                          {kitQtyy && kitQtyy > 0 && (
+                            <div className="mt-2 badge badge-success">
+                              Kit QTY : <b>{kitQtyy}</b>
+                            </div>
+                          )}
                           {errors.partQty && (
                             <span className="error-text">{errors.partQty}</span>
                           )}
@@ -1225,121 +1274,203 @@ function IssueReq() {
                           <table className="table w-full">
                             <thead>
                               <tr>
-                                <th>Details</th>
+                                {/* <th>Details</th> */}
+                                <th>Status</th>
                                 <th>RM No.</th>
                                 <th>RM Date</th>
                                 <th>Demand Date</th>
                                 <th>Flow Name</th>
-                                {/* <th>Allocated Time - HRS</th> */}
-                                {/* <th>Status</th> */}
+                                <th>Kit No</th>
+                                <th>QTY</th>
                               </tr>
                             </thead>
                             <tbody>
-                              {bills.map((issueRequest, index) => (
-                                <React.Fragment key={index}>
-                                  {issueRequest.issueItemVO.map(
-                                    (item, subIndex) => (
-                                      <tr key={`${index}-${subIndex}`}>
-                                        {subIndex === 0 && (
-                                          <>
-                                            <td>
-                                              <IconButton
-                                                onClick={() =>
-                                                  handleIdClick(issueRequest)
+                              {/* Iterate over the bills array */}
+                              {bills
+                                // Slice the bills array based on pagination
+                                .slice(startIndex, endIndex)
+                                // Map over each issueRequest object
+                                .map((issueRequest, index) => (
+                                  <React.Fragment key={index}>
+                                    {/* Render rows with issueStatus 0 or 1 */}
+                                    {issueRequest.issueItemVO
+                                      .filter(
+                                        (item) =>
+                                          item.issueStatus === 0 ||
+                                          item.issueStatus === 1
+                                      )
+                                      .map((item, subIndex) => (
+                                        <tr key={`${index}-${subIndex}`}>
+                                          {/* Render common row data for the first subIndex */}
+                                          {subIndex === 0 && (
+                                            <>
+                                              <td>
+                                                {" "}
+                                                <img
+                                                  src={
+                                                    issueRequest.issueStatus ===
+                                                    2
+                                                      ? "/checked1.png"
+                                                      : "/pending.png"
+                                                  }
+                                                  alt="Favorite"
+                                                  style={{
+                                                    width: "25px",
+                                                    height: "auto",
+                                                    marginRight: "6px",
+                                                    cursor: "not-allowed",
+                                                  }}
+                                                />
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
                                                 }
                                               >
-                                                <VisibilityIcon />
-                                              </IconButton>
-                                            </td>
-
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {issueRequest.id}
-                                            </td>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {moment(
-                                                issueRequest.requestedDate
-                                              ).format("DD-MM-YY")}
-                                            </td>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {moment(
-                                                issueRequest.demandDate
-                                              ).format("DD-MM-YY")}
-                                            </td>
-                                            <td
-                                              rowSpan={
-                                                issueRequest.issueItemVO.length
-                                              }
-                                            >
-                                              {issueRequest.flowName}
-                                            </td>
-                                            {/* <td
-                                          rowSpan={
-                                            issueRequest.issueItemVO.length
-                                          }
-                                          className="text-center"
+                                                {issueRequest.id}
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
+                                                }
+                                              >
+                                                {moment(
+                                                  issueRequest.requestedDate
+                                                ).format("DD-MM-YY")}
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
+                                                }
+                                              >
+                                                {moment(
+                                                  issueRequest.demandDate
+                                                ).format("DD-MM-YY")}
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
+                                                }
+                                              >
+                                                {issueRequest.flowName}
+                                              </td>
+                                            </>
+                                          )}
+                                          {/* Render data for each item */}
+                                          <td>{item.kitName}</td>
+                                          <td>{item.kitQty}</td>
+                                        </tr>
+                                      ))}
+                                    {/* Render remaining rows */}
+                                    {issueRequest.issueItemVO
+                                      .filter(
+                                        (item) =>
+                                          item.issueStatus !== 0 &&
+                                          item.issueStatus !== 1
+                                      )
+                                      .map((item, subIndex) => (
+                                        <tr
+                                          key={`${index}-remaining-${subIndex}`}
                                         >
-                                          {issueRequest.tat}
-                                        </td> */}
-                                            {/* <td
-                                          rowSpan={
-                                            issueRequest.issueItemVO.length
-                                          }
-                                          className="text-center"
-                                        >
-                                          {issueRequest.totalIssueItem}
-                                        </td>
-                                        <td
-                                          rowSpan={
-                                            issueRequest.issueItemVO.length
-                                          }
-                                          className="text-center"
-                                        >
-                                          {issueRequest.partQty}
-                                        </td> */}
-                                          </>
-                                        )}
-                                        <td
-                                        // onClick={() =>
-                                        //   handlePendingStatusClick(
-                                        //     issueRequest,
-                                        //     subIndex
-                                        //   )
-                                        // }
-                                        >
-                                          {/* {getPaymentStatus(
-                                        issueRequest.issueStatus
-                                      )} */}
-                                        </td>
-
-                                        {/* Random Status Code */}
-                                        {/* 
-                                    <td
-                                      style={{ width: 100 }}
-                                      // onClick={() =>
-                                      //   handlePendingStatusClick(issueRequest, subIndex)
-                                      // }
-                                    >
-                                      {getPaymentStatus()}
-                                    </td> */}
-                                      </tr>
-                                    )
-                                  )}
-                                </React.Fragment>
-                              ))}
+                                          {/* Render common row data for the first subIndex */}
+                                          {subIndex === 0 && (
+                                            <>
+                                              <td>
+                                                {" "}
+                                                <img
+                                                  src={
+                                                    issueRequest.issueStatus ===
+                                                    2
+                                                      ? "/checked1.png"
+                                                      : "/pending.png"
+                                                  }
+                                                  alt="Favorite"
+                                                  style={{
+                                                    width: "25px",
+                                                    height: "auto",
+                                                    marginRight: "6px",
+                                                    cursor: "not-allowed",
+                                                  }}
+                                                />
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
+                                                }
+                                              >
+                                                {issueRequest.id}
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
+                                                }
+                                              >
+                                                {moment(
+                                                  issueRequest.requestedDate
+                                                ).format("DD-MM-YY")}
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
+                                                }
+                                              >
+                                                {moment(
+                                                  issueRequest.demandDate
+                                                ).format("DD-MM-YY")}
+                                              </td>
+                                              <td
+                                                rowSpan={
+                                                  issueRequest.issueItemVO
+                                                    .length
+                                                }
+                                              >
+                                                {issueRequest.flowName}
+                                              </td>
+                                            </>
+                                          )}
+                                          {/* Render data for each item */}
+                                          <td>{item.kitName}</td>
+                                          <td>{item.kitQty}</td>
+                                        </tr>
+                                      ))}
+                                  </React.Fragment>
+                                ))}
                             </tbody>
                           </table>
+                          <div className="pagination">
+                            <button
+                              onClick={() => handlePageChange(currentPage - 1)}
+                              disabled={currentPage === 1}
+                            >
+                              Previous
+                            </button>
+                            {Array.from({ length: totalPages }).map(
+                              (_, index) => (
+                                <button
+                                  key={index}
+                                  onClick={() => handlePageChange(index + 1)}
+                                  className={
+                                    currentPage === index + 1 ? "active" : ""
+                                  }
+                                >
+                                  {index + 1}
+                                </button>
+                              )
+                            )}
+                            <button
+                              onClick={() => handlePageChange(currentPage + 1)}
+                              disabled={currentPage === totalPages}
+                            >
+                              Next
+                            </button>
+                          </div>
                         </div>
 
                         <Dialog

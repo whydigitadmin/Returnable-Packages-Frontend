@@ -143,3 +143,41 @@
   background-color: #f2f2f2;
   border-radius: 10px !important;
 }
+
+.pagination {
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pagination button {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  color: #333;
+  padding: 5px 10px;
+  margin: 0 2px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background-color: #007bff;
+  color: #fff;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.bg-green-500 {
+  background-color: #34d399 !important ; /* Example green color */
+}
+
+.bg-yellow-500 {
+  background-color: #fbbf24 !important ; /* Example yellow color */
+}
+
+.bg-red-500 {
+  background-color: #ef4444 !important; /* Example red color */
+}
