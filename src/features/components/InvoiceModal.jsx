@@ -115,16 +115,6 @@ const InvoiceModal = ({
       sgst: invoiceInfo.sGstRate,
       total: invoiceInfo.total,
       items: items,
-      // po1DTO: items.map((row) => ({
-      //   itemId: row.name,
-      //   description: row.descripition,
-      //   hsnCode: row.hsncode,
-      //   qty: row.qty,
-      //   rate: row.rate,
-      //   currency: row.currency,
-      //   exRate: row.exrate,
-      //   amount: row.price,
-      // })),
       po1DTO: localItems
 
     }

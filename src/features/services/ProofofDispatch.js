@@ -14,11 +14,16 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import Button from "@mui/material/Button";
 import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
 import { styled } from "@mui/material/styles";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import dayjs from "dayjs";
 
 
 function ProofofDispatch({ addPod }) {
   const [docId, setDocId] = useState("");
-  const [docDate, setDocDate] = useState(null);
+  // const [docDate, setDocDate] = useState(null);
+  const [docDate, setDocDate] = useState(dayjs());
+
   const [refNo, setRefNo] = useState("");
   const [refDate, setRefDate] = useState(null);
   const [kitCode, setKitCode] = useState("");
@@ -26,6 +31,11 @@ function ProofofDispatch({ addPod }) {
   const [kitRQty, setKitRQty] = useState("");
   const [value, setValue] = React.useState(0);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [loginUserName, setLoginUserName] = useState(localStorage.getItem("userName"));
+  const [errors, setErrors] = useState({});
+
+
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -84,13 +94,11 @@ function ProofofDispatch({ addPod }) {
   };
 
   const handleFileUpload = (files) => {
+    setUploadedFiles(files);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
-      // Process the file as needed, such as uploading to a server
-      console.log('File:', file);
     }
   };
-
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -103,51 +111,117 @@ function ProofofDispatch({ addPod }) {
     whiteSpace: "nowrap",
     width: 1,
   });
-  const handleServiceSave = () => {
-    const errors = {};
 
-    const formData = {
-      active: true,
-      cancel: false,
-      orgId,
-      docId: docId,
-      docDate: docDate,
-      kitCode: kitCode,
-      kitQty: kitQty,
-      kitRqty: kitRQty,
-      refDate: refDate,
-      refNo: refNo,
-      pod1DTO: tableData.map((row) => ({
-        acceptQty: row.acceptQty,
-        allotQty: row.allotQty,
-        assetCode: row.assetCode,
-        description: row.description,
-      })),
-      pod2DTO: tableData1.map((row) => ({
-        acceptQty: row.acceptQty,
-        allotQty: row.allotQty,
-        rejectedQty: row.rejectedQty,
-        returnQty: row.returnQty,
-      })),
-    };
 
-    axios
-      .put(
-        `${process.env.REACT_APP_API_URL}/api/master/updateCreatePod`,
-        formData
-      )
-      .then((response) => {
-        console.log("Response:", response.data);
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-      });
+  const handleNew = () => {
+    setDocId("")
+    setRefNo("")
+    setRefDate(null)
+    setKitCode("")
+    setKitQty("")
+    setKitRQty("")
+
   };
+
+  const handleSavePod = () => {
+    const errors = {};
+    console.log("fn called")
+
+    if (!docId) {
+      errors.docId = "DocID is required";
+    }
+    if (!docDate) {
+      errors.docDate = "Doc Date is required";
+    }
+    if (!refNo) {
+      errors.refNo = "Ref No is required";
+    }
+    if (!refDate) {
+      errors.refDate = "Ref Date is required";
+    }
+    if (!kitCode) {
+      errors.kitCode = "Kit Code is required";
+    }
+    if (!kitQty) {
+      errors.kitQty = "Kit QTY is required";
+    }
+    if (!kitRQty) {
+      errors.kitRQty = "Kit Return QTY is required";
+    }
+    if (uploadedFiles[0] === null || uploadedFiles[0] === "") {
+      errors.uploadFiles = "Upload File is required.";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+
+        // docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
+        docDate: docDate,
+        docId: docId,
+        kitCode: kitCode,
+        kitQty: kitQty,
+        kitRQty: kitRQty,
+        rfDate: refDate,
+        rfNo: refNo,
+        orgId: orgId,
+        createdBy: loginUserName,
+
+      }
+      console.log("Form Data is:", formData);
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/master/createProofOfDelivery`,
+          formData
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          const { docId, rfNo } = response.data.paramObjectsMap.proofOfDeliveryVO;
+
+          const formData1 = new FormData();
+          for (let i = 0; i < uploadedFiles.length; i++) {
+            formData1.append("file", uploadedFiles[i]);
+          }
+          formData1.append("docId", docId);
+          formData1.append("refNo", rfNo);
+
+          axios
+            .post(
+              `${process.env.REACT_APP_API_URL}/api/master/uploadFileProofOfDelivery`,
+              formData1,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then((uploadResponse) => {
+              console.log("File Upload Response:", uploadResponse.data);
+              toast.success("Proof of Delivery Saved Successfully!", {
+                autoClose: 2000,
+                theme: "colored",
+              });
+              handleNew();
+              setTimeout(() => {
+                addPod(false)
+
+              }, 2500);
+            })
+            .catch((uploadError) => {
+              console.error("File Upload Error:", uploadError);
+            });
+
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error("Failed to Save. Please try again.");
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
+
   const handleChange = (event, newValue) => {
     setValue(newValue);
-    // Handle displaying fields based on mode and tab selection
   };
-
   function CustomTabPanel(props) {
     const { children, value, index, ...other } = props;
     return (
@@ -210,9 +284,9 @@ function ProofofDispatch({ addPod }) {
               e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
             }}
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+          {errors.docId && (
+            <span className="error-text mb-1">{errors.docId}</span>
+          )}
         </div>
         <div className="col-lg-2 col-md-6 mt-2">
           <label className="label mb-4">
@@ -231,11 +305,12 @@ function ProofofDispatch({ addPod }) {
                 textField: { size: "small", clearable: true },
               }}
               format="DD/MM/YYYY"
+              disabled
             />
           </LocalizationProvider>
-          {/* {errors.toDate && (
-              <span className="error-text mb-1">{errors.toDate}</span>
-            )} */}
+          {errors.docDate && (
+            <span className="error-text mb-1">{errors.docDate}</span>
+          )}
         </div>
       </div>
       <div className="row">
@@ -257,9 +332,9 @@ function ProofofDispatch({ addPod }) {
               e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
             }}
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+          {errors.refNo && (
+            <span className="error-text mb-1">{errors.refNo}</span>
+          )}
         </div>
         <div className="col-lg-2 col-md-6 mt-2">
           <label className="label mb-4">
@@ -280,9 +355,9 @@ function ProofofDispatch({ addPod }) {
               format="DD/MM/YYYY"
             />
           </LocalizationProvider>
-          {/* {errors.toDate && (
-              <span className="error-text mb-1">{errors.toDate}</span>
-            )} */}
+          {errors.refDate && (
+            <span className="error-text mb-1">{errors.refDate}</span>
+          )}
         </div>
       </div>
       <div className="row">
@@ -304,9 +379,9 @@ function ProofofDispatch({ addPod }) {
               e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
             }}
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+          {errors.kitCode && (
+            <span className="error-text mb-1">{errors.kitCode}</span>
+          )}
         </div>
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
@@ -323,12 +398,12 @@ function ProofofDispatch({ addPod }) {
             value={kitQty}
             onChange={(e) => setKitQty(e.target.value)}
             onInput={(e) => {
-              e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+              e.target.value = e.target.value.replace(/\D/g, ''); // Allow only numbers
             }}
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+          {errors.kitQty && (
+            <span className="error-text mb-1">{errors.kitQty}</span>
+          )}
         </div>
       </div>
       <div className="row">
@@ -347,31 +422,22 @@ function ProofofDispatch({ addPod }) {
             value={kitRQty}
             onChange={(e) => setKitRQty(e.target.value)}
             onInput={(e) => {
-              e.target.value = e.target.value.toUpperCase().replace(/[^a-zA-Z0-9-\/\\]/g, '');
+              e.target.value = e.target.value.replace(/\D/g, '');
             }}
           />
-          {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+          {errors.kitRQty && (
+            <span className="error-text mb-1">{errors.kitRQty}</span>
+          )}
         </div>
         <div className="col-lg-2 col-md-6">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
               Upload Receipt
-              <FaStarOfLife className="must" />
+              {/* <FaStarOfLife className="must" /> */}
             </span>
           </label>
         </div>
-        {/* <div className="col-lg-3 col-md-6">
-          <Button
-            component="label"
-            variant="contained"
-            startIcon={<FaCloudUploadAlt />}
-          >
-            Upload file
-            <VisuallyHiddenInput type="file" />
-          </Button>
-        </div> */}
+
         <div className="col-lg-3 col-md-6">
           <input
             type="file"
@@ -389,10 +455,31 @@ function ProofofDispatch({ addPod }) {
               Upload files
             </Button>
           </label>
+          <br />
+          {errors.uploadError && (
+            <span className="error-text mb-1">{errors.uploadFiles}</span>
+          )}
         </div>
       </div>
 
       <br></br>
+      <div className="d-flex flex-row mt-1">
+        <button
+          // onClick={handleSavePod}
+          type="button"
+          className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+        >
+          Save
+        </button>
+        <button
+          type="button"
+          onClick={handleNew}
+          className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+        >
+          Cancel
+        </button>
+      </div>
+      <ToastContainer />
     </div>
   );
 };

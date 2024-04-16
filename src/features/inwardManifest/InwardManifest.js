@@ -554,7 +554,7 @@ function InwardManifest({ addInwardManifeast }) {
                                 )
                               )
                             }
-                            defaultValue="Bulk"
+                            // defaultValue="Bulk"
                             disabled
                           />
                         </td>

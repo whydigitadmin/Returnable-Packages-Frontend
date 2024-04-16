@@ -22,6 +22,9 @@ import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import DashBoardComponent from "../master/DashBoardComponent";
+import { format, isValid, parseISO } from "date-fns";
+
+
 
 
 import {
@@ -107,12 +110,13 @@ export const PodDetails = () => {
   const getAllPod = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetInwardOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getAllProofOfDelivery?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.assetInwardVO);
-        console.log(response.data.paramObjectsMap.assetInwardVO);
+        setData(response.data.paramObjectsMap.proofOfDeliveryVO);
+        console.log(response.data.paramObjectsMap.proofOfDeliveryVO);
+
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -171,7 +175,7 @@ export const PodDetails = () => {
         ),
       },
       {
-        accessorKey: "docDate",
+        accessorKey: "rfNo",
         header: "Ref No",
         size: 50,
         muiTableHeadCellProps: {
@@ -182,7 +186,7 @@ export const PodDetails = () => {
         },
       },
       {
-        accessorKey: "sourceFrom",
+        accessorKey: "rfDate",
         header: "Ref Date",
         size: 50,
         muiTableHeadCellProps: {
@@ -193,7 +197,7 @@ export const PodDetails = () => {
         },
       },
       {
-        accessorKey: "stockBranch",
+        accessorKey: "kitCode",
         header: "Kit Code",
         size: 50,
         muiTableHeadCellProps: {
@@ -204,7 +208,7 @@ export const PodDetails = () => {
         },
       },
       {
-        accessorKey: "pno",
+        accessorKey: "kitQty",
         header: "Kit Qty",
         size: 50,
         muiTableHeadCellProps: {
@@ -214,17 +218,17 @@ export const PodDetails = () => {
           align: "center",
         },
       },
-      {
-        accessorKey: "pno",
-        header: "Return Qty",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "kitRQty",
+      //   header: "Return Qty",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
 
     ],
     []
@@ -377,7 +381,7 @@ export const PodDetails = () => {
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
           <div className="row">
             <div className="col-md-11">
-              <Typography variant="h6">User Details</Typography>
+              <Typography variant="h6">Breif Details</Typography>
             </div>
             <div className="col-md-1">
               <IconButton onClick={handleViewClose} aria-label="close">
@@ -397,27 +401,27 @@ export const PodDetails = () => {
                   </TableRow>
                   <TableRow>
                     <TableCell>Doc Date</TableCell>
-                    {/* <TableCell>{selectedRowData.firstName}</TableCell> */}
+                    <TableCell>{selectedRowData.docDate}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>Ref ID</TableCell>
-                    {/* <TableCell>{selectedRowData.email}</TableCell> */}
+                    <TableCell>Ref No</TableCell>
+                    <TableCell>{selectedRowData.rfNo}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Ref Date</TableCell>
-                    {/* <TableCell>{selectedRowData.pno}</TableCell> */}
+                    <TableCell>{selectedRowData.rfDate}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Kit Code</TableCell>
-                    {/* <TableCell>{selectedRowData.userAddressVO.address1}</TableCell> */}
+                    <TableCell>{selectedRowData.kitCode}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Kit QTY</TableCell>
-                    {/* <TableCell>{selectedRowData.userAddressVO.city}</TableCell> */}
+                    <TableCell>{selectedRowData.kitQty}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Kit Return QTY</TableCell>
-                    {/* <TableCell>{selectedRowData.userAddressVO.state}</TableCell> */}
+                    <TableCell>{selectedRowData.kitRQty}</TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
