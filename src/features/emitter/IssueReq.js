@@ -332,6 +332,7 @@ function IssueReq() {
         issueItemDTO: partFields.map((field) => ({
           partNo: field.partNo,
           partQty: field.qty,
+          kitQty: kitQtyy,
           // partName: field.partValue,
         })),
       };
@@ -734,9 +735,9 @@ function IssueReq() {
             src="/inprogress.png"
             alt="Inprogress-status-icon"
             style={{ width: 30, height: 30, margin: "auto" }}
-            // onClick={() =>
-            //   handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
-            // }
+          // onClick={() =>
+          //   handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
+          // }
           />
         </div>
       );
@@ -940,7 +941,7 @@ function IssueReq() {
                       icon={<MdPallet className="w-16 h-6" />}
                       {...a11yProps(0)}
                       value={0}
-                      // onClick={() => handleTabClick(0)}
+                    // onClick={() => handleTabClick(0)}
                     />
                   )}
                   {mode === "PART" && (
@@ -950,7 +951,7 @@ function IssueReq() {
                       {...a11yProps(1)}
                       value={1}
 
-                      // onClick={() => handleTabClick(1)}
+                    // onClick={() => handleTabClick(1)}
                     />
                   )}
                   <Tab
@@ -959,7 +960,7 @@ function IssueReq() {
                     {...a11yProps(2)}
                     value={2}
 
-                    // onClick={() => handleTabClick(2)}
+                  // onClick={() => handleTabClick(2)}
                   />
                 </Tabs>
               </Box>
@@ -1309,7 +1310,7 @@ function IssueReq() {
                                                 <img
                                                   src={
                                                     issueRequest.issueStatus ===
-                                                    2
+                                                      2
                                                       ? "/checked1.png"
                                                       : "/pending.png"
                                                   }
@@ -1384,7 +1385,7 @@ function IssueReq() {
                                                 <img
                                                   src={
                                                     issueRequest.issueStatus ===
-                                                    2
+                                                      2
                                                       ? "/checked1.png"
                                                       : "/pending.png"
                                                   }
@@ -1527,7 +1528,7 @@ function IssueReq() {
                                 <TableHead>
                                   <TableRow>
                                     {selectedIssue &&
-                                    selectedIssue.irType === "IR_PART" ? (
+                                      selectedIssue.irType === "IR_PART" ? (
                                       <>
                                         <TableCell>
                                           <b>Part No</b>
