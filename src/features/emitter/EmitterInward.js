@@ -303,8 +303,8 @@ function EmitterInward() {
                 <thead>
                   <tr>
                     <th>Update</th>
-                    <th>RM No</th>
-                    <th>RM Date</th>
+                    <th>Req No</th>
+                    <th>Req Date</th>
                     <th>Demand Date</th>
                     <th>IM No</th>
                     <th>IM Date</th>
@@ -543,7 +543,7 @@ function EmitterInward() {
                   <select
                     className="form-select form-sz w-full"
                     value={""}
-                    // onChange={(e) => handleKitNoChange(e, index)}
+                  // onChange={(e) => handleKitNoChange(e, index)}
                   >
                     <option value="" disabled selected>
                       Select a SKU

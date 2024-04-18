@@ -262,7 +262,7 @@ function IssueManifest() {
         .catch((error) => {
           console.error("Error:", error);
         });
-    } catch (error) {}
+    } catch (error) { }
   };
 
   // else {
@@ -383,7 +383,7 @@ function IssueManifest() {
             src="/pending.png"
             alt="pending-status-icon"
             title="Pending"
-            // style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
+          // style={{ width: 30, height: 30, margin: "auto", cursor: "pointer" }}
           />
         </div>
       );
@@ -393,7 +393,7 @@ function IssueManifest() {
           <img
             src="/inprogress.png"
             alt="Inprogress-status-icon"
-            // style={{ width: 40, height: 40, margin: "auto", cursor: "pointer" }}
+          // style={{ width: 40, height: 40, margin: "auto", cursor: "pointer" }}
           />
         </div>
       );
@@ -682,8 +682,9 @@ function IssueManifest() {
                 <table className="table w-full">
                   <thead>
                     <tr>
-                      <th>RM No.</th>
-                      <th>RM Date</th>
+                      {/* <th>RM No.</th> */}
+                      <th>Req No.</th>
+                      <th>Req Date</th>
                       <th>Demand Date</th>
                       <th>Flow Name</th>
                       <th>TAT (Hrs)</th>
@@ -714,10 +715,15 @@ function IssueManifest() {
                               <tr key={`${index}-${subIndex}`}>
                                 {subIndex === 0 && (
                                   <>
-                                    <td
+                                    {/* <td
                                       rowSpan={issueRequest.issueItemVO.length}
                                     >
                                       {issueRequest.id}
+                                    </td> */}
+                                    <td
+                                      rowSpan={issueRequest.issueItemVO.length}
+                                    >
+                                      {issueRequest.docId}
                                     </td>
                                     <td
                                       rowSpan={issueRequest.issueItemVO.length}
@@ -773,9 +779,9 @@ function IssueManifest() {
 
                                 <td
                                   style={{ width: 100 }}
-                                  // onClick={() =>
-                                  //   handlePendingStatusClick(issueRequest, subIndex)
-                                  // }
+                                // onClick={() =>
+                                //   handlePendingStatusClick(issueRequest, subIndex)
+                                // }
                                 >
                                   {getPaymentStatus(
                                     issueRequest.issueStatus,
@@ -857,7 +863,7 @@ function IssueManifest() {
                   </div>
                   <div
                     className="d-flex flex-row text-dark mt-3"
-                    // style={{ marginLeft: "10px" }}
+                  // style={{ marginLeft: "10px" }}
                   >
                     {selectedIssueRequest?.irType === "IR_PART" && (
                       <div>
@@ -927,7 +933,7 @@ function IssueManifest() {
                                               item.id
                                             ) ||
                                             selectedIssueRequest.issueStatus ===
-                                              2
+                                            2
                                           }
                                           onChange={(e) =>
                                             handleQtyChange(e, item.id)
@@ -963,7 +969,7 @@ function IssueManifest() {
                                       <div>
                                         {/* Button for issuing part in this row */}
                                         {selectedIssueRequest.issueStatus ===
-                                        2 ? (
+                                          2 ? (
                                           // <Button
                                           //   variant="contained"
                                           //   onClick={() => handleIssueKit(item)}
@@ -1088,7 +1094,7 @@ function IssueManifest() {
                                               item.id
                                             ) ||
                                             selectedIssueRequest.issueStatus ===
-                                              2
+                                            2
                                             // item.balanceQty === 0
                                             // availableKit < item.kitQty // Disable if available quantity is less than demand quantity
                                           }

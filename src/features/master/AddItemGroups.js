@@ -380,8 +380,11 @@ function AddItemGroups({ addItem }) {
             theme: "colored",
           });
         } else {
-          console.log("Kit created successfully:", response.data);
-          toast.success("Kit created successfully!", {
+
+          console.log("Kit created with successfully:", response.data);
+
+
+          toast.success("Kit " + response.data.paramObjectsMap.KitVO.kitCode + " created successfully!", {
             autoClose: 2000,
             theme: "colored",
           });
@@ -630,13 +633,13 @@ function AddItemGroups({ addItem }) {
                               <FaSave
                                 onClick={() => handleSaveRow(index)}
                                 className="cursor-pointer w-6 h-6"
-                                // style={{ marginLeft: 10 }}
+                              // style={{ marginLeft: 10 }}
                               />
                             ) : (
                               <FaEdit
                                 onClick={() => handleToggleEdit(index)}
                                 className="cursor-pointer w-6 h-6"
-                                // style={{ marginLeft: 10 }}
+                              // style={{ marginLeft: 10 }}
                               />
                             )}
                           </div>
@@ -650,7 +653,7 @@ function AddItemGroups({ addItem }) {
                             <FaTrash
                               onClick={() => handleDeleteRow(index)}
                               className="cursor-pointer w-6 h-6"
-                              // style={{ marginLeft: 10 }}
+                            // style={{ marginLeft: 10 }}
                             />
                           </div>
                         </div>
