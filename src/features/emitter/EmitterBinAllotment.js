@@ -40,6 +40,7 @@ const EmitterBinAllotment = () => {
     const [extDate, setExtDate] = useState(null);
     const [errors, setErrors] = useState({});
     const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+    const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
     const [finYear, setFinYear] = useState("");
     const [stockFrom, setStockFrom] = useState("");
     const [stockTo, setStockTo] = useState("");
@@ -61,15 +62,9 @@ const EmitterBinAllotment = () => {
             rfId: "",
             qrCode: "",
             barcode: "",
-            assetType: "",
-            category: "",
+            asset: "",
+            assetCode: "",
             qty: "",
-            // sku: "",
-            // code: "",
-            // qty: "",
-            // stockValue: "",
-            // stockLoc: "",
-            // binLoc: "Bulk",
         },
     ]);
 
@@ -80,21 +75,14 @@ const EmitterBinAllotment = () => {
             rfId: "",
             qrCode: "",
             barcode: "",
-            assetType: "",
-            category: "",
+            asset: "",
+            assetCode: "",
             qty: "",
-            // sku: "",
-            // code: "",
-            // qty: "",
-            // stockValue: "",
-            // stockLoc: "",
-            // binLoc: "Bulk",
         };
         setTableData([...tableData, newRow]);
     };
 
     useEffect(() => {
-        // 👆 daisy UI themes initialization
         getStockBranch();
         getAllAsset();
     }, []);
@@ -179,74 +167,80 @@ const EmitterBinAllotment = () => {
     };
 
     const handleSave = () => {
+        console.log("testing")
         const errors = {};
-        // if (!docdata[0].Prefix) {
-        //   errors.prefix = "Prefix is required";
-        // }
-        // if (!docdata[0].SID) {
-        //   errors.scode = "SID is required";
-        // }
-        // if (!docdata[0].Sequence) {
-        //   errors.sequence = "Sequence is required";
-        // }
-        // if (!docdata[0].Suffix) {
-        //   errors.sufix = "Suffix is required";
-        // }
-        // if (!docdata[0].Type) {
-        //   errors.type = "Type is required";
-        // }
-
-        if (!stockFrom) {
-            errors.stockFrom = "Source from is required";
-        }
-
-        if (!stockTo) {
-            errors.stockTo = "Source To is required";
-        }
 
         if (!docId) {
-            errors.docId = "DocId is required";
+            console.log("test docId")
+            errors.docId = "Doc ID is required";
         }
 
         if (!docDate) {
-            errors.docDate = "To Date is required";
-        }
-        if (tableData[0].code === "") {
-            errors.code = "Code field is Required";
-        }
-        if (tableData[0].qty === "") {
-            errors.qty = "QTY field is Required";
+            errors.docDate = "Doc Date is required";
         }
 
-        // const tableFormData = tableData.map((row) => ({
-        //   scode: row.scode,
-        //   prefix: row.prefix,
-        //   sequence: row.sequence,
-        //   sufix: row.sufix,
-        //   type: row.type,
-        // }));
+        if (!stockBranch) {
+            errors.stockBranch = "Stock Branch is required";
+        }
+
+        if (!reqNo) {
+            errors.reqNo = "Req No is required";
+        }
+
+        if (!reqDate) {
+            errors.reqDate = "Req Date is required";
+        }
+
+        if (!emitter) {
+            errors.emitter = "Emitter Name is required";
+        }
+
+        if (!reqQty) {
+            errors.reqQty = "Req QTY is required";
+        }
+
+        if (!avlQty) {
+            errors.avlQty = "Avl QTY is required";
+        }
+        if (!alotQty) {
+            errors.alotQty = "Alote QTY is required";
+        }
+
+
+
+        // Validation for rfId and qrCode in all rows
+        // const validateField = (fieldName) => {
+        //     return tableData.every((row) => row[fieldName].trim() !== "");
+        // };
+
+        // const fieldsToValidate = ['rfId', 'qrCode'];
+        // fieldsToValidate.forEach((field) => {
+        //     if (!validateField(field)) {
+        //         errors[field] = `${field.toUpperCase()} is required for all rows`;
+        //     }
+        // })
+
+
+
+
+
 
         const tableFormData = tableData.map((row) => ({
-            skuDetail: row.sku,
-            skucode: row.code,
-            skuQty: row.qty,
-            stockValue: row.stockValue,
-            stockLocation: row.stockLoc,
-            binLocation: "test",
-            // stockValue: row.stockValue,
-            // stockLocation: row.stockLoc,
-            // binLocation: row.binLoc,
+            asset: row.asset,
+            assetCode: row.assetCode,
+            qty: row.qty,
+            rfId: row.rfId,
+            tagCode: "Waiting for confirmation",
         }));
 
-        // Check if any table fields are empty
         const isTableDataEmpty = tableFormData.some(
             (row) =>
-                row.sku === "" ||
-                row.code === "" ||
-                row.qty === "" ||
-                row.stockValue === "" ||
-                row.stockLoc === "" ||
-                row.binLoc === ""
+                row.rfId === "" ||
+                row.qrCode === ""
+            // row.qty === "" ||
+            // row.stockValue === "" ||
+            // row.stockLoc === "" ||
+            // row.binLoc === ""
         );
 
         if (isTableDataEmpty) {
@@ -255,55 +249,64 @@ const EmitterBinAllotment = () => {
             delete errors.tableData;
         }
 
-        if (Object.keys(errors).length === 0) {
-            const formData = {
-                assetInwardDetailDTO: tableFormData,
-                docId,
-                docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-                stockBranch: stockTo,
-                sourceFrom: stockFrom,
-                orgId,
-            };
+        // if (Object.keys(errors).length === 0) {
+        //     const formData = {
+        //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
+        //         stockBranch: stockBranch,
+        //         binReqNo: reqNo,
+        //         binReqDate: reqDate,
 
-            axios
-                .post(
-                    `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
-                    formData
-                )
-                .then((response) => {
-                    console.log("Response:", response.data);
-                    // setAleartState(true);
-                    setDocData(DOCDATA);
-                    setDocDate(null);
-                    setDocId("");
-                    setStockFrom("");
-                    setStockTo("");
-                    setErrors({});
+        //         binLocation: emitter,
 
-                    setTableData([
-                        {
-                            id: 1,
-                            sku: "",
-                            code: "",
-                            qty: "",
-                            stockValue: "",
-                            stockLoc: "",
-                            binLoc: "",
-                        },
-                    ]);
-                    toast.success("Stock Branch Updated Successfully!", {
-                        autoClose: 2000,
-                        theme: "colored",
-                    });
-                })
-                .catch((error) => {
-                    console.error("Error:", error);
-                    toast.error("Failed to update user. Please try again.");
+        //         reqKitQty: reqQty,
+        //         avlKitQty: avlQty,
+        //         allotKitQty: alotQty,
+        //         createdby: userId,
+        //         orgId: orgId,
+        //         binAllotmentDetailsDTO: tableFormData,
 
-                });
-        } else {
-            setErrors(errors);
-        }
+
+        //     };
+
+        //     axios
+        //         .post(
+        //             `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
+        //             formData
+        //         )
+        //         .then((response) => {
+        //             console.log("Response:", response.data);
+        //             // setAleartState(true);
+        //             setDocData(DOCDATA);
+        //             setDocDate(null);
+        //             setDocId("");
+        //             setStockFrom("");
+        //             setStockTo("");
+        //             setErrors({});
+
+        //             setTableData([
+        //                 {
+        //                     id: 1,
+        //                     sku: "",
+        //                     code: "",
+        //                     qty: "",
+        //                     stockValue: "",
+        //                     stockLoc: "",
+        //                     binLoc: "",
+        //                 },
+        //             ]);
+        //             toast.success("Stock Branch Updated Successfully!", {
+        //                 autoClose: 2000,
+        //                 theme: "colored",
+        //             });
+        //         })
+        //         .catch((error) => {
+        //             console.error("Error:", error);
+        //             toast.error("Failed to update user. Please try again.");
+
+        //         });
+        // } else {
+        //     setErrors(errors);
+        // }
     };
 
     const handleInwardmanifeastClose = () => {
@@ -331,10 +334,22 @@ const EmitterBinAllotment = () => {
                             </span>
                         </label>
                     </div>
-                    <div className="col-lg-3 col-md-6">
+                    {/* <div className="col-lg-3 col-md-6">
                         <input
                             className="form-control form-sz mb-2"
                             placeholder="Auto Generated"
+                            value={docId}
+                            onChange={(e) => setDocId(e.target.value)}
+                        />
+                        {errors.docId && (
+                            <span className="error-text mb-1">{errors.docId}</span>
+                        )}
+                    </div> */}
+
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            placeholder="Doc Id"
                             value={docId}
                             onChange={(e) => setDocId(e.target.value)}
                         />
@@ -547,64 +562,6 @@ const EmitterBinAllotment = () => {
                             <span className="error-text">{errors.alotQty}</span>
                         )}
                     </div>
-
-
-                    {/* <div className="col-lg-3 col-md-6">
-                        <label className="label mb-4">
-                            <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                Source From
-                                <FaStarOfLife className="must" />
-                            </span>
-                        </label>
-                    </div>
-                    <div className="col-lg-3 col-md-6">
-                        <select
-                            className="form-select form-sz w-full mb-2"
-                            onChange={handleStockFromChange}
-                            value={stockFrom}
-                        >
-                            <option value="" disabled>
-                                Select Stock Branch
-                            </option>
-                            {stockBranchList.length > 0 &&
-                                stockBranchList.map((list) => (
-                                    <option key={list.id} value={list.branchCode}>
-                                        {list.branchCode}
-                                    </option>
-                                ))}
-                        </select>
-                        {errors.stockFrom && (
-                            <span className="error-text mb-1">{errors.stockFrom}</span>
-                        )}
-                    </div>
-                    <div className="col-lg-3 col-md-6">
-                        <label className="label mb-4">
-                            <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                Source To
-                                <FaStarOfLife className="must" />
-                            </span>
-                        </label>
-                    </div>
-                    <div className="col-lg-3 col-md-6">
-                        <select
-                            className="form-select form-sz w-full mb-2"
-                            onChange={(e) => setStockTo(e.target.value)}
-                            value={stockTo}
-                        >
-                            <option value="" disabled>
-                                Select Stock Branch
-                            </option>
-                            {filteredStockBranch &&
-                                filteredStockBranch.map((list) => (
-                                    <option key={list.id} value={list.branchCode}>
-                                        {list.branchCode}
-                                    </option>
-                                ))}
-                        </select>
-                        {errors.stockTo && (
-                            <span className="error-text mb-1">{errors.stockTo}</span>
-                        )}
-                    </div> */}
                 </div>
                 <div className="mt-2">
                     <button
@@ -623,7 +580,7 @@ const EmitterBinAllotment = () => {
                                         <th className="px-2 py-2 bg-blue-500 text-white">Action</th>
                                         <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
                                         <th className="px-2 py-2 bg-blue-500 text-white">
-                                            Asset ID
+                                            Tag Code
                                         </th>
                                         <th className="px-2 py-2 bg-blue-500 text-white">
                                             RF ID
@@ -635,31 +592,14 @@ const EmitterBinAllotment = () => {
                                             Barcode
                                         </th>
                                         <th className="px-2 py-2 bg-blue-500 text-white">
-                                            Asset Type
+                                            Asset
                                         </th>
                                         <th className="px-2 py-2 bg-blue-500 text-white">
-                                            Category
+                                            Asset Code
                                         </th>
                                         <th className="px-2 py-2 bg-blue-500 text-white">
                                             QTY
                                         </th>
-
-                                        {/* <th className="px-2 py-2 bg-blue-500 text-white">
-                                            SKU
-                                        </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white">
-                                            Code
-                                        </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white">QTY</th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white">
-                                            Stock Value
-                                        </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white">
-                                            Stock Location
-                                        </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white">
-                                            Bin Location
-                                        </th> */}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -758,12 +698,12 @@ const EmitterBinAllotment = () => {
                                                 <td className="border px-2 py-2">
                                                     <input
                                                         type="text"
-                                                        value={row.assetType}
+                                                        value={row.asset}
                                                         onChange={(e) => {
 
                                                             setTableData((prev) =>
                                                                 prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, assetType: e.target.value } : r
+                                                                    r.id === row.id ? { ...r, asset: e.target.value } : r
                                                                 )
                                                             );
                                                         }}
@@ -774,12 +714,12 @@ const EmitterBinAllotment = () => {
                                                 <td className="border px-2 py-2">
                                                     <input
                                                         type="text"
-                                                        value={row.category}
+                                                        value={row.assetCode}
                                                         onChange={(e) => {
 
                                                             setTableData((prev) =>
                                                                 prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, category: e.target.value } : r
+                                                                    r.id === row.id ? { ...r, assetCode: e.target.value } : r
                                                                 )
                                                             );
                                                         }}
