@@ -366,9 +366,13 @@ function AddPartStudy({
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
+              type="text"
               name="partName"
               value={partName}
               onChange={handlePartChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
             />
             {errors.partName && (
               <span className="error-text">{errors.partName}</span>
@@ -390,9 +394,13 @@ function AddPartStudy({
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
+              type="text"
               name="partNumber"
               value={partNumber}
               onChange={handlePartChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
             />
             {errors.partNumber && (
               <span className="error-text">{errors.partNumber}</span>
@@ -416,6 +424,7 @@ function AddPartStudy({
               <input
                 className="form-control form-sz mb-2"
                 placeholder={""}
+                type="number"
                 name="weight"
                 value={weight}
                 onChange={handlePartChange}
@@ -457,6 +466,7 @@ function AddPartStudy({
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
+              type="number"
               name="partVolume"
               value={partVolume}
               onChange={handlePartChange}
@@ -477,6 +487,7 @@ function AddPartStudy({
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
+              type="number"
               name="highestVolume"
               value={highestVolume}
               onChange={handlePartChange}
@@ -497,6 +508,7 @@ function AddPartStudy({
             <input
               className="form-control form-sz mb-2"
               placeholder={""}
+              type="number"
               name="lowestVolume"
               value={lowestVolume}
               onChange={handlePartChange}

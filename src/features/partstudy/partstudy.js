@@ -150,20 +150,20 @@ function Partstudy() {
           </IconButton>
         ),
       },
-      {
-        accessorKey: "refPsId",
-        header: "Part Study Id",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-        enableColumnOrdering: false,
-        enableEditing: false, //disable editing on this column
-        enableSorting: false,
-      },
+      // {
+      //   accessorKey: "refPsId",
+      //   header: "Part Study Id",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      //   enableColumnOrdering: false,
+      //   enableEditing: false, //disable editing on this column
+      //   enableSorting: false,
+      // },
       {
         accessorKey: "partStudyDate",
         header: "Part Study Date",
@@ -175,17 +175,17 @@ function Partstudy() {
           align: "center",
         },
       },
-      {
-        accessorKey: "emitterId",
-        header: "Emitter ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "emitterId",
+      //   header: "Emitter ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
         accessorKey: "partName",
         header: "Part Name",
@@ -208,50 +208,50 @@ function Partstudy() {
           align: "center",
         },
       },
-      {
-        accessorKey: "weight",
-        header: "Weight",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "partVolume",
-        header: "Part Volume",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "highestVolume",
-        header: "Highest Volume",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "lowestVolume",
-        header: "Lowest Volume",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "weight",
+      //   header: "Weight",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "partVolume",
+      //   header: "Part Volume",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "highestVolume",
+      //   header: "Highest Volume",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "lowestVolume",
+      //   header: "Lowest Volume",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
     ],
     []
   );
@@ -295,9 +295,19 @@ function Partstudy() {
                   src="/new.png"
                   alt="new-icon"
                   title="new"
-                  style={{ width: 30, height: 30, margin: "auto", hover: "pointer" }}
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
                 />
-                <span className="text-form text-base" style={{ marginLeft: "10px" }}>Part Study</span>
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Part Study
+                </span>
               </button>
             </div>
             <MaterialReactTable table={table} />

@@ -120,7 +120,7 @@ function AddPackage({
 
   const handlePackage = () => {
     console.log("Response handlePackage Click");
-    const errors = {};
+    // const errors = {};
     // if (!length) {
     //   errors.length = "Length is required";
     // }
@@ -136,13 +136,17 @@ function AddPackage({
     // if (!currentPackingStudy) {
     //   errors.currentPackingStudy = "Current Packing Study is required";
     // }
-    // if (!currentPackingChallenges) {
-    //   errors.currentPackingChallenges =
-    //     "Current Packing Challenges is required";
+
+    // if (selectPs) {
+    //   if (!currentPackingChallenges) {
+    //     errors.currentPackingChallenges =
+    //       "Current Packing Challenges is required";
+    //   }
+    //   if (!noOfParts) {
+    //     errors.noOfParts = "Number Of Parts is required";
+    //   }
     // }
-    // if (!noOfParts) {
-    //   errors.noOfParts = "Number Of Parts is required";
-    // }
+
     // if (!partSensitive) {
     //   errors.partSensitive = "Part Sensitive is required";
     // }
@@ -179,11 +183,11 @@ function AddPackage({
       console.log("Response server called Click");
       const formData = {
         id,
-        existingPart,
         length,
         breath,
         height,
-        // currentPackingStudy,
+        existingPart,
+        currentPackingStudy,
         currentPackingChallenges,
         noOfParts,
         partSensitive,
@@ -400,6 +404,7 @@ function AddPackage({
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 69 }}
                 name="length"
+                type="number"
                 value={length}
                 placeholder={"L"}
                 className="input mb-2 input-bordered p-1"
@@ -415,6 +420,7 @@ function AddPackage({
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 69 }}
                 name="breath"
+                type="number"
                 value={breath}
                 placeholder={"B"}
                 className="input mb-2 p-1 mx-1 input-bordered"
@@ -430,6 +436,7 @@ function AddPackage({
               <input
                 style={{ height: 40, fontSize: "0.800rem", width: 69 }}
                 name="height"
+                type="number"
                 value={height}
                 placeholder={"H"}
                 className="input mb-2 p-1 mx-1 input-bordered"
@@ -730,6 +737,9 @@ function AddPackage({
               name="remarks"
               value={remarks}
               onChange={handlePackageChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
             />
             {errors.remarks && (
               <div className="error-text">{errors.remarks}</div>

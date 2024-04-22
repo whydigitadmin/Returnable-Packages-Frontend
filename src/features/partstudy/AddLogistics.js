@@ -164,6 +164,9 @@ function AddLogistics({ refPsId, emitterName, handleBack, handleNext }) {
               name="avgLotSize"
               value={avgLotSize}
               onChange={handleInputChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
             />
             {errors.avgLotSize && (
               <span className="error-text">{errors.avgLotSize}</span>
@@ -189,6 +192,9 @@ function AddLogistics({ refPsId, emitterName, handleBack, handleNext }) {
               name="dispatchFrequency"
               value={dispatchFrequency}
               onChange={handleInputChange}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
             />
             {errors.dispatchFrequency && (
               <span className="error-text">{errors.dispatchFrequency}</span>
