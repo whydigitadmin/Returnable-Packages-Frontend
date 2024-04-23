@@ -177,20 +177,9 @@ export const BinAllotmentDetails = () => {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "userId",
-      //   header: "User ID",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
       {
         accessorKey: "firstName",
-        header: "User Name",
+        header: "Req No",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -201,7 +190,7 @@ export const BinAllotmentDetails = () => {
       },
       {
         accessorKey: "email",
-        header: "Email",
+        header: "Emitter",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -212,7 +201,7 @@ export const BinAllotmentDetails = () => {
       },
       {
         accessorKey: "pno",
-        header: "Phone",
+        header: "Req Date",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -222,8 +211,8 @@ export const BinAllotmentDetails = () => {
         },
       },
       {
-        accessorKey: "active",
-        header: "Active",
+        accessorKey: "pno",
+        header: "Req QTY",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -231,10 +220,33 @@ export const BinAllotmentDetails = () => {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
       },
+      {
+        accessorKey: "pno",
+        header: "Allote QTY",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+
+      // {
+      //   accessorKey: "active",
+      //   header: "Active",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      //   Cell: ({ cell: { value } }) => (
+      //     <span>{value ? "Active" : "Active"}</span>
+      //   ),
+      // },
     ],
     []
   );

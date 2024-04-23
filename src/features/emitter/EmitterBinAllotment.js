@@ -22,7 +22,6 @@ const DOCDATA = [
         Type: "KT",
     },
 ];
-// const EmitterBinAllotment = () => {
 function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [addInwardManifeast, setAddInwardManifeast] = useState("");
     const [stockBranch, setStockBranch] = useState("");
@@ -41,7 +40,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [errors, setErrors] = useState({});
     const [filteredStockBranch, setFilteredStockBranch] = useState("");
     const [stockBranchList, setStockBranchList] = useState("");
-    const [reqNoList, setReqNoList] = useState("");
+    const [reqNoList, setReqNoList] = useState([]);
+    const [reqData, setReqData] = useState(null);
     const [docdata, setDocData] = useState(DOCDATA);
 
 
@@ -54,11 +54,6 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [allAsset, setAllAsset] = useState("");
     const [aleartState, setAleartState] = useState(false);
 
-    // const reqNoList = [
-    //     { id: 1, rNo: "24BR10001" },
-    //     { id: 2, rNo: "24BR10002" },
-    //     { id: 3, rNo: "24BR10003" },
-    // ];
     const [tableData, setTableData] = useState([
         {
             id: 1,
@@ -88,6 +83,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
 
     useEffect(() => {
         getStockBranch();
+        getAllBinRequest();
         // getAllAsset();
     }, []);
 
@@ -102,7 +98,25 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         // setFilteredStockBranch(filteredBranches);
     };
     const handleReqNoChange = (e) => {
-        setReqNo(e.target.value);
+        const selectedReqNo = e.target.value;
+        setReqNo(selectedReqNo);
+
+        const selectedReq = reqData.find(item => item.reqNo === selectedReqNo);
+        if (selectedReq) {
+            setReqDate(selectedReq.reqDate);
+            setEmitter(selectedReq.emitter);
+            setReqKitName(selectedReq.kitcode);
+            setReqPartName(selectedReq.partname);
+            setReqQty(selectedReq.reqKitQty);
+
+        } else {
+            setReqDate('');
+            setEmitter('');
+            setReqKitName('');
+            setReqPartName('');
+            setReqQty('');
+
+        }
     };
     const handleStockFromChange = (e) => {
         const selectedValue = e.target.value;
@@ -143,13 +157,16 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const getAllBinRequest = async () => {
         try {
             const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgId=${orgId}`
+                `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgid=1`
             );
             console.log("API Response:", response);
 
             if (response.status === 200) {
-                // Extracting assetName and skuId from each asset item
-                setReqNoList(response.data.paramObjectsMap.BinAllotment);
+                setReqData(response.data.paramObjectsMap.BinAllotment);
+
+                console.log("API Response:", response.data.paramObjectsMap.BinAllotment);
+                const reqNos = response.data.paramObjectsMap.BinAllotment.map(item => item.reqNo);
+                setReqNoList(reqNos);
 
             } else {
                 console.error("API Error:", response.data);
@@ -218,129 +235,129 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
 
 
     }
-    const handleSave = () => {
-        console.log("testing")
-        const errors = {};
+    // const handleSave = () => {
+    //     console.log("testing")
+    //     const errors = {};
 
-        if (!docId) {
-            console.log("test docId")
-            errors.docId = "Doc ID is required";
-        }
+    //     if (!docId) {
+    //         console.log("test docId")
+    //         errors.docId = "Doc ID is required";
+    //     }
 
-        if (!docDate) {
-            errors.docDate = "Doc Date is required";
-        }
+    //     if (!docDate) {
+    //         errors.docDate = "Doc Date is required";
+    //     }
 
-        if (!stockBranch) {
-            errors.stockBranch = "Stock Branch is required";
-        }
+    //     if (!stockBranch) {
+    //         errors.stockBranch = "Stock Branch is required";
+    //     }
 
-        if (!reqNo) {
-            errors.reqNo = "Req No is required";
-        }
+    //     if (!reqNo) {
+    //         errors.reqNo = "Req No is required";
+    //     }
 
-        if (!reqDate) {
-            errors.reqDate = "Req Date is required";
-        }
+    //     if (!reqDate) {
+    //         errors.reqDate = "Req Date is required";
+    //     }
 
-        if (!emitter) {
-            errors.emitter = "Emitter Name is required";
-        }
+    //     if (!emitter) {
+    //         errors.emitter = "Emitter Name is required";
+    //     }
 
-        // if (!reqQty) {
-        //     errors.reqQty = "Req QTY is required";
-        // }
+    //     // if (!reqQty) {
+    //     //     errors.reqQty = "Req QTY is required";
+    //     // }
 
-        // if (!avlQty) {
-        //     errors.avlQty = "Avl QTY is required";
-        // }
-        if (!alotQty) {
-            errors.alotQty = "Alote QTY is required";
-        }
+    //     // if (!avlQty) {
+    //     //     errors.avlQty = "Avl QTY is required";
+    //     // }
+    //     // if (!alotQty) {
+    //     //     errors.alotQty = "Alote QTY is required";
+    //     // }
 
-        const tableFormData = tableData.map((row) => ({
-            asset: row.asset,
-            assetCode: row.assetCode,
-            qty: row.qty,
-            rfId: row.rfId,
-            tagCode: "Waiting for confirmation",
-        }));
+    //     const tableFormData = tableData.map((row) => ({
+    //         asset: row.asset,
+    //         assetCode: row.assetCode,
+    //         qty: row.qty,
+    //         rfId: row.rfId,
+    //         tagCode: "Waiting for confirmation",
+    //     }));
 
-        const isTableDataEmpty = tableFormData.some(
-            (row) =>
-                row.rfId === "" ||
-                row.qrCode === ""
-            // row.qty === "" ||
-            // row.stockValue === "" ||
-            // row.stockLoc === "" ||
-            // row.binLoc === ""
-        );
+    //     const isTableDataEmpty = tableFormData.some(
+    //         (row) =>
+    //             row.rfId === "" ||
+    //             row.qrCode === ""
+    //         // row.qty === "" ||
+    //         // row.stockValue === "" ||
+    //         // row.stockLoc === "" ||
+    //         // row.binLoc === ""
+    //     );
 
-        if (isTableDataEmpty) {
-            errors.tableData = "Please fill all table fields";
-        } else {
-            delete errors.tableData;
-        }
+    //     if (isTableDataEmpty) {
+    //         errors.tableData = "Please fill all table fields";
+    //     } else {
+    //         delete errors.tableData;
+    //     }
 
-        const formData = {
-            docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-            stockBranch: stockBranch,
-            binReqNo: reqNo,
-            binReqDate: reqDate,
+    //     const formData = {
+    //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
+    //         stockBranch: stockBranch,
+    //         binReqNo: reqNo,
+    //         binReqDate: reqDate,
 
-            binLocation: emitter,
+    //         binLocation: emitter,
 
-            reqKitQty: reqQty,
-            avlKitQty: avlQty,
-            allotKitQty: alotQty,
-            createdby: userId,
-            orgId: orgId,
-            binAllotmentDetailsDTO: tableFormData,
-        };
-        console.log("Data to save is:", formData)
+    //         reqKitQty: reqQty,
+    //         avlKitQty: avlQty,
+    //         allotKitQty: alotQty,
+    //         createdby: userId,
+    //         orgId: orgId,
+    //         binAllotmentDetailsDTO: tableFormData,
+    //     };
+    //     console.log("Data to save is:", formData)
 
 
-        // if (Object.keys(errors).length === 0) {
-        //     const formData = {
-        //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-        //         stockBranch: stockBranch,
-        //         binReqNo: reqNo,
-        //         binReqDate: reqDate,
+    //     // if (Object.keys(errors).length === 0) {
+    //     //     const formData = {
+    //     //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
+    //     //         stockBranch: stockBranch,
+    //     //         binReqNo: reqNo,
+    //     //         binReqDate: reqDate,
 
-        //         binLocation: emitter,
+    //     //         binLocation: emitter,
 
-        //         reqKitQty: reqQty,
-        //         avlKitQty: avlQty,
-        //         allotKitQty: alotQty,
-        //         createdby: userId,
-        //         orgId: orgId,
-        //         binAllotmentDetailsDTO: tableFormData,
-        //     };
+    //     //         reqKitQty: reqQty,
+    //     //         avlKitQty: avlQty,
+    //     //         allotKitQty: alotQty,
+    //     //         createdby: userId,
+    //     //         orgId: orgId,
+    //     //         binAllotmentDetailsDTO: tableFormData,
+    //     //     };
 
-        //     console.log("Data to save is:", formData)
+    //     //     console.log("Data to save is:", formData)
 
-        //     axios
-        //         .post(
-        //             `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
-        //             formData
-        //         )
-        //         .then((response) => {
-        //             console.log("Response:", response.data);
-        //             handleNew();
-        //             toast.success("Emitter Bin Allotment Created Successfully!", {
-        //                 autoClose: 2000,
-        //                 theme: "colored",
-        //             });
-        //         })
-        //         .catch((error) => {
-        //             console.error("Error:", error);
-        //             toast.error("Failed to Create Emitter Bin Allotment. Please try again.");
+    //     //     axios
+    //     //         .post(
+    //     //             `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
+    //     //             formData
+    //     //         )
+    //     //         .then((response) => {
+    //     //             console.log("Response:", response.data);
+    //     //             handleNew();
+    //     //             toast.success("Emitter Bin Allotment Created Successfully!", {
+    //     //                 autoClose: 2000,
+    //     //                 theme: "colored",
+    //     //             });
+    //     //         })
+    //     //         .catch((error) => {
+    //     //             console.error("Error:", error);
+    //     //             toast.error("Failed to Create Emitter Bin Allotment. Please try again.");
 
-        //         });
-        // } else {
-        //     setErrors(errors);
-        // }
-    };
+    //     //         });
+    //     // } else {
+    //     //     setErrors(errors);
+    //     // }
+    // };
 
     const handleEmitterBinAllotmentClose = () => {
         addBinAllotment(false)
@@ -419,6 +436,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                             className="form-select form-sz w-full mb-2"
                             onChange={handleStockBranchChange}
                             value={stockBranch}
+                            disabled={viewBinAllotmentId ? true : false}
+
                         >
                             <option value="" disabled>
                                 Select Stock Branch
@@ -448,14 +467,16 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                             className="form-select form-sz w-full mb-2"
                             onChange={handleReqNoChange}
                             value={reqNo}
+                            disabled={viewBinAllotmentId ? true : false}
+
                         >
                             <option value="" disabled>
                                 Select Req No
                             </option>
                             {reqNoList.length > 0 &&
-                                reqNoList.map((list) => (
-                                    <option key={list.id} value={list.rNo}>
-                                        {list.rNo}
+                                reqNoList.map((list, index) => (
+                                    <option key={index} value={list}>
+                                        {list}
                                     </option>
                                 ))}
                         </select>
@@ -473,20 +494,16 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                         </label>
                     </div>
                     <div className="col-lg-3 col-md-6">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DesktopDatePicker
-                                value={reqDate}
-                                // onChange={(date) => setDocDate(date)}
-                                slotProps={{
-                                    textField: { size: "small", clearable: true },
-                                }}
-                                format="DD/MM/YYYY"
-                                disabled
-                            />
-                        </LocalizationProvider>
-                        {/* {errors.docDate && (
-                            <span className="error-text mb-1">{errors.docDate}</span>
-                        )} */}
+                        <input
+                            className="form-control form-sz mb-2"
+                            placeholder="Req Date"
+                            value={reqDate}
+                            disabled
+
+                        />
+                        {errors.docId && (
+                            <span className="error-text mb-1">{errors.docId}</span>
+                        )}
                     </div>
                     {/* EMITTER FIELD */}
                     <div className="col-lg-3 col-md-6">
@@ -502,11 +519,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                             className="form-control form-sz mb-2"
                             name="emitter"
                             value={emitter}
-                            // disabled
-                            // onInput={(e) => {
-                            //     e.target.value = e.target.value.toUpperCase();
-                            // }}
-                            onChange={(e) => setEmitter(e.target.value)}
+                            disabled
                         />
                         {errors.emitter && (
                             <span className="error-text">{errors.emitter}</span>
@@ -560,8 +573,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                             className="form-control form-sz mb-2"
                             name="reqQTY"
                             value={reqQty}
-                            onChange={(e) => setReqQty(e.target.value)}
-                        // disabled
+                            disabled
+                        // onChange={(e) => setReqQty(e.target.value)}
                         />
                         {errors.reqQty && (
                             <span className="error-text">{errors.reqQty}</span>
@@ -606,6 +619,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                 e.target.value = e.target.value.replace(/\D/g, '');
                             }}
                             maxLength={8}
+                            disabled={viewBinAllotmentId ? true : false}
+
 
                         />
                         {errors.alotQty && (
@@ -815,7 +830,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                     <button
                         type="button"
                         className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                        onClick={handleSave}
+                    // onClick={handleSave}
                     >
                         Save
                     </button>
