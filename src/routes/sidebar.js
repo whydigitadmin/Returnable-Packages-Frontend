@@ -506,8 +506,32 @@ const routes = [
   //   ],
   // },
 
+  // {
+  //   path: "/app/issuemanifest", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/issuemanifest1.png"
+  //       alt="Issuemanifest"
+  //       style={{ width: "30px", height: "auto" }}
+  //       className={{ submenuIconClasses }}
+  //     />
+  //   ),
+  //   name: <span className="ml-1">Bin Allotment</span>,
+  // },
+  // {
+  //   path: "/app/emitterbinallotment", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/issuemanifest1.png"
+  //       alt="Issuemanifest"
+  //       style={{ width: "30px", height: "auto" }}
+  //       className={{ submenuIconClasses }}
+  //     />
+  //   ),
+  //   name: <span className="ml-1">Emitter Bin Allotment</span>,
+  // },
   {
-    path: "/app/issuemanifest", //no url needed as this has submenu
+    path: "/app/binallotmentdetails", //no url needed as this has submenu
     icon: (
       <img
         src="/issuemanifest1.png"
@@ -517,18 +541,6 @@ const routes = [
       />
     ),
     name: <span className="ml-1">Bin Allotment</span>,
-  },
-  {
-    path: "/app/emitterbinallotment", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/issuemanifest1.png"
-        alt="Issuemanifest"
-        style={{ width: "30px", height: "auto" }}
-        className={{ submenuIconClasses }}
-      />
-    ),
-    name: <span className="ml-1">Emitter Bin Allotment</span>,
   },
 
   {
