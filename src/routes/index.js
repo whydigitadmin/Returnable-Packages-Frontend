@@ -12,6 +12,7 @@ const EmitterInwardNew = lazy(() =>
   import("../pages/protected/EmitterInwardNew")
 );
 const EmitterOutward = lazy(() => import("../pages/protected/EmitterOutward"));
+const BinOutward = lazy(() => import("../pages/protected/BinOutward"));
 const KitDistributionReport = lazy(() =>
   import("../pages/protected/KitDistributionReport")
 );
@@ -444,6 +445,10 @@ const routes = [
   {
     path: "/EmitterOutward",
     component: EmitterOutward,
+  },
+  {
+    path: "/BinOutward",
+    component: BinOutward,
   },
   {
     path: "/StockAdjustment",
