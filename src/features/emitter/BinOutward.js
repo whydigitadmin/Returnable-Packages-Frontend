@@ -486,9 +486,6 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
                   <thead>
                     <tr>
                       <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Action
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         S.No
                       </th>
                       <th className="px-2 py-2 bg-blue-500 text-white text-center">
@@ -506,14 +503,14 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
                     {tableData &&
                       tableData.map((row) => (
                         <tr key={row.id}>
-                          <td className="border px-2 py-2">
+                          {/* <td className="border px-2 py-2">
                             <button
                               onClick={() => handleDeleteRow(row.id)}
                               className="text-red-500"
                             >
                               <FaTrash style={{ fontSize: "18px" }} />
                             </button>
-                          </td>
+                          </td> */}
                           <td className="border px-2 py-2">
                             <input
                               type="text"
