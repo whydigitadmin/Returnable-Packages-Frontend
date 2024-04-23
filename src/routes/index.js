@@ -3,14 +3,14 @@
 import { lazy } from "react";
 import "./style.css";
 
-
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
 const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const EmitterInward = lazy(() => import("../pages/protected/EmitterInward"));
-// const EmitterBinAllotment = lazy(() => import("../pages/protected/EmitterBinAllotment"));
-const BinAllotmentDetails = lazy(() => import("../pages/protected/BinAllotmentDetails"));
+const EmitterInwardNew = lazy(() =>
+  import("../pages/protected/EmitterInwardNew")
+);
 const EmitterOutward = lazy(() => import("../pages/protected/EmitterOutward"));
 const KitDistributionReport = lazy(() =>
   import("../pages/protected/KitDistributionReport")
@@ -23,7 +23,9 @@ const IssueManifestReport = lazy(() =>
   import("../pages/protected/IssueManifestReport")
 );
 // const InwardManifest = lazy(() => import("../pages/protected/InwardManifest"));
-const InwardManifestDetails = lazy(() => import("../pages/protected/InwardManifestDetails"));
+const InwardManifestDetails = lazy(() =>
+  import("../pages/protected/InwardManifestDetails")
+);
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
 const Charts = lazy(() => import("../pages/protected/Charts"));
@@ -115,7 +117,9 @@ const Terms = lazy(() => import("../pages/protected/Terms"));
 const PoOrder = lazy(() => import("../pages/protected/PoOrder"));
 // const POD = lazy(() => import("../pages/protected/POD"));
 const PodDetails = lazy(() => import("../pages/protected/PodDetails"));
-const ProofofDispatchDetails = lazy(() => import("../pages/protected/ProofofDispatchDetails"));
+const ProofofDispatchDetails = lazy(() =>
+  import("../pages/protected/ProofofDispatchDetails")
+);
 const Pdf = lazy(() => import("../pages/protected/Pdf"));
 const routes = [
   {
@@ -133,6 +137,10 @@ const routes = [
   {
     path: "/CityMaster",
     component: CityMaster,
+  },
+  {
+    path: "/EmitterInwardNew",
+    component: EmitterInwardNew,
   },
   {
     path: "/KitCard",
@@ -462,14 +470,6 @@ const routes = [
   {
     path: "/StockBranch",
     component: StockBranch,
-  },
-  // {
-  //   path: "/emitterbinallotment",
-  //   component: EmitterBinAllotment,
-  // },
-  {
-    path: "/binallotmentdetails",
-    component: BinAllotmentDetails,
   },
 ];
 

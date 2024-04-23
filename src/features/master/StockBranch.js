@@ -13,9 +13,6 @@ import { FaStarOfLife } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
-
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -82,8 +79,8 @@ export const StockBranch = () => {
 
   const handleStockChange = (event) => {
     const { name, value } = event.target;
-    let formatedCode = value.replace(/[^a-zA-Z0-9-\/\\]/g, '');
-    let formatedBranch = value.replace(/[^a-zA-Z]/g, '');
+    let formatedCode = value.replace(/[^a-zA-Z0-9-\/\\]/g, "");
+    let formatedBranch = value.replace(/[^a-zA-Z]/g, "");
     switch (name) {
       case "branch":
         setBranch(formatedBranch.toUpperCase());
@@ -96,11 +93,8 @@ export const StockBranch = () => {
     }
   };
 
-
-
   useEffect(() => {
     getAllStockbranch();
-
   }, []);
 
   const getAllStockbranch = async () => {
@@ -150,8 +144,6 @@ export const StockBranch = () => {
             autoClose: 2000,
             theme: "colored",
           });
-
-
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -193,7 +185,6 @@ export const StockBranch = () => {
             autoClose: 2000,
             theme: "colored",
           });
-
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -211,8 +202,8 @@ export const StockBranch = () => {
   const handleEditRow = (row) => {
     setErrors({});
     setSelectedRowId(row.original.id);
-    setBranch(row.original.branch)
-    setCode(row.original.branchCode)
+    setBranch(row.original.branch);
+    setCode(row.original.branchCode);
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -244,7 +235,6 @@ export const StockBranch = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-
             <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
             </IconButton>
@@ -302,6 +292,10 @@ export const StockBranch = () => {
             type={"text"}
             name="branch"
             value={branch}
+            maxLength={20}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+            }}
             onChange={handleStockChange}
           />
           {errors.branch && <span className="error-text">{errors.branch}</span>}
@@ -323,6 +317,10 @@ export const StockBranch = () => {
             type={"text"}
             name="code"
             value={branchCode}
+            maxLength={6}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+            }}
             onChange={handleStockChange}
           />
           {errors.branchCode && (
@@ -351,7 +349,8 @@ export const StockBranch = () => {
           >
             Update
           </button>
-        </div>) : (
+        </div>
+      ) : (
         <div className="d-flex flex-row mt-3">
           <button
             type="button"
@@ -366,15 +365,13 @@ export const StockBranch = () => {
           >
             Cancel
           </button>
-        </div>)}
-
-
+        </div>
+      )}
 
       <div className="mt-4">
         <MaterialReactTable table={table} />
       </div>
       <ToastContainer />
     </div>
-
   );
 };

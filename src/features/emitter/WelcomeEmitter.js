@@ -208,7 +208,7 @@ function WelcomeEmitter() {
               </div>
 
               <div className="col-lg-4">
-                <Link to="/app/EmitterInward">
+                <Link to="/app/EmitterInwardNew">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
                     style={{ width: "14rem" }}
