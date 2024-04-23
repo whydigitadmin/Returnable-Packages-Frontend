@@ -121,6 +121,8 @@ const ProofofDispatchDetails = lazy(() =>
   import("../pages/protected/ProofofDispatchDetails")
 );
 const Pdf = lazy(() => import("../pages/protected/Pdf"));
+const BinInwardOem = lazy(() => import("../pages/protected/BinInwardOem"));
+const BinOutwardOem = lazy(() => import("../pages/protected/BinOutwardOem"));
 const routes = [
   {
     path: "/dashboard", // the url
@@ -470,6 +472,14 @@ const routes = [
   {
     path: "/StockBranch",
     component: StockBranch,
+  },
+  {
+    path: "/BinInwardOem",
+    component: BinInwardOem,
+  },
+  {
+    path: "/BinOutwardOem",
+    component: BinOutwardOem,
   },
 ];
 

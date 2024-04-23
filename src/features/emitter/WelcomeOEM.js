@@ -238,7 +238,7 @@ function WelcomeOEM() {
               </div>
               <div className="col-lg-12">
                 <Link>
-                  <div className="card bg-base-100 shadow-xl mb-2 p-3">
+                  <div className="card bg-base-100 shadow-xl p-3">
                     <div className="d-flex flex-row">
                       <img
                         src="https://cdn-icons-png.flaticon.com/128/5966/5966222.png"
@@ -257,7 +257,7 @@ function WelcomeOEM() {
               </div>
               <div className="col-lg-12">
                 <Link>
-                  <div className="card bg-base-100 shadow-xl mb-3 p-3">
+                  <div className="card bg-base-100 shadow-xl p-3">
                     <div className="d-flex flex-row">
                       <img
                         src="https://cdn-icons-png.flaticon.com/128/12299/12299281.png"
@@ -270,6 +270,41 @@ function WelcomeOEM() {
                       <h4 className="text-xl font-semibold">
                         Transporter Pickup
                       </h4>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+              <div className="col-lg-12">
+                <Link to="/app/BinInwardOem">
+                  <div className="card bg-base-100 shadow-xl mb-3 p-3">
+                    <div className="d-flex flex-row">
+                      <img
+                        src="/incoming.png"
+                        style={{
+                          width: "35px",
+                          height: "35px",
+                          marginRight: "6px",
+                        }}
+                      />
+                      <h4 className="text-xl font-semibold">Bin Inward</h4>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              <div className="col-lg-12">
+                <Link to="/app/BinOutwardOem">
+                  <div className="card bg-base-100 shadow-xl mb-3 p-3">
+                    <div className="d-flex flex-row">
+                      <img
+                        src="/outgoing.png"
+                        style={{
+                          width: "35px",
+                          height: "35px",
+                          marginRight: "6px",
+                        }}
+                      />
+                      <h4 className="text-xl font-semibold">Bin Outward</h4>
                     </div>
                   </div>
                 </Link>
