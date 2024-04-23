@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -33,7 +33,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [reqKitName, setReqKitName] = useState("");
     const [reqPartName, setReqPartName] = useState("");
     const [reqQty, setReqQty] = useState("");
-    const [avlQty, setAvlQty] = useState("");
+    const [avlQty, setAvlQty] = useState(null);
     const [alotQty, setAlotQty] = useState("");
     const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
     const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
@@ -42,6 +42,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [stockBranchList, setStockBranchList] = useState("");
     const [reqNoList, setReqNoList] = useState([]);
     const [reqData, setReqData] = useState(null);
+    const [emitterId, setEmitterId] = useState("");
+    const [reqPartNo, setReqPartNo] = useState("");
     const [docdata, setDocData] = useState(DOCDATA);
 
 
@@ -59,11 +61,9 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             id: 1,
             assetId: "",
             rfId: "",
-            qrCode: "",
-            barcode: "",
             asset: "",
             assetCode: "",
-            qty: "",
+            qty: 1,
         },
     ]);
 
@@ -72,11 +72,9 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             id: tableData.length + 1,
             assetId: "",
             rfId: "",
-            qrCode: "",
-            barcode: "",
             asset: "",
             assetCode: "",
-            qty: "",
+            qty: 1,
         };
         setTableData([...tableData, newRow]);
     };
@@ -84,7 +82,6 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     useEffect(() => {
         getStockBranch();
         getAllBinRequest();
-        // getAllAsset();
     }, []);
 
     const handleStockBranchChange = (e) => {
@@ -97,6 +94,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         // setStockTo("");
         // setFilteredStockBranch(filteredBranches);
     };
+
     const handleReqNoChange = (e) => {
         const selectedReqNo = e.target.value;
         setReqNo(selectedReqNo);
@@ -108,6 +106,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             setReqKitName(selectedReq.kitcode);
             setReqPartName(selectedReq.partname);
             setReqQty(selectedReq.reqKitQty);
+            setEmitterId(selectedReq.emitterid);
+            setReqPartNo(selectedReq.emitterid);
 
         } else {
             setReqDate('');
@@ -117,6 +117,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             setReqQty('');
 
         }
+        getAvlQtyByBranch();
+
     };
     const handleStockFromChange = (e) => {
         const selectedValue = e.target.value;
@@ -128,31 +130,6 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         setStockTo(""); // Reset the Source To dropdown value
         setFilteredStockBranch(filteredBranches);
     };
-
-    // const getAllAsset = async () => {
-    //     try {
-    //         const response = await axios.get(
-    //             `${process.env.REACT_APP_API_URL}/api/master/asset?orgId=${orgId}`
-    //         );
-    //         console.log("API Response:", response);
-
-    //         if (response.status === 200) {
-    //             // Extracting assetName and skuId from each asset item
-    //             const extractedAssets = response.data.paramObjectsMap.assetVO.map(
-    //                 (assetItem) => ({
-    //                     assetName: assetItem.assetName,
-    //                     assetCodeId: assetItem.assetCodeId,
-    //                 })
-    //             );
-    //             setAllAsset(extractedAssets);
-    //             console.log("API:", extractedAssets);
-    //         } else {
-    //             console.error("API Error:", response.data);
-    //         }
-    //     } catch (error) {
-    //         console.error("Error fetching data:", error);
-    //     }
-    // };
 
     const getAllBinRequest = async () => {
         try {
@@ -196,13 +173,145 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         }
     };
 
+    const getAvlQtyByBranch = async () => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_URL}/api/master/getAvalkitqtyByBranch?branch=${stockBranch}&Kitname=${reqKitName}`
+            );
+
+            if (response.status === 200) {
+                console.log("AVL QTY FROM API IS:", response.data.paramObjectsMap.Avalkit[0].avlQty);
+                setAvlQty(response.data.paramObjectsMap.Avalkit[0].avlQty); // Store avlQty in state
+            } else {
+                console.error("API Error:", response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
+
     const handleDeleteRow = (id) => {
         setTableData(tableData.filter((row) => row.id !== id));
     };
-    const handleKeyDown = (e, row) => {
+
+    const handleGetRfIdByTagCode = async (e, row) => {
+        if (e.key === "Escape" && e.target.name === "assetId") {
+            e.preventDefault();
+            const assetId = e.target.value;
+            const rowIndex = tableData.findIndex((r) => r.id === row.id);
+            if (assetId && rowIndex !== -1) {
+                try {
+                    const response = await axios.get(
+                        `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByTagCode?tagCode=${assetId}`
+                    );
+
+                    if (response.status === 200) {
+                        const rfid = response.data.paramObjectsMap.assetTaggingDetailsVO.rfId;
+                        setTableData((prevTableData) =>
+                            prevTableData.map((r, index) =>
+                                index === rowIndex ? { ...r, rfId: rfid || '' } : r
+                            )
+                        );
+                        const asset = response.data.paramObjectsMap.assetTaggingDetailsVO.asset;
+                        setTableData((prevTableData) =>
+                            prevTableData.map((r, index) =>
+                                index === rowIndex ? { ...r, asset: asset || '' } : r
+                            )
+                        );
+                        const assetCode = response.data.paramObjectsMap.assetTaggingDetailsVO.assetCode;
+                        setTableData((prevTableData) =>
+                            prevTableData.map((r, index) =>
+                                index === rowIndex ? { ...r, assetCode: assetCode || '' } : r
+                            )
+                        );
+                    } else {
+                        console.error("API Error:", response.status, response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Error fetching data:", error.message);
+                }
+            }
+        }
+    };
+    const handleGetTagCodeByRfId = async (e, row) => {
+        console.log("handleGetTagCodeByRfId funtion is working")
+        if (e.key === "Escape" && e.target.name === "rfId") {
+            console.log("funtion is working")
+
+            e.preventDefault();
+            const rfId = e.target.value;
+            const rowIndex = tableData.findIndex((r) => r.id === row.id);
+            if (rfId && rowIndex !== -1) {
+                try {
+                    const response = await axios.get(
+                        `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByRfId?rfId=E2004704B1D0642664AD0116`
+                        // `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByRfId?rfId=${rfId}`
+                    );
+
+                    if (response.status === 200) {
+                        const assetId = response.data.paramObjectsMap.assetTaggingDetailsVO.assetId;
+                        setTableData((prevTableData) =>
+                            prevTableData.map((r, index) =>
+                                index === rowIndex ? { ...r, assetId: assetId || '' } : r
+                            )
+                        );
+                        const asset = response.data.paramObjectsMap.assetTaggingDetailsVO.asset;
+                        setTableData((prevTableData) =>
+                            prevTableData.map((r, index) =>
+                                index === rowIndex ? { ...r, asset: asset || '' } : r
+                            )
+                        );
+                        const assetCode = response.data.paramObjectsMap.assetTaggingDetailsVO.assetCode;
+                        setTableData((prevTableData) =>
+                            prevTableData.map((r, index) =>
+                                index === rowIndex ? { ...r, assetCode: assetCode || '' } : r
+                            )
+                        );
+                    } else {
+                        console.error("API Error:", response.status, response.statusText);
+                    }
+                } catch (error) {
+                    console.error("Error fetching data:", error.message);
+                }
+            }
+        }
+    };
+
+    const handleTabKeyNewRow = (e, row) => {
         if (e.key === "Tab" && row.id === tableData[tableData.length - 1].id) {
             e.preventDefault();
             handleAddRow();
+        }
+    };
+
+    const handleRowDataChange = (id, field, value) => {
+        setTableData((prevTableData) =>
+            prevTableData.map((row) =>
+                row.id === id
+                    ? { ...row, [field]: value }
+                    : row
+            )
+        );
+
+        if (field === 'assetId' && !value) {
+            const rowIndex = tableData.findIndex((row) => row.id === id);
+            if (rowIndex !== -1) {
+                setTableData((prevTableData) =>
+                    prevTableData.map((row, index) =>
+                        index === rowIndex ? { ...row, rfId: '' } : row
+                    )
+                );
+            }
+        }
+        if (field === 'rfId' && !value) {
+            const rowIndex = tableData.findIndex((row) => row.id === id);
+            if (rowIndex !== -1) {
+                setTableData((prevTableData) =>
+                    prevTableData.map((row, index) =>
+                        index === rowIndex ? { ...row, rfId: '' } : row
+                    )
+                );
+            }
         }
     };
 
@@ -222,8 +331,6 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                 id: 1,
                 assetId: "",
                 rfId: "",
-                qrCode: "",
-                barcode: "",
                 asset: "",
                 assetCode: "",
                 qty: "",
@@ -235,129 +342,112 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
 
 
     }
-    // const handleSave = () => {
-    //     console.log("testing")
-    //     const errors = {};
+    const handleSave = () => {
+        console.log("testing")
+        const errors = {};
 
-    //     if (!docId) {
-    //         console.log("test docId")
-    //         errors.docId = "Doc ID is required";
-    //     }
+        if (!docId) {
+            console.log("test docId")
+            errors.docId = "Doc ID is required";
+        }
 
-    //     if (!docDate) {
-    //         errors.docDate = "Doc Date is required";
-    //     }
+        if (!docDate) {
+            errors.docDate = "Doc Date is required";
+        }
 
-    //     if (!stockBranch) {
-    //         errors.stockBranch = "Stock Branch is required";
-    //     }
+        if (!stockBranch) {
+            errors.stockBranch = "Stock Branch is required";
+        }
 
-    //     if (!reqNo) {
-    //         errors.reqNo = "Req No is required";
-    //     }
+        if (!reqNo) {
+            errors.reqNo = "Req No is required";
+        }
 
-    //     if (!reqDate) {
-    //         errors.reqDate = "Req Date is required";
-    //     }
+        if (!reqDate) {
+            errors.reqDate = "Req Date is required";
+        }
 
-    //     if (!emitter) {
-    //         errors.emitter = "Emitter Name is required";
-    //     }
+        if (!emitter) {
+            errors.emitter = "Emitter Name is required";
+        }
 
-    //     // if (!reqQty) {
-    //     //     errors.reqQty = "Req QTY is required";
-    //     // }
+        if (!reqQty) {
+            errors.reqQty = "Req QTY is required";
+        }
 
-    //     // if (!avlQty) {
-    //     //     errors.avlQty = "Avl QTY is required";
-    //     // }
-    //     // if (!alotQty) {
-    //     //     errors.alotQty = "Alote QTY is required";
-    //     // }
+        // if (!avlQty) {
+        //     errors.avlQty = "Avl QTY is required";
+        // }
+        if (!alotQty) {
+            errors.alotQty = "Alote QTY is required";
+        }
 
-    //     const tableFormData = tableData.map((row) => ({
-    //         asset: row.asset,
-    //         assetCode: row.assetCode,
-    //         qty: row.qty,
-    //         rfId: row.rfId,
-    //         tagCode: "Waiting for confirmation",
-    //     }));
+        const tableFormData = tableData.map((row) => ({
+            asset: row.asset,
+            assetCode: row.assetCode,
+            qty: row.qty,
+            rfId: row.rfId,
+            tagCode: row.assetId,
+        }));
 
-    //     const isTableDataEmpty = tableFormData.some(
-    //         (row) =>
-    //             row.rfId === "" ||
-    //             row.qrCode === ""
-    //         // row.qty === "" ||
-    //         // row.stockValue === "" ||
-    //         // row.stockLoc === "" ||
-    //         // row.binLoc === ""
-    //     );
+        const isTableDataEmpty = tableFormData.some(
+            (row) =>
+                row.rfId === "" ||
+                row.qrCode === ""
+            // row.qty === "" ||
+            // row.stockValue === "" ||
+            // row.stockLoc === "" ||
+            // row.binLoc === ""
+        );
 
-    //     if (isTableDataEmpty) {
-    //         errors.tableData = "Please fill all table fields";
-    //     } else {
-    //         delete errors.tableData;
-    //     }
-
-    //     const formData = {
-    //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-    //         stockBranch: stockBranch,
-    //         binReqNo: reqNo,
-    //         binReqDate: reqDate,
-
-    //         binLocation: emitter,
-
-    //         reqKitQty: reqQty,
-    //         avlKitQty: avlQty,
-    //         allotKitQty: alotQty,
-    //         createdby: userId,
-    //         orgId: orgId,
-    //         binAllotmentDetailsDTO: tableFormData,
-    //     };
-    //     console.log("Data to save is:", formData)
+        if (isTableDataEmpty) {
+            errors.tableData = "Please fill all table fields";
+        } else {
+            delete errors.tableData;
+        }
 
 
-    //     // if (Object.keys(errors).length === 0) {
-    //     //     const formData = {
-    //     //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-    //     //         stockBranch: stockBranch,
-    //     //         binReqNo: reqNo,
-    //     //         binReqDate: reqDate,
 
-    //     //         binLocation: emitter,
+        if (Object.keys(errors).length === 0) {
+            const formData = {
+                docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
+                stockBranch: stockBranch,
+                binReqNo: reqNo,
+                binReqDate: reqDate,
+                emitterId: emitterId,
+                reqKitQty: reqQty,
+                avlKitQty: avlQty,
+                allotKitQty: alotQty,
+                partCode: reqPartNo,
+                partName: reqPartName,
+                createdby: userId,
+                orgId: orgId,
+                binAllotmentDetailsDTO: tableFormData,
+            };
+            console.log("Data to save is:", formData)
 
-    //     //         reqKitQty: reqQty,
-    //     //         avlKitQty: avlQty,
-    //     //         allotKitQty: alotQty,
-    //     //         createdby: userId,
-    //     //         orgId: orgId,
-    //     //         binAllotmentDetailsDTO: tableFormData,
-    //     //     };
+            axios
+                .post(
+                    `${process.env.REACT_APP_API_URL}/api/emitter/binAllotment`,
+                    formData
+                )
+                .then((response) => {
+                    console.log("After save Response:", response.data);
+                    // handleNew();
+                    // toast.success("Emitter Bin Allotment Created Successfully!", {
+                    //     autoClose: 2000,
+                    //     theme: "colored",
+                    // });
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    toast.error("Failed to Create Emitter Bin Allotment. Please try again.");
 
-    //     //     console.log("Data to save is:", formData)
-
-    //     //     axios
-    //     //         .post(
-    //     //             `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
-    //     //             formData
-    //     //         )
-    //     //         .then((response) => {
-    //     //             console.log("Response:", response.data);
-    //     //             handleNew();
-    //     //             toast.success("Emitter Bin Allotment Created Successfully!", {
-    //     //                 autoClose: 2000,
-    //     //                 theme: "colored",
-    //     //             });
-    //     //         })
-    //     //         .catch((error) => {
-    //     //             console.error("Error:", error);
-    //     //             toast.error("Failed to Create Emitter Bin Allotment. Please try again.");
-
-    //     //         });
-    //     // } else {
-    //     //     setErrors(errors);
-    //     // }
-    // };
+                });
+        } else {
+            setErrors(errors);
+        }
+    };
 
     const handleEmitterBinAllotmentClose = () => {
         addBinAllotment(false)
@@ -651,12 +741,6 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                             RF ID
                                         </th>
                                         <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                            QR Code
-                                        </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                            Barcode
-                                        </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
                                             Asset
                                         </th>
                                         <th className="px-2 py-2 bg-blue-500 text-white text-center">
@@ -696,126 +780,46 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                                         style={{ width: "100%" }}
                                                     />
                                                 </td>
-                                                <td className="border px-2 py-2">
+                                                <td>
                                                     <input
                                                         type="text"
+                                                        name="assetId"
                                                         value={row.assetId}
-                                                        disabled={viewBinAllotmentId ? true : false}
-                                                        onChange={(e) => {
-
-                                                            setTableData((prev) =>
-                                                                prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, assetId: e.target.value } : r
-                                                                )
-                                                            );
-                                                        }}
-                                                    // style={{ width: "100%", border: errors && errors.assetId ? "1px solid red" : "1px solid #ccc" }}
-                                                    // key={`AssetId-${row.id}`}
+                                                        onChange={(e) => handleRowDataChange(row.id, "assetId", e.target.value)}
+                                                        onKeyDown={(e) => handleGetRfIdByTagCode(e, row)}
                                                     />
                                                 </td>
-                                                <td className="border px-2 py-2">
+                                                <td>
                                                     <input
                                                         type="text"
                                                         value={row.rfId}
-                                                        onChange={(e) => {
-
-                                                            setTableData((prev) =>
-                                                                prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, rfId: e.target.value } : r
-                                                                )
-                                                            );
-                                                        }}
-                                                    // style={{ width: "100%", border: errors && errors.rfId ? "1px solid red" : "1px solid #ccc" }}
-                                                    // key={`code-${row.id}`}
+                                                        onChange={(e) => handleRowDataChange(row.id, "rfId", e.target.value)}
+                                                        onKeyDown={(e) => handleGetTagCodeByRfId(e, row)}
                                                     />
                                                 </td>
-                                                <td className="border px-2 py-2">
-                                                    <input
-                                                        type="text"
-                                                        value={row.qrCode}
-                                                        onChange={(e) => {
-
-                                                            setTableData((prev) =>
-                                                                prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, qrCode: e.target.value } : r
-                                                                )
-                                                            );
-                                                        }}
-                                                    // style={{ width: "100%", border: errors && errors.qrCode ? "1px solid red" : "1px solid #ccc" }}
-                                                    // key={`AssetId-${row.id}`}
-                                                    />
-                                                </td>
-                                                <td className="border px-2 py-2">
-                                                    <input
-                                                        type="text"
-                                                        value={row.barcode}
-                                                        onChange={(e) => {
-
-                                                            setTableData((prev) =>
-                                                                prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, barcode: e.target.value } : r
-                                                                )
-                                                            );
-                                                        }}
-                                                    // style={{ width: "100%", border: errors && errors.rfId ? "1px solid red" : "1px solid #ccc" }}
-                                                    // key={`code-${row.id}`}
-                                                    />
-                                                </td>
-                                                <td className="border px-2 py-2">
+                                                <td>
                                                     <input
                                                         type="text"
                                                         value={row.asset}
-                                                        onChange={(e) => {
-
-                                                            setTableData((prev) =>
-                                                                prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, asset: e.target.value } : r
-                                                                )
-                                                            );
-                                                        }}
-                                                    // style={{ width: "100%", border: errors && errors.qrCode ? "1px solid red" : "1px solid #ccc" }}
-                                                    // key={`AssetId-${row.id}`}
+                                                        disabled
                                                     />
                                                 </td>
                                                 <td className="border px-2 py-2">
                                                     <input
                                                         type="text"
                                                         value={row.assetCode}
-                                                        onChange={(e) => {
-
-                                                            setTableData((prev) =>
-                                                                prev.map((r) =>
-                                                                    r.id === row.id ? { ...r, assetCode: e.target.value } : r
-                                                                )
-                                                            );
-                                                        }}
-                                                    // style={{ width: "100%", border: errors && errors.rfId ? "1px solid red" : "1px solid #ccc" }}
-                                                    // key={`code-${row.id}`}
+                                                        disabled
                                                     />
                                                 </td>
-
-                                                <td className="border px-2 py-2">
+                                                <td>
                                                     <input
                                                         type="text"
                                                         value={row.qty}
-                                                        onChange={(e) => {
-                                                            const inputValue = e.target.value;
-                                                            if (inputValue == "" || /^\d+$/.test(inputValue) && inputValue.length <= 8) {
-                                                                setTableData((prev) =>
-                                                                    prev.map((r) =>
-                                                                        r.id === row.id ? { ...r, qty: inputValue } : r
-                                                                    )
-                                                                );
-                                                            }
-                                                        }}
-                                                        onKeyDown={(e) => handleKeyDown(e, row)}
+                                                        onKeyDown={(e) => handleTabKeyNewRow(e, row)}
+                                                        disabled
 
-                                                        style={{ border: errors && errors.qty ? "1px solid red" : "1px solid #ccc" }}
-                                                        key={`QTY-${row.id}`}
                                                     />
                                                 </td>
-
-
                                             </tr>
                                         ))}
                                 </tbody>
@@ -830,7 +834,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                     <button
                         type="button"
                         className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    // onClick={handleSave}
+                        onClick={handleSave}
                     >
                         Save
                     </button>

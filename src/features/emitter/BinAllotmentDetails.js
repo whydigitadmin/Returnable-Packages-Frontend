@@ -223,7 +223,7 @@ export const BinAllotmentDetails = () => {
       },
       {
         accessorKey: "pno",
-        header: "Allote QTY",
+        header: "Allotted QTY",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
