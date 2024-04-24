@@ -11,10 +11,16 @@ import Tab from "@mui/material/Tab";
 import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
+import { width } from "@mui/system";
 import axios from "axios";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { FaCloudUploadAlt, FaStarOfLife, FaTrash } from "react-icons/fa";
+import {
+  FaCloudUploadAlt,
+  FaStarOfLife,
+  FaTrash,
+  FaEdit,
+} from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -127,6 +133,12 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
+  const [customerAddressVO, setCustomerAddressVO] = useState([]);
+  const [customerBankAddressVO, setCustomerBankAddressVO] = useState([]);
+  const [editBankAddressIndex, setEditBankAddressIndex] = React.useState(null);
+  const [editAddressIndex, setEditAddressIndex] = useState(null);
+  const [customerVOId, setCustomerVOId] = useState(null);
+  const [disableCustomerType, setDisableCustomerType] = React.useState(false);
   const [newAddress, setNewAddress] = useState({
     gstRegistrationStatus: "",
     gstNumber: "",
@@ -171,10 +183,10 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       editCustomerId && getCustomerId();
     }
     getCountryData();
-    if (editCustomerId && openShippingModal) {
-      getCustomerId();
-    }
-  }, [openShippingModal]);
+    // if (editCustomerId && handleAddShippingAddress()) {
+    //   getCustomerId();
+    // }
+  }, [editCustomerId]);
 
   useEffect(() => {
     getStateData();
@@ -249,6 +261,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
 
       if (response.status === 200) {
         const customersVO = response.data.paramObjectsMap.customersVO;
+        const addressVO =
+          response.data.paramObjectsMap.customersVO.customersAddressVO;
         // const addressVO =
         //   response.data.paramObjectsMap.customersVO.customersAddressVO;
         console.log(
@@ -267,64 +281,28 @@ function AddCustomer({ addcustomer, editCustomerId }) {
         setDisplayName(response.data.paramObjectsMap.customersVO.displayName);
         setEmail(response.data.paramObjectsMap.customersVO.email);
         setPhoneNumber(response.data.paramObjectsMap.customersVO.phoneNumber);
-        console.log("setnewaddress", setNewAddress);
-        console.log(
-          "gstRegistrationStatus",
+        setCustomerAddressVO(
           response.data.paramObjectsMap.customersVO.customersAddressVO
-            .gstRegistrationStatus
         );
-        setNewAddress({
-          // ...newAddress,
-          gstRegistrationStatus:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .gstRegistrationStatus,
-          street1:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .street1,
-          street2:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .street2,
-          country:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .country,
-          state:
-            response.data.paramObjectsMap.customersVO.customersAddressVO.state,
-          city: response.data.paramObjectsMap.customersVO.customersAddressVO
-            .city,
-          pinCode:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .pinCode,
-          contactName:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .contactName,
-          phoneNumber:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .phoneNumber,
-          designation:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .designation,
-          email:
-            response.data.paramObjectsMap.customersVO.customersAddressVO.email,
-        });
-        console.log("new", newAddress);
-        const gstRegistrationStatus =
-          response.data.paramObjectsMap.customersVO.customersAddressVO
-            .gstRegistrationStatus;
-        if (gstRegistrationStatus) {
-          setNewAddress({
-            ...newAddress,
-            gstRegistrationStatus: gstRegistrationStatus,
-          });
-        }
+        setCustomerBankAddressVO(
+          response.data.paramObjectsMap.customersVO.customersBankDetailsVO
+        );
+        console.log(
+          "id",
+          response.data.paramObjectsMap.customersVO.customersAddressVO.id
+        );
+        setCustomerVOId(response.data.paramObjectsMap.customersVO.id);
 
-        setNewBankAddress({
-          ...newBankAddress,
-          bank: customersVO.customersBankDetailsVO.bank,
-          accountNo: customersVO.customersBankDetailsVO.accountNo,
-          accountName: customersVO.customersBankDetailsVO.accountName,
-          branch: customersVO.customersBankDetailsVO.branch,
-          ifscCode: customersVO.customersBankDetailsVO.ifscCode,
-        });
+        console.log("setnewaddress", setNewAddress);
+
+        // setNewBankAddress({
+        //   ...newBankAddress,
+        //   bank: customersVO.customersBankDetailsVO.bank,
+        //   accountNo: customersVO.customersBankDetailsVO.accountNo,
+        //   accountName: customersVO.customersBankDetailsVO.accountName,
+        //   branch: customersVO.customersBankDetailsVO.branch,
+        //   ifscCode: customersVO.customersBankDetailsVO.ifscCode,
+        // });
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -420,139 +398,173 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     setOpenShippingModal(false);
   };
 
-  // const handleAddressSubmit = async () => {
-  //   const addressWithCustomerId = { ...newAddress, customerId: customerId };
-  //   if (isValidAddress()) {
-  //     try {
-  //       const response = await axios.post(
-  //         "/api/master/customersAddress",
-  //         addressWithCustomerId
-  //       );
-  //       console.log("Response:", response.data);
-  //       setErrors1({}); // Clear any previous errors on successful submission
-  //       handleAddShippingAddress();
-  //     } catch (error) {
-  //       console.error("Error:", error);
-  //       if (error.response && error.response.data) {
-  //         // Handle errors from the server
-  //         const serverErrors = error.response.data;
-  //         setErrors1(serverErrors);
-  //       } else {
-  //         // Handle other errors
-  //         setErrors1({ unexpectedError: true });
-  //       }
-  //     }
-  //   } else {
-  //     const updatedErrors = {};
-  //     for (const field in newAddress) {
-  //       if (
-  //         field !== "street2" &&
-  //         field !== "contactName" &&
-  //         field !== "phoneNumber" &&
-  //         field !== "isPrimary"
-  //       ) {
-  //         if (!newAddress[field].trim()) {
-  //           updatedErrors[field] = true;
-  //         }
-  //       }
-  //     }
-  //     setErrors1(updatedErrors); // Update errors for invalid fields
-  //   }
-  // };
-
-  // const handleAddressSubmit = async () => {
-  //   const addressWithCustomerId = { ...newAddress, customerId: customerId };
-  //   if (isValidAddress()) {
-  //     try {
-  //       const response = await axios.put(
-  //         "/api/master/customersAddress",
-  //         addressWithCustomerId
-  //       );
-  //       console.log("Response:", response.data);
-  //       setErrors1({}); // Clear any previous errors on successful submission
-  //       handleAddShippingAddress();
-  //     } catch (errors1) {
-  //       console.error("Error:", errors1);
-  //       if (errors1.response && errors1.response.data) {
-  //         // Handle errors from the server
-  //         const serverErrors = errors1.response.data;
-  //         setErrors1(serverErrors);
-  //       } else {
-  //         // Handle other errors
-  //         setErrors1({ unexpectedError: true });
-  //       }
-  //     }
-  //   } else {
-  //     const updatedErrors = {};
-  //     for (const field in newAddress) {
-  //       if (
-  //         field !== "street2" &&
-  //         field !== "contactName" &&
-  //         field !== "phoneNumber"
-  //         // field !== "isPrimary"
-  //       ) {
-  //         if (!newAddress[field].trim()) {
-  //           updatedErrors[field] = true;
-  //         }
-  //       }
-  //     }
-  //     setErrors1(updatedErrors); // Update errors for invalid fields
-  //   }
-  // };
-
-  // const handleAddressSubmit = async () => {
-  //   const addressWithCustomerId = { ...newAddress, customerId: customerId };
-  //   if (isValidAddress()) {
-  //     // setErrors1({}); // Clear any previous errors on successful submission
-  //     handleAddShippingAddress();
-  //   }
-  //   setErrors1(updatedErrors); // Update errors for invalid fields
-  // };
-
   const handleAddressSubmit = async () => {
     const addressWithCustomerId = { ...newAddress, customerId: customerId };
 
     if (isValidAddress()) {
       setErrors1({}); // Clear any previous errors on successful submission
-      handleAddShippingAddress();
+      if (editCustomerId) {
+        // If editCustomerId is truthy, update the existing address
+        handleUpdateShippingAddress(addressWithCustomerId);
+      } else {
+        // If editCustomerId is falsy, add a new address
+        handleAddShippingAddress(addressWithCustomerId);
+      }
     } else {
       // Display error messages for invalid fields
       const updatedErrors = {};
-      if (newAddress.gstRegistrationStatus.trim() === "") {
+      // Check if newAddress exists before accessing its properties
+      if (newAddress && newAddress.gstRegistrationStatus.trim() === "") {
         updatedErrors.gstRegistrationStatus = true;
       }
-      if (newAddress.street1.trim() === "") {
+      if (newAddress && newAddress.street1.trim() === "") {
         updatedErrors.street1 = true;
       }
-      if (newAddress.country.trim() === "") {
+      if (newAddress && newAddress.country.trim() === "") {
         updatedErrors.country = true;
       }
-      if (newAddress.state.trim() === "") {
+      if (newAddress && newAddress.state.trim() === "") {
         updatedErrors.state = true;
       }
-      if (newAddress.city.trim() === "") {
+      if (newAddress && newAddress.city.trim() === "") {
         updatedErrors.city = true;
       }
-      if (newAddress.pinCode.trim() === "") {
+      if (newAddress && newAddress.pinCode.trim() === "") {
         updatedErrors.pinCode = true;
       }
-      if (newAddress.phoneNumber.trim() === "") {
+      if (newAddress && newAddress.phoneNumber.trim() === "") {
         updatedErrors.phoneNumber = true;
       }
-      if (newAddress.email.trim() === "") {
+      if (newAddress && newAddress.email.trim() === "") {
         updatedErrors.email = true;
       }
       setErrors1(updatedErrors);
     }
   };
 
+  const handleEditAddress = (addressIndex) => {
+    if (addressIndex >= 0) {
+      // If addressIndex is greater than or equal to 0, it indicates an existing address is being edited
+      setEditAddressIndex(addressIndex);
+      const addressToEdit = customerAddressVO[addressIndex];
+      setNewAddress(addressToEdit);
+      setDisableCustomerType(true);
+    } else {
+      // If addressIndex is less than 0, it indicates a new address is being added
+      setEditAddressIndex(null); // Reset the edit address index
+      setNewAddress({
+        city: "",
+        contactName: "",
+        country: "",
+        designation: "",
+        email: "",
+        gstNumber: "",
+        gstRegistrationStatus: "",
+        id: 0,
+        phoneNumber: "",
+        pinCode: "",
+        state: "",
+        street1: "",
+        street2: "",
+      });
+      setDisableCustomerType(false);
+    }
+    setOpenShippingModal(true);
+  };
+
+  const handleEditBankAddress = (addressIndex) => {
+    if (addressIndex >= 0) {
+      // If addressIndex is greater than or equal to 0, it indicates an existing address is being edited
+      setEditBankAddressIndex(addressIndex);
+      const bankAddressToEdit = customerBankAddressVO[addressIndex];
+      setNewBankAddress(bankAddressToEdit);
+      setDisableCustomerType(true);
+    } else {
+      // If addressIndex is less than 0, it indicates a new address is being added
+      setEditBankAddressIndex(null); // Reset the edit bank address index
+      setNewBankAddress({
+        bank: "",
+        accountNo: "",
+        accountName: "",
+        branch: "",
+        ifscCode: "",
+      });
+      setDisableCustomerType(false);
+    }
+    setOpenBankModal(true);
+  };
+
+  // Then use handleEditBankAddress function similarly to handleEditAddress for customerAddressVO
+
+  const handleUpdateShippingAddress = (updatedAddress) => {
+    // Check if updatedAddress is null or undefined
+    if (!updatedAddress || updatedAddress.id === undefined) {
+      // Handle adding a new address
+      const newAddressList = [...customerAddressVO, updatedAddress];
+      setCustomerAddressVO(newAddressList);
+      setNewAddress({
+        gstRegistrationStatus: "",
+        gstNumber: "",
+        street1: "",
+        street2: "",
+        country: "",
+        state: "",
+        city: "",
+        pincode: "",
+        contactName: "",
+        phoneNumber: "",
+        designation: "",
+        email: "",
+        // isPrimary: false,
+      });
+      handleShippingClickClose(); // Close the modal or perform other actions
+      return;
+    }
+
+    // Find the index of the address with the given ID
+    const addressIndex = customerAddressVO.findIndex(
+      (address) => address.id === updatedAddress.id
+    );
+
+    if (addressIndex !== -1) {
+      // Clone the array to avoid mutating state directly
+      const updatedAddresses = [...customerAddressVO];
+      // Replace the old address with the updated one
+      updatedAddresses[addressIndex] = updatedAddress;
+      // Update the state with the new array of addresses
+      setCustomerAddressVO(updatedAddresses);
+      setNewAddress({}); // Clear the newAddress state
+      handleShippingClickClose(); // Close the modal or perform any other actions as needed
+    } else {
+      // Handle the case where the address ID is not found
+      console.error("Address ID not found:", updatedAddress.id);
+    }
+  };
+
+  // const isValidBankAddress = () => {
+  //   return (
+  //     newBankAddress.bank.trim() !== "" &&
+  //     newBankAddress.accountNo.trim() !== "" &&
+  //     newBankAddress.accountName.trim() !== "" &&
+  //     newBankAddress.branch.trim() !== "" &&
+  //     newBankAddress.ifscCode.trim() !== ""
+  //   );
+  // };
+
   const isValidBankAddress = () => {
     return (
-      newBankAddress?.bank?.trim() !== "" &&
-      newBankAddress?.accountNo?.trim() !== "" &&
-      newBankAddress?.accountName?.trim() !== "" &&
-      newBankAddress?.branch?.trim() !== "" &&
-      newBankAddress?.ifscCode?.trim() !== ""
+      newBankAddress &&
+      typeof newBankAddress.bank === "string" &&
+      (typeof newBankAddress.accountNo === "string" ||
+        typeof newBankAddress.accountNo === "number") &&
+      typeof newBankAddress.accountName === "string" &&
+      typeof newBankAddress.branch === "string" &&
+      typeof newBankAddress.ifscCode === "string" &&
+      newBankAddress.bank.trim() !== "" &&
+      newBankAddress.accountNo.toString().trim() !== "" &&
+      newBankAddress.accountName.trim() !== "" &&
+      newBankAddress.branch.trim() !== "" &&
+      newBankAddress.ifscCode.trim() !== ""
     );
   };
 
@@ -569,88 +581,124 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     }));
   };
 
-  // const handleBankSubmit = async () => {
-  //   const bankAddressWithCustomerId = {
-  //     ...newBankAddress,
-  //     customerId: customerId,
-  //   };
+  // const handleUpdateShippingBankAddress = (updatedBankAddress) => {
+  //   // Check if updatedAddress is null or undefined
+  //   if (!updatedBankAddress || updatedBankAddress.id === undefined) {
+  //     // Handle adding a new address
+  //     const newBankAddressList = [...customerBankAddressVO, updatedBankAddress];
+  //     setCustomerBankAddressVO(newBankAddressList);
 
-  //   // Check if all fields are filled
-  //   if (isValidBankAddress()) {
-  //     setErrors2({}); // Clear any previous errors on successful submission
-  //     handleAddBankAddress();
+  //     setBankAddresses({
+  //       bank: "",
+  //       accountNo: "",
+  //       accountName: "",
+  //       branch: "",
+  //       ifscCode: "",
+  //     });
+  //     handleBankClickClose(); // Close the modal or perform other actions
+  //     return;
+  //   }
+
+  //   // Find the index of the address with the given ID
+  //   const addressIndex = customerBankAddressVO.findIndex(
+  //     (address) => address.id === updatedBankAddress.id
+  //   );
+
+  //   if (addressIndex !== -1) {
+  //     // Clone the array to avoid mutating state directly
+  //     const updatedBankAddress = [...customerBankAddressVO];
+  //     // Replace the old address with the updated one
+  //     updatedBankAddress[addressIndex] = updatedBankAddress;
+  //     // Update the state with the new array of addresses
+  //     setCustomerBankAddressVO(updatedBankAddress);
+  //     setBankAddresses({}); // Clear the newAddress state
+  //     handleBankClickClose(); // Close the modal or perform any other actions as needed
+  //   } else {
+  //     // Handle the case where the address ID is not found
+  //     console.error("Address ID not found:", updatedBankAddress.id);
   //   }
   // };
 
+  const handleUpdateShippingBankAddress = (updatedBankAddress) => {
+    // Check if updatedBankAddress is null or undefined
+    if (!updatedBankAddress || updatedBankAddress.id === undefined) {
+      // Handle adding a new address
+      const newBankAddressList = [...customerBankAddressVO, updatedBankAddress];
+      setCustomerBankAddressVO(newBankAddressList);
+      // setBankAddresses(newBankAddressList); // Update bankAddresses state
+      setNewBankAddress({
+        // Reset newBankAddress state
+        bank: "",
+        accountNo: "",
+        accountName: "",
+        branch: "",
+        ifscCode: "",
+      });
+      handleBankClickClose(); // Close the modal or perform other actions
+      return;
+    }
+
+    // Find the index of the address with the given ID
+    const addressIndex = customerBankAddressVO.findIndex(
+      (address) => address.id === updatedBankAddress.id
+    );
+
+    if (addressIndex !== -1) {
+      // Clone the array to avoid mutating state directly
+      const updatedBankAddresses = [...customerBankAddressVO];
+      // Replace the old address with the updated one
+      updatedBankAddresses[addressIndex] = updatedBankAddress;
+      // Update the state with the new array of addresses
+      setCustomerBankAddressVO(updatedBankAddresses);
+      // setBankAddresses(updatedBankAddresses); // Update bankAddresses state
+      setNewBankAddress({
+        // Reset newBankAddress state
+        bank: "",
+        accountNo: "",
+        accountName: "",
+        branch: "",
+        ifscCode: "",
+      });
+      handleBankClickClose(); // Close the modal or perform any other actions as needed
+    } else {
+      // Handle the case where the address ID is not found
+      console.error("Address ID not found:", updatedBankAddress.id);
+    }
+  };
+
   const handleBankSubmit = async () => {
+    const bankWithCustomerId = { ...newBankAddress, customerId: customerId };
+
     if (isValidBankAddress()) {
       setErrors2({}); // Clear any previous errors on successful submission
-      handleAddBankAddress();
+      if (editCustomerId) {
+        // If editCustomerId is truthy, update the existing address
+        handleUpdateShippingBankAddress(bankWithCustomerId);
+      } else {
+        // If editCustomerId is falsy, add a new address
+        handleAddBankAddress(bankWithCustomerId);
+      }
     } else {
       // Display error messages for invalid fields
       const updatedErrors1 = {};
-      if (newBankAddress.bank.trim() === "") {
+      if (newBankAddress && newBankAddress.bank.trim() === "") {
         updatedErrors1.bank = true;
       }
-      if (newBankAddress.accountNo.trim() === "") {
+      if (newBankAddress && newBankAddress.accountNo.trim() === "") {
         updatedErrors1.accountNo = true;
       }
-      if (newBankAddress.accountName.trim() === "") {
+      if (newBankAddress && newBankAddress.accountName.trim() === "") {
         updatedErrors1.accountName = true;
       }
-      if (newBankAddress.branch.trim() === "") {
+      if (newBankAddress && newBankAddress.branch.trim() === "") {
         updatedErrors1.branch = true;
       }
-      if (newBankAddress.ifscCode.trim() === "") {
+      if (newBankAddress && newBankAddress.ifscCode.trim() === "") {
         updatedErrors1.ifscCode = true;
       }
       setErrors2(updatedErrors1);
     }
   };
-
-  // const handleBankSubmit = async () => {
-  //   const bankAddressWithCustomerId = {
-  //     ...newBankAddress,
-  //     customerId: customerId,
-  //   };
-  //   if (isValidBankAddress()) {
-  //     try {
-  //       const response = await axios.post(
-  //         "api/master/customersBankDetails",
-  //         bankAddressWithCustomerId
-  //       );
-  //       console.log("Response:", response.data);
-  //       setErrors2({}); // Clear any previous errors on successful submission
-  //       handleAddBankAddress();
-  //     } catch (errors2) {
-  //       console.error("Error:", errors2);
-  //       if (errors2.response && errors2.response.data) {
-  //         // Handle errors from the server
-  //         const serverErrors = errors2.response.data;
-  //         setErrors2(serverErrors);
-  //       } else {
-  //         // Handle other errors
-  //         setErrors2({ unexpectedError: true });
-  //       }
-  //     }
-  //   } else {
-  //     const updatedErrors = {};
-  //     for (const field in newBankAddress) {
-  //       if (
-  //         field !== "accountName" &&
-  //         field !== "accountNo" &&
-  //         field !== "bank" &&
-  //         field !== "ifscCode" &&
-  //         field !== "branch"
-  //       ) {
-  //         if (!newBankAddress[field].trim()) {
-  //           updatedErrors[field] = true;
-  //         }
-  //       }
-  //     }
-  //     setErrors2(updatedErrors); // Update errors for invalid fields
-  //   }
-  // };
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -669,11 +717,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   };
 
   const handleAddBankAddress = () => {
-    const bankAddressWithCustomerId = {
+    const bankWithCustomerId = {
       ...newBankAddress,
       customerId: customerId,
     };
-    setBankAddresses([...bankAddresses, bankAddressWithCustomerId]);
+    setBankAddresses([...bankAddresses, bankWithCustomerId]);
     setNewBankAddress({
       // customerId: customerId,
       bank: "",
@@ -706,34 +754,23 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       marginLeft: "40px",
     },
     submittedDataTitle: {
-      fontSize: "1.5rem",
+      fontWeight: "bold",
+      fontSize: "1.2rem",
       marginBottom: "15px",
       color: "#333",
     },
     submittedDataItem: {
       display: "flex",
-      marginBottom: "10px",
+      marginBottom: "5px",
+      fontSize: "0.9rem",
     },
     submittedDataLabel: {
+      fontSize: "1rem",
       fontWeight: "bold",
       marginRight: "10px",
       color: "#555",
     },
   };
-
-  // const clearForm = () => {
-  //   // Clear form fields
-  //   setGstRegistrationStatus("");
-  //   setGstNumber("");
-  //   setStreet1("");
-  //   setStreet2("");
-  //   setCity("");
-  //   setPincode("");
-  //   setContactName("");
-  //   setPhoneNumber("");
-  //   setDesignation("");
-  //   setIsPrimary(false);
-  // };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -801,9 +838,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     setIsSubmitting(true);
     console.log("click");
     const errors = {};
-    if (!customerCode) {
-      errors.customerCode = "Customer Code is required";
-    }
+    // if (!customerCode) {
+    //   errors.customerCode = "Customer Code is required";
+    // }
     if (!entityLegalName) {
       errors.entityLegalName = "Customer Org Name is required";
     }
@@ -847,6 +884,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
         .post(`${process.env.REACT_APP_API_URL}/api/master/customers`, formData)
         .then((response) => {
           setCustomerId(response.data.paramObjectsMap.customersVO.id);
+          const customerCode =
+            response.data.paramObjectsMap.customersVO.customerCode;
           console.log("Response:", response.data);
           console.log(
             "CustomerId:",
@@ -856,13 +895,90 @@ function AddCustomer({ addcustomer, editCustomerId }) {
           // addcustomer(true);
           setAddressShow(true);
           setErrors({});
-          toast.success("customer Created successfully", {
+          toast.success(
+            `Customer with code ${customerCode} created successfully`,
+            {
+              autoClose: 2000,
+              theme: "colored",
+            }
+          );
+        })
+        .catch((error) => {
+          toast.error("customer Creation failed", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        });
+    } else {
+      setErrors(errors);
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleUpdateCustomer = () => {
+    setIsSubmitting(true);
+    console.log("click");
+    const errors = {};
+    if (!customerCode) {
+      errors.customerCode = "Customer Code is required";
+    }
+    if (!entityLegalName) {
+      errors.entityLegalName = "Customer Org Name is required";
+    }
+    // if (!customerType) {
+    //   errors.customerType = "Customer Type is required";
+    // }
+    if (!displayName) {
+      errors.displayName = "Display Name is required";
+    }
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      errors.email = "Invalid email format";
+    }
+    if (!phoneNumber || phoneNumber.length !== 10 || isNaN(phoneNumber)) {
+      errors.phoneNumber = "Please enter a valid 10-digit phone number";
+    }
+
+    console.log("Test", newAddress);
+
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        id: customerVOId,
+        phoneNumber,
+        customerActivatePortal,
+        customerCode,
+        entityLegalName,
+        customerType,
+        displayName,
+        email,
+        active,
+        orgId,
+        customerAddressDTO: customerAddressVO,
+        customerBankDetailsDTO: customerBankAddressVO,
+      };
+
+      axios
+        .put(`${process.env.REACT_APP_API_URL}/api/master/customers`, formData)
+        .then((response) => {
+          setCustomerId(
+            response.data.paramObjectsMap.customersVO.customersAddressVO.id
+          );
+          console.log(
+            "Response:",
+            response.data.paramObjectsMap.customersVO.customersAddressVO.id
+          );
+          console.log("CustomerId:", response.data.id);
+
+          setAddressShow(true);
+          setErrors({});
+          toast.success("Customer updated successfully", {
             autoClose: 2000,
             theme: "colored",
           });
         })
         .catch((error) => {
-          toast.error("customer Creation failed", {
+          toast.error("Customer update failed", {
             autoClose: 2000,
             theme: "colored",
           });
@@ -912,50 +1028,70 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <select
-              className="form-select form-sz w-full"
-              onChange={handleCustomerTypeChange}
-              value={customerType}
-              disabled={isSubmitting}
-            >
-              <option value="" disabled>
-                Select a Customer
-              </option>
-              <option value="0">Emitter</option>
-              <option value="1">Receiver</option>
-            </select>
+            {editCustomerId ? (
+              <select
+                className="form-select form-sz w-full"
+                onChange={handleCustomerTypeChange}
+                value={customerType}
+                disabled={isSubmitting || disableCustomerType} // Disable the select field when disableCustomerType is true
+                onMouseDown={(e) => e.preventDefault()} // Prevent the default behavior when clicking on the select field
+              >
+                <option value="" disabled>
+                  Select a Customer
+                </option>
+                <option value="0">Emitter</option>
+                <option value="1">Receiver</option>
+              </select>
+            ) : (
+              <select
+                className="form-select form-sz w-full"
+                onChange={handleCustomerTypeChange}
+                value={customerType}
+                disabled={isSubmitting || disableCustomerType}
+              >
+                <option value="" disabled>
+                  Select a Customer
+                </option>
+                <option value="0">Emitter</option>
+                <option value="1">Receiver</option>
+              </select>
+            )}
             {errors.customerType && (
               <div className="error-text">{errors.customerType}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label mb-1">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Code
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              placeholder=""
-              value={customerCode}
-              className="form-control form-sz"
-              name="customerCode"
-              onChange={handleCustomerChange}
-              disabled={isSubmitting}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
-            />
-            {errors.customerCode && (
-              <div className="error-text">{errors.customerCode}</div>
-            )}
-          </div>
+          {editCustomerId && (
+            <>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label mb-1">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Code
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  placeholder=""
+                  value={customerCode}
+                  className="form-control form-sz"
+                  name="customerCode"
+                  onChange={handleCustomerChange}
+                  readOnly
+                  // onInput={(e) => {
+                  //   e.target.value = e.target.value.toUpperCase();
+                  // }}
+                />
+                {errors.customerCode && (
+                  <div className="error-text">{errors.customerCode}</div>
+                )}
+              </div>
+            </>
+          )}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label mb-1">
               <span
@@ -1177,88 +1313,210 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 </button>
               </div>
             </div>
-            <div className="d-flex align-items-center justify-content-center flex-wrap">
-              {shippingAddresses.map((address, index) => (
-                <div
-                  className="col-md-5 mt-3"
-                  key={index}
-                  style={styles.submittedDataContainer}
-                >
-                  <div className="row">
-                    <div className="col-md-10">
-                      <h2 style={styles.submittedDataTitle}>
-                        Address {index + 1}
-                      </h2>
-                    </div>
-                    <div className="col-md-2">
-                      <FaTrash
-                        className="cursor-pointer w-4 h-8 me-3"
-                        onClick={() => handleDeleteAddress(index)}
-                      />
-                    </div>
-                  </div>
 
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>
-                      GST Registration Status:
-                    </span>
-                    <span>{address.gstRegistrationStatus}</span>
-                  </div>
-                  {address.gstRegistrationStatus === "Registered" && (
-                    <div style={styles.submittedDataItem}>
-                      <span style={styles.submittedDataLabel}>GST Number:</span>
-                      <span>{address.gstNumber}</span>
+            <div className="d-flex align-items-center justify-content-center flex-wrap">
+              <>
+                {shippingAddresses.map((address, index) => (
+                  <div
+                    className="col-md-5 mt-3"
+                    key={index}
+                    style={{
+                      ...styles.submittedDataContainer,
+                      width: "350px",
+                      height: "430px",
+                      borderRadius: "20px",
+                    }} // Set fixed width
+                  >
+                    <div className="row">
+                      <div className="col-md-10">
+                        <h2 style={styles.submittedDataTitle}>
+                          Address {index + 1}
+                        </h2>
+                      </div>
+                      <div className="col-md-2">
+                        <FaTrash
+                          className="cursor-pointer w-4 h-8 me-3"
+                          onClick={() => handleDeleteAddress(index)}
+                        />
+                      </div>
                     </div>
-                  )}
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Street 1:</span>
-                    <span>{address.street1}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Street 2:</span>
-                    <span>{address.street2}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Country:</span>
-                    <span>{address.country}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>State:</span>
-                    <span>{address.state}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>City:</span>
-                    <span>{address.city}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Pin Code:</span>
-                    <span>{address.pinCode}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>
-                      Contact Person:
-                    </span>
-                    <span>{address.contactName}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Phone Number:</span>
-                    <span>{address.phoneNumber}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Destination:</span>
-                    <span>{address.designation}</span>
-                  </div>
-                  <div style={styles.submittedDataItem}>
-                    <span style={styles.submittedDataLabel}>Email:</span>
-                    <span>{address.email}</span>
-                  </div>
-                  {/* <div style={styles.submittedDataItem}>
+
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        GST Registration Status:
+                      </span>
+                      <span>{address.gstRegistrationStatus}</span>
+                    </div>
+                    {address.gstRegistrationStatus === "Registered" && (
+                      <div style={styles.submittedDataItem}>
+                        <span style={styles.submittedDataLabel}>
+                          GST Number:
+                        </span>
+                        <span>{address.gstNumber}</span>
+                      </div>
+                    )}
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Street 1:</span>
+                      <span>{address.street1}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Street 2:</span>
+                      <span>{address.street2}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Country:</span>
+                      <span>{address.country}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>State:</span>
+                      <span>{address.state}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>City:</span>
+                      <span>{address.city}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Pin Code:</span>
+                      <span>{address.pinCode}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Contact Person:
+                      </span>
+                      <span>{address.contactName}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Phone Number:
+                      </span>
+                      <span>{address.phoneNumber}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>
+                        Destination:
+                      </span>
+                      <span>{address.designation}</span>
+                    </div>
+                    <div style={styles.submittedDataItem}>
+                      <span style={styles.submittedDataLabel}>Email:</span>
+                      <span>{address.email}</span>
+                    </div>
+                    {/* <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Primary:</span>
                       <span>{address.isPrimary ? "Yes" : "No"}</span>
                     </div> */}
-                </div>
-              ))}
+                  </div>
+                ))}
+              </>
             </div>
+            {editCustomerId &&
+              customerAddressVO &&
+              customerAddressVO.length > 0 && (
+                <>
+                  <div className="d-flex align-items-center justify-content-center flex-wrap">
+                    {customerAddressVO.map((address, index) => (
+                      <div
+                        className="col-md-5 mt-3"
+                        key={index}
+                        style={{
+                          ...styles.submittedDataContainer,
+                          width: "350px",
+                          height: "430px",
+                          borderRadius: "20px",
+                        }} // Set fixed width
+                      >
+                        <div className="row">
+                          <div className="col-md-10">
+                            <h2 style={styles.submittedDataTitle}>
+                              Address {index + 1}
+                            </h2>
+                          </div>
+                          <div className="col-md-2">
+                            <button
+                              key={index}
+                              onClick={() => handleEditAddress(index)}
+                              className="btn btn-link"
+                            >
+                              <FaEdit
+                                style={{ fontSize: "22px", color: "black" }}
+                              />
+                            </button>
+                          </div>
+                        </div>
+                        {/* Display address details */}
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            GST Registration Status:
+                          </span>
+                          <span>{address.gstRegistrationStatus}</span>
+                        </div>
+                        {address.gstRegistrationStatus === "Registered" && (
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              GST Number:
+                            </span>
+                            <span>{address.gstNumber}</span>
+                          </div>
+                        )}
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Street 1:
+                          </span>
+                          <span>{address.street1}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Street 2:
+                          </span>
+                          <span>{address.street2}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Country:
+                          </span>
+                          <span>{address.country}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>State:</span>
+                          <span>{address.state}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>City:</span>
+                          <span>{address.city}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Pin Code:
+                          </span>
+                          <span>{address.pinCode}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Contact Person:
+                          </span>
+                          <span>{address.contactName}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Phone Number:
+                          </span>
+                          <span>{address.phoneNumber}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Destination:
+                          </span>
+                          <span>{address.designation}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>Email:</span>
+                          <span>{address.email}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
           </CustomTabPanel>
           <CustomTabPanel value={value} index={1}>
             <div className="row d-flex justify-content-center">
@@ -1318,25 +1576,93 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 </div>
               ))}
             </div>
+            {editCustomerId &&
+              customerBankAddressVO &&
+              customerBankAddressVO.length > 0 && (
+                <>
+                  <div className="d-flex align-items-center justify-content-center flex-wrap">
+                    {customerBankAddressVO.map((bank, index) => (
+                      <div
+                        className="col-md-5 mt-3"
+                        key={index}
+                        style={styles.submittedDataContainer}
+                      >
+                        <div className="row">
+                          <div className="col-md-10">
+                            <h2 style={styles.submittedDataTitle}>
+                              Bank {index + 1}
+                            </h2>
+                          </div>
+                          <div className="col-md-2">
+                            <FaEdit
+                              className="cursor-pointer w-4 h-8 me-3"
+                              onClick={() => handleEditBankAddress(index)}
+                            />
+                          </div>
+                        </div>
+
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>Bank:</span>
+                          <span>{bank.bank}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Account Number:
+                          </span>
+                          <span>{bank.accountNo}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            Account Name:
+                          </span>
+                          <span>{bank.accountName}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>Branch:</span>
+                          <span>{bank.branch}</span>
+                        </div>
+                        <div style={styles.submittedDataItem}>
+                          <span style={styles.submittedDataLabel}>
+                            IFSC Code:
+                          </span>
+                          <span>{bank.ifscCode}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
+              )}
           </CustomTabPanel>
         </Box>
         <div className="d-flex flex-row mb-2 mt-2">
-          <button
-            type="button"
-            onClick={handleCustomer}
-            disabled={addressShow === true}
-            style={{ cursor: addressShow ? "not-allowed" : "pointer" }}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleCustomerCancel}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
+          {editCustomerId ? (
+            <button
+              type="button"
+              onClick={handleUpdateCustomer}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Update
+            </button>
+          ) : (
+            <>
+              <button
+                type="button"
+                onClick={handleCustomer}
+                disabled={addressShow === true}
+                style={{ cursor: addressShow ? "not-allowed" : "pointer" }}
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={handleCustomerCancel}
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Cancel
+              </button>
+            </>
+          )}
         </div>
       </div>
       <Dialog
@@ -1522,24 +1848,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
-                {/* <textarea
-                  style={{
-                    fontSize: "0.800rem",
-                    borderColor: errors1.state ? "red" : "",
-                    height: 40, // Set the height of the textarea
-                    width: "100%", // Set the width of the textarea
-                    padding: "0.375rem 0.75rem", // Add padding to match the input style
-                    resize: "none", // Disable resizing
-                  }}
-                  onInput={(e) => {
-                    e.target.value = e.target.value
-                      .toUpperCase()
-                      .replace(/[^A-Z\s]/g, "");
-                  }}
-                  className="form-control label label-text label-font-size text-base-content"
-                  value={newAddress.state}
-                  onChange={(e) => handleAddressInputChange(e, "state")}
-                ></textarea> */}
                 <select
                   className="form-select form-sz w-full"
                   onChange={(e) => handleAddressInputChange(e, "state")}
@@ -1579,23 +1887,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 </label>
               </div>
               <div className="col-lg-6 col-md-6">
-                {/* <input
-                  style={{
-                    height: 40,
-                    fontSize: "0.800rem",
-                    width: "100%",
-                    borderColor: errors1.city ? "red" : "",
-                  }}
-                  type={"text"}
-                  onInput={(e) => {
-                    e.target.value = e.target.value
-                      .toUpperCase()
-                      .replace(/[^A-Z\s]/g, "");
-                  }}
-                  value={newAddress.city}
-                  onChange={(e) => handleAddressInputChange(e, "city")}
-                  className="input input-bordered p-2"
-                /> */}
                 <select
                   className="form-select form-sz w-full mb-2"
                   onChange={(e) => handleAddressInputChange(e, "city")}
