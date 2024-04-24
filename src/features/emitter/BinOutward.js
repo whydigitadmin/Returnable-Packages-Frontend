@@ -26,6 +26,8 @@ const DOCDATA = [
 // const EmitterBinAllotment = () => {
 function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
   const [addInwardManifeast, setAddInwardManifeast] = useState("");
+  const [selectedFlow, setSelectedFlow] = React.useState("");
+  const [flowData, setFlowData] = React.useState([]);
   const [stockBranch, setStockBranch] = useState("");
   const [reqNo, setReqNo] = useState("");
   const [reqDate, setReqDate] = useState("");
@@ -86,9 +88,36 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
   };
 
   useEffect(() => {
+    getAddressById();
     getStockBranch();
     // getAllAsset();
   }, []);
+
+  const handleSelectedFlow = (event) => {
+    setSelectedFlow(event.target.value);
+    // getFlowNameById(event.target.value);
+  };
+
+  const getAddressById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow/getFlowByUserId?userId=${userId}`
+      );
+
+      if (response.status === 200) {
+        const validFlows = response.data.paramObjectsMap.flowVO
+          .filter(
+            (flow) =>
+              typeof flow.flowName === "string" && flow.flowName.trim() !== ""
+          )
+          .map((flow) => ({ id: flow.id, flow: flow.flowName }));
+        setFlowData(validFlows);
+        console.log("validFlows", validFlows);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
+  };
 
   const handleStockBranchChange = (e) => {
     const selectedValue = e.target.value;
@@ -412,22 +441,20 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
             <div className="col-lg-2 col-md-4">
               <select
                 className="form-select form-sz w-full mb-2"
-                // onChange={handleStockBranchChange}
-                value={stockBranch}
+                value={selectedFlow}
+                onChange={handleSelectedFlow}
               >
-                <option value="" disabled>
-                  Select a Flow
-                </option>
-                {/* {stockBranchList.length > 0 &&
-                  stockBranchList.map((list) => (
-                    <option key={list.id} value={list.branchCode}>
-                      {list.branchCode}
+                <option value="">Select a Flow</option>
+                {flowData &&
+                  flowData.map((flowName) => (
+                    <option key={flowName.id} value={flowName.id}>
+                      {flowName.flow}
                     </option>
-                  ))} */}
+                  ))}
               </select>
-              {errors.stockBranch && (
+              {/* {errors.stockBranch && (
                 <span className="error-text mb-1">{errors.stockBranch}</span>
-              )}
+              )} */}
             </div>
             {/* KIT NAME FIELD */}
             <div className="col-lg-2 col-md-4">
