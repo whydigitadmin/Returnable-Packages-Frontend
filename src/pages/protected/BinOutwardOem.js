@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { BinOutwardOem } from "../../features/emitter/BinOutwardOem";
+import BinOutwardOem from "../../features/emitter/BinOutwardOem";
 
 function InternalPage() {
   const dispatch = useDispatch();
