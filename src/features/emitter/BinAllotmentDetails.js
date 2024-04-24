@@ -106,20 +106,13 @@ export const BinAllotmentDetails = () => {
   const getAllBinAllotmentData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/auth/userByOrgId?orgId=${orgId}`
+        // `${process.env.REACT_APP_API_URL}/api/auth/userByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        setData(
-          response.data.paramObjectsMap.userVO.filter(
-            (user) => user.role === "ROLE_USER" || user.role === "ROLE_ADMIN"
-          )
-        );
-        console.log(
-          response.data.paramObjectsMap.userVO.filter(
-            (user) => user.role === "ROLE_USER"
-          )
-        );
+        setData(response.data.paramObjectsMap.binAllotmentNewVO)
+        console.log("Response from API is:", response.data.paramObjectsMap.binAllotmentNewVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -133,8 +126,8 @@ export const BinAllotmentDetails = () => {
   // };
 
   const handleViewRow = (row) => {
-    setSelectedRowId(row.original.userId);
-    console.log("setSelectedRowID", row.original.userId);
+    setSelectedRowId(row.original.docId);
+    console.log("setSelectedRowID", row.original.docId);
     setViewBinAllotment(true);
     // setAddBinAllotment(true);
   };
@@ -178,7 +171,7 @@ export const BinAllotmentDetails = () => {
         ),
       },
       {
-        accessorKey: "firstName",
+        accessorKey: "binReqNo",
         header: "Req No",
         size: 50,
         muiTableHeadCellProps: {
@@ -189,7 +182,7 @@ export const BinAllotmentDetails = () => {
         },
       },
       {
-        accessorKey: "email",
+        accessorKey: "emitter",
         header: "Emitter",
         size: 50,
         muiTableHeadCellProps: {
@@ -200,7 +193,7 @@ export const BinAllotmentDetails = () => {
         },
       },
       {
-        accessorKey: "pno",
+        accessorKey: "binReqDate",
         header: "Req Date",
         size: 50,
         muiTableHeadCellProps: {
@@ -211,7 +204,7 @@ export const BinAllotmentDetails = () => {
         },
       },
       {
-        accessorKey: "pno",
+        accessorKey: "reqKitQty",
         header: "Req QTY",
         size: 50,
         muiTableHeadCellProps: {
@@ -222,7 +215,7 @@ export const BinAllotmentDetails = () => {
         },
       },
       {
-        accessorKey: "pno",
+        accessorKey: "allotkKitQty",
         header: "Allotted QTY",
         size: 50,
         muiTableHeadCellProps: {

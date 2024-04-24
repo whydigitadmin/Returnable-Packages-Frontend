@@ -12,16 +12,6 @@ import "react-toastify/dist/ReactToastify.css";
 import { IoMdClose } from "react-icons/io";
 
 
-const DOCDATA = [
-    {
-        id: 1,
-        SID: "IR",
-        Prefix: "AI",
-        Sequence: "00001",
-        Suffix: "ABC",
-        Type: "KT",
-    },
-];
 function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [addInwardManifeast, setAddInwardManifeast] = useState("");
     const [stockBranch, setStockBranch] = useState("");
@@ -29,7 +19,10 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [reqDate, setReqDate] = useState("");
     const [docId, setDocId] = useState("");
     const [docDate, setDocDate] = useState(dayjs());
+    // const [docDate1, setDocDate1] = useState(dayjs());
+
     const [emitter, setEmitter] = useState("");
+    const [flow, setFlow] = useState("");
     const [reqKitName, setReqKitName] = useState("");
     const [reqPartName, setReqPartName] = useState("");
     const [reqQty, setReqQty] = useState("");
@@ -44,8 +37,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [reqData, setReqData] = useState(null);
     const [emitterId, setEmitterId] = useState("");
     const [reqPartNo, setReqPartNo] = useState("");
-    const [docdata, setDocData] = useState(DOCDATA);
-
+    const [viewBinData, setViewBinData] = useState([]);
 
 
     const [toDate, setToDate] = useState(null);
@@ -68,20 +60,29 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     ]);
 
     const handleAddRow = () => {
-        const newRow = {
-            id: tableData.length + 1,
-            assetId: "",
-            rfId: "",
-            asset: "",
-            assetCode: "",
-            qty: 1,
-        };
-        setTableData([...tableData, newRow]);
+        const hasEmptyRfId = tableData.some((row) => row.rfId === "");
+
+        if (!hasEmptyRfId) {
+            const newRow = {
+                id: tableData.length + 1,
+                assetId: "",
+                rfId: "",
+                asset: "",
+                assetCode: "",
+                qty: 1,
+            };
+            setTableData([...tableData, newRow]);
+        } else {
+            toast.error("Please fill in the RF ID for the existing row before adding a new one.");
+        }
     };
 
     useEffect(() => {
-        getStockBranch();
-        getAllBinRequest();
+
+        { viewBinAllotmentId && viewAllotedBinByBinDocId() }
+        getStockBranch()
+        getAllBinRequest()
+
     }, []);
 
     const handleStockBranchChange = (e) => {
@@ -107,11 +108,13 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             setReqPartName(selectedReq.partname);
             setReqQty(selectedReq.reqKitQty);
             setEmitterId(selectedReq.emitterid);
+            setFlow(selectedReq.flow);
             setReqPartNo(selectedReq.emitterid);
 
         } else {
             setReqDate('');
             setEmitter('');
+            setFlow('');
             setReqKitName('');
             setReqPartName('');
             setReqQty('');
@@ -131,6 +134,47 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         setFilteredStockBranch(filteredBranches);
     };
 
+    const viewAllotedBinByBinDocId = async () => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_URL}/api/emitter/getAllAllotmentById?docId=${viewBinAllotmentId}`
+            );
+            if (response.status === 200) {
+                setViewBinData(response.data.paramObjectsMap.binAllotmentNewVO);
+                console.log("API Response:", response.data.paramObjectsMap.binAllotmentNewVO);
+                setDocId(response.data.paramObjectsMap.binAllotmentNewVO[0].docId);
+                // setDocDate(response.data.paramObjectsMap.binAllotmentNewVO[0].docDate);
+                setStockBranch(response.data.paramObjectsMap.binAllotmentNewVO[0].stockBranch);
+                console.log("Stock Branch:", stockBranch);
+
+                setReqNo(response.data.paramObjectsMap.binAllotmentNewVO[0].binReqNo);
+                setReqDate(response.data.paramObjectsMap.binAllotmentNewVO[0].binReqDate);
+                setEmitter(response.data.paramObjectsMap.binAllotmentNewVO[0].emitter);
+                // setFlow(response.data.paramObjectsMap.binAllotmentNewVO[0].docDate);
+                setReqKitName(response.data.paramObjectsMap.binAllotmentNewVO[0].kitCode);
+                setReqPartName(response.data.paramObjectsMap.binAllotmentNewVO[0].partName);
+                setReqQty(response.data.paramObjectsMap.binAllotmentNewVO[0].reqKitQty);
+                setAvlQty(response.data.paramObjectsMap.binAllotmentNewVO[0].avlKitQty);
+                setAlotQty(response.data.paramObjectsMap.binAllotmentNewVO[0].allotkKitQty);
+                const viewTableData = response.data.paramObjectsMap.binAllotmentNewVO[0].binAllotmentDetailsVO.map(
+                    (row, index) => ({
+                        id: index + 1,
+                        assetId: row.tagCode,
+                        rfId: row.rfId,
+                        asset: row.asset,
+                        assetCode: row.assetCode,
+                        qty: row.qty,
+                    })
+                );
+                setTableData(viewTableData)
+
+            } else {
+                console.error("API Error:", response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
     const getAllBinRequest = async () => {
         try {
             const response = await axios.get(
@@ -190,12 +234,19 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         }
     };
 
+
     const handleDeleteRow = (id) => {
-        setTableData(tableData.filter((row) => row.id !== id));
+        setTableData((prevTableData) =>
+            prevTableData.filter((row) => row.id !== id).map((row, index) => ({
+                ...row,
+                id: index + 1, // Update the ID based on the new index
+            }))
+        );
     };
 
+
     const handleGetRfIdByTagCode = async (e, row) => {
-        if (e.key === "Escape" && e.target.name === "assetId") {
+        if (e.key === "Tab" && e.target.name === "assetId") {
             e.preventDefault();
             const assetId = e.target.value;
             const rowIndex = tableData.findIndex((r) => r.id === row.id);
@@ -233,23 +284,23 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             }
         }
     };
-    const handleGetTagCodeByRfId = async (e, row) => {
-        console.log("handleGetTagCodeByRfId funtion is working")
-        if (e.key === "Escape" && e.target.name === "rfId") {
-            console.log("funtion is working")
 
+    const handleGetTagCodeByRfId = async (e, row) => {
+        console.log("fist step is working")
+        if (e.key === "Tab" && e.target.name === "rfId") {
+            console.log("2nd step is working")
             e.preventDefault();
             const rfId = e.target.value;
             const rowIndex = tableData.findIndex((r) => r.id === row.id);
             if (rfId && rowIndex !== -1) {
                 try {
                     const response = await axios.get(
-                        `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByRfId?rfId=E2004704B1D0642664AD0116`
-                        // `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByRfId?rfId=${rfId}`
+                        `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByRfId?rfId=${rfId}`
                     );
 
                     if (response.status === 200) {
-                        const assetId = response.data.paramObjectsMap.assetTaggingDetailsVO.assetId;
+                        console.log("The response from the getTagcode API is:", response.data.paramObjectsMap.assetTaggingDetailsVO)
+                        const assetId = response.data.paramObjectsMap.assetTaggingDetailsVO.tagCode;
                         setTableData((prevTableData) =>
                             prevTableData.map((r, index) =>
                                 index === rowIndex ? { ...r, assetId: assetId || '' } : r
@@ -267,6 +318,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                 index === rowIndex ? { ...r, assetCode: assetCode || '' } : r
                             )
                         );
+                        handleAddRow()
                     } else {
                         console.error("API Error:", response.status, response.statusText);
                     }
@@ -308,7 +360,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             if (rowIndex !== -1) {
                 setTableData((prevTableData) =>
                     prevTableData.map((row, index) =>
-                        index === rowIndex ? { ...row, rfId: '' } : row
+                        index === rowIndex ? { ...row, assetId: '' } : row
                     )
                 );
             }
@@ -321,6 +373,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         setReqNo("")
         setReqDate(null)
         setEmitter("")
+        setFlow("")
         setReqKitName("")
         setReqPartName("")
         setReqQty("")
@@ -346,10 +399,10 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         console.log("testing")
         const errors = {};
 
-        if (!docId) {
-            console.log("test docId")
-            errors.docId = "Doc ID is required";
-        }
+        // if (!docId) {
+        //     console.log("test docId")
+        //     errors.docId = "Doc ID is required";
+        // }
 
         if (!docDate) {
             errors.docDate = "Doc Date is required";
@@ -415,6 +468,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                 binReqNo: reqNo,
                 binReqDate: reqDate,
                 emitterId: emitterId,
+                // flow: flow,
+                kitCode: reqKitName,
                 reqKitQty: reqQty,
                 avlKitQty: avlQty,
                 allotKitQty: alotQty,
@@ -433,11 +488,11 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                 )
                 .then((response) => {
                     console.log("After save Response:", response.data);
-                    // handleNew();
-                    // toast.success("Emitter Bin Allotment Created Successfully!", {
-                    //     autoClose: 2000,
-                    //     theme: "colored",
-                    // });
+                    handleNew();
+                    toast.success("Emitter Bin Allotment Created Successfully!", {
+                        autoClose: 2000,
+                        theme: "colored",
+                    });
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -462,8 +517,6 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                         className="cursor-pointer w-8 h-8 mb-3"
                     />
                 </div>
-
-
                 <div className="row mt-3">
                     {/* DOC ID FIELD */}
                     <div className="col-lg-3 col-md-6">
@@ -477,10 +530,11 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                     <div className="col-lg-3 col-md-6">
                         <input
                             className="form-control form-sz mb-2"
-                            placeholder="Doc Id"
-                            value={docId}
+                            placeholder="Auto Gen"
+                            // value={docId}
+                            value={viewBinAllotmentId ? viewBinAllotmentId : docId}
                             onChange={(e) => setDocId(e.target.value)}
-                            disabled={viewBinAllotmentId ? true : false}
+                            disabled
 
                         />
                         {errors.docId && (
@@ -591,8 +645,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                             disabled
 
                         />
-                        {errors.docId && (
-                            <span className="error-text mb-1">{errors.docId}</span>
+                        {errors.reqData && (
+                            <span className="error-text mb-1">{errors.reqData}</span>
                         )}
                     </div>
                     {/* EMITTER FIELD */}
@@ -613,6 +667,26 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                         />
                         {errors.emitter && (
                             <span className="error-text">{errors.emitter}</span>
+                        )}
+                    </div>
+                    {/* Flow FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Flow
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="emitter"
+                            value={flow}
+                            disabled
+                        />
+                        {errors.flow && (
+                            <span className="error-text">{errors.flow}</span>
                         )}
                     </div>
                     {/* KIT NAME FIELD */}
@@ -718,21 +792,25 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                         )}
                     </div>
                 </div>
-                <div className="mt-2">
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
-                        onClick={handleAddRow}
-                    >
-                        + Add
-                    </button>
-                </div>
+                {!viewBinAllotmentId &&
+                    <>
+                        <div className="mt-2">
+                            <button
+                                className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
+                                onClick={handleAddRow}
+                            >
+                                + Add
+                            </button>
+                        </div>
+                    </>
+                }
                 <div className="row mt-2">
                     <div className="col-lg-12">
                         <div className="overflow-x-auto">
                             <table className="w-full">
                                 <thead>
                                     <tr>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">Action</th>
+                                        {!viewBinAllotmentId && <th className="px-2 py-2 bg-blue-500 text-white text-center">Action</th>}
                                         <th className="px-2 py-2 bg-blue-500 text-white text-center">S.No</th>
                                         <th className="px-2 py-2 bg-blue-500 text-white text-center">
                                             Tag Code
@@ -755,30 +833,20 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                     {tableData &&
                                         tableData.map((row) => (
                                             <tr key={row.id}>
+                                                {!viewBinAllotmentId &&
+                                                    <>
+                                                        <td className="border px-2 py-2">
+                                                            <button
+                                                                onClick={() => handleDeleteRow(row.id)}
+                                                                className="text-red-500"
+
+                                                            >
+                                                                <FaTrash style={{ fontSize: "18px" }} />
+                                                            </button>
+                                                        </td>
+                                                    </>}
                                                 <td className="border px-2 py-2">
-                                                    <button
-                                                        onClick={() => handleDeleteRow(row.id)}
-                                                        className="text-red-500"
-                                                    >
-                                                        <FaTrash style={{ fontSize: "18px" }} />
-                                                    </button>
-                                                </td>
-                                                <td className="border px-2 py-2">
-                                                    <input
-                                                        type="text"
-                                                        value={row.id}
-                                                        onChange={(e) =>
-                                                            setTableData((prev) =>
-                                                                prev.map((r) =>
-                                                                    r.id === row.id
-                                                                        ? { ...r, id: e.target.value }
-                                                                        : r
-                                                                )
-                                                            )
-                                                        }
-                                                        disabled
-                                                        style={{ width: "100%" }}
-                                                    />
+                                                    {row.id}
                                                 </td>
                                                 <td>
                                                     <input
@@ -787,38 +855,29 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                                         value={row.assetId}
                                                         onChange={(e) => handleRowDataChange(row.id, "assetId", e.target.value)}
                                                         onKeyDown={(e) => handleGetRfIdByTagCode(e, row)}
+                                                        disabled={viewBinAllotmentId ? true : false}
+
                                                     />
                                                 </td>
-                                                <td>
+                                                <td >
                                                     <input
                                                         type="text"
+                                                        name="rfId"
                                                         value={row.rfId}
                                                         onChange={(e) => handleRowDataChange(row.id, "rfId", e.target.value)}
                                                         onKeyDown={(e) => handleGetTagCodeByRfId(e, row)}
+                                                        disabled={viewBinAllotmentId ? true : false}
+                                                        style={{ width: "100%" }}
                                                     />
                                                 </td>
                                                 <td>
-                                                    <input
-                                                        type="text"
-                                                        value={row.asset}
-                                                        disabled
-                                                    />
-                                                </td>
-                                                <td className="border px-2 py-2">
-                                                    <input
-                                                        type="text"
-                                                        value={row.assetCode}
-                                                        disabled
-                                                    />
+                                                    {row.asset}
                                                 </td>
                                                 <td>
-                                                    <input
-                                                        type="text"
-                                                        value={row.qty}
-                                                        onKeyDown={(e) => handleTabKeyNewRow(e, row)}
-                                                        disabled
-
-                                                    />
+                                                    {row.assetCode}
+                                                </td>
+                                                <td>
+                                                    {row.qty}
                                                 </td>
                                             </tr>
                                         ))}
@@ -830,22 +889,25 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                 {errors.tableData && (
                     <div className="error-text mt-2">{errors.tableData}</div>
                 )}
-                <div className="mt-4">
-                    <button
-                        type="button"
-                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                        onClick={handleSave}
-                    >
-                        Save
-                    </button>
-                    <button
-                        type="button"
-                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                        onClick={handleNew}
-                    >
-                        Cancel
-                    </button>
-                </div>
+                {!viewBinAllotmentId &&
+                    <>
+                        <div className="mt-4">
+                            <button
+                                type="button"
+                                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                onClick={handleSave}
+                            >
+                                Save
+                            </button>
+                            <button
+                                type="button"
+                                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                onClick={handleNew}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </>}
             </div>
             <ToastContainer />
         </>
