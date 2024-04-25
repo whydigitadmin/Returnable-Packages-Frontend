@@ -38,6 +38,9 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     const [emitterId, setEmitterId] = useState("");
     const [reqPartNo, setReqPartNo] = useState("");
     const [viewBinData, setViewBinData] = useState([]);
+    const rfIdInputRef = useRef(null);
+    const assetIdInputRef = useRef(null);
+
 
 
     const [toDate, setToDate] = useState(null);
@@ -60,9 +63,9 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     ]);
 
     const handleAddRow = () => {
-        const hasEmptyRfId = tableData.some((row) => row.rfId === "");
+        const hasEmptyAssetCode = tableData.some((row) => row.assetCode === "");
 
-        if (!hasEmptyRfId) {
+        if (!hasEmptyAssetCode) {
             const newRow = {
                 id: tableData.length + 1,
                 assetId: "",
@@ -72,9 +75,10 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                 qty: 1,
             };
             setTableData([...tableData, newRow]);
-        } else {
-            toast.error("Please fill in the RF ID for the existing row before adding a new one.");
         }
+        // else {
+        //     toast.error("Please fill in the Asset Code for the existing row before adding a new one.");
+        // }
     };
 
     useEffect(() => {
@@ -83,7 +87,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         getStockBranch()
         getAllBinRequest()
 
-    }, []);
+    }, [tableData.assetCode]);
 
     const handleStockBranchChange = (e) => {
         const selectedValue = e.target.value;
@@ -245,6 +249,46 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
     };
 
 
+    // const handleGetRfIdByTagCode = async (e, row) => {
+    //     if (e.key === "Tab" && e.target.name === "assetId") {
+    //         e.preventDefault();
+    //         const assetId = e.target.value;
+    //         const rowIndex = tableData.findIndex((r) => r.id === row.id);
+    //         if (assetId && rowIndex !== -1) {
+    //             try {
+    //                 const response = await axios.get(
+    //                     `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByTagCode?tagCode=${assetId}`
+    //                 );
+
+    //                 if (response.status === 200) {
+    //                     const rfid = response.data.paramObjectsMap.assetTaggingDetailsVO.rfId;
+    //                     setTableData((prevTableData) =>
+    //                         prevTableData.map((r, index) =>
+    //                             index === rowIndex ? { ...r, rfId: rfid || '' } : r
+    //                         )
+    //                     );
+    //                     const asset = response.data.paramObjectsMap.assetTaggingDetailsVO.asset;
+    //                     setTableData((prevTableData) =>
+    //                         prevTableData.map((r, index) =>
+    //                             index === rowIndex ? { ...r, asset: asset || '' } : r
+    //                         )
+    //                     );
+    //                     const assetCode = response.data.paramObjectsMap.assetTaggingDetailsVO.assetCode;
+    //                     setTableData((prevTableData) =>
+    //                         prevTableData.map((r, index) =>
+    //                             index === rowIndex ? { ...r, assetCode: assetCode || '' } : r
+    //                         )
+    //                     );
+    //                 } else {
+    //                     console.error("API Error:", response.status, response.statusText);
+    //                 }
+    //             } catch (error) {
+    //                 console.error("Error fetching data:", error.message);
+    //             }
+    //         }
+    //     }
+    // };
+
     const handleGetRfIdByTagCode = async (e, row) => {
         if (e.key === "Tab" && e.target.name === "assetId") {
             e.preventDefault();
@@ -254,27 +298,36 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                 try {
                     const response = await axios.get(
                         `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByTagCode?tagCode=${assetId}`
+
                     );
 
                     if (response.status === 200) {
                         const rfid = response.data.paramObjectsMap.assetTaggingDetailsVO.rfId;
-                        setTableData((prevTableData) =>
-                            prevTableData.map((r, index) =>
-                                index === rowIndex ? { ...r, rfId: rfid || '' } : r
-                            )
-                        );
                         const asset = response.data.paramObjectsMap.assetTaggingDetailsVO.asset;
-                        setTableData((prevTableData) =>
-                            prevTableData.map((r, index) =>
-                                index === rowIndex ? { ...r, asset: asset || '' } : r
-                            )
-                        );
                         const assetCode = response.data.paramObjectsMap.assetTaggingDetailsVO.assetCode;
-                        setTableData((prevTableData) =>
-                            prevTableData.map((r, index) =>
-                                index === rowIndex ? { ...r, assetCode: assetCode || '' } : r
-                            )
+
+                        const updatedTableData = tableData.map((r, index) =>
+                            index === rowIndex
+                                ? { ...r, rfId: rfid || '', asset: asset || '', assetCode: assetCode || '' }
+                                : r
                         );
+
+                        const lastRow = updatedTableData[updatedTableData.length - 1];
+                        if (!lastRow || lastRow.rfId !== "") {
+                            const newRow = {
+                                id: updatedTableData.length + 1,
+                                assetId: "",
+                                rfId: "",
+                                asset: "",
+                                assetCode: "",
+                                qty: 1,
+                            };
+                            updatedTableData.push(newRow);
+                            setTableData(updatedTableData);
+                            setTimeout(() => {
+                                assetIdInputRef.current.focus();
+                            }, 0);
+                        }
                     } else {
                         console.error("API Error:", response.status, response.statusText);
                     }
@@ -284,11 +337,8 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
             }
         }
     };
-
     const handleGetTagCodeByRfId = async (e, row) => {
-        console.log("fist step is working")
         if (e.key === "Tab" && e.target.name === "rfId") {
-            console.log("2nd step is working")
             e.preventDefault();
             const rfId = e.target.value;
             const rowIndex = tableData.findIndex((r) => r.id === row.id);
@@ -299,26 +349,32 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                     );
 
                     if (response.status === 200) {
-                        console.log("The response from the getTagcode API is:", response.data.paramObjectsMap.assetTaggingDetailsVO)
                         const assetId = response.data.paramObjectsMap.assetTaggingDetailsVO.tagCode;
-                        setTableData((prevTableData) =>
-                            prevTableData.map((r, index) =>
-                                index === rowIndex ? { ...r, assetId: assetId || '' } : r
-                            )
-                        );
                         const asset = response.data.paramObjectsMap.assetTaggingDetailsVO.asset;
-                        setTableData((prevTableData) =>
-                            prevTableData.map((r, index) =>
-                                index === rowIndex ? { ...r, asset: asset || '' } : r
-                            )
-                        );
                         const assetCode = response.data.paramObjectsMap.assetTaggingDetailsVO.assetCode;
-                        setTableData((prevTableData) =>
-                            prevTableData.map((r, index) =>
-                                index === rowIndex ? { ...r, assetCode: assetCode || '' } : r
-                            )
+
+                        const updatedTableData = tableData.map((r, index) =>
+                            index === rowIndex
+                                ? { ...r, assetId: assetId || '', asset: asset || '', assetCode: assetCode || '' }
+                                : r
                         );
-                        handleAddRow()
+
+                        const lastRow = updatedTableData[updatedTableData.length - 1];
+                        if (!lastRow || lastRow.rfId !== "") {
+                            const newRow = {
+                                id: updatedTableData.length + 1,
+                                assetId: "",
+                                rfId: "",
+                                asset: "",
+                                assetCode: "",
+                                qty: 1,
+                            };
+                            updatedTableData.push(newRow);
+                            setTableData(updatedTableData);
+                            setTimeout(() => {
+                                rfIdInputRef.current.focus();
+                            }, 0);
+                        }
                     } else {
                         console.error("API Error:", response.status, response.statusText);
                     }
@@ -329,12 +385,9 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
         }
     };
 
-    const handleTabKeyNewRow = (e, row) => {
-        if (e.key === "Tab" && row.id === tableData[tableData.length - 1].id) {
-            e.preventDefault();
-            handleAddRow();
-        }
-    };
+
+
+
 
     const handleRowDataChange = (id, field, value) => {
         setTableData((prevTableData) =>
@@ -856,6 +909,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                                         onChange={(e) => handleRowDataChange(row.id, "assetId", e.target.value)}
                                                         onKeyDown={(e) => handleGetRfIdByTagCode(e, row)}
                                                         disabled={viewBinAllotmentId ? true : false}
+                                                        ref={assetIdInputRef}
 
                                                     />
                                                 </td>
@@ -866,6 +920,7 @@ function EmitterBinAllotment({ addBinAllotment, viewBinAllotmentId }) {
                                                         value={row.rfId}
                                                         onChange={(e) => handleRowDataChange(row.id, "rfId", e.target.value)}
                                                         onKeyDown={(e) => handleGetTagCodeByRfId(e, row)}
+                                                        ref={rfIdInputRef}
                                                         disabled={viewBinAllotmentId ? true : false}
                                                         style={{ width: "100%" }}
                                                     />
