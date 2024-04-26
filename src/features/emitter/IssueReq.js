@@ -289,6 +289,7 @@ function IssueReq() {
           setKitFields([{ kitNo: "", qty: "" }]);
           setSelectedKitNumbers([""]);
           setSelectedKitId("");
+          setSelectedKit("");
           setSelectedDate(null);
           getIssueRequest();
           setErrors("");
@@ -354,9 +355,11 @@ function IssueReq() {
           // setSelectedPartNumbers([""]);
           // setSelectedKitId("");
           getIssueRequest();
+          setSelectedPart("");
           setPartFields([{ partNo: "", qty: "" }]);
           setSelectedDate(null);
           setErrors("");
+          setKitQtyy("");
         })
         .catch((error) => {
           toast.error("Network Error!");
@@ -735,9 +738,9 @@ function IssueReq() {
             src="/inprogress.png"
             alt="Inprogress-status-icon"
             style={{ width: 30, height: 30, margin: "auto" }}
-          // onClick={() =>
-          //   handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
-          // }
+            // onClick={() =>
+            //   handleInProgressStatusClick(selectedIssueRequest, selectedSubIndex)
+            // }
           />
         </div>
       );
@@ -941,7 +944,7 @@ function IssueReq() {
                       icon={<MdPallet className="w-16 h-6" />}
                       {...a11yProps(0)}
                       value={0}
-                    // onClick={() => handleTabClick(0)}
+                      // onClick={() => handleTabClick(0)}
                     />
                   )}
                   {mode === "PART" && (
@@ -951,7 +954,7 @@ function IssueReq() {
                       {...a11yProps(1)}
                       value={1}
 
-                    // onClick={() => handleTabClick(1)}
+                      // onClick={() => handleTabClick(1)}
                     />
                   )}
                   <Tab
@@ -960,7 +963,7 @@ function IssueReq() {
                     {...a11yProps(2)}
                     value={2}
 
-                  // onClick={() => handleTabClick(2)}
+                    // onClick={() => handleTabClick(2)}
                   />
                 </Tabs>
               </Box>
@@ -974,7 +977,7 @@ function IssueReq() {
                   <CustomTabPanel value={value} index={0}>
                     {kitFields.map((field, index) => (
                       <div className="row" key={index}>
-                        <div className="col-lg-4 col-md-6 mb-2">
+                        <div className="col-lg-3 col-md-6 mb-2">
                           <label className="label">
                             <span className="label-text label-font-size text-base-content">
                               KIT{" "}
@@ -1002,18 +1005,13 @@ function IssueReq() {
                                 </option>
                               ))}
                           </select>
-                          <div className="mt-2 badge badge-success">
-                            {selectedKit && (
-                              <p>Part : {selectedKit.partName}</p>
-                            )}
-                          </div>
                         </div>
 
                         {errors.kitNo && (
                           <span className="error-text">{errors.kitNo}</span>
                         )}
 
-                        <div className="col-lg-4 col-md-6 mb-2">
+                        <div className="col-lg-3 col-md-6 mb-2">
                           <label className="label">
                             <span className="label-text label-font-size text-base-content">
                               QTY{" "}
@@ -1059,9 +1057,13 @@ function IssueReq() {
                             </div>
                           )}
                         </div>
-                        <div className="col-lg-3 col-md-2">
-                          {/* Display the static kit image */}
-                          {selectedKitNumbers[index] ? (
+                        <div className="col-lg-3 col-md-2 mt-6">
+                          <div className="mt-2 badge badge-success">
+                            {selectedKit && (
+                              <p>Part : {selectedKit.partName}</p>
+                            )}
+                          </div>
+                          {/* {selectedKitNumbers[index] ? (
                             <>
                               <img
                                 src={getKitImageByNumber(
@@ -1089,7 +1091,7 @@ function IssueReq() {
                                 marginTop: "35px",
                               }}
                             />
-                          )}
+                          )} */}
                         </div>
                         <DisplaySelectedPartInfo
                           selectedPartNo={selectedPartNumbers[index]}
@@ -1117,7 +1119,7 @@ function IssueReq() {
                   <CustomTabPanel value={value} index={1}>
                     {partFields.map((field, index) => (
                       <div className="row" key={index}>
-                        <div className="col-lg-4 col-md-8 mb-2">
+                        <div className="col-lg-3 col-md-8 mb-2">
                           <label className="label">
                             <span
                               className={
@@ -1151,16 +1153,11 @@ function IssueReq() {
                                 </option>
                               ))}
                           </select>
-                          <div className="mt-2 badge badge-success">
-                            {selectedPart && (
-                              <p>Kit : {selectedPart.kitName}</p>
-                            )}
-                          </div>
                         </div>
                         {errors.partNo && (
                           <span className="error-text">{errors.partNo}</span>
                         )}
-                        <div className="col-lg-4 col-md-8">
+                        <div className="col-lg-3 col-md-8">
                           <label className="label">
                             <span
                               className={
@@ -1185,11 +1182,7 @@ function IssueReq() {
                             value={field.qty}
                             onChange={(e) => handlePartQtyChange(e, index)}
                           />
-                          {kitQtyy && kitQtyy > 0 && (
-                            <div className="mt-2 badge badge-success">
-                              Kit QTY : <b>{kitQtyy}</b>
-                            </div>
-                          )}
+
                           {errors.partQty && (
                             <span className="error-text">{errors.partQty}</span>
                           )}
@@ -1211,8 +1204,19 @@ function IssueReq() {
                             </div>
                           )}
                         </div>
-                        <div className="col-lg-3 col-md-2">
-                          {selectedPartNumbers[index] ? (
+                        <div className="col-lg-3 col-md-2 mt-4">
+                          <div className="mt-2 badge badge-success">
+                            {selectedPart && (
+                              <p>Kit : {selectedPart.kitName}</p>
+                            )}
+                          </div>
+                          <br></br>
+                          {kitQtyy && kitQtyy > 0 && (
+                            <div className="mt-2 badge badge-success">
+                              Kit QTY : <b>{kitQtyy}</b>
+                            </div>
+                          )}
+                          {/* {selectedPartNumbers[index] ? (
                             <>
                               <img
                                 src={getPartImageByNumber(
@@ -1229,7 +1233,6 @@ function IssueReq() {
                               </span>
                             </>
                           ) : (
-                            // Display default image if part number is not selected
                             <img
                               src="/partImage2.png" // Replace with your default image path
                               alt="Default Image"
@@ -1239,7 +1242,7 @@ function IssueReq() {
                                 marginTop: "35px",
                               }}
                             />
-                          )}
+                          )} */}
                         </div>
                         <DisplaySelectedPartInfo
                           selectedPartNo={selectedPartNumbers[index]}
@@ -1310,7 +1313,7 @@ function IssueReq() {
                                                 <img
                                                   src={
                                                     issueRequest.issueStatus ===
-                                                      2
+                                                    2
                                                       ? "/checked1.png"
                                                       : "/pending.png"
                                                   }
@@ -1385,7 +1388,7 @@ function IssueReq() {
                                                 <img
                                                   src={
                                                     issueRequest.issueStatus ===
-                                                      2
+                                                    2
                                                       ? "/checked1.png"
                                                       : "/pending.png"
                                                   }
@@ -1528,7 +1531,7 @@ function IssueReq() {
                                 <TableHead>
                                   <TableRow>
                                     {selectedIssue &&
-                                      selectedIssue.irType === "IR_PART" ? (
+                                    selectedIssue.irType === "IR_PART" ? (
                                       <>
                                         <TableCell>
                                           <b>Part No</b>

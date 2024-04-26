@@ -62,6 +62,10 @@ function WelcomeEmitter() {
         setDisplayName(
           response.data.paramObjectsMap.userVO.customersVO.displayName
         );
+        localStorage.setItem(
+          "emitterId",
+          response.data.paramObjectsMap.userVO.customersVO.id
+        );
         console.log("userVO", response.data.paramObjectsMap.userVO);
       }
     } catch (error) {
