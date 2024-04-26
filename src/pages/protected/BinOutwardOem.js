@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "BinOutward" }));
+    dispatch(setPageTitle({ title: "Bin Outward" }));
   }, []);
 
   return <BinOutwardOem />;

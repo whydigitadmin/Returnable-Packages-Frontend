@@ -4,243 +4,98 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const DOCDATA = [
-  {
-    id: 1,
-    SID: "IR",
-    Prefix: "AI",
-    Sequence: "00001",
-    Suffix: "ABC",
-    Type: "KT",
-  },
-];
-
-// export const InwardManifest = () => {
-function BinInwardOem({ addInwardManifeast }) {
-  const [docdata, setDocData] = useState(DOCDATA);
+const BinInwardOem = ({}) => {
   const [docDate, setDocDate] = useState(dayjs());
-  const [toDate, setToDate] = useState(null);
-  const [extDate, setExtDate] = useState(null);
+  const [kitNo, setKitNo] = useState("");
+  const [receivedKitQty, setReceivedKitQty] = useState("");
   const [errors, setErrors] = useState({});
-  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [finYear, setFinYear] = useState("");
-  const [stockFrom, setStockFrom] = useState("");
-  const [stockTo, setStockTo] = useState("");
-  const [filteredStockBranch, setFilteredStockBranch] = useState("");
 
-  const [stockBranch, setStockBranch] = useState("");
   const [docId, setDocId] = useState("");
-  const [allAsset, setAllAsset] = useState("");
-  const [aleartState, setAleartState] = useState(false);
   const [tableData, setTableData] = useState([
     {
       id: 1,
-      tagCode: "",
       asset: "",
       assetCode: "",
-      allottedQty: "",
       receivedQty: "",
-      returnQty: "",
     },
   ]);
-  //   const [tableData, setTableData] = useState([]);
-
-  //   const handleAddRow = () => {
-  //     const newRow = {
-  //       id: tableData.length + 1,
-  //       sku: "",
-  //       code: "",
-  //       qty: "",
-  //       stockValue: "",
-  //       stockLoc: "",
-  //       binLoc: "Bulk",
-  //     };
-  //     setTableData([...tableData, newRow]);
-  //   };
-
-  useEffect(() => {
-    // 👆 daisy UI themes initialization
-    getStockBranch();
-    getAllAsset();
-  }, []);
-
-  const handleStockFromChange = (e) => {
-    const selectedValue = e.target.value;
-    setStockFrom(selectedValue);
-    // Filter out the selected value from the options of Source To dropdown
-    const filteredBranches = stockBranch.filter(
-      (branch) => branch.branchCode !== selectedValue
-    );
-    setStockTo(""); // Reset the Source To dropdown value
-    setFilteredStockBranch(filteredBranches);
-  };
-
-  const getAllAsset = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/asset?orgId=${orgId}`
-      );
-      console.log("API Response:", response);
-
-      if (response.status === 200) {
-        // Extracting assetName and skuId from each asset item
-        const extractedAssets = response.data.paramObjectsMap.assetVO.map(
-          (assetItem) => ({
-            assetName: assetItem.assetName,
-            assetCodeId: assetItem.assetCodeId,
-          })
-        );
-        setAllAsset(extractedAssets);
-        console.log("API:", extractedAssets);
-      } else {
-        console.error("API Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getStockBranch = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
-      );
-      console.log("API Response:", response);
-
-      if (response.status === 200) {
-        setStockBranch(response.data.paramObjectsMap.branch);
-
-        // Handle success
-      } else {
-        // Handle error
-        console.error("API Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleDeleteRow = (id) => {
-    setTableData(tableData.filter((row) => row.id !== id));
-  };
 
   const handleSave = () => {
+    // Validation
     const errors = {};
-    // if (!docdata[0].Prefix) {
-    //   errors.prefix = "Prefix is required";
-    // }
-    // if (!docdata[0].SID) {
-    //   errors.scode = "SID is required";
-    // }
-    // if (!docdata[0].Sequence) {
-    //   errors.sequence = "Sequence is required";
-    // }
-    // if (!docdata[0].Suffix) {
-    //   errors.sufix = "Suffix is required";
-    // }
-    // if (!docdata[0].Type) {
-    //   errors.type = "Type is required";
-    // }
-
-    if (!stockFrom) {
-      errors.stockFrom = "Source from is required";
+    if (!kitNo.trim()) {
+      errors.kitNo = "Kit No is required";
     }
-    // const tableFormData = tableData.map((row) => ({
-    //   scode: row.scode,
-    //   prefix: row.prefix,
-    //   sequence: row.sequence,
-    //   sufix: row.sufix,
-    //   type: row.type,
-    // }));
-
-    const tableFormData = tableData.map((row) => ({
-      skuDetail: row.sku,
-      skucode: row.code,
-      skuQty: row.qty,
-      stockValue: row.stockValue,
-      stockLocation: row.stockLoc,
-      binLocation: "test",
-      // stockValue: row.stockValue,
-      // stockLocation: row.stockLoc,
-      // binLocation: row.binLoc,
-    }));
-
-    // Check if any table fields are empty
-    const isTableDataEmpty = tableFormData.some(
-      (row) =>
-        row.sku === "" ||
-        row.code === "" ||
-        row.qty === "" ||
-        row.stockValue === "" ||
-        row.stockLoc === "" ||
-        row.binLoc === ""
-    );
-
-    if (isTableDataEmpty) {
-      errors.tableData = "Please fill all table fields";
-    } else {
-      delete errors.tableData;
+    if (!receivedKitQty.trim()) {
+      errors.receivedKitQty = "Received Kit Qty is required";
     }
+    tableData.forEach((row) => {
+      if (!row.asset.trim()) {
+        errors.asset = "Asset is required";
+      }
+      if (!row.assetCode.trim()) {
+        errors.assetCode = "Asset Code is required";
+      }
+      if (!row.receivedQty.trim()) {
+        errors.receivedQty = "Received Qty is required";
+      }
+    });
 
-    if (Object.keys(errors).length === 0) {
-      const formData = {
-        assetInwardDetailDTO: tableFormData,
-        docId,
-        docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-        stockBranch: stockTo,
-        sourceFrom: stockFrom,
-        orgId,
-      };
-
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
-          formData
-        )
-        .then((response) => {
-          console.log("Response:", response.data);
-          // setAleartState(true);
-          setDocData(DOCDATA);
-          setDocDate(null);
-          setDocId("");
-          setStockFrom("");
-          setStockTo("");
-          setErrors({});
-
-          setTableData([
-            {
-              id: 1,
-              sku: "",
-              code: "",
-              qty: "",
-              stockValue: "",
-              stockLoc: "",
-              binLoc: "",
-            },
-          ]);
-          toast.success("Stock Branch Updated Successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          toast.error("Failed to update user. Please try again.");
-        });
-    } else {
+    if (Object.keys(errors).length > 0) {
       setErrors(errors);
+      return;
     }
+
+    // If no validation errors, proceed to save
+    const formData = {
+      createdBy: "string", // Replace "string" with actual value
+      docDate: docDate.format("YYYY-MM-DD"),
+      kitno: kitNo,
+      oemBinInwardDetails: tableData.map((row) => ({
+        asset: row.asset,
+        assetCode: row.assetCode,
+        receivedQty: parseInt(row.receivedQty),
+      })),
+      orgId: 0, // Replace 0 with actual value
+      receivedKitQty: parseInt(receivedKitQty),
+    };
+
+    axios
+      .post("/api/oem/oemBinInward", formData)
+      .then((response) => {
+        // Handle successful response
+        console.log("Response:", response.data);
+        // Optionally, show a success message
+        toast.success("Bin inward saved successfully!");
+        // Reset input fields
+        setDocId("");
+        setDocDate(dayjs()); // Reset to current date
+        setKitNo("");
+        setReceivedKitQty("");
+        setTableData([
+          {
+            id: 1,
+            asset: "",
+            assetCode: "",
+            receivedQty: "",
+          },
+        ]);
+        setErrors({}); // Clear errors
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error:", error);
+        // Optionally, show an error message
+        toast.error("Failed to save bin inward.");
+      });
   };
 
-  const handleInwardmanifeastClose = () => {
-    addInwardManifeast(false);
-  };
   return (
     <>
       <div
@@ -254,12 +109,6 @@ function BinInwardOem({ addInwardManifeast }) {
           <p className="text-2xl">
             <strong>Bin Inward</strong>
           </p>
-          {/* <div className="flex items-center justify-content-end">
-            <IoMdClose
-              onClick={handleInwardmanifeastClose}
-              className="cursor-pointer w-8 h-8"
-            />
-          </div> */}
         </div>
 
         <div className="row mt-3">
@@ -272,14 +121,13 @@ function BinInwardOem({ addInwardManifeast }) {
           </div>
           <div className="col-lg-2 col-md-3">
             <input
-              className="form-control form-sz mb-2"
+              className={`form-control form-sz mb-2 ${
+                errors.docId && "border-red-500"
+              }`}
               placeholder="Doc Id"
               value={docId}
               onChange={(e) => setDocId(e.target.value)}
             />
-            {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
           </div>
           <div className="col-lg-2 col-md-3">
             <label className="label mb-4">
@@ -300,77 +148,6 @@ function BinInwardOem({ addInwardManifeast }) {
                 disabled
               />
             </LocalizationProvider>
-            {/* {errors.docDate && (
-              <span className="error-text mb-1">{errors.docDate}</span>
-            )} */}
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Allotment No
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleStockFromChange}
-              value={stockFrom}
-            >
-              <option value="" disabled>
-                Select Allotment
-              </option>
-              {stockBranch.length > 0 &&
-                stockBranch.map((list) => (
-                  <option key={list.id} value={list.branchCode}>
-                    {list.branchCode}
-                  </option>
-                ))}
-            </select>
-            {errors.stockFrom && (
-              <span className="error-text mb-1">{errors.stockFrom}</span>
-            )}
-          </div>
-        </div>
-
-        <div className="row">
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Request No
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder="Req No"
-              value={docId}
-              onChange={(e) => setDocId(e.target.value)}
-              disabled
-            />
-            {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Flow
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder="Flow"
-              value={docId}
-              onChange={(e) => setDocId(e.target.value)}
-              disabled
-            />
-            {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
           </div>
           <div className="col-lg-2 col-md-3">
             <label className="label mb-4">
@@ -381,211 +158,151 @@ function BinInwardOem({ addInwardManifeast }) {
           </div>
           <div className="col-lg-2 col-md-3">
             <input
-              className="form-control form-sz mb-2"
+              className={`form-control form-sz mb-2 ${
+                errors.kitNo && "border-red-500"
+              }`}
               placeholder="Kit No"
-              value={docId}
-              onChange={(e) => setDocId(e.target.value)}
-              disabled
+              value={kitNo}
+              onChange={(e) => setKitNo(e.target.value)}
             />
-            {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+            {errors.kitNo && (
+              <span className="error-text mb-1">{errors.kitNo}</span>
+            )}
           </div>
+
           <div className="col-lg-2 col-md-3">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Alloted Kit Qty
+                Received Kit Qty
               </span>
             </label>
           </div>
           <div className="col-lg-2 col-md-3">
             <input
-              className="form-control form-sz mb-2"
-              placeholder="Alloted Kit Qty"
-              value={docId}
-              onChange={(e) => setDocId(e.target.value)}
-              disabled
+              className={`form-control form-sz mb-2 ${
+                errors.receivedKitQty && "border-red-500"
+              }`}
+              placeholder="Received Kit Qty"
+              value={receivedKitQty}
+              onChange={(e) => setReceivedKitQty(e.target.value)}
             />
-            {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
+            {errors.receivedKitQty && (
+              <span className="error-text mb-1">{errors.receivedKitQty}</span>
+            )}
           </div>
         </div>
-        {/* <div className="mt-2">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
-            onClick={handleAddRow}
-          >
-            + Add
-          </button>
-        </div> */}
+
         <div className="row mt-2">
           <div className="col-lg-12">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
                   <tr>
-                    {/* <th className="px-2 py-2 bg-blue-500 text-white">Action</th> */}
                     <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Tag Code
-                    </th>
+
                     <th className="px-2 py-2 bg-blue-500 text-white">Asset</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
                       Asset Code
                     </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Alloted Qty
-                    </th>
+
                     <th className="px-2 py-2 bg-blue-500 text-white">
                       Received Qty
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Return Qty
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData &&
-                    tableData.map((row) => (
-                      <tr key={row.id}>
-                        {/* <td className="border px-2 py-2">
-                          <button
-                            onClick={() => handleDeleteRow(row.id)}
-                            className="text-red-500"
-                          >
-                            <FaTrash style={{ fontSize: "18px" }} />
-                          </button>
-                        </td> */}
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.id}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, id: e.target.value }
-                                    : r
-                                )
+                  {tableData.map((row, index) => (
+                    <tr key={row.id}>
+                      <td className="border px-2 py-2">
+                        <input
+                          type="text"
+                          value={index + 1}
+                          disabled
+                          style={{ width: "100%" }}
+                        />
+                      </td>
+                      <td className="border px-2 py-2">
+                        <input
+                          type="text"
+                          value={row.asset}
+                          onChange={(e) =>
+                            setTableData((prev) =>
+                              prev.map((r, i) =>
+                                i === index
+                                  ? { ...r, asset: e.target.value }
+                                  : r
                               )
-                            }
-                            disabled
-                            style={{ width: "100%" }}
-                          />
-                        </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.tagCode}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, tagCode: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            disabled
-                            style={{ width: "100%" }}
-                          />
-                        </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.asset}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, asset: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            disabled
-                            style={{ width: "100%" }}
-                          />
-                        </td>
+                            )
+                          }
+                          className={`form-control form-sz mb-2 ${
+                            errors.asset && "border-red-500"
+                          }`}
+                          style={{ width: "100%" }}
+                        />
+                        {errors.asset && (
+                          <span className="error-text mb-1">
+                            {errors.asset}
+                          </span>
+                        )}
+                      </td>
 
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.assetCode}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, assetCode: e.target.value }
-                                    : r
-                                )
+                      <td className="border px-2 py-2">
+                        <input
+                          type="text"
+                          value={row.assetCode}
+                          onChange={(e) =>
+                            setTableData((prev) =>
+                              prev.map((r, i) =>
+                                i === index
+                                  ? { ...r, assetCode: e.target.value }
+                                  : r
                               )
-                            }
-                            disabled
-                            style={{ width: "100%" }}
-                          />
-                        </td>
+                            )
+                          }
+                          className={`form-control form-sz mb-2 ${
+                            errors.assetCode && "border-red-500"
+                          }`}
+                          style={{ width: "100%" }}
+                        />
+                        {errors.assetCode && (
+                          <span className="error-text mb-1">
+                            {errors.assetCode}
+                          </span>
+                        )}
+                      </td>
 
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.assetCode}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, allottedQty: e.target.value }
-                                    : r
-                                )
+                      <td className="border px-2 py-2">
+                        <input
+                          type="text"
+                          value={row.receivedQty}
+                          onChange={(e) =>
+                            setTableData((prev) =>
+                              prev.map((r, i) =>
+                                i === index
+                                  ? { ...r, receivedQty: e.target.value }
+                                  : r
                               )
-                            }
-                            disabled
-                            style={{ width: "100%" }}
-                          />
-                        </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.receivedQty}
-                            disabled
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, receivedQty: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                          />
-                        </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.returnQty}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, returnQty: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            disabled
-                          />
-                        </td>
-                      </tr>
-                    ))}
+                            )
+                          }
+                          className={`form-control form-sz mb-2 ${
+                            errors.receivedQty && "border-red-500"
+                          }`}
+                          style={{ width: "100%" }}
+                        />
+                        {errors.receivedQty && (
+                          <span className="error-text mb-1">
+                            {errors.receivedQty}
+                          </span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
           </div>
         </div>
-        {errors.tableData && (
-          <div className="error-text mt-2">{errors.tableData}</div>
-        )}
+
         <div className="mt-4">
           <button
             type="button"
@@ -599,12 +316,10 @@ function BinInwardOem({ addInwardManifeast }) {
       <ToastContainer />
     </>
   );
-}
+};
 
-DocumentType.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
+BinInwardOem.propTypes = {
+  addInwardManifeast: PropTypes.func,
 };
 
 export default BinInwardOem;

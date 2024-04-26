@@ -13,329 +13,93 @@ import { IoMdClose } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const DOCDATA = [
-  {
-    id: 1,
-    SID: "IR",
-    Prefix: "AI",
-    Sequence: "00001",
-    Suffix: "ABC",
-    Type: "KT",
-  },
-];
-// const EmitterBinAllotment = () => {
-function BinOutwardOem({ addBinAllotment, viewBinAllotmentId }) {
-  const [addInwardManifeast, setAddInwardManifeast] = useState("");
-  const [stockBranch, setStockBranch] = useState("");
-  const [reqNo, setReqNo] = useState("");
-  const [reqDate, setReqDate] = useState("");
+function BinOutwardOem({}) {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
-  const [emitter, setEmitter] = useState("");
-  const [reqKitName, setReqKitName] = useState("");
-  const [reqPartName, setReqPartName] = useState("");
-  const [reqQty, setReqQty] = useState("");
-  const [avlQty, setAvlQty] = useState("");
-  const [alotQty, setAlotQty] = useState("");
+  const [kitName, setKitName] = useState("");
+  const [outwardKitQty, setOutwardKitQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [errors, setErrors] = useState({});
-  const [filteredStockBranch, setFilteredStockBranch] = useState("");
-  const [stockBranchList, setStockBranchList] = useState("");
-  const [reqNoList, setReqNoList] = useState("");
-  const [docdata, setDocData] = useState(DOCDATA);
 
-  const [toDate, setToDate] = useState(null);
-  const [extDate, setExtDate] = useState(null);
-  const [finYear, setFinYear] = useState("");
-  const [stockFrom, setStockFrom] = useState("");
-  const [stockTo, setStockTo] = useState("");
-  const [allAsset, setAllAsset] = useState("");
-  const [aleartState, setAleartState] = useState(false);
-
-  // const reqNoList = [
-  //     { id: 1, rNo: "24BR10001" },
-  //     { id: 2, rNo: "24BR10002" },
-  //     { id: 3, rNo: "24BR10003" },
-  // ];
   const [tableData, setTableData] = useState([
     {
       id: 1,
-      assetId: "",
-      rfId: "",
-      qrCode: "",
-      barcode: "",
       asset: "",
       assetCode: "",
       qty: "",
     },
   ]);
 
-  const handleAddRow = () => {
-    const newRow = {
-      id: tableData.length + 1,
-      assetId: "",
-      rfId: "",
-      qrCode: "",
-      barcode: "",
-      asset: "",
-      assetCode: "",
-      qty: "",
-    };
-    setTableData([...tableData, newRow]);
-  };
-
-  useEffect(() => {
-    getStockBranch();
-    // getAllAsset();
-  }, []);
-
-  const handleStockBranchChange = (e) => {
-    const selectedValue = e.target.value;
-    setStockBranch(selectedValue);
-    // Filter out the selected value from the options of Source To dropdown
-    // const filteredBranches = stockBranch.filter(
-    //     (branch) => branch.branchCode !== selectedValue
-    // );
-    // setStockTo("");
-    // setFilteredStockBranch(filteredBranches);
-  };
-  const handleReqNoChange = (e) => {
-    setReqNo(e.target.value);
-  };
-  const handleStockFromChange = (e) => {
-    const selectedValue = e.target.value;
-    setStockFrom(selectedValue);
-    // Filter out the selected value from the options of Source To dropdown
-    const filteredBranches = stockBranch.filter(
-      (branch) => branch.branchCode !== selectedValue
-    );
-    setStockTo(""); // Reset the Source To dropdown value
-    setFilteredStockBranch(filteredBranches);
-  };
-
-  // const getAllAsset = async () => {
-  //     try {
-  //         const response = await axios.get(
-  //             `${process.env.REACT_APP_API_URL}/api/master/asset?orgId=${orgId}`
-  //         );
-  //         console.log("API Response:", response);
-
-  //         if (response.status === 200) {
-  //             // Extracting assetName and skuId from each asset item
-  //             const extractedAssets = response.data.paramObjectsMap.assetVO.map(
-  //                 (assetItem) => ({
-  //                     assetName: assetItem.assetName,
-  //                     assetCodeId: assetItem.assetCodeId,
-  //                 })
-  //             );
-  //             setAllAsset(extractedAssets);
-  //             console.log("API:", extractedAssets);
-  //         } else {
-  //             console.error("API Error:", response.data);
-  //         }
-  //     } catch (error) {
-  //         console.error("Error fetching data:", error);
-  //     }
-  // };
-
-  const getAllBinRequest = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgId=${orgId}`
-      );
-      console.log("API Response:", response);
-
-      if (response.status === 200) {
-        // Extracting assetName and skuId from each asset item
-        setReqNoList(response.data.paramObjectsMap.BinAllotment);
-      } else {
-        console.error("API Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getStockBranch = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
-      );
-      console.log("API Response:", response);
-
-      if (response.status === 200) {
-        setStockBranchList(response.data.paramObjectsMap.branch);
-
-        // Handle success
-      } else {
-        // Handle error
-        console.error("API Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleDeleteRow = (id) => {
-    setTableData(tableData.filter((row) => row.id !== id));
-  };
-  const handleKeyDown = (e, row) => {
-    if (e.key === "Tab" && row.id === tableData[tableData.length - 1].id) {
-      e.preventDefault();
-      handleAddRow();
-    }
-  };
-
-  const handleNew = () => {
-    setDocId("");
-    setStockBranch("");
-    setReqNo("");
-    setReqDate(null);
-    setEmitter("");
-    setReqKitName("");
-    setReqPartName("");
-    setReqQty("");
-    setAvlQty("");
-    setAlotQty("");
-    setTableData([
-      {
-        id: 1,
-        assetId: "",
-        rfId: "",
-        qrCode: "",
-        barcode: "",
-        asset: "",
-        assetCode: "",
-        qty: "",
-      },
-    ]);
-    setErrors({});
-  };
   const handleSave = () => {
-    console.log("testing");
+    // Validation
     const errors = {};
+    if (!kitName.trim()) {
+      errors.kitName = "Kit No is required";
+    }
+    if (!outwardKitQty.trim()) {
+      errors.outwardKitQty = "Outward Kit Qty is required";
+    }
+    tableData.forEach((row) => {
+      if (!row.asset.trim()) {
+        errors.asset = "Asset is required";
+      }
+      if (!row.assetCode.trim()) {
+        errors.assetCode = "Asset Code is required";
+      }
+      if (!row.qty.trim()) {
+        errors.qty = "Qty is required";
+      }
+    });
 
-    if (!docId) {
-      console.log("test docId");
-      errors.docId = "Doc ID is required";
+    if (Object.keys(errors).length > 0) {
+      setErrors(errors);
+      return;
     }
 
-    if (!docDate) {
-      errors.docDate = "Doc Date is required";
-    }
-
-    if (!stockBranch) {
-      errors.stockBranch = "Stock Branch is required";
-    }
-
-    if (!reqNo) {
-      errors.reqNo = "Req No is required";
-    }
-
-    if (!reqDate) {
-      errors.reqDate = "Req Date is required";
-    }
-
-    if (!emitter) {
-      errors.emitter = "Emitter Name is required";
-    }
-
-    // if (!reqQty) {
-    //     errors.reqQty = "Req QTY is required";
-    // }
-
-    // if (!avlQty) {
-    //     errors.avlQty = "Avl QTY is required";
-    // }
-    if (!alotQty) {
-      errors.alotQty = "Alote QTY is required";
-    }
-
-    const tableFormData = tableData.map((row) => ({
-      asset: row.asset,
-      assetCode: row.assetCode,
-      qty: row.qty,
-      rfId: row.rfId,
-      tagCode: "Waiting for confirmation",
-    }));
-
-    const isTableDataEmpty = tableFormData.some(
-      (row) => row.rfId === "" || row.qrCode === ""
-      // row.qty === "" ||
-      // row.stockValue === "" ||
-      // row.stockLoc === "" ||
-      // row.binLoc === ""
-    );
-
-    if (isTableDataEmpty) {
-      errors.tableData = "Please fill all table fields";
-    } else {
-      delete errors.tableData;
-    }
-
+    // If no validation errors, proceed to save
     const formData = {
-      docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-      stockBranch: stockBranch,
-      binReqNo: reqNo,
-      binReqDate: reqDate,
-
-      binLocation: emitter,
-
-      reqKitQty: reqQty,
-      avlKitQty: avlQty,
-      allotKitQty: alotQty,
-      createdby: userId,
-      orgId: orgId,
-      binAllotmentDetailsDTO: tableFormData,
+      createdBy: "string", // Replace "string" with actual value
+      docDate: docDate.format("YYYY-MM-DD"),
+      kit: kitName,
+      oemBinOutwardDetails: tableData.map((row) => ({
+        asset: row.asset,
+        assetCode: row.assetCode,
+        qty: parseInt(row.qty),
+      })),
+      orgId: 0, // Replace 0 with actual value
+      outwardKitQty: parseInt(outwardKitQty),
     };
-    console.log("Data to save is:", formData);
 
-    // if (Object.keys(errors).length === 0) {
-    //     const formData = {
-    //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-    //         stockBranch: stockBranch,
-    //         binReqNo: reqNo,
-    //         binReqDate: reqDate,
-
-    //         binLocation: emitter,
-
-    //         reqKitQty: reqQty,
-    //         avlKitQty: avlQty,
-    //         allotKitQty: alotQty,
-    //         createdby: userId,
-    //         orgId: orgId,
-    //         binAllotmentDetailsDTO: tableFormData,
-    //     };
-
-    //     console.log("Data to save is:", formData)
-
-    //     axios
-    //         .post(
-    //             `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
-    //             formData
-    //         )
-    //         .then((response) => {
-    //             console.log("Response:", response.data);
-    //             handleNew();
-    //             toast.success("Emitter Bin Allotment Created Successfully!", {
-    //                 autoClose: 2000,
-    //                 theme: "colored",
-    //             });
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error:", error);
-    //             toast.error("Failed to Create Emitter Bin Allotment. Please try again.");
-
-    //         });
-    // } else {
-    //     setErrors(errors);
-    // }
+    axios
+      .post("/api/oem/updateCreateOemBinOutward", formData)
+      .then((response) => {
+        // Handle successful response
+        console.log("Response:", response.data);
+        // Optionally, show a success message
+        toast.success("Bin Outward saved successfully!");
+        // Reset input fields
+        setDocId("");
+        setDocDate(dayjs()); // Reset to current date
+        setKitName("");
+        setOutwardKitQty("");
+        setTableData([
+          {
+            id: 1,
+            asset: "",
+            assetCode: "",
+            qty: "",
+          },
+        ]);
+        setErrors({}); // Clear errors
+      })
+      .catch((error) => {
+        // Handle error
+        console.error("Error:", error);
+        // Optionally, show an error message
+        toast.error("Failed to save bin inward.");
+      });
   };
 
-  const handleEmitterBinAllotmentClose = () => {
-    addBinAllotment(false);
-  };
   return (
     <>
       <div className="container-sm">
@@ -369,11 +133,7 @@ function BinOutwardOem({ addBinAllotment, viewBinAllotmentId }) {
                 placeholder="Doc Id"
                 value={docId}
                 onChange={(e) => setDocId(e.target.value)}
-                disabled={viewBinAllotmentId ? true : false}
               />
-              {errors.docId && (
-                <span className="error-text mb-1">{errors.docId}</span>
-              )}
             </div>
             {/* DOC DATE FIELD */}
             <div className="col-lg-2 col-md-4">
@@ -396,63 +156,27 @@ function BinOutwardOem({ addBinAllotment, viewBinAllotmentId }) {
                   disabled
                 />
               </LocalizationProvider>
-              {errors.docDate && (
-                <span className="error-text mb-1">{errors.docDate}</span>
-              )}
             </div>
-            {/* STOCK BRANCH FIELD */}
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Flow
+                  Kit No
                   <FaStarOfLife className="must" />
                 </span>
               </label>
             </div>
-            <div className="col-lg-2 col-md-4">
-              <select
-                className="form-select form-sz w-full mb-2"
-                // onChange={handleStockBranchChange}
-                value={stockBranch}
-              >
-                <option value="" disabled>
-                  Select a Flow
-                </option>
-                {/* {stockBranchList.length > 0 &&
-                  stockBranchList.map((list) => (
-                    <option key={list.id} value={list.branchCode}>
-                      {list.branchCode}
-                    </option>
-                  ))} */}
-              </select>
-              {errors.stockBranch && (
-                <span className="error-text mb-1">{errors.stockBranch}</span>
+            <div className="col-lg-2 col-md-3">
+              <input
+                className={`form-control form-sz mb-2 ${
+                  errors.kitName && "border-red-500"
+                }`}
+                placeholder="Kit No"
+                value={kitName}
+                onChange={(e) => setKitName(e.target.value)}
+              />
+              {errors.kitName && (
+                <span className="error-text mb-1">{errors.kitName}</span>
               )}
-            </div>
-            {/* KIT NAME FIELD */}
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Kit
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <select
-                className="form-select form-sz w-full mb-2"
-                value={reqKitName}
-              >
-                <option value="" disabled>
-                  Select a Kit
-                </option>
-                {/* {stockBranchList.length > 0 &&
-                  stockBranchList.map((list) => (
-                    <option key={list.id} value={list.branchCode}>
-                      {list.branchCode}
-                    </option>
-                  ))} */}
-              </select>
             </div>
             {/* PART NAME FIELD */}
             <div className="col-lg-2 col-md-4">
@@ -463,31 +187,29 @@ function BinOutwardOem({ addBinAllotment, viewBinAllotmentId }) {
                 </span>
               </label>
             </div>
-            <div className="col-lg-2 col-md-4">
+            <div className="col-lg-2 col-md-3">
               <input
-                className="form-control form-sz mb-2"
-                name="partName"
-                value={reqPartName}
+                className={`form-control form-sz mb-2 ${
+                  errors.outwardKitQty && "border-red-500"
+                }`}
+                placeholder="Outward Kit Qty"
+                value={outwardKitQty}
+                onChange={(e) => setOutwardKitQty(e.target.value)}
               />
+              {errors.outwardKitQty && (
+                <span className="error-text mb-1">{errors.outwardKitQty}</span>
+              )}
             </div>
           </div>
-          {/* <div className="mt-2">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
-              onClick={handleAddRow}
-            >
-              + Add
-            </button>
-          </div> */}
           <div className="row mt-2">
             <div className="col-lg-12">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                      {/* <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         Action
-                      </th>
+                      </th> */}
                       <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         S.No
                       </th>
@@ -503,101 +225,92 @@ function BinOutwardOem({ addBinAllotment, viewBinAllotmentId }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {tableData &&
-                      tableData.map((row) => (
-                        <tr key={row.id}>
-                          <td className="border px-2 py-2">
-                            <button
-                              onClick={() => handleDeleteRow(row.id)}
-                              className="text-red-500"
-                            >
-                              <FaTrash style={{ fontSize: "18px" }} />
-                            </button>
-                          </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.id}
-                              onChange={(e) =>
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, id: e.target.value }
-                                      : r
-                                  )
+                    {tableData.map((row, index) => (
+                      <tr key={row.id}>
+                        <td className="border px-2 py-2">
+                          <input
+                            type="text"
+                            value={index + 1}
+                            disabled
+                            style={{ width: "100%" }}
+                          />
+                        </td>
+                        <td className="border px-2 py-2">
+                          <input
+                            type="text"
+                            value={row.asset}
+                            onChange={(e) =>
+                              setTableData((prev) =>
+                                prev.map((r, i) =>
+                                  i === index
+                                    ? { ...r, asset: e.target.value }
+                                    : r
                                 )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
-                          </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.asset}
-                              onChange={(e) => {
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, asset: e.target.value }
-                                      : r
-                                  )
-                                );
-                              }}
-                              // style={{ width: "100%", border: errors && errors.qrCode ? "1px solid red" : "1px solid #ccc" }}
-                              // key={`AssetId-${row.id}`}
-                            />
-                          </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.assetCode}
-                              onChange={(e) => {
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, assetCode: e.target.value }
-                                      : r
-                                  )
-                                );
-                              }}
-                              // style={{ width: "100%", border: errors && errors.rfId ? "1px solid red" : "1px solid #ccc" }}
-                              // key={`code-${row.id}`}
-                            />
-                          </td>
+                              )
+                            }
+                            className={`form-control form-sz mb-2 ${
+                              errors.asset && "border-red-500"
+                            }`}
+                            style={{ width: "100%" }}
+                          />
+                          {errors.asset && (
+                            <span className="error-text mb-1">
+                              {errors.asset}
+                            </span>
+                          )}
+                        </td>
 
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.qty}
-                              onChange={(e) => {
-                                const inputValue = e.target.value;
-                                if (
-                                  inputValue == "" ||
-                                  (/^\d+$/.test(inputValue) &&
-                                    inputValue.length <= 8)
-                                ) {
-                                  setTableData((prev) =>
-                                    prev.map((r) =>
-                                      r.id === row.id
-                                        ? { ...r, qty: inputValue }
-                                        : r
-                                    )
-                                  );
-                                }
-                              }}
-                              onKeyDown={(e) => handleKeyDown(e, row)}
-                              style={{
-                                border:
-                                  errors && errors.qty
-                                    ? "1px solid red"
-                                    : "1px solid #ccc",
-                              }}
-                              key={`QTY-${row.id}`}
-                            />
-                          </td>
-                        </tr>
-                      ))}
+                        <td className="border px-2 py-2">
+                          <input
+                            type="text"
+                            value={row.assetCode}
+                            onChange={(e) =>
+                              setTableData((prev) =>
+                                prev.map((r, i) =>
+                                  i === index
+                                    ? { ...r, assetCode: e.target.value }
+                                    : r
+                                )
+                              )
+                            }
+                            className={`form-control form-sz mb-2 ${
+                              errors.assetCode && "border-red-500"
+                            }`}
+                            style={{ width: "100%" }}
+                          />
+                          {errors.assetCode && (
+                            <span className="error-text mb-1">
+                              {errors.assetCode}
+                            </span>
+                          )}
+                        </td>
+
+                        <td className="border px-2 py-2">
+                          <input
+                            type="text"
+                            value={row.qty}
+                            onChange={(e) =>
+                              setTableData((prev) =>
+                                prev.map((r, i) =>
+                                  i === index
+                                    ? { ...r, qty: e.target.value }
+                                    : r
+                                )
+                              )
+                            }
+                            className={`form-control form-sz mb-2 ${
+                              errors.qty && "border-red-500"
+                            }`}
+                            style={{ width: "100%" }}
+                          />
+                          {errors.qty && (
+                            <span className="error-text mb-1">
+                              {errors.qty}
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
                   </tbody>
                 </table>
               </div>
@@ -613,13 +326,6 @@ function BinOutwardOem({ addBinAllotment, viewBinAllotmentId }) {
               onClick={handleSave}
             >
               Save
-            </button>
-            <button
-              type="button"
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              onClick={handleNew}
-            >
-              Cancel
             </button>
           </div>
         </div>
