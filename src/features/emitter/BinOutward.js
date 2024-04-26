@@ -6,96 +6,63 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IoMdClose } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
-const DOCDATA = [
-  {
-    id: 1,
-    SID: "IR",
-    Prefix: "AI",
-    Sequence: "00001",
-    Suffix: "ABC",
-    Type: "KT",
-  },
-];
-// const EmitterBinAllotment = () => {
-function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
-  const [addInwardManifeast, setAddInwardManifeast] = useState("");
-  const [selectedFlow, setSelectedFlow] = React.useState("");
+function BinOutward() {
+  const [flow, setFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
-  const [stockBranch, setStockBranch] = useState("");
-  const [reqNo, setReqNo] = useState("");
-  const [reqDate, setReqDate] = useState("");
+  const [kitData, setKitData] = useState([]);
+  const [receiverData, setReceiverData] = useState([]);
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
-  const [emitter, setEmitter] = useState("");
-  const [reqKitName, setReqKitName] = useState("");
-  const [reqPartName, setReqPartName] = useState("");
-  const [reqQty, setReqQty] = useState("");
-  const [avlQty, setAvlQty] = useState("");
-  const [alotQty, setAlotQty] = useState("");
+  const [kit, setKit] = useState("");
+  const [orgin, setOrgin] = useState("");
+  const [receiver, setReceiver] = useState("");
+  const [destination, setDestination] = useState("");
+  const [outwardKitQty, setOutwardKitQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [emitterId, setEmitterId] = React.useState(
+    localStorage.getItem("emitterId")
+  );
+  const [userName, setUserName] = useState("");
+  const [userDetail, setUserDetail] = useState(
+    JSON.parse(localStorage.getItem("userDto"))
+  );
   const [errors, setErrors] = useState({});
-  const [filteredStockBranch, setFilteredStockBranch] = useState("");
-  const [stockBranchList, setStockBranchList] = useState("");
-  const [reqNoList, setReqNoList] = useState("");
-  const [docdata, setDocData] = useState(DOCDATA);
-
-  const [toDate, setToDate] = useState(null);
-  const [extDate, setExtDate] = useState(null);
-  const [finYear, setFinYear] = useState("");
-  const [stockFrom, setStockFrom] = useState("");
-  const [stockTo, setStockTo] = useState("");
-  const [allAsset, setAllAsset] = useState("");
-  const [aleartState, setAleartState] = useState(false);
-
-  // const reqNoList = [
-  //     { id: 1, rNo: "24BR10001" },
-  //     { id: 2, rNo: "24BR10002" },
-  //     { id: 3, rNo: "24BR10003" },
-  // ];
-  const [tableData, setTableData] = useState([
-    {
-      id: 1,
-      assetId: "",
-      rfId: "",
-      qrCode: "",
-      barcode: "",
-      asset: "",
-      assetCode: "",
-      qty: "",
-    },
-  ]);
-
-  const handleAddRow = () => {
-    const newRow = {
-      id: tableData.length + 1,
-      assetId: "",
-      rfId: "",
-      qrCode: "",
-      barcode: "",
-      asset: "",
-      assetCode: "",
-      qty: "",
-    };
-    setTableData([...tableData, newRow]);
-  };
+  const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     getAddressById();
-    getStockBranch();
-    // getAllAsset();
   }, []);
 
   const handleSelectedFlow = (event) => {
-    setSelectedFlow(event.target.value);
-    // getFlowNameById(event.target.value);
+    const selectedId = event.target.value;
+    setFlow(selectedId);
+    getFlowDetailsByFlowId(selectedId);
+    getkitNameById(selectedId);
+  };
+
+  const handleReceiver = (event) => {
+    const selectedReceiver = event.target.value;
+    setReceiver(selectedReceiver);
+    const selectedReceiverInfo = receiverData.find(
+      (item) => item.receiver === selectedReceiver
+    );
+    if (selectedReceiverInfo) {
+      setDestination(selectedReceiverInfo.destination);
+      setOrgin(selectedReceiverInfo.orgin);
+    } else {
+      setDestination("");
+      setOrgin("");
+    }
+  };
+
+  const handleSelectedKit = (event) => {
+    setKit(event.target.value);
   };
 
   const getAddressById = async () => {
@@ -112,259 +79,129 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
           )
           .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
-        console.log("validFlows", validFlows);
+        setUserName(userDetail.firstName);
       }
     } catch (error) {
       toast.error("Network Error!");
     }
   };
 
-  const handleStockBranchChange = (e) => {
-    const selectedValue = e.target.value;
-    setStockBranch(selectedValue);
-    // Filter out the selected value from the options of Source To dropdown
-    // const filteredBranches = stockBranch.filter(
-    //     (branch) => branch.branchCode !== selectedValue
-    // );
-    // setStockTo("");
-    // setFilteredStockBranch(filteredBranches);
-  };
-  const handleReqNoChange = (e) => {
-    setReqNo(e.target.value);
-  };
-  const handleStockFromChange = (e) => {
-    const selectedValue = e.target.value;
-    setStockFrom(selectedValue);
-    // Filter out the selected value from the options of Source To dropdown
-    const filteredBranches = stockBranch.filter(
-      (branch) => branch.branchCode !== selectedValue
-    );
-    setStockTo(""); // Reset the Source To dropdown value
-    setFilteredStockBranch(filteredBranches);
-  };
-
-  // const getAllAsset = async () => {
-  //     try {
-  //         const response = await axios.get(
-  //             `${process.env.REACT_APP_API_URL}/api/master/asset?orgId=${orgId}`
-  //         );
-  //         console.log("API Response:", response);
-
-  //         if (response.status === 200) {
-  //             // Extracting assetName and skuId from each asset item
-  //             const extractedAssets = response.data.paramObjectsMap.assetVO.map(
-  //                 (assetItem) => ({
-  //                     assetName: assetItem.assetName,
-  //                     assetCodeId: assetItem.assetCodeId,
-  //                 })
-  //             );
-  //             setAllAsset(extractedAssets);
-  //             console.log("API:", extractedAssets);
-  //         } else {
-  //             console.error("API Error:", response.data);
-  //         }
-  //     } catch (error) {
-  //         console.error("Error fetching data:", error);
-  //     }
-  // };
-
-  const getAllBinRequest = async () => {
+  const getFlowDetailsByFlowId = async (selectedId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getFlowDetailsByFlowId?flowId=${selectedId}`
       );
-      console.log("API Response:", response);
 
       if (response.status === 200) {
-        // Extracting assetName and skuId from each asset item
-        setReqNoList(response.data.paramObjectsMap.BinAllotment);
-      } else {
-        console.error("API Error:", response.data);
+        const receiverInfo = response.data.paramObjectsMap.flow.map(
+          (receiver) => ({
+            receiver: receiver.receiver,
+            destination: receiver.destination,
+            orgin: receiver.orgin,
+          })
+        );
+        console.log("receiverInfo", receiverInfo);
+        setReceiverData([...receiverInfo]);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // toast.error("Network Error!");
     }
   };
 
-  const getStockBranch = async () => {
+  const getkitNameById = async (selectedId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/flow/${selectedId}`
       );
-      console.log("API Response:", response);
 
       if (response.status === 200) {
-        setStockBranchList(response.data.paramObjectsMap.branch);
+        const kitDataArray =
+          response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
+            id: kit.id,
+            kitName: kit.kitName,
+          }));
 
-        // Handle success
-      } else {
-        // Handle error
-        console.error("API Error:", response.data);
+        setKitData([...kitDataArray]);
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      // toast.error("Network Error!");
     }
   };
 
-  const handleDeleteRow = (id) => {
-    setTableData(tableData.filter((row) => row.id !== id));
-  };
-  const handleKeyDown = (e, row) => {
-    if (e.key === "Tab" && row.id === tableData[tableData.length - 1].id) {
-      e.preventDefault();
-      handleAddRow();
+  const getkitAssetDetailsByKitId = async (qty) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getkitAssetDetailsByKitId?kitCode=${kit}&quantity=${qty}`
+      );
+
+      if (response.status === 200) {
+        setTableData(response.data.paramObjectsMap.kitAssetVO);
+        console.log("kitAssetVO", response.data.paramObjectsMap.kitAssetVO);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
     }
   };
 
-  const handleNew = () => {
-    setDocId("");
-    setStockBranch("");
-    setReqNo("");
-    setReqDate(null);
-    setEmitter("");
-    setReqKitName("");
-    setReqPartName("");
-    setReqQty("");
-    setAvlQty("");
-    setAlotQty("");
-    setTableData([
-      {
-        id: 1,
-        assetId: "",
-        rfId: "",
-        qrCode: "",
-        barcode: "",
-        asset: "",
-        assetCode: "",
-        qty: "",
-      },
-    ]);
-    setErrors({});
+  const handleKitQty = (event) => {
+    const qty = event.target.value;
+    setOutwardKitQty(qty);
+    getkitAssetDetailsByKitId(qty);
   };
+
   const handleSave = () => {
-    console.log("testing");
     const errors = {};
-
-    if (!docId) {
-      console.log("test docId");
-      errors.docId = "Doc ID is required";
+    if (!flow) {
+      errors.flow = "Flow is required";
     }
 
-    if (!docDate) {
-      errors.docDate = "Doc Date is required";
+    if (!kit) {
+      errors.kit = "Kit is required";
     }
 
-    if (!stockBranch) {
-      errors.stockBranch = "Stock Branch is required";
+    if (!receiver) {
+      errors.receiver = "Receiver is required";
     }
 
-    if (!reqNo) {
-      errors.reqNo = "Req No is required";
-    }
-
-    if (!reqDate) {
-      errors.reqDate = "Req Date is required";
-    }
-
-    if (!emitter) {
-      errors.emitter = "Emitter Name is required";
-    }
-
-    // if (!reqQty) {
-    //     errors.reqQty = "Req QTY is required";
-    // }
-
-    // if (!avlQty) {
-    //     errors.avlQty = "Avl QTY is required";
-    // }
-    if (!alotQty) {
-      errors.alotQty = "Alote QTY is required";
-    }
-
-    const tableFormData = tableData.map((row) => ({
-      asset: row.asset,
-      assetCode: row.assetCode,
-      qty: row.qty,
-      rfId: row.rfId,
-      tagCode: "Waiting for confirmation",
-    }));
-
-    const isTableDataEmpty = tableFormData.some(
-      (row) => row.rfId === "" || row.qrCode === ""
-      // row.qty === "" ||
-      // row.stockValue === "" ||
-      // row.stockLoc === "" ||
-      // row.binLoc === ""
-    );
-
-    if (isTableDataEmpty) {
-      errors.tableData = "Please fill all table fields";
+    if (Object.keys(errors).length === 0) {
+      const requestData = {
+        binOutwardDetails: tableData,
+        createdBy: userName,
+        destination,
+        docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
+        emitter: userName,
+        emitterId,
+        flow,
+        kit,
+        orgId,
+        orgin,
+        outwardKitQty,
+        receiver,
+      };
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/emitter/binOutward`,
+          requestData
+        )
+        .then((response) => {
+          console.log("Response for BIN OUTWARD:", response.data);
+          setFlow("");
+          setReceiver("");
+          setKit("");
+          setDestination("");
+          setOutwardKitQty("");
+          setErrors("");
+          // toast.success("Outward Qty updated");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error("Network Error!");
+        });
     } else {
-      delete errors.tableData;
+      setErrors(errors);
     }
-
-    const formData = {
-      docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-      stockBranch: stockBranch,
-      binReqNo: reqNo,
-      binReqDate: reqDate,
-
-      binLocation: emitter,
-
-      reqKitQty: reqQty,
-      avlKitQty: avlQty,
-      allotKitQty: alotQty,
-      createdby: userId,
-      orgId: orgId,
-      binAllotmentDetailsDTO: tableFormData,
-    };
-    console.log("Data to save is:", formData);
-
-    // if (Object.keys(errors).length === 0) {
-    //     const formData = {
-    //         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-    //         stockBranch: stockBranch,
-    //         binReqNo: reqNo,
-    //         binReqDate: reqDate,
-
-    //         binLocation: emitter,
-
-    //         reqKitQty: reqQty,
-    //         avlKitQty: avlQty,
-    //         allotKitQty: alotQty,
-    //         createdby: userId,
-    //         orgId: orgId,
-    //         binAllotmentDetailsDTO: tableFormData,
-    //     };
-
-    //     console.log("Data to save is:", formData)
-
-    //     axios
-    //         .post(
-    //             `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
-    //             formData
-    //         )
-    //         .then((response) => {
-    //             console.log("Response:", response.data);
-    //             handleNew();
-    //             toast.success("Emitter Bin Allotment Created Successfully!", {
-    //                 autoClose: 2000,
-    //                 theme: "colored",
-    //             });
-    //         })
-    //         .catch((error) => {
-    //             console.error("Error:", error);
-    //             toast.error("Failed to Create Emitter Bin Allotment. Please try again.");
-
-    //         });
-    // } else {
-    //     setErrors(errors);
-    // }
   };
 
-  const handleEmitterBinAllotmentClose = () => {
-    addBinAllotment(false);
-  };
   return (
     <>
       <div className="container-sm">
@@ -398,7 +235,8 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
                 placeholder="Doc Id"
                 value={docId}
                 onChange={(e) => setDocId(e.target.value)}
-                disabled={viewBinAllotmentId ? true : false}
+                // disabled={viewBinAllotmentId ? true : false}
+                disabled
               />
               {errors.docId && (
                 <span className="error-text mb-1">{errors.docId}</span>
@@ -441,7 +279,7 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
             <div className="col-lg-2 col-md-4">
               <select
                 className="form-select form-sz w-full mb-2"
-                value={selectedFlow}
+                value={flow}
                 onChange={handleSelectedFlow}
               >
                 <option value="">Select a Flow</option>
@@ -452,9 +290,50 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
                     </option>
                   ))}
               </select>
-              {/* {errors.stockBranch && (
-                <span className="error-text mb-1">{errors.stockBranch}</span>
-              )} */}
+              {errors.flow && (
+                <span className="error-text mb-1">{errors.flow}</span>
+              )}
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <label className="label mb-4">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Receiver
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <select
+                className="form-select form-sz w-full mb-2"
+                value={receiver}
+                onChange={handleReceiver}
+              >
+                <option value="" disabled>
+                  Select a Receiver
+                </option>
+                {receiverData &&
+                  receiverData.map((receiver) => (
+                    <option key={receiver.id} value={receiver.receiver}>
+                      {receiver.receiver}
+                    </option>
+                  ))}
+              </select>
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <label className="label mb-4">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Destination
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <input
+                className="form-control form-sz mb-2"
+                name="destination"
+                value={destination}
+                disabled
+              />
             </div>
             {/* KIT NAME FIELD */}
             <div className="col-lg-2 col-md-4">
@@ -468,18 +347,22 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
             <div className="col-lg-2 col-md-4">
               <select
                 className="form-select form-sz w-full mb-2"
-                value={reqKitName}
+                value={kit}
+                onChange={handleSelectedKit}
               >
                 <option value="" disabled>
                   Select a Kit
                 </option>
-                {/* {stockBranchList.length > 0 &&
-                  stockBranchList.map((list) => (
-                    <option key={list.id} value={list.branchCode}>
-                      {list.branchCode}
+                {kitData &&
+                  kitData.map((kit) => (
+                    <option key={kit.id} value={kit.kitName}>
+                      {kit.kitName}
                     </option>
-                  ))} */}
+                  ))}
               </select>
+              {errors.kit && (
+                <span className="error-text mb-1">{errors.kit}</span>
+              )}
             </div>
             {/* PART NAME FIELD */}
             <div className="col-lg-2 col-md-4">
@@ -493,20 +376,14 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
             <div className="col-lg-2 col-md-4">
               <input
                 className="form-control form-sz mb-2"
-                name="partName"
-                value={reqPartName}
+                name="outwardKitQty"
+                value={outwardKitQty}
+                onChange={handleKitQty}
               />
             </div>
           </div>
-          {/* <div className="mt-2">
-            <button
-              className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
-              onClick={handleAddRow}
-            >
-              + Add
-            </button>
-          </div> */}
-          <div className="row mt-2">
+
+          {/* <div className="row mt-2">
             <div className="col-lg-12">
               <div className="overflow-x-auto">
                 <table className="w-full">
@@ -530,95 +407,17 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
                     {tableData &&
                       tableData.map((row) => (
                         <tr key={row.id}>
-                          {/* <td className="border px-2 py-2">
-                            <button
-                              onClick={() => handleDeleteRow(row.id)}
-                              className="text-red-500"
-                            >
-                              <FaTrash style={{ fontSize: "18px" }} />
-                            </button>
-                          </td> */}
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.id}
-                              onChange={(e) =>
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, id: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border text-center px-2 py-2">
+                            {row.id}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.asset}
-                              onChange={(e) => {
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, asset: e.target.value }
-                                      : r
-                                  )
-                                );
-                              }}
-                              // style={{ width: "100%", border: errors && errors.qrCode ? "1px solid red" : "1px solid #ccc" }}
-                              // key={`AssetId-${row.id}`}
-                            />
+                          <td className="border text-center px-2 py-2">
+                            {row.asset}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.assetCode}
-                              onChange={(e) => {
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, assetCode: e.target.value }
-                                      : r
-                                  )
-                                );
-                              }}
-                              // style={{ width: "100%", border: errors && errors.rfId ? "1px solid red" : "1px solid #ccc" }}
-                              // key={`code-${row.id}`}
-                            />
+                          <td className="border text-center px-2 py-2">
+                            {row.assetCode}
                           </td>
-
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.qty}
-                              onChange={(e) => {
-                                const inputValue = e.target.value;
-                                if (
-                                  inputValue == "" ||
-                                  (/^\d+$/.test(inputValue) &&
-                                    inputValue.length <= 8)
-                                ) {
-                                  setTableData((prev) =>
-                                    prev.map((r) =>
-                                      r.id === row.id
-                                        ? { ...r, qty: inputValue }
-                                        : r
-                                    )
-                                  );
-                                }
-                              }}
-                              onKeyDown={(e) => handleKeyDown(e, row)}
-                              style={{
-                                border:
-                                  errors && errors.qty
-                                    ? "1px solid red"
-                                    : "1px solid #ccc",
-                              }}
-                              key={`QTY-${row.id}`}
-                            />
+                          <td className="border text-center px-2 py-2">
+                            {row.qty}
                           </td>
                         </tr>
                       ))}
@@ -626,10 +425,8 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
                 </table>
               </div>
             </div>
-          </div>
-          {errors.tableData && (
-            <div className="error-text mt-2">{errors.tableData}</div>
-          )}
+          </div> */}
+
           <div className="mt-4">
             <button
               type="button"
@@ -641,7 +438,7 @@ function BinOutward({ addBinAllotment, viewBinAllotmentId }) {
             <button
               type="button"
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              onClick={handleNew}
+              //   onClick={handleNew}
             >
               Cancel
             </button>
