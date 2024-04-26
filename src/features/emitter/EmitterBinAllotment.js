@@ -95,6 +95,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
         { viewBinAllotmentId && viewAllotedBinByDocId() }
         getStockBranch()
         getBinRequestByReqNo()
+        getAvlQtyByBranch()
         // getAllBinRequest()
         // { selectedRowId && viewAllotedBinByDocId() }
         viewAllotedBinByDocId()
@@ -274,6 +275,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
         setStockTo("");
         setFilteredStockBranch(filteredBranches);
         console.log("TO STOCK BRANCH IS:", filteredBranches)
+        getAvlQtyByBranch()
     };
     const handleStockToChange = (e) => {
         const selectedValue = e.target.value;
