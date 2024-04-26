@@ -63,7 +63,7 @@ const statsData = [
 
 export const BinAllotmentDetails = () => {
   const [addBinAllotment, setAddBinAllotment] = React.useState(false);
-  const [viewBinAllotment, setViewBinAllotment] = React.useState(false);
+  const [editBinRequest, setEditBinRequest] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [openView, setOpenView] = React.useState(false);
   const [add, setAdd] = React.useState(false);
@@ -95,41 +95,39 @@ export const BinAllotmentDetails = () => {
 
   const handleBack = () => {
     setAddBinAllotment(false);
-    setViewBinAllotment(false);
-    getAllBinAllotmentData();
+    setEditBinRequest(false);
+    getAllBinRequest();
   };
 
   useEffect(() => {
-    getAllBinAllotmentData();
-  }, []);
+    getAllBinRequest();
+    console.log("selected row id is:", selectedRowId)
+  }, [selectedRowId]);
 
-  const getAllBinAllotmentData = async () => {
+  const getAllBinRequest = async () => {
     try {
       const response = await axios.get(
-        // `${process.env.REACT_APP_API_URL}/api/auth/userByOrgId?orgId=${orgId}`
-        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequestreportByOrgId?OrgId=${orgId}`
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.binAllotmentNewVO)
-        console.log("Response from API is:", response.data.paramObjectsMap.binAllotmentNewVO);
+        setData(response.data.paramObjectsMap.issueRequestVO)
+        console.log("Response from API is:", response.data.paramObjectsMap.issueRequestVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  // const handleViewRow = (row) => {
-  //   setSelectedRowData(row.original);
-  //   console.log("setSelectedRowData", row.original);
-  //   setOpenView(true);
-  // };
+  const handleEditRow = (row) => {
+    // setSelectedRowId(row.original.reqNo);
+    console.log("setSelectedRowId", row.original.reqNo);
+    setSelectedRowId(row.original.reqNo);
+    // setEditBinRequest(true);
+    // setOpenView(true);
+    console.log("Real state of selected row id is:", selectedRowId);
+    setEditBinRequest(true);
 
-  const handleViewRow = (row) => {
-    setSelectedRowId(row.original.docId);
-    console.log("setSelectedRowID", row.original.docId);
-    setViewBinAllotment(true);
-    // setAddBinAllotment(true);
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -161,17 +159,17 @@ export const BinAllotmentDetails = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <IconButton onClick={() => handleViewRow(row)}>
+            {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
-            </IconButton>
-            {/* <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
             </IconButton> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
           </div>
         ),
       },
       {
-        accessorKey: "binReqNo",
+        accessorKey: "reqNo",
         header: "Req No",
         size: 50,
         muiTableHeadCellProps: {
@@ -193,7 +191,7 @@ export const BinAllotmentDetails = () => {
         },
       },
       {
-        accessorKey: "binReqDate",
+        accessorKey: "reqDate",
         header: "Req Date",
         size: 50,
         muiTableHeadCellProps: {
@@ -214,18 +212,6 @@ export const BinAllotmentDetails = () => {
           align: "center",
         },
       },
-      {
-        accessorKey: "allotkKitQty",
-        header: "Allotted QTY",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-
       // {
       //   accessorKey: "active",
       //   header: "Active",
@@ -266,8 +252,8 @@ export const BinAllotmentDetails = () => {
   return (
     <>
       {(addBinAllotment && <EmitterBinAllotment addBinAllotment={handleBack} />) ||
-        (viewBinAllotment && (
-          <EmitterBinAllotment addBinAllotment={handleBack} viewBinAllotmentId={selectedRowId} />
+        (editBinRequest && (
+          <EmitterBinAllotment addBinAllotment={handleBack} editBinRequestId={selectedRowId} />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             {/* DASHBOARD COMPONENT */}
@@ -278,10 +264,10 @@ export const BinAllotmentDetails = () => {
             </div>
 
             {/* BULK UPLOAD AND ADD NEW BUTTON */}
-            <div className="">
+            {/* <div className="">
               <div className="flex justify-end mt-4 w-full">
 
-                {/* <button
+                <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
                   onClick={handleClickOpen}
@@ -303,7 +289,7 @@ export const BinAllotmentDetails = () => {
                   >
                     Bulk Upload
                   </span>
-                </button> */}
+                </button>
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -328,7 +314,7 @@ export const BinAllotmentDetails = () => {
                   </span>
                 </button>
               </div>
-            </div>
+            </div> */}
 
             {/* LISTVIEW TABLE */}
             <div className="mt-4">
