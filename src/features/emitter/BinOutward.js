@@ -15,7 +15,6 @@ function BinOutward() {
   const [flow, setFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
   const [kitData, setKitData] = useState([]);
-  const [receiverData, setReceiverData] = useState([]);
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
   const [kit, setKit] = useState("");
@@ -46,21 +45,6 @@ function BinOutward() {
     getkitNameById(selectedId);
   };
 
-  const handleReceiver = (event) => {
-    const selectedReceiver = event.target.value;
-    setReceiver(selectedReceiver);
-    const selectedReceiverInfo = receiverData.find(
-      (item) => item.receiver === selectedReceiver
-    );
-    if (selectedReceiverInfo) {
-      setDestination(selectedReceiverInfo.destination);
-      setOrgin(selectedReceiverInfo.orgin);
-    } else {
-      setDestination("");
-      setOrgin("");
-    }
-  };
-
   const handleSelectedKit = (event) => {
     setKit(event.target.value);
   };
@@ -89,19 +73,15 @@ function BinOutward() {
   const getFlowDetailsByFlowId = async (selectedId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getFlowDetailsByFlowId?flowId=${selectedId}`
+        `${process.env.REACT_APP_API_URL}/api/master/flow/${selectedId}`
       );
 
       if (response.status === 200) {
-        const receiverInfo = response.data.paramObjectsMap.flow.map(
-          (receiver) => ({
-            receiver: receiver.receiver,
-            destination: receiver.destination,
-            orgin: receiver.orgin,
-          })
-        );
-        console.log("receiverInfo", receiverInfo);
-        setReceiverData([...receiverInfo]);
+        setReceiver(response.data.paramObjectsMap.flowVO.receiver);
+        setDestination(response.data.paramObjectsMap.flowVO.destination);
+        setOrgin(response.data.paramObjectsMap.flowVO.orgin);
+        console.log("receiverInfo", response.data.paramObjectsMap.flowVO);
+        // setReceiverData([...receiverInfo]);
       }
     } catch (error) {
       // toast.error("Network Error!");
@@ -161,6 +141,10 @@ function BinOutward() {
 
     if (!receiver) {
       errors.receiver = "Receiver is required";
+    }
+
+    if (!outwardKitQty) {
+      errors.outwardKitQty = "Outward Kit Qty is required";
     }
 
     if (Object.keys(errors).length === 0) {
@@ -303,21 +287,12 @@ function BinOutward() {
               </label>
             </div>
             <div className="col-lg-2 col-md-4">
-              <select
-                className="form-select form-sz w-full mb-2"
+              <input
+                className="form-control form-sz mb-2"
+                name="receiver"
                 value={receiver}
-                onChange={handleReceiver}
-              >
-                <option value="" disabled>
-                  Select a Receiver
-                </option>
-                {receiverData &&
-                  receiverData.map((receiver) => (
-                    <option key={receiver.id} value={receiver.receiver}>
-                      {receiver.receiver}
-                    </option>
-                  ))}
-              </select>
+                disabled
+              />
             </div>
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
@@ -369,7 +344,7 @@ function BinOutward() {
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
                   Outward Kit Qty
-                  {/* <FaStarOfLife className="must" /> */}
+                  <FaStarOfLife className="must" />
                 </span>
               </label>
             </div>
@@ -380,67 +355,19 @@ function BinOutward() {
                 value={outwardKitQty}
                 onChange={handleKitQty}
               />
+              {errors.outwardKitQty && (
+                <span className="error-text mb-1">{errors.outwardKitQty}</span>
+              )}
             </div>
           </div>
 
-          {/* <div className="row mt-2">
-            <div className="col-lg-12">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        S.No
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Asset
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Asset Code
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        QTY
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableData &&
-                      tableData.map((row) => (
-                        <tr key={row.id}>
-                          <td className="border text-center px-2 py-2">
-                            {row.id}
-                          </td>
-                          <td className="border text-center px-2 py-2">
-                            {row.asset}
-                          </td>
-                          <td className="border text-center px-2 py-2">
-                            {row.assetCode}
-                          </td>
-                          <td className="border text-center px-2 py-2">
-                            {row.qty}
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div> */}
-
-          <div className="mt-4">
+          <div className="mt-2">
             <button
               type="button"
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               onClick={handleSave}
             >
               Save
-            </button>
-            <button
-              type="button"
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              //   onClick={handleNew}
-            >
-              Cancel
             </button>
           </div>
         </div>
