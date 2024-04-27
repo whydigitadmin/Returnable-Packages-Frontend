@@ -1,5 +1,7 @@
 import CloseIcon from "@material-ui/icons/Close";
 
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import HighlightOffIcon from "@mui/icons-material/HighlightOff";
 import {
@@ -1057,42 +1059,19 @@ function IssueReq() {
                             </div>
                           )}
                         </div>
-                        <div className="col-lg-3 col-md-2 mt-6">
-                          <div className="mt-2 badge badge-success">
-                            {selectedKit && (
-                              <p>Part : {selectedKit.partName}</p>
-                            )}
-                          </div>
-                          {/* {selectedKitNumbers[index] ? (
-                            <>
-                              <img
-                                src={getKitImageByNumber(
-                                  selectedKitNumbers[index]
+                        {selectedKit && (
+                          <div className="col-lg-3 col-md-2 mt-6">
+                            <Card style={{ border: "1px solid #000000" }}>
+                              <CardContent>
+                                {selectedKit && (
+                                  <Typography variant="outlined">
+                                    Part: {selectedKit.partName}
+                                  </Typography>
                                 )}
-                                alt={`Kit ${selectedKitNumbers[index]} Image`}
-                                style={{
-                                  width: "90px",
-                                  height: "90px",
-                                }}
-                              />
-                              <span
-                                className="pt-1"
-                                style={{ fontSize: "12px" }}
-                              >
-                                PA00341
-                              </span>
-                            </>
-                          ) : (
-                            <img
-                              src="/partImage2.png"
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                marginTop: "35px",
-                              }}
-                            />
-                          )} */}
-                        </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        )}
                         <DisplaySelectedPartInfo
                           selectedPartNo={selectedPartNumbers[index]}
                         />
@@ -1204,46 +1183,25 @@ function IssueReq() {
                             </div>
                           )}
                         </div>
-                        <div className="col-lg-3 col-md-2 mt-4">
-                          <div className="mt-2 badge badge-success">
-                            {selectedPart && (
-                              <p>Kit : {selectedPart.kitName}</p>
-                            )}
-                          </div>
-                          <br></br>
-                          {kitQtyy && kitQtyy > 0 && (
-                            <div className="mt-2 badge badge-success">
-                              Kit QTY : <b>{kitQtyy}</b>
-                            </div>
-                          )}
-                          {/* {selectedPartNumbers[index] ? (
-                            <>
-                              <img
-                                src={getPartImageByNumber(
-                                  selectedPartNumbers[index]
+                        {selectedPart && (
+                          <div className="col-lg-3 col-md-2 mt-4">
+                            <Card style={{ border: "1px solid #000000" }}>
+                              <CardContent>
+                                {selectedPart && (
+                                  <Typography variant="outlined">
+                                    Kit: {selectedPart.kitName}
+                                  </Typography>
                                 )}
-                                alt={`Kit ${selectedPartNumbers[index]} Image`}
-                                style={{ width: "90px", height: "90px" }}
-                              />
-                              <span
-                                className="pt-1 ms-4"
-                                style={{ fontSize: "12px" }}
-                              >
-                                PA00341
-                              </span>
-                            </>
-                          ) : (
-                            <img
-                              src="/partImage2.png" // Replace with your default image path
-                              alt="Default Image"
-                              style={{
-                                width: "40px",
-                                height: "40px",
-                                marginTop: "35px",
-                              }}
-                            />
-                          )} */}
-                        </div>
+                                <br />
+                                {kitQtyy && kitQtyy > 0 && (
+                                  <Typography variant="outlined">
+                                    Kit QTY: <b>{kitQtyy}</b>
+                                  </Typography>
+                                )}
+                              </CardContent>
+                            </Card>
+                          </div>
+                        )}
                         <DisplaySelectedPartInfo
                           selectedPartNo={selectedPartNumbers[index]}
                         />
@@ -1280,8 +1238,8 @@ function IssueReq() {
                               <tr>
                                 {/* <th>Details</th> */}
                                 <th>Status</th>
-                                <th>RM No.</th>
-                                <th>RM Date</th>
+                                <th>Req No</th>
+                                <th>Req Date</th>
                                 <th>Demand Date</th>
                                 <th>Flow Name</th>
                                 <th>Kit No</th>
@@ -1332,7 +1290,7 @@ function IssueReq() {
                                                     .length
                                                 }
                                               >
-                                                {issueRequest.id}
+                                                {issueRequest.docId}
                                               </td>
                                               <td
                                                 rowSpan={
@@ -1407,7 +1365,7 @@ function IssueReq() {
                                                     .length
                                                 }
                                               >
-                                                {issueRequest.id}
+                                                {issueRequest.docId}
                                               </td>
                                               <td
                                                 rowSpan={
