@@ -67,7 +67,7 @@ function Header() {
                 style={{
                   width: "150px",
                   height: "auto",
-                  marginRight: "6px",
+                  marginLeft: "6px",
                 }}
               />
             </Link>
@@ -141,7 +141,7 @@ function Header() {
               <BellIcon className="h-6 w-6" />
               {noOfNotifications > 0 ? (
                 <span className="indicator-item badge badge-secondary badge-sm">
-                  {noOfNotifications}
+                  {/* {noOfNotifications} */}1
                 </span>
               ) : null}
             </div>

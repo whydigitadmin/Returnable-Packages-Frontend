@@ -84,7 +84,7 @@ function WelcomeEmitter() {
       </div>
       <div className="row" style={{ gap: "3%" }}>
         <div
-          className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2"
+          className="col-lg-3 col-md-3 card bg-base-100 shadow-xl mb-4 pe-2"
           style={{ height: "400px" }}
         >
           <div className="">
@@ -149,7 +149,7 @@ function WelcomeEmitter() {
             </p> */}
           </div>
         </div>
-        <div className="col-lg-8 card bg-base-100 shadow-xl mb-4 ml-3">
+        <div className="col-lg-8 col-md-8 card bg-base-100 shadow-xl mb-4">
           {userDetails === "ROLE_OEM" ? (
             <>
               <div className="col-lg-12">
@@ -188,11 +188,11 @@ function WelcomeEmitter() {
             </>
           ) : (
             <div className="row">
-              <div className="col-lg-4">
+              <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/IssueReq">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -215,11 +215,11 @@ function WelcomeEmitter() {
                 </Link>
               </div>
 
-              <div className="col-lg-4">
+              <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/EmitterInwardNew">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -238,11 +238,11 @@ function WelcomeEmitter() {
                 </Link>
               </div>
 
-              <div className="col-lg-4">
+              <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/BinOutward">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -265,11 +265,11 @@ function WelcomeEmitter() {
                 </Link>
               </div>
 
-              <div className="col-lg-4">
+              <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/StockAdjustment">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">

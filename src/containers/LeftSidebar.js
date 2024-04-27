@@ -48,7 +48,7 @@ function LeftSidebar() {
             style={{
               width: "200px",
               height: "auto",
-              marginRight: "6px",
+              marginLeft: "6px",
             }}
           />
         </li>
