@@ -137,11 +137,15 @@ export const AsstTagging = () => {
     console.log("Asset Name:", assetName);
   }, [assetList, assetName]);
 
+  useEffect(() => {
+    getAssetDocid();
+  });
+
   const getAllTagCode = async () => {
     const errors = {};
-    if (!docId || !docId.trim()) {
-      errors.docId = "Document ID is required";
-    }
+    // if (!docId || !docId.trim()) {
+    //   errors.docId = "Document ID is required";
+    // }
     if (!toDate) {
       errors.toDate = "Doc Date is required";
     }
@@ -198,6 +202,21 @@ export const AsstTagging = () => {
     }
   };
 
+  const getAssetDocid = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getDocIdByAssetTagging`
+      );
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.assetTagDocId);
+        // console.log(response.data.paramObjectsMap.assetInwardVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleChangeAssetCode = (e) => {
     const selectedCode = e.target.value;
     const selectedAsset = assetList.find(
@@ -214,9 +233,9 @@ export const AsstTagging = () => {
   const handleSave = async () => {
     const errors = {};
 
-    if (!docId || !docId.trim()) {
-      errors.docId = "Document ID is required";
-    }
+    // if (!docId || !docId.trim()) {
+    //   errors.docId = "Document ID is required";
+    // }
     if (!toDate) {
       errors.toDate = "Doc Date is required";
     }
@@ -461,9 +480,10 @@ export const AsstTagging = () => {
             className="form-control form-sz"
             type="text"
             value={docId}
-            onChange={(e) => setDocId(e.target.value)}
+            // onChange={(e) => setDocId(e.target.value)}
+            readOnly
           />
-          {errors.docId && <span className="error-text">{errors.docId}</span>}
+          {/* {errors.docId && <span className="error-text">{errors.docId}</span>} */}
         </div>
 
         {/* Doc Date */}
