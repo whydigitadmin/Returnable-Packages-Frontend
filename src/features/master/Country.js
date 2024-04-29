@@ -128,6 +128,68 @@ export const Country = () => {
     }
   };
 
+
+  // SAVE COUNTRY WITH DESKTOP NOTIFICATION
+  // const handleCountry = () => {
+  //   console.log("test");
+  //   const errors = {};
+  //   if (!country) {
+  //     errors.country = "Country Name is required";
+  //   }
+  //   if (!code) {
+  //     errors.code = "Code is required";
+  //   }
+  //   if (Object.keys(errors).length === 0) {
+  //     const formData = {
+  //       country: country,
+  //       countryCode: code,
+  //       orgId,
+  //       createdBy: userDetail.firstName,
+  //       modifiedBy: userDetail.firstName,
+  //       active: true,
+  //       cancel: false,
+  //     };
+  //     console.log("test1", formData);
+  //     axios
+  //       .post(
+  //         `${process.env.REACT_APP_API_URL}/api/basicMaster/country`,
+  //         formData
+  //       )
+  //       .then((response) => {
+  //         console.log("Response:", response.data);
+
+  //         getCountryData();
+  //         setCountry("");
+  //         setCode("");
+  //         setErrors("");
+
+  //         // Display desktop notification if supported and permission granted
+  //         if ("Notification" in window && Notification.permission === "granted") {
+  //           new Notification("Country Created successfully");
+  //         } else if ("Notification" in window && Notification.permission !== "denied") {
+  //           Notification.requestPermission().then((permission) => {
+  //             if (permission === "granted") {
+  //               new Notification("Country Created successfully");
+  //             }
+  //           });
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //       });
+  //   } else {
+  //     // If there are errors, update the state to display them
+  //     setErrors(errors);
+  //   }
+  // };
+
+
+
+
+
+
+
+
   const handleUpdateCountry = () => {
     console.log("test");
     const errors = {};

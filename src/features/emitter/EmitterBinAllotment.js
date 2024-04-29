@@ -93,6 +93,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
     useEffect(() => {
 
         { viewBinAllotmentId && viewAllotedBinByDocId() }
+        getNewDocId()
         getStockBranch()
         getBinRequestByReqNo()
         getAvlQtyByBranch()
@@ -103,6 +104,24 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
 
     }, [tableData.assetCode, selectedRowId]);
 
+
+    const getNewDocId = async () => {
+        try {
+            const response = await axios.get(
+                `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByBinallotment`
+            );
+            console.log("API Response:", response);
+
+            if (response.status === 200) {
+                console.log("GET DocId FROM API Response:", response.data.paramObjectsMap.allotDocId);
+                setDocId(response.data.paramObjectsMap.allotDocId)
+            } else {
+                console.error("API Error:", response.data);
+            }
+        } catch (error) {
+            console.error("Error fetching data:", error);
+        }
+    };
     const getBinRequestByReqNo = async () => {
         try {
             const response = await axios.get(

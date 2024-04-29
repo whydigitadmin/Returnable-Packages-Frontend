@@ -29,6 +29,7 @@ export const State = () => {
   const [data, setData] = React.useState([]);
   const [tableData, setTableData] = useState([]);
   const [state, setState] = useState("");
+  const [stateNo, setStateNo] = useState("");
   const [country, setCountry] = useState("");
   const [code, setCode] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
@@ -40,7 +41,7 @@ export const State = () => {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  const [updateLoading, setUpdateLoading] = useState(false); // Added state for update loading
+  const [updateLoading, setUpdateLoading] = useState(false);
   const [countryData, setCountryData] = useState([]);
 
   const handleEditRow = (row) => {
@@ -48,6 +49,8 @@ export const State = () => {
     setEdit(true);
     setState(row.original.stateName);
     setCode(row.original.stateCode);
+    setStateNo(row.original.stateNo);
+    setCountry(row.original.country);
   };
 
   const handleViewClose = () => {
@@ -74,10 +77,7 @@ export const State = () => {
 
       if (response.status === 200) {
         setCountryData(response.data.paramObjectsMap.countryVO);
-        //console.log(response.data.paramObjectsMap.countryVO)
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -95,9 +95,7 @@ export const State = () => {
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.stateVO.reverse());
         setTableData(response.data.paramObjectsMap.stateVO.reverse());
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -114,6 +112,9 @@ export const State = () => {
 
       case "code":
         setCode(value);
+        break;
+      case "stateno":
+        setStateNo(value);
         break;
       case "country":
         setCountry(value);
@@ -136,6 +137,7 @@ export const State = () => {
       const formData = {
         stateName: state,
         stateCode: code,
+        stateNo: stateNo,
         orgId,
         createdBy: userDetail.firstName,
         modifiedBy: userDetail.firstName,
@@ -154,6 +156,7 @@ export const State = () => {
           getStateData();
           setState("");
           setCode("");
+          setStateNo("")
           setCountryData([]);
           setErrors("");
           toast.success("State Created successfully", {
@@ -165,17 +168,17 @@ export const State = () => {
           console.error("Error:", error);
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
 
   const handleUpdateState = () => {
-    setUpdateLoading(true); // Set loading state
+    setUpdateLoading(true);
 
     const formData = {
       stateName: state,
       stateCode: code,
+      stateNo: stateNo,
       id: selectedRowId,
       orgId: orgId,
       modifiedBy: userDetail.firstName,
@@ -190,9 +193,10 @@ export const State = () => {
         console.log("Update Response:", response.data);
         getStateData();
         setEdit(false);
-        setUpdateLoading(false); // Reset loading state
+        setUpdateLoading(false);
         setState("");
         setCode("");
+        setStateNo("");
         toast.success("State Updation successfully", {
           autoClose: 2000,
           theme: "colored",
@@ -230,9 +234,10 @@ export const State = () => {
           </div>
         ),
       },
+
       {
-        accessorKey: "stateName",
-        header: "State",
+        accessorKey: "stateCode",
+        header: "Code",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -242,8 +247,19 @@ export const State = () => {
         },
       },
       {
-        accessorKey: "stateCode",
-        header: "Code",
+        accessorKey: "stateNo",
+        header: "State No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "stateName",
+        header: "State",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -278,6 +294,98 @@ export const State = () => {
       </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row">
+
+
+          {/* STATE CODE FIELD */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Code
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              type={"text"}
+              value={code}
+              name="code"
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase().replace(/[^A-Za-z]/g, "");
+
+              }}
+              maxLength={2}
+              onChange={handleInputChange}
+              className="input input-bordered p-2"
+            />
+            {errors.code && <div className="error-text">{errors.code}</div>}
+          </div>
+          {/* STATE CODE FIELD */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                No
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              type={"text"}
+              value={stateNo}
+              name="stateno"
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, "");
+
+              }}
+              onChange={handleInputChange}
+              className="input input-bordered p-2"
+              maxLength={3}
+
+            />
+            {errors.stateNo && <div className="error-text">{errors.stateNo}</div>}
+          </div>
+          {/* STATE NAME FIELD */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                State
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+              type={"text"}
+              value={state}
+              name="state"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z]/g, "");
+              }}
+              // placeholder={"Enter"}
+              onChange={handleInputChange}
+              className="input input-bordered p-2"
+            />
+            {errors.state && <div className="error-text">{errors.state}</div>}
+          </div>
+          {/* COUNTRY FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -311,65 +419,6 @@ export const State = () => {
             {errors.country && (
               <span className="error-text">{errors.country}</span>
             )}
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                State
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              type={"text"}
-              value={state}
-              name="state"
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
-              }}
-              // placeholder={"Enter"}
-              onChange={handleInputChange}
-              className="input input-bordered p-2"
-            />
-            {errors.state && <div className="error-text">{errors.state}</div>}
-          </div>
-
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Code
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              type={"text"}
-              value={code}
-              name="code"
-              // placeholder={"Enter"}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
-              onChange={handleInputChange}
-              className="input input-bordered p-2"
-            />
-            {errors.code && <div className="error-text">{errors.code}</div>}
           </div>
           {edit ? (
             <div className="d-flex flex-row mt-3">

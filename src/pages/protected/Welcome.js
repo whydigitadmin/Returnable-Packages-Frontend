@@ -20,7 +20,7 @@ function InternalPage() {
           </Link> */}
           <div className="row col-lg-12">
             <div className="col-lg-3">
-              <Link to="/app/IssueManifest">
+              <Link to="/app/binallotmentdetails">
                 <div
                   className="card bg-base-100 shadow-xl mb-4 mt-3 position-relative"
                   style={{ width: "12rem", minHeight: "50px", padding: "10px" }} // Add minHeight to prevent collapsing
