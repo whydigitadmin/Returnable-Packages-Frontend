@@ -359,8 +359,38 @@ function BinOutward() {
                 <span className="error-text mb-1">{errors.outwardKitQty}</span>
               )}
             </div>
+            <div className="col-lg-2 col-md-4">
+              <label className="label mb-4">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Invoice no
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <input
+                className="form-control form-sz mb-2"
+                name="invoice"
+                // value={invoice}
+                maxLength={15}
+              />
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <label className="label mb-4">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Dispatch remarks
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <input
+                className="form-control form-sz mb-2"
+                name="dispatch"
+                // value={dispatch}
+              />
+            </div>
           </div>
-
           <div className="mt-2">
             <button
               type="button"
