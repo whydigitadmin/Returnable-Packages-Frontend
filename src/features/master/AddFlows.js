@@ -69,7 +69,7 @@ function AddFlows({ addFlows }) {
   const [flowName, setFlowName] = useState("");
   const [emitter, setEmitter] = useState("");
   const [receiver, setReceiver] = useState("");
-  const [orgin, setOrgin] = useState("");
+  const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [active, setActive] = useState(true);
   const [id, setId] = useState();
@@ -142,11 +142,11 @@ function AddFlows({ addFlows }) {
     const generateFlowName = () => {
       // Check if all values are available
 
-      console.log("Testtt", emitter, orgin, destination);
+      console.log("Testtt", emitter, origin, destination);
       console.log("EmitterName", displayName);
-      if (emitter && orgin && destination && receiver) {
+      if (emitter && origin && destination && receiver) {
         const firstTwoEmitter = displayName.substring(0, 2).toUpperCase();
-        const firstTwoOrigin = orgin.substring(0, 3).toUpperCase();
+        const firstTwoOrigin = origin.substring(0, 3).toUpperCase();
         const firstTwoDestination = destination.substring(0, 3).toUpperCase();
         const firstTwoReceiver = receiverName.toUpperCase();
         const generatedName = `${firstTwoEmitter}-${firstTwoOrigin}-${firstTwoDestination}-${firstTwoReceiver}`;
@@ -156,7 +156,7 @@ function AddFlows({ addFlows }) {
 
     // Call the function when emitter, origin, or destination changes
     generateFlowName();
-  }, [displayName, orgin, destination, receiverName]);
+  }, [displayName, origin, destination, receiverName]);
 
   const handleFlows = () => {
     addFlows(false);
@@ -271,8 +271,8 @@ function AddFlows({ addFlows }) {
       case "flowName":
         setFlowName(value);
         break;
-      case "orgin":
-        setOrgin(value);
+      case "origin":
+        setOrigin(value);
         break;
       case "destination":
         setDestination(value);
@@ -282,7 +282,7 @@ function AddFlows({ addFlows }) {
 
   const handleCityChange = (e) => {
     const selectedValue = e.target.value;
-    setOrgin(selectedValue);
+    setOrigin(selectedValue);
     // Filter out the selected value from the options of Source To dropdown
     const filteredCity = city.filter((list) => list.cityCode !== selectedValue);
     setDestination(""); // Reset the Source To dropdown value
@@ -300,8 +300,8 @@ function AddFlows({ addFlows }) {
     if (!receiver) {
       errors.receiver = "Receiver is required";
     }
-    if (!orgin) {
-      errors.orgin = "Orgin is required";
+    if (!origin) {
+      errors.origin = "origin is required";
     }
     if (!destination) {
       errors.destination = "Destination is required";
@@ -319,7 +319,7 @@ function AddFlows({ addFlows }) {
         flowName,
         emitterId: emitter,
         receiverId: receiver,
-        orgin,
+        orgin: origin,
         destination,
         active,
         warehouseId: warehouseLocationValue,
@@ -553,7 +553,7 @@ function AddFlows({ addFlows }) {
             )}
           </div>
 
-          {/* orgin field */}
+          {/* origin field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span
@@ -561,7 +561,7 @@ function AddFlows({ addFlows }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Orgin
+                Origin
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -570,11 +570,11 @@ function AddFlows({ addFlows }) {
             <select
               className="form-select form-sz w-full mb-2"
               onChange={handleCityChange}
-              value={orgin}
-              name="orgin"
+              value={origin}
+              name="origin"
             >
               <option value="" disabled>
-                Select an orgin
+                Select an origin
               </option>
               {city.length > 0 &&
                 city.map((list) => (
@@ -583,8 +583,8 @@ function AddFlows({ addFlows }) {
                   </option>
                 ))}
             </select>
-            {errors.orgin && (
-              <span className="error-text mb-1">{errors.orgin}</span>
+            {errors.origin && (
+              <span className="error-text mb-1">{errors.origin}</span>
             )}
           </div>
 

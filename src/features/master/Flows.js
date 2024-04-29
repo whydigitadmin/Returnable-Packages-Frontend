@@ -193,7 +193,7 @@ function Flows() {
       },
       {
         accessorKey: "orgin",
-        header: "Orgin",
+        header: "Origin",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
