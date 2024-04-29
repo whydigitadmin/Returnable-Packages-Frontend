@@ -363,7 +363,7 @@ function BinOutward() {
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
                   Invoice no
-                  <FaStarOfLife className="must" />
+                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
@@ -379,7 +379,7 @@ function BinOutward() {
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
                   Dispatch remarks
-                  <FaStarOfLife className="must" />
+                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
