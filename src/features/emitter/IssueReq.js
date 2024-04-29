@@ -151,18 +151,29 @@ function IssueReq() {
   // };
 
   const handleIssueDateChange = (newDate) => {
-    const originalDateString = newDate;
-    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
-    setSelectedDate1(formattedDate);
-    console.log("FORMATTED DATE IS", selectedDate1);
+    if (newDate) {
+      // If a new date is selected
+      const originalDateString = newDate;
+      const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+      setSelectedDate1(formattedDate);
 
-    const hoursDifference = originalDateString.diff(currentDate, "hour");
-    if (hoursDifference <= 48) {
-      setPriorityStatus("High Priority");
+      const currentDate = dayjs(); // Update currentDate with the current date
+
+      if (currentDate) {
+        const hoursDifference = originalDateString.diff(currentDate, "hour");
+        if (hoursDifference <= 48) {
+          setPriorityStatus("High Priority");
+        } else {
+          setPriorityStatus("Normal Priority");
+        }
+      }
     } else {
-      setPriorityStatus("Normal Priority");
+      // If the date is cleared
+      setSelectedDate1(""); // Clear the selected date
+      setPriorityStatus(""); // Clear the priority status
     }
   };
+
   const handleIdClick = (issueRequest) => {
     setSelectedIssue(issueRequest);
     setIsDialogOpen(true);
@@ -256,7 +267,7 @@ function IssueReq() {
     //   errors.kitNo = "kit Id is required";
     // }
     if (!selectedDate1) {
-      errors.selectedDate1 = "date is required";
+      errors.selectedDate1 = "Date is required";
     }
 
     // if (!demandDate) {
@@ -264,7 +275,7 @@ function IssueReq() {
     // }
     const kitQtyErrors = kitFields.some((field) => !field.qty);
     if (kitQtyErrors) {
-      errors.kitQty = "kit quantity is required";
+      errors.kitQty = "Kit quantity is required";
     }
 
     if (Object.keys(errors).length === 0) {
@@ -885,14 +896,20 @@ function IssueReq() {
                 </LocalizationProvider>
               </div>
 
-              {/* <p>
-                <strong style={{ fontSize: "12px" }}>
-                  (<span style={{ color: "red" }}>*</span> Issue Within 48Hrs
-                  Considered as High Priroity)
-                </strong>
-              </p> */}
-              {errors.selectedDate1 && (
-                <span className="error-text">{errors.selectedDate1}</span>
+              {selectedDate1 ? ( // Only show the priority input table if a date is selected
+                <span
+                  style={{
+                    color: getPriorityColor(),
+                    marginTop: "5px",
+                    display: "inline-block",
+                  }}
+                >
+                  {priorityStatus}
+                </span>
+              ) : (
+                errors.selectedDate1 && (
+                  <span className="error-text">{errors.selectedDate1}</span>
+                )
               )}
             </div>
 
@@ -915,7 +932,7 @@ function IssueReq() {
               />
             </div>
 
-            <div className="col-md-5"></div>
+            {/* <div className="col-md-5"></div>
             <div className="col-md-1"></div>
             {selectedDate1 && ( // Only show the priority input table if a date is selected
               <div className="col-md-2">
@@ -927,7 +944,7 @@ function IssueReq() {
                   style={{ color: getPriorityColor(), marginTop: "5px" }}
                 />
               </div>
-            )}
+            )} */}
           </div>
 
           <div className="row pt-4 pl-5 pr-5 pb-10">
