@@ -91,6 +91,7 @@ function AddFlows({ addFlows }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [filteredCity, setFilteredCity] = useState([]);
   const [displayName, setDisplayName] = useState("");
+  const [receiverName, setReceiverName] = useState("");
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -122,7 +123,19 @@ function AddFlows({ addFlows }) {
     } else {
       console.warn("Selected emitter not found!");
     }
-  }, [emitter, emitterCustomersVO]);
+
+    const selectedReceiver = receiverCustomersVO.find(
+      (item) => parseInt(item.id) === parseInt(receiver)
+    );
+
+    console.log("Selected emitter:", selectedEmitter);
+
+    if (selectedReceiver) {
+      setReceiverName(selectedReceiver.displayName);
+    } else {
+      console.warn("Selected emitter not found!");
+    }
+  }, [emitter, emitterCustomersVO, receiverCustomersVO, receiver]);
 
   useEffect(() => {
     // Function to generate the flow name based on the first two letters of emitter, origin, and destination
@@ -131,18 +144,19 @@ function AddFlows({ addFlows }) {
 
       console.log("Testtt", emitter, orgin, destination);
       console.log("EmitterName", displayName);
-      if (emitter && origin && destination) {
+      if (emitter && orgin && destination && receiver) {
         const firstTwoEmitter = displayName.substring(0, 2).toUpperCase();
         const firstTwoOrigin = orgin.substring(0, 3).toUpperCase();
         const firstTwoDestination = destination.substring(0, 3).toUpperCase();
-        const generatedName = `${firstTwoEmitter}-${firstTwoOrigin}-${firstTwoDestination}`;
+        const firstTwoReceiver = receiverName.toUpperCase();
+        const generatedName = `${firstTwoEmitter}-${firstTwoOrigin}-${firstTwoDestination}-${firstTwoReceiver}`;
         setFlowName(generatedName);
       }
     };
 
     // Call the function when emitter, origin, or destination changes
     generateFlowName();
-  }, [displayName, origin, destination]);
+  }, [displayName, orgin, destination, receiverName]);
 
   const handleFlows = () => {
     addFlows(false);

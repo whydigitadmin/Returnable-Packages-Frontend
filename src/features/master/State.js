@@ -135,7 +135,7 @@ export const State = () => {
     if (Object.keys(errors).length === 0) {
       const formData = {
         stateName: state,
-        StateCode: code,
+        stateCode: code,
         orgId,
         createdBy: userDetail.firstName,
         modifiedBy: userDetail.firstName,
@@ -154,6 +154,7 @@ export const State = () => {
           getStateData();
           setState("");
           setCode("");
+          setCountryData([]);
           setErrors("");
           toast.success("State Created successfully", {
             autoClose: 2000,
