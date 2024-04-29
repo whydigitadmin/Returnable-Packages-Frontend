@@ -1,3 +1,7 @@
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import Pagination from "@mui/material/Pagination";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -5,10 +9,13 @@ import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { FaArrowCircleLeft } from "react-icons/fa";
+import { FaArrowCircleLeft, FaCloudUploadAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import NoRecordsFound from "../../utils/NoRecordsFound";
+import IssueManifestReport from "../issueManifestReport/IssueManifestReport";
+import BinInwardDetailsDialogNew from "./BinInwardDetailDialogNew";
 import BinInwardDetailsDialog from "./BinInwardDetailsDialog";
 
 const DOCDATA = [
@@ -53,6 +60,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const [showData, setShowData] = useState(false);
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
+
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -65,12 +73,19 @@ function EmitterInwardNew({ addInwardManifeast }) {
     },
   ]);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [dialogOpenNew, setDialogOpenNew] = useState(false);
   const [selectedBinInwardDetails, setSelectedBinInwardDetails] = useState([]);
 
   const [view1, setView1] = useState(true);
   const [view2, setView2] = useState(false);
   const [view3, setView3] = useState(false);
   const [viewButton, setViewButton] = useState(false);
+  const [returnRemarks, setReturnRemarks] = useState("");
+  const [returnQty, setReturnQty] = useState("");
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [savedDocIdVO, setSavedDocIdVO] = useState([]);
+  const [savedKitCodeVO, setSavedKitCodeVO] = useState([]);
 
   const [tableDataView, setTableDataView] = useState([
     {
@@ -86,6 +101,31 @@ function EmitterInwardNew({ addInwardManifeast }) {
     },
   ]);
 
+  const [openDialog, setOpenDialog] = useState(false);
+
+  const handleDownloadClick = () => {
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+  };
+
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = tableDataView.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
+
   const [tableDataPending, setTableDataPending] = useState([
     {
       id: 1,
@@ -94,7 +134,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
       flow: "",
       kitCode: "",
       reqKitQty: "",
-      allotedQty: "",
+      allotKitQty: "",
     },
   ]);
   //   const [tableData, setTableData] = useState([]);
@@ -129,8 +169,15 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const handleOpenDialog = (binInwardDetails) => {
     console.log("Test19", binInwardDetails);
     setSelectedBinInwardDetails(binInwardDetails);
+    getDetailsByDocId(binInwardDetails);
 
     setDialogOpen(true);
+  };
+
+  const handleOpenDialogNew = (kitCode, quantity) => {
+    getDetailsByKitId(kitCode, quantity);
+
+    setDialogOpenNew(true);
   };
 
   const getAllAsset = async () => {
@@ -171,6 +218,48 @@ function EmitterInwardNew({ addInwardManifeast }) {
 
       if (response.status === 200) {
         setAllotmentVO(response.data.paramObjectsMap.allotno);
+
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getDetailsByDocId = async (doc) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAllBinInwardByDocid?docid=${doc}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setSavedDocIdVO(
+          response.data.paramObjectsMap.binInwardVO.binInwardDetailsVO
+        );
+
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getDetailsByKitId = async (kitCode, quantity) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getkitAssetDetailsByKitId?kitCode=${kitCode}&quantity=${quantity}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setSavedKitCodeVO(response.data.paramObjectsMap.kitAssetVO);
 
         // Handle success
       } else {
@@ -407,6 +496,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
         allotDate: allottedDate,
         orgId,
         emitterId: localStorage.getItem("emitterId"),
+        returnQty: returnQty ? returnQty : 0,
+        returnRemarks,
       };
 
       axios
@@ -423,12 +514,14 @@ function EmitterInwardNew({ addInwardManifeast }) {
           setReqNo("");
           setRecKitQty("");
           setAllottedDate("");
-          setAllotmentNo("");
+
           setReqKitQty("");
           setFlow("");
           setKitCode("");
           setAllottedQty("");
           setErrors({});
+          setReturnQty("");
+          setReturnRemarks("");
 
           setTableData([
             {
@@ -441,6 +534,35 @@ function EmitterInwardNew({ addInwardManifeast }) {
               returnQty: "",
             },
           ]);
+
+          const formData1 = new FormData();
+          for (let i = 0; i < uploadedFiles.length; i++) {
+            formData1.append("file", uploadedFiles[i]);
+          }
+          formData1.append("allotNo", allotmentNo);
+
+          axios
+            .post(
+              `${process.env.REACT_APP_API_URL}/api/emitter/uploadPodFilePath`,
+              formData1,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then((uploadResponse) => {
+              console.log("File Upload Response:", uploadResponse.data);
+              setAllotmentNo("");
+              setSelectedFiles("");
+              // toast.success("Proof of Delivery Saved Successfully!", {
+              //   autoClose: 2000,
+              //   theme: "colored",
+              // });
+            })
+            .catch((uploadError) => {
+              console.error("File Upload Error:", uploadError);
+            });
           toast.success("Bin Inward Updated Successfully!", {
             autoClose: 2000,
             theme: "colored",
@@ -476,6 +598,15 @@ function EmitterInwardNew({ addInwardManifeast }) {
     setViewButton(false);
     setView2(false);
   };
+  const handleFileUpload = (files) => {
+    setUploadedFiles(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+    const fileNames = Array.from(files).map((file) => file.name);
+    // Update the selectedFiles state with the array of file names
+    setSelectedFiles(fileNames);
+  };
 
   return (
     <>
@@ -509,16 +640,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
             <div className="col-lg-12">
               <div className="overflow-x-auto">
                 <table className="w-full">
+                  {/* Table header */}
                   <thead>
                     <tr>
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white">Action</th> */}
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white">S.No</th> */}
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white">
-                        DocId
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white">
-                        DocDate
-                      </th> */}
                       <th
                         className="px-2 text-black border"
                         style={{ width: "15%" }}
@@ -535,79 +659,21 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       <th className="px-2 text-black border">Kit No</th>
                       <th className="px-2 text-black border">Req Qty</th>
                       <th className="px-2 text-black border">Alloted QTY</th>
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white">
-                 Return Qty
-               </th> */}
+                      <th className="px-2 text-black border">Issue Manifest</th>
                     </tr>
                   </thead>
+                  {/* Table body */}
                   <tbody>
-                    {tableDataPending &&
+                    {tableDataPending && tableDataPending.length > 0 ? (
+                      // Render table rows if data is available
                       tableDataPending.map((row) => (
                         <tr key={row.id}>
-                          {/* <td className="border px-2 py-2">
-                     <button
-                       onClick={() => handleDeleteRow(row.id)}
-                       className="text-red-500"
-                     >
-                       <FaTrash style={{ fontSize: "18px" }} />
-                     </button>
-                   </td> */}
-                          {/* <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.id}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, id: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
-                          </td> */}
-                          {/* <td className="border px-2 py-2">
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleView(row.binInwardId); // Assuming handleView function takes docid as a parameter
-                              }}
-                              style={{
-                                textDecoration: "underline",
-                                cursor: "pointer",
-                              }}
-                            >
-                              {row.docid}
-                            </a>
-                          </td> */}
-                          {/* <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.docDate}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, docDate: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
-                          </td> */}
-
                           <td className="border px-2 py-2">
                             <a
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleView(row.allotNo); // Assuming handleView function takes docid as a parameter
+                                handleView(row.allotNo);
                               }}
                               style={{
                                 textDecoration: "underline",
@@ -619,7 +685,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               {row.allotNo}
                             </a>
                           </td>
-
                           <td className="border px-2 py-2">
                             <input
                               type="text"
@@ -705,14 +770,36 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               style={{ width: "100%" }}
                             />
                           </td>
+                          <td
+                            className="border px-2 py-2"
+                            style={{
+                              textDecoration: "underline",
+                              cursor: "pointer",
+                              width: "auto",
+                              color: "blue",
+                            }}
+                            onClick={handleDownloadClick}
+                          >
+                            Download
+                          </td>
                         </tr>
-                      ))}
+                      ))
+                    ) : (
+                      // Render a single row with a message if no data is available
+                      <tr>
+                        <td colSpan={7}>
+                          <NoRecordsFound message={"No Pending Inward"} />
+                        </td>
+                        {/* <NoRecordsFound /> */}
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
             </div>
           </div>
         )}
+
         <>
           {" "}
           {view2 && (
@@ -917,6 +1004,87 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   {/* {errors.docId && (
               <span className="error-text mb-1">{errors.docId}</span>
             )} */}
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Return QTY
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <input
+                    className="form-control form-sz mb-2"
+                    //   placeholder="Alloted Kit Qty"
+                    value={returnQty}
+                    onChange={(e) => setReturnQty(e.target.value)}
+                    onInput={(e) => {
+                      e.target.value = e.target.value.replace(/\D/g, "");
+                    }}
+                    maxLength={4}
+                  />
+                  {/* {errors.docId && (
+              <span className="error-text mb-1">{errors.docId}</span>
+            )} */}
+                </div>
+
+                <div className="col-lg-2 col-md-3">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Return Remarks
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <input
+                    className="form-control form-sz mb-2"
+                    //   placeholder="Alloted Kit Qty"
+                    value={returnRemarks}
+                    onChange={(e) => setReturnRemarks(e.target.value)}
+                  />
+                  {/* {errors.docId && (
+              <span className="error-text mb-1">{errors.docId}</span>
+            )} */}
+                </div>
+                <div className="col-lg-2 col-md-6">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Upload Receipt
+                      {/* <FaStarOfLife className="must" /> */}
+                    </span>
+                  </label>
+                </div>
+
+                <div className="col-lg-2 col-md-6">
+                  <input
+                    type="file"
+                    id="file-input"
+                    multiple
+                    style={{ display: "none" }}
+                    onChange={(e) => handleFileUpload(e.target.files)}
+                  />
+                  <label htmlFor="file-input">
+                    <Button
+                      variant="contained"
+                      component="span"
+                      startIcon={<FaCloudUploadAlt />}
+                    >
+                      Upload file
+                    </Button>
+                  </label>
+                  <br />
+                  {/* Display the selected file names */}
+                  {selectedFiles.map((fileName, index) => (
+                    <div style={{ font: "10px" }} key={index}>
+                      {fileName}
+                    </div>
+                  ))}
+                  {/* Display upload error */}
+                  {errors.uploadError && (
+                    <span className="error-text mb-1">
+                      {errors.uploadFiles}
+                    </span>
+                  )}
                 </div>
               </div>
               {/* <div className="mt-2">
@@ -1140,14 +1308,14 @@ function EmitterInwardNew({ addInwardManifeast }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {tableDataView &&
-                      tableDataView.map((row) => (
+                    {paginatedData &&
+                      paginatedData.map((row) => (
                         <tr key={row.id}>
                           <td className="border px-2 py-2">
                             <span
                               onClick={() => {
                                 console.log("Row Data:", row);
-                                handleOpenDialog(row.binInwardDetailsVO);
+                                handleOpenDialog(row.docid);
                               }}
                               style={{
                                 textDecoration: "underline",
@@ -1230,21 +1398,23 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             />
                           </td>
                           <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.kitCode}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, kitCode: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                            <span
+                              onClick={() => {
+                                console.log("Row Data:", row);
+                                handleOpenDialogNew(
+                                  row.kitCode,
+                                  row.allotedQty
+                                );
+                              }}
+                              style={{
+                                textDecoration: "underline",
+                                cursor: "pointer",
+                                width: "100%",
+                                color: "blue",
+                              }}
+                            >
+                              {row.kitCode}
+                            </span>
                           </td>
                           <td className="border px-2 py-2">
                             <input
@@ -1285,16 +1455,43 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   </tbody>
                 </table>
               </div>
+              <div className="mt-4 d-flex justify-content-center">
+                <Pagination
+                  count={Math.ceil(tableDataView.length / rowsPerPage)} // Calculate total number of pages
+                  page={page}
+                  onChange={handleChangePage}
+                  variant="outlined"
+                  shape="rounded"
+                />
+              </div>
             </div>
           )}
         </>
       </div>
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="lg"
+      >
+        <DialogContent>
+          {/* Content of your dialog */}
+          {/* Add your download logic or content here */}
+          <IssueManifestReport />
+        </DialogContent>
+      </Dialog>
       <ToastContainer />
 
       <BinInwardDetailsDialog
         isOpen={dialogOpen}
         onClose={() => setDialogOpen(false)}
-        binInwardDetails={selectedBinInwardDetails}
+        binInwardDetails={savedDocIdVO}
+      />
+      <BinInwardDetailsDialogNew
+        isOpen={dialogOpenNew}
+        onClose={() => setDialogOpenNew(false)}
+        binInwardDetails={savedKitCodeVO}
       />
     </>
   );

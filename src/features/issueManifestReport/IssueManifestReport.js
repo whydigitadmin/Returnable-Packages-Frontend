@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { MdPrint } from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
 
 export const IssueManifestReport = () => {
@@ -93,7 +94,7 @@ export const IssueManifestReport = () => {
             marginBottom: "20px",
           }}
         >
-          Print as PDF
+          <MdPrint style={{ fontSize: "20px" }} />
         </button>
       </div>
       <div className="container-sm">

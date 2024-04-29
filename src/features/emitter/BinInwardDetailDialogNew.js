@@ -10,7 +10,7 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import React from "react";
 
-const BinInwardDetailsDialog = ({ isOpen, onClose, binInwardDetails }) => {
+const BinInwardDetailsDialogNew = ({ isOpen, onClose, binInwardDetails }) => {
   console.log("Test12", binInwardDetails);
   return (
     <Dialog open={isOpen} onClose={onClose} maxWidth="md" fullWidth>
@@ -19,11 +19,10 @@ const BinInwardDetailsDialog = ({ isOpen, onClose, binInwardDetails }) => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Tag Code</TableCell>
-              <TableCell> RFID</TableCell>
+              <TableCell>Asset Category</TableCell>
               <TableCell>Asset</TableCell>
               <TableCell>Code</TableCell>
-              <TableCell>Received Qty</TableCell>
+              <TableCell>Qty</TableCell>
               {/* Add more table headers as needed */}
             </TableRow>
           </TableHead>
@@ -31,11 +30,10 @@ const BinInwardDetailsDialog = ({ isOpen, onClose, binInwardDetails }) => {
             {binInwardDetails &&
               binInwardDetails.map((detail, index) => (
                 <TableRow key={index}>
-                  <TableCell>{detail.tagCode}</TableCell>
-                  <TableCell>{detail.rfId}</TableCell>
+                  <TableCell>{detail.assetCategory}</TableCell>
                   <TableCell>{detail.asset}</TableCell>
                   <TableCell>{detail.assetCode}</TableCell>
-                  <TableCell>{detail.recQty}</TableCell>
+                  <TableCell>{detail.qty}</TableCell>
                   {/* Add more table cells as needed */}
                 </TableRow>
               ))}
@@ -51,4 +49,4 @@ const BinInwardDetailsDialog = ({ isOpen, onClose, binInwardDetails }) => {
   );
 };
 
-export default BinInwardDetailsDialog;
+export default BinInwardDetailsDialogNew;

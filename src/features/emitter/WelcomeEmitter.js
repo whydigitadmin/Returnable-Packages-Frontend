@@ -292,6 +292,90 @@ function WelcomeEmitter() {
                   </div>
                 </Link>
               </div>
+
+              <div className="col-lg-4 col-md-6 col-sm-4">
+                <Link to="">
+                  <div
+                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
+                    // style={{ width: "14rem" }}
+                  >
+                    <div className="">
+                      <div className="d-flex flex-row">
+                        {/* <TbChartInfographic
+                        className="text-xl font-semibold me-2 w-8 h-8"
+                        style={{ marginTop: -6 }}
+                      /> */}
+                        <img
+                          src="/stock.png"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            marginRight: "6px",
+                            marginTop: "-6",
+                          }}
+                        />
+                        <h4 className="text-xl font-semibold">Stock Ledger</h4>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+              <div className="col-lg-4 col-md-6 col-sm-4">
+                <Link to="/app/StockAdjustment">
+                  <div
+                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
+                    // style={{ width: "14rem" }}
+                  >
+                    <div className="">
+                      <div className="d-flex flex-row">
+                        {/* <TbChartInfographic
+                        className="text-xl font-semibold me-2 w-8 h-8"
+                        style={{ marginTop: -6 }}
+                      /> */}
+                        <img
+                          src="/stock.png"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            marginRight: "6px",
+                            marginTop: "-6",
+                          }}
+                        />
+                        <h4 className="text-xl font-semibold">
+                          Allotment Detail
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+              <div className="col-lg-4 col-md-6 col-sm-4">
+                <Link to="/app/StockAdjustment">
+                  <div
+                    className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
+                    // style={{ width: "14rem" }}
+                  >
+                    <div className="">
+                      <div className="d-flex flex-row">
+                        {/* <TbChartInfographic
+                        className="text-xl font-semibold me-2 w-8 h-8"
+                        style={{ marginTop: -6 }}
+                      /> */}
+                        <img
+                          src="/stock.png"
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            marginRight: "6px",
+                            marginTop: "-6",
+                          }}
+                        />
+                        <h4 className="text-xl font-semibold">Finance</h4>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
             </div>
           )}
         </div>
