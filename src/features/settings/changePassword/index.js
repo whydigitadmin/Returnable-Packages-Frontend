@@ -27,7 +27,9 @@ function ChangePassword() {
   const [confirmPwd, setConfirmPwd] = React.useState("");
   const [errors, setErrors] = React.useState("");
   const [savedData, setSavedData] = React.useState("");
-  const [loginUserName, setLoginUserName] = React.useState(localStorage.getItem("userName"));
+  const [loginUserName, setLoginUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
 
   const handleClickOpen = () => {
     setOpenModal(true);
@@ -67,7 +69,7 @@ function ChangePassword() {
   const handleNew = () => {
     setNewPwd("");
     setConfirmPwd("");
-  }
+  };
 
   const handleValidation = () => {
     // console.log("test");
@@ -154,9 +156,9 @@ function ChangePassword() {
           <div className="col-lg-3 col-md-6">
             <input
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              type={"text"}
+              type={"password"}
               value={newPwd}
-              placeholder={"New pwd"}
+              placeholder={""}
               onChange={handleNewPwdChange}
               // onChange={(e) => updateInputValue(e.target.value)}
               className="input input-bordered p-2"
@@ -177,9 +179,9 @@ function ChangePassword() {
           <div className="col-lg-3 col-md-6">
             <input
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              type={"text"}
+              type={"password"}
               value={confirmPwd}
-              placeholder={"Confirm pwd"}
+              placeholder={""}
               onChange={handleconfirmPwdChange}
               className="input input-bordered p-2"
             />

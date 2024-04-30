@@ -201,15 +201,15 @@ function BinOutwardOem({}) {
               )}
             </div>
           </div>
-          <div className="row mt-2">
+          {/* <div className="row mt-2">
             <div className="col-lg-12">
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
                     <tr>
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         Action
-                      </th> */}
+                      </th>
                       <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         S.No
                       </th>
@@ -315,10 +315,8 @@ function BinOutwardOem({}) {
                 </table>
               </div>
             </div>
-          </div>
-          {errors.tableData && (
-            <div className="error-text mt-2">{errors.tableData}</div>
-          )}
+          </div> */}
+          {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
           <div className="mt-4">
             <button
               type="button"

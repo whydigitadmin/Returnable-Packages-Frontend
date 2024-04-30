@@ -124,7 +124,7 @@ const BinInwardOem = ({}) => {
               className={`form-control form-sz mb-2 ${
                 errors.docId && "border-red-500"
               }`}
-              placeholder="Doc Id"
+              placeholder=""
               value={docId}
               onChange={(e) => setDocId(e.target.value)}
             />
@@ -152,7 +152,7 @@ const BinInwardOem = ({}) => {
           <div className="col-lg-2 col-md-3">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Kit No
+                Kit No:
               </span>
             </label>
           </div>
@@ -161,7 +161,7 @@ const BinInwardOem = ({}) => {
               className={`form-control form-sz mb-2 ${
                 errors.kitNo && "border-red-500"
               }`}
-              placeholder="Kit No"
+              placeholder=""
               value={kitNo}
               onChange={(e) => setKitNo(e.target.value)}
             />
@@ -173,7 +173,7 @@ const BinInwardOem = ({}) => {
           <div className="col-lg-2 col-md-3">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Received Kit Qty
+                Received Kit Qty:
               </span>
             </label>
           </div>
@@ -182,7 +182,7 @@ const BinInwardOem = ({}) => {
               className={`form-control form-sz mb-2 ${
                 errors.receivedKitQty && "border-red-500"
               }`}
-              placeholder="Received Kit Qty"
+              placeholder=""
               value={receivedKitQty}
               onChange={(e) => setReceivedKitQty(e.target.value)}
             />
@@ -190,9 +190,48 @@ const BinInwardOem = ({}) => {
               <span className="error-text mb-1">{errors.receivedKitQty}</span>
             )}
           </div>
+          <div className="col-lg-2 col-md-3">
+            <label className="label mb-4">
+              <span className="label-text label-font-size text-base-content d-flex flex-row">
+                Grn No:
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-2 col-md-3">
+            <input
+              className={`form-control form-sz mb-2 ${
+                errors.receivedKitQty && "border-red-500"
+              }`}
+              placeholder=""
+              // value={receivedKitQty}
+              // onChange={(e) => setReceivedKitQty(e.target.value)}
+            />
+            {errors.receivedKitQty && (
+              <span className="error-text mb-1">{errors.receivedKitQty}</span>
+            )}
+          </div>
+          <div className="col-lg-2 col-md-3">
+            <label className="label mb-4">
+              <span className="label-text label-font-size text-base-content d-flex flex-row">
+                Grn Date:
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-2 col-md-3">
+            <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <DesktopDatePicker
+                // value={docDate}
+                // onChange={(date) => setDocDate(date)}
+                slotProps={{
+                  textField: { size: "small", clearable: true },
+                }}
+                format="DD/MM/YYYY"
+              />
+            </LocalizationProvider>
+          </div>
         </div>
 
-        <div className="row mt-2">
+        {/* <div className="row mt-2">
           <div className="col-lg-12">
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -301,7 +340,7 @@ const BinInwardOem = ({}) => {
               </table>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="mt-4">
           <button
