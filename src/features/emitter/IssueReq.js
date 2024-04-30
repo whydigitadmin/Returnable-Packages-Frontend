@@ -888,8 +888,13 @@ function IssueReq() {
                     value={selectedDate1}
                     onChange={handleIssueDateChange}
                     minDate={currentDate}
+                    disableCloseOnSelect={true}
                     slotProps={{
-                      textField: { size: "small", clearable: true },
+                      textField: {
+                        size: "small",
+                        clearable: true,
+                        disabled: true,
+                      }, // Disable the text field
                     }}
                     format="DD/MM/YYYY"
                   />
