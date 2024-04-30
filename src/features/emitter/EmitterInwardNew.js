@@ -60,6 +60,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const [showData, setShowData] = useState(false);
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
+  const [binDocId, setBinDocId] = useState("");
 
   const [tableData, setTableData] = useState([
     {
@@ -157,6 +158,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
     getStockBranch();
     getAllAsset();
     getAllPendingBinInward();
+    getInwardDocId();
   }, []);
 
   const handleStockFromChange = (e) => {
@@ -241,6 +243,25 @@ function EmitterInwardNew({ addInwardManifeast }) {
           response.data.paramObjectsMap.binInwardVO.binInwardDetailsVO
         );
 
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getInwardDocId = async (doc) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getDocIdByBinInward`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.binDocId);
         // Handle success
       } else {
         // Handle error
