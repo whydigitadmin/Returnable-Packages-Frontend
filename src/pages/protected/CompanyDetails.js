@@ -1,16 +1,17 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import InwardManifestDetails from "../../features/inwardManifest/InwardManifestDetails";
+// import { AsstTagging } from "../../features/asstTagging/AsstTagging";
+import CompanyDetails from "../../features/owner/CompanyDetails";
 
 function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Asset Inward Details" }));
+    dispatch(setPageTitle({ title: "Company Details" }));
   }, []);
 
-  return <InwardManifestDetails />;
+  return <CompanyDetails />;
 }
 
 export default InternalPage;

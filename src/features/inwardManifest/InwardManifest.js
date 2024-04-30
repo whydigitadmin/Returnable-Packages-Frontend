@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -23,10 +23,10 @@ const DOCDATA = [
   },
 ];
 
-// export const InwardManifest = () => {
-function InwardManifest({ addInwardManifeast }) {
+function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
+  // viewAssetInwardId = 1;
   const [docdata, setDocData] = useState(DOCDATA);
-  const [docDate, setDocDate] = useState(dayjs());
+  const [docDate, setDocDate] = useState(dayjs().format('DD-MM-YYYY'));
   const [toDate, setToDate] = useState(null);
   const [extDate, setExtDate] = useState(null);
   const [errors, setErrors] = useState({});
@@ -35,26 +35,33 @@ function InwardManifest({ addInwardManifeast }) {
   const [stockFrom, setStockFrom] = useState("");
   const [stockTo, setStockTo] = useState("");
   const [filteredStockBranch, setFilteredStockBranch] = useState("");
+  const rfIdInputRef = useRef(null);
+  const assetIdInputRef = useRef(null);
 
   const [stockBranch, setStockBranch] = useState("");
   const [docId, setDocId] = useState("");
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
+
   const [tableData, setTableData] = useState([
     {
       id: 1,
+      assetId: "",
+      rfId: "",
       sku: "",
       code: "",
       qty: "",
       stockValue: "",
       stockLoc: "",
-      binLoc: "Bulk",
+      binLoc: "",
     },
   ]);
 
   const handleAddRow = () => {
     const newRow = {
       id: tableData.length + 1,
+      assetId: "",
+      rfId: "",
       sku: "",
       code: "",
       qty: "",
@@ -66,10 +73,68 @@ function InwardManifest({ addInwardManifeast }) {
   };
 
   useEffect(() => {
-    // 👆 daisy UI themes initialization
     getStockBranch();
     getAllAsset();
+    getNewDocId();
   }, []);
+
+  useEffect(() => {
+    if (viewAssetInwardId) {
+      getAssetInwardDetailsById()
+    }
+  }, []);
+
+  const getAssetInwardDetailsById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAssetInwardDocId?docId=24BI10021`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.assetInwardVO.docId);
+        setDocDate(response.data.paramObjectsMap.assetInwardVO.docDate)
+        setStockFrom(response.data.paramObjectsMap.assetInwardVO.sourceFrom)
+        setStockTo(response.data.paramObjectsMap.assetInwardVO.stockBranch)
+        const tempAssetInwardTable = response.data.paramObjectsMap.assetInwardDetailVO.map(
+          (row, index) => ({
+            id: index + 1,
+            assetId: row.tagCode,
+            rfId: row.rfId,
+            sku: row.skuDetail,
+            code: row.skucode,
+            qty: row.skuQty,
+            stockValue: row.stockValue,
+            stockLoc: row.stockLocation,
+            binLoc: row.binLocation,
+          })
+        );
+        setTableData(tempAssetInwardTable)
+        // console.log("API:", extractedAssets);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getNewDocId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getDocIdByBinInward`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.binDocId);
+        // console.log("API:", extractedAssets);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleStockFromChange = (e) => {
     const selectedValue = e.target.value;
@@ -128,26 +193,145 @@ function InwardManifest({ addInwardManifeast }) {
   };
 
   const handleDeleteRow = (id) => {
-    setTableData(tableData.filter((row) => row.id !== id));
+    setTableData((prevTableData) =>
+      prevTableData.filter((row) => row.id !== id).map((row, index) => ({
+        ...row,
+        id: index + 1,
+      }))
+    );
+  };
+
+  const handleTagCodeChange = async (id, field, value) => {
+    setTableData((prevTableData) =>
+      prevTableData.map((row) =>
+        row.id === id
+          ? { ...row, [field]: value }
+          : row
+      )
+    );
+
+    if (field === 'assetId') {
+      // Check if the value was pasted (assume pasting takes more than 200ms)
+      const isPasted = value.length > 1 && value !== tableData.find((row) => row.id === id).assetId;
+
+      if (isPasted) {
+        // Store the previous RF ID value
+        const prevAssetId = value;
+
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByTagCode?tagCode=${prevAssetId}`
+          );
+
+          if (response.status === 200) {
+            const rfId = response.data.paramObjectsMap.assetTaggingDetailsVO.rfId;
+            const sku = response.data.paramObjectsMap.assetTaggingDetailsVO.asset;
+            const skuCode = response.data.paramObjectsMap.assetTaggingDetailsVO.assetCode;
+
+            const updatedTableData = tableData.map((r) =>
+              r.id === id
+                ? { ...r, rfId: rfId || '', sku: sku || '', code: skuCode || '', qty: 1, binLoc: "Bulk", assetId: prevAssetId } // Retain RF ID value
+                : r
+            );
+
+            // Check if the last row has RF ID filled; if not, add a new row
+            const lastRow = updatedTableData[updatedTableData.length - 1];
+            if (!lastRow || lastRow.assetId !== "") {
+              const newRow = {
+                id: updatedTableData.length + 1,
+                assetId: "",
+                rfId: "",
+                sku: "",
+                code: "",
+                qty: "",
+                stockValue: "",
+                stockLoc: "",
+                binLoc: "",
+              };
+
+              updatedTableData.push(newRow);
+            }
+
+            setTableData(updatedTableData);
+            setTimeout(() => {
+              assetIdInputRef.current.focus();
+            }, 0);
+          } else {
+            console.error("API Error:", response.status, response.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error.message);
+        }
+      }
+    }
+  };
+
+  const handleRfIdChange = async (id, field, value) => {
+    setTableData((prevTableData) =>
+      prevTableData.map((row) =>
+        row.id === id
+          ? { ...row, [field]: value }
+          : row
+      )
+    );
+
+    if (field === 'rfId') {
+      // Check if the value was pasted (assume pasting takes more than 200ms)
+      const isPasted = value.length > 1 && value !== tableData.find((row) => row.id === id).rfId;
+
+      if (isPasted) {
+        // Store the previous RF ID value
+        const prevRfId = value;
+
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/emitter/getTaggingDetailsByRfId?rfId=${prevRfId}`
+          );
+
+          if (response.status === 200) {
+            const assetId = response.data.paramObjectsMap.assetTaggingDetailsVO.tagCode;
+            const sku = response.data.paramObjectsMap.assetTaggingDetailsVO.asset;
+            const skuCode = response.data.paramObjectsMap.assetTaggingDetailsVO.assetCode;
+
+            const updatedTableData = tableData.map((r) =>
+              r.id === id
+                ? { ...r, assetId: assetId || '', sku: sku || '', code: skuCode || '', binLoc: "Bulk", qty: 1, rfId: prevRfId } // Retain RF ID value
+                : r
+            );
+
+            // Check if the last row has RF ID filled; if not, add a new row
+            const lastRow = updatedTableData[updatedTableData.length - 1];
+            if (!lastRow || lastRow.rfId !== "") {
+              const newRow = {
+                id: updatedTableData.length + 1,
+                assetId: "",
+                rfId: "",
+                sku: "",
+                code: "",
+                qty: "",
+                stockValue: "",
+                stockLoc: "",
+                binLoc: "",
+              };
+              updatedTableData.push(newRow);
+            }
+
+            setTableData(updatedTableData);
+            setTimeout(() => {
+              rfIdInputRef.current.focus();
+            }, 0);
+          } else {
+            console.error("API Error:", response.status, response.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error.message);
+        }
+      }
+    }
   };
 
   const handleSave = () => {
     const errors = {};
-    // if (!docdata[0].Prefix) {
-    //   errors.prefix = "Prefix is required";
-    // }
-    // if (!docdata[0].SID) {
-    //   errors.scode = "SID is required";
-    // }
-    // if (!docdata[0].Sequence) {
-    //   errors.sequence = "Sequence is required";
-    // }
-    // if (!docdata[0].Suffix) {
-    //   errors.sufix = "Suffix is required";
-    // }
-    // if (!docdata[0].Type) {
-    //   errors.type = "Type is required";
-    // }
 
     if (!stockFrom) {
       errors.stockFrom = "Source from is required";
@@ -171,24 +355,17 @@ function InwardManifest({ addInwardManifeast }) {
       errors.qty = "QTY field is Required";
     }
 
-    // const tableFormData = tableData.map((row) => ({
-    //   scode: row.scode,
-    //   prefix: row.prefix,
-    //   sequence: row.sequence,
-    //   sufix: row.sufix,
-    //   type: row.type,
-    // }));
-
     const tableFormData = tableData.map((row) => ({
+      rfId: row.rfId,
+      tagCode: row.assetId,
       skuDetail: row.sku,
       skucode: row.code,
       skuQty: row.qty,
       stockValue: row.stockValue,
       stockLocation: row.stockLoc,
-      binLocation: "test",
+      binLocation: row.binLoc,
       // stockValue: row.stockValue,
       // stockLocation: row.stockLoc,
-      // binLocation: row.binLoc,
     }));
 
     // Check if any table fields are empty
@@ -197,8 +374,8 @@ function InwardManifest({ addInwardManifeast }) {
         row.sku === "" ||
         row.code === "" ||
         row.qty === "" ||
-        row.stockValue === "" ||
-        row.stockLoc === "" ||
+        // row.stockValue === "" ||
+        // row.stockLoc === "" ||
         row.binLoc === ""
     );
 
@@ -286,7 +463,9 @@ function InwardManifest({ addInwardManifeast }) {
               className="form-control form-sz mb-2"
               placeholder="Doc Id"
               value={docId}
-              onChange={(e) => setDocId(e.target.value)}
+              // onChange={(e) => setDocId(e.target.value)}
+              disabled
+
             />
             {errors.docId && (
               <span className="error-text mb-1">{errors.docId}</span>
@@ -301,20 +480,13 @@ function InwardManifest({ addInwardManifeast }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                value={docDate}
-                onChange={(date) => setDocDate(date)}
-                slotProps={{
-                  textField: { size: "small", clearable: true },
-                }}
-                format="DD/MM/YYYY"
-                disabled
-              />
-            </LocalizationProvider>
-            {errors.docDate && (
-              <span className="error-text mb-1">{errors.docDate}</span>
-            )}
+            <input
+              className="form-control form-sz mb-2"
+              placeholder="Doc Date"
+              value={docDate}
+              disabled
+
+            />
           </div>
         </div>
 
@@ -332,10 +504,12 @@ function InwardManifest({ addInwardManifeast }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleStockFromChange}
               value={stockFrom}
+              disabled={viewAssetInwardId ? true : false}
             >
-              <option value="" disabled>
-                Select Stock Branch
-              </option>
+              <option value="" disabled>Select Stock Branch</option>
+              <option value="AI POOL">AI POOL</option>
+
+              {/* </option> */}
               {stockBranch.length > 0 &&
                 stockBranch.map((list) => (
                   <option key={list.id} value={list.branchCode}>
@@ -360,6 +534,8 @@ function InwardManifest({ addInwardManifeast }) {
               className="form-select form-sz w-full mb-2"
               onChange={(e) => setStockTo(e.target.value)}
               value={stockTo}
+              disabled={viewAssetInwardId ? true : false}
+
             >
               <option value="" disabled>
                 Select Stock Branch
@@ -392,6 +568,8 @@ function InwardManifest({ addInwardManifeast }) {
                   <tr>
                     <th className="px-2 py-2 bg-blue-500 text-white">Action</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">Tag Code</th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">RF ID</th>
                     <th className="px-2 py-2 bg-blue-500 text-white">
                       SKU
                     </th>
@@ -414,149 +592,61 @@ function InwardManifest({ addInwardManifeast }) {
                   {tableData &&
                     tableData.map((row) => (
                       <tr key={row.id}>
+
                         <td className="border px-2 py-2">
                           <button
                             onClick={() => handleDeleteRow(row.id)}
                             className="text-red-500"
+
                           >
                             <FaTrash style={{ fontSize: "18px" }} />
                           </button>
                         </td>
+
                         <td className="border px-2 py-2">
+                          {row.id}
+                        </td>
+                        <td>
                           <input
                             type="text"
-                            value={row.id}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, id: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            disabled
+                            name="assetId"
+                            value={row.assetId}
+                            onChange={(e) => handleTagCodeChange(row.id, "assetId", e.target.value)}
+                            ref={assetIdInputRef}
+                            disabled={viewAssetInwardId ? true : false}
+
+
+                          />
+                        </td>
+                        <td >
+                          <input
+                            type="text"
+                            name="rfId"
+                            value={row.rfId}
+                            onChange={(e) => handleRfIdChange(row.id, "rfId", e.target.value)}
+                            ref={rfIdInputRef}
                             style={{ width: "100%" }}
-                          />
-                        </td>
-                        <td className="border px-2 py-2">
-                          <select
-                            value={row.sku}
-                            onChange={(e) => {
-                              const selectedAssetName = e.target.value;
-                              const selectedAsset = allAsset.find(
-                                (asset) => asset.assetName === selectedAssetName
-                              );
-                              const assetCodeId = selectedAsset
-                                ? selectedAsset.assetCodeId
-                                : "";
+                            disabled={viewAssetInwardId ? true : false}
 
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? {
-                                      ...r,
-                                      sku: selectedAssetName,
-                                      code: assetCodeId,
-                                    }
-                                    : r
-                                )
-                              );
-                            }}
-                          >
-                            <option disabled selected>
-                              {" "}
-                              --Select--
-                            </option>
-                            {allAsset &&
-                              allAsset.map((list) => (
-                                <option
-                                  key={list.assetCodeId}
-                                  value={list.assetName}
-                                >
-                                  {list.assetName}
-                                </option>
-                              ))}
-                          </select>
-                        </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.code}
-                            disabled
-                            style={{ width: "100%", border: errors && errors.code ? "1px solid red" : "1px solid #ccc" }}
-                            key={`code-${row.id}`}
                           />
                         </td>
-
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.qty}
-                            onChange={(e) => {
-                              const inputValue = e.target.value;
-                              if (inputValue == "" || /^\d+$/.test(inputValue) && inputValue.length <= 8) {
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id ? { ...r, qty: inputValue } : r
-                                  )
-                                );
-                              }
-                            }}
-                            style={{ width: "100%", border: errors && errors.qty ? "1px solid red" : "1px solid #ccc" }}
-                            key={`QTY-${row.id}`}
-                          />
+                        <td>
+                          {row.sku}
                         </td>
-
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.stockValue}
-                            onChange={(e) => {
-                              const inputValue = e.target.value;
-                              if (inputValue == "" || /^\d+$/.test(inputValue) && inputValue.length <= 8) {
-                                setTableData((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id ? { ...r, stockValue: inputValue } : r
-                                  )
-                                );
-                              }
-                            }}
-                            style={{ width: "100%" }}
-                          />
+                        <td>
+                          {row.code}
                         </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={stockTo}
-                            disabled
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, stockLoc: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                          />
+                        <td>
+                          {row.qty}
                         </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.binLoc}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r) =>
-                                  r.id === row.id
-                                    ? { ...r, binLoc: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            // defaultValue="Bulk"
-                            disabled
-                          />
+                        <td>
+                          {row.stockValue}
+                        </td>
+                        <td>
+                          {row.stockLoc}
+                        </td>
+                        <td>
+                          {row.binLoc}
                         </td>
                       </tr>
                     ))}

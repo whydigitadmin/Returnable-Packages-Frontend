@@ -72,6 +72,9 @@ export const InwardManifestDetails = () => {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [viewAssetInward, setViewAssetInward] = useState(false);
+
+
 
   const handleViewClickOpen = () => {
     setOpenView(true);
@@ -97,6 +100,7 @@ export const InwardManifestDetails = () => {
     setAddInwardManifeast(false);
     // setEditUser(false);
     getAllInwardManifestData();
+    setViewAssetInward(false)
   };
 
   useEffect(() => {
@@ -120,8 +124,9 @@ export const InwardManifestDetails = () => {
 
   const handleViewRow = (row) => {
     setSelectedRowData(row.original);
-    console.log("setSelectedRowData", row.original);
-    setOpenView(true);
+    setSelectedRowId(row.original.docId);
+    console.log("setSelectedRowId", row.original.docId);
+    setViewAssetInward(true)
   };
 
   // const handleEditRow = (row) => {
@@ -143,17 +148,93 @@ export const InwardManifestDetails = () => {
     width: 1,
   });
 
+  // OLD USE MEMO
+  // const columns = useMemo(
+  //   () => [
+  //     {
+  //       accessorKey: "actions",
+  //       header: "Actions",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //       enableSorting: false,
+  //       enableColumnOrdering: false,
+  //       enableEditing: false,
+  //       Cell: ({ row }) => (
+  //         <div>
+  //           <IconButton onClick={() => handleViewRow(row)}>
+  //             <VisibilityIcon />
+  //           </IconButton>
+  //           {/* <IconButton onClick={() => handleEditRow(row)}>
+  //             <EditIcon />
+  //           </IconButton> */}
+  //         </div>
+  //       ),
+  //     },
+  //     {
+  //       accessorKey: "docId",
+  //       header: "DocId",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //     },
+  //     {
+  //       accessorKey: "docDate",
+  //       header: "DocDate",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //     },
+  //     {
+  //       accessorKey: "sourceFrom",
+  //       header: "From",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //     },
+  //     {
+  //       accessorKey: "stockBranch",
+  //       header: "To",
+  //       size: 50,
+  //       muiTableHeadCellProps: {
+  //         align: "center",
+  //       },
+  //       muiTableBodyCellProps: {
+  //         align: "center",
+  //       },
+  //     },
+  //   ],
+  //   []
+  // );
+
+
   const columns = useMemo(
     () => [
       {
-        accessorKey: "actions",
-        header: "Actions",
+        accessorKey: 'actions',
+        header: 'Actions',
         size: 50,
         muiTableHeadCellProps: {
-          align: "center",
+          align: 'center',
         },
         muiTableBodyCellProps: {
-          align: "center",
+          align: 'center',
         },
         enableSorting: false,
         enableColumnOrdering: false,
@@ -170,65 +251,63 @@ export const InwardManifestDetails = () => {
         ),
       },
       {
-        accessorKey: "docDate",
-        header: "DocDate",
+        accessorKey: 'docId',
+        header: 'DocId',
         size: 50,
         muiTableHeadCellProps: {
-          align: "center",
+          align: 'center',
         },
         muiTableBodyCellProps: {
-          align: "center",
+          align: 'center',
+        },
+        Cell: ({ value: docId, row }) => (
+          <a
+            href="#"
+            onClick={(e) => {
+              e.preventDefault();
+              handleViewRow(row);
+            }}
+          >
+            {docId}
+          </a>
+        ),
+      },
+      {
+        accessorKey: 'docDate',
+        header: 'DocDate',
+        size: 50,
+        muiTableHeadCellProps: {
+          align: 'center',
+        },
+        muiTableBodyCellProps: {
+          align: 'center',
         },
       },
       {
-        accessorKey: "sourceFrom",
-        header: "From",
+        accessorKey: 'sourceFrom',
+        header: 'From',
         size: 50,
         muiTableHeadCellProps: {
-          align: "center",
+          align: 'center',
         },
         muiTableBodyCellProps: {
-          align: "center",
+          align: 'center',
         },
       },
       {
-        accessorKey: "stockBranch",
-        header: "To",
+        accessorKey: 'stockBranch',
+        header: 'To',
         size: 50,
         muiTableHeadCellProps: {
-          align: "center",
+          align: 'center',
         },
         muiTableBodyCellProps: {
-          align: "center",
+          align: 'center',
         },
       },
-      // {
-      //   accessorKey: "pno",
-      //   header: "SKU",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-      // {
-      //   accessorKey: "pno",
-      //   header: "QTY",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-
     ],
     []
   );
-
   const table = useMaterialReactTable({
     data,
     columns,
@@ -251,7 +330,9 @@ export const InwardManifestDetails = () => {
   return (
     <>
       {(addInwardManifeast && <InwardManifest addInwardManifeast={handleBack} />) ||
-        (
+        (viewAssetInward && (
+          <InwardManifest addInwardManifeast={handleBack} viewAssetInwardId={selectedRowId} />
+        )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             {/* DASHBOARD COMPONENT */}
             <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
@@ -308,7 +389,7 @@ export const InwardManifestDetails = () => {
                     className="text-form text-base"
                     style={{ marginLeft: "10px" }}
                   >
-                    Bin Inward
+                    Asset Inward
                   </span>
                 </button>
               </div>
@@ -372,7 +453,7 @@ export const InwardManifestDetails = () => {
         )}
 
       {/* VIEW MODAL */}
-      <Dialog open={openView} onClose={handleViewClose} maxWidth="sm" fullWidth>
+      {/* <Dialog open={openView} onClose={handleViewClose} maxWidth="sm" fullWidth>
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
           <div className="row">
             <div className="col-md-11">
@@ -421,7 +502,6 @@ export const InwardManifestDetails = () => {
                     ) : (
                       <TableCell>-</TableCell>
                     )}
-                    {/* <TableCell>{selectedRowData.userAddressVO.city}</TableCell> */}
                   </TableRow>
                   <TableRow>
                     <TableCell>State</TableCell>
@@ -437,16 +517,12 @@ export const InwardManifestDetails = () => {
                     <TableCell>PinCode</TableCell>
                     <TableCell>{selectedRowData.userAddressVO.pin}</TableCell>
                   </TableRow>
-                  {/* <TableRow>
-                                        <TableCell>Status</TableCell>
-                                        <TableCell>{selectedRowData.active}</TableCell>
-                                    </TableRow> */}
                 </TableBody>
               </Table>
             </TableContainer>
           )}
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };

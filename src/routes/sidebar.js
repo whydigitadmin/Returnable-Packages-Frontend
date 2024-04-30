@@ -26,6 +26,33 @@ const routes = [
         className={`${iconClasses} inline`}
       />
     ),
+    name: <span className="ml-2">Product Owner</span>,
+
+    submenu: [
+      {
+        path: "/app/companydetails",
+        icon: (
+          <img
+            src="/usercreation.png"
+            alt="Usercreation"
+            style={{ width: "30px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Company Details</span>,
+      },
+    ],
+  },
+  {
+    path: "", //no URL needed as this has submenu
+    icon: (
+      <img
+        src="/admin.png"
+        alt="Admin"
+        style={{ width: "34px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
     name: <span className="ml-2">Admin</span>,
 
     submenu: [
