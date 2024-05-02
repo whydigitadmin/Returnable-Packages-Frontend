@@ -14,7 +14,7 @@ import { styled } from "@mui/material/styles";
 import axios from "axios";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import { FaStarOfLife, FaTrash } from "react-icons/fa";
+import { FaStarOfLife, FaTrash, FaEdit } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -117,6 +117,7 @@ function AddVendor({ addVendors, editVendorId }) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [active, setActive] = useState(true);
   const [venderActivePortal, setVenderActivePortal] = useState(true);
+  const [editMode, setEditMode] = useState(false);
   const [accountName, setAccountName] = useState("");
   const [accountNo, setAccountNum] = useState("");
   const [bank, setBank] = useState("");
@@ -132,7 +133,12 @@ function AddVendor({ addVendors, editVendorId }) {
   const [countryData, setCountryData] = useState([]);
   const [stateData, setStateData] = useState([]);
   const [cityData, setCityData] = useState([]);
-
+  const [editBankAddressIndex, setEditBankAddressIndex] = React.useState(null);
+  const [vendorAddressVO, setVendorAddressVO] = useState([]);
+  const [vendorBankDetailsVO, setVendorBankDetailsVO] = useState([]);
+  const [venderIdVO, setVenderIdVO] = useState(null);
+  const [editAddressIndex, setEditAddressIndex] = useState(null);
+  const [disableCustomerType, setDisableCustomerType] = React.useState(false);
   const [shippingAddresses, setShippingAddresses] = useState([]);
   const [newAddress, setNewAddress] = useState({
     gstRegistrationStatus: "",
@@ -226,35 +232,124 @@ function AddVendor({ addVendors, editVendorId }) {
   //   }
   // };
 
+  // const handleAddressSubmit = async () => {
+  //   const addressWithVendorId = { ...newAddress, vendorId: vendorId };
+  //   if (isValidAddress()) {
+  //     setErrors1({}); // Clear any previous errors on successful submission
+  //     handleAddShippingAddress();
+  //     // setIsAddressValid(true);
+  //   } else {
+  //     // Display error messages for invalid fields
+  //     const updatedErrors = {};
+  //     if (newAddress.gstRegistrationStatus.trim() === "") {
+  //       updatedErrors.gstRegistrationStatus = true;
+  //     }
+  //     if (newAddress.street1.trim() === "") {
+  //       updatedErrors.street1 = true;
+  //     }
+  //     if (newAddress.country.trim() === "") {
+  //       updatedErrors.country = true;
+  //     }
+  //     if (newAddress.state.trim() === "") {
+  //       updatedErrors.state = true;
+  //     }
+  //     if (newAddress.city.trim() === "") {
+  //       updatedErrors.city = true;
+  //     }
+  //     if (newAddress.pinCode.trim() === "") {
+  //       updatedErrors.pinCode = true;
+  //     }
+  //     setErrors1(updatedErrors);
+  //     // setIsAddressValid(false);
+  //   }
+  // };
+
+  const handleUpdateShippingAddress = (updatedAddress) => {
+    // Check if updatedAddress is null or undefined
+    if (!updatedAddress || updatedAddress.id === undefined) {
+      // Handle adding a new address
+      const newAddressList = [...vendorAddressVO, updatedAddress];
+      setVendorAddressVO(newAddressList);
+      setNewAddress({
+        gstRegistrationStatus: "",
+        gstNumber: "",
+        street1: "",
+        street2: "",
+        country: "",
+        state: "",
+        city: "",
+        pincode: "",
+        contactName: "",
+        phoneNumber: "",
+        designation: "",
+        email: "",
+        // isPrimary: false,
+      });
+      handleShippingClickClose(); // Close the modal or perform other actions
+      return;
+    }
+
+    // Find the index of the address with the given ID
+    const addressIndex = vendorAddressVO.findIndex(
+      (address) => address.id === updatedAddress.id
+    );
+
+    if (addressIndex !== -1) {
+      // Clone the array to avoid mutating state directly
+      const updatedAddresses = [...vendorAddressVO];
+      // Replace the old address with the updated one
+      updatedAddresses[addressIndex] = updatedAddress;
+      // Update the state with the new array of addresses
+      setVendorAddressVO(updatedAddresses);
+      setNewAddress({}); // Clear the newAddress state
+      handleShippingClickClose(); // Close the modal or perform any other actions as needed
+    } else {
+      // Handle the case where the address ID is not found
+      console.error("Address ID not found:", updatedAddress.id);
+    }
+  };
+
   const handleAddressSubmit = async () => {
     const addressWithVendorId = { ...newAddress, vendorId: vendorId };
+
     if (isValidAddress()) {
       setErrors1({}); // Clear any previous errors on successful submission
-      handleAddShippingAddress();
-      // setIsAddressValid(true);
+      if (editVendorId) {
+        // If editCustomerId is truthy, update the existing address
+        handleUpdateShippingAddress(addressWithVendorId);
+      } else {
+        // If editCustomerId is falsy, add a new address
+        handleAddShippingAddress(addressWithVendorId);
+      }
     } else {
       // Display error messages for invalid fields
       const updatedErrors = {};
-      if (newAddress.gstRegistrationStatus.trim() === "") {
+      // Check if newAddress exists before accessing its properties
+      if (newAddress && newAddress.gstRegistrationStatus.trim() === "") {
         updatedErrors.gstRegistrationStatus = true;
       }
-      if (newAddress.street1.trim() === "") {
+      if (newAddress && newAddress.street1.trim() === "") {
         updatedErrors.street1 = true;
       }
-      if (newAddress.country.trim() === "") {
+      if (newAddress && newAddress.country.trim() === "") {
         updatedErrors.country = true;
       }
-      if (newAddress.state.trim() === "") {
+      if (newAddress && newAddress.state.trim() === "") {
         updatedErrors.state = true;
       }
-      if (newAddress.city.trim() === "") {
+      if (newAddress && newAddress.city.trim() === "") {
         updatedErrors.city = true;
       }
-      if (newAddress.pinCode.trim() === "") {
+      if (newAddress && newAddress.pinCode.trim() === "") {
         updatedErrors.pinCode = true;
       }
+      if (newAddress && newAddress.phoneNumber.trim() === "") {
+        updatedErrors.phoneNumber = true;
+      }
+      if (newAddress && newAddress.email.trim() === "") {
+        updatedErrors.email = true;
+      }
       setErrors1(updatedErrors);
-      // setIsAddressValid(false);
     }
   };
 
@@ -329,20 +424,31 @@ function AddVendor({ addVendors, editVendorId }) {
       marginLeft: "40px",
     },
     submittedDataTitle: {
-      fontSize: "1.5rem",
+      fontWeight: "bold",
+      fontSize: "1.2rem",
       marginBottom: "15px",
       color: "#333",
     },
     submittedDataItem: {
       display: "flex",
-      marginBottom: "10px",
+      marginBottom: "5px",
+      fontSize: "0.9rem",
     },
     submittedDataLabel: {
+      fontSize: "1rem",
       fontWeight: "bold",
       marginRight: "10px",
       color: "#555",
     },
   };
+
+  useEffect(() => {
+    // Check if the component is in edit mode
+    if (editMode) {
+      // Fetch vendor data
+      getVendorId();
+    }
+  }, [editMode]);
 
   useEffect(() => {
     {
@@ -433,51 +539,68 @@ function AddVendor({ addVendors, editVendorId }) {
         );
         setDisplyName(response.data.paramObjectsMap.vendorVO.displyName);
         setEmail(response.data.paramObjectsMap.vendorVO.email);
+        console.log("email", response.data.paramObjectsMap.vendorVO.email);
         setPhoneNumber(response.data.paramObjectsMap.vendorVO.phoneNumber);
-        setNewAddress({
-          // ...newAddress,
-          gstRegistrationStatus:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .gstRegistrationStatus,
-          street1:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .street1,
-          street2:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .street2,
-          state:
-            response.data.paramObjectsMap.customersVO.customersAddressVO.state,
-          city: response.data.paramObjectsMap.customersVO.customersAddressVO
-            .city,
-          pinCode:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .pinCode,
-          contactName:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .contactName,
-          phoneNumber:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .phoneNumber,
-          designation:
-            response.data.paramObjectsMap.customersVO.customersAddressVO
-              .designation,
-          email:
-            response.data.paramObjectsMap.customersVO.customersAddressVO.email,
-        });
-        console.log("new", newAddress);
-        const gstRegistrationStatus =
-          response.data.paramObjectsMap.customersVO.customersAddressVO
-            .gstRegistrationStatus;
-        if (gstRegistrationStatus) {
-          setNewAddress({
-            ...newAddress,
-            gstRegistrationStatus: gstRegistrationStatus,
-          });
-        }
+        setBank(
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.bank
+        );
+        console.log(
+          "bank",
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.bank
+        );
+        setAccountNum(
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.accountNo
+        );
+        setAccountName(
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.accountname
+        );
+        setBranch(
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.branch
+        );
+        setIfscCode(
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.ifscCode
+        );
+        setVendorAddressVO(
+          response.data.paramObjectsMap.vendorVO.vendorAddressVO
+        );
+        setVendorBankDetailsVO(
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO
+        );
+        setVenderIdVO(response.data.paramObjectsMap.vendorVO.id);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const handleEditAddress = (addressIndex) => {
+    if (addressIndex >= 0) {
+      // If addressIndex is greater than or equal to 0, it indicates an existing address is being edited
+      setEditAddressIndex(addressIndex);
+      const addressToEdit = vendorAddressVO[addressIndex];
+      setNewAddress(addressToEdit);
+      setDisableCustomerType(true);
+    } else {
+      // If addressIndex is less than 0, it indicates a new address is being added
+      setEditAddressIndex(null); // Reset the edit address index
+      setNewAddress({
+        city: "",
+        contactName: "",
+        country: "",
+        designation: "",
+        email: "",
+        gstNumber: "",
+        gstRegistrationStatus: "",
+        id: 0,
+        phoneNumber: "",
+        pinCode: "",
+        state: "",
+        street1: "",
+        street2: "",
+      });
+      setDisableCustomerType(false);
+    }
+    setOpenShippingModal(true);
   };
 
   const handleChange = (event, newValue) => {
@@ -618,6 +741,99 @@ function AddVendor({ addVendors, editVendorId }) {
         .then((response) => {
           setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
           console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
+          setAddressShow(true);
+          setErrors({});
+          // setAccountNum("");
+          // setBank("");
+          // setDisplayName("");
+          // setBranch("");
+          // setIfscCode("");
+          // setErrors({});
+          toast.success("Vendor Created successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        })
+        .catch((error) => {
+          toast.error("Network Error", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        });
+    } else {
+      // If there are errors, update the state to display them
+      setIsSubmitting(false);
+      setErrors(errors);
+    }
+  };
+
+  const handleUpdateVender = () => {
+    setIsSubmitting(true);
+    const errors = {};
+
+    console.log("test");
+    if (!venderType) {
+      errors.venderType = "VenderType is required";
+    }
+    if (!email) {
+      errors.email = "Email is required";
+    }
+    if (!entityLegalName) {
+      errors.entityLegalName = "EntityLegalName is required";
+    }
+    if (!displyName) {
+      errors.displyName = "Display Name is required";
+    }
+    if (!phoneNumber) {
+      errors.phoneNumber = "PhoneNumber is required";
+    }
+    // if (!bank) {
+    //   errors.bank = "Bank is required";
+    // }
+    // if (!accountName) {
+    //   errors.accountName = "Account Name is required";
+    // }
+    // if (!accountNo) {
+    //   errors.accountNo = "Account No is required";
+    // }
+    // if (!branch) {
+    //   errors.branch = "Branch is required";
+    // }
+    // if (!ifscCode) {
+    //   errors.ifscCode = "Ifsc Code is required";
+    // }
+
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        venderType,
+        displyName,
+        email,
+        entityLegalName,
+        phoneNumber,
+        active,
+        orgId,
+        id: venderIdVO,
+        venderActivePortal,
+        vendorAddressDTO: vendorAddressVO,
+        vendorBankDetailsDTO: vendorBankDetailsVO,
+
+        // [
+        //   {
+        //     accountName: accountName,
+        //     accountNo: accountNo,
+        //     bank: bank,
+        //     branch: branch,
+        //     ifscCode: ifscCode,
+        //   },
+        // ],
+      };
+
+      console.log("test", formData);
+      axios
+        .put(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
+        .then((response) => {
+          setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
+          // console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
           setAddressShow(true);
           setErrors({});
           // setAccountNum("");
@@ -1041,183 +1257,474 @@ function AddVendor({ addVendors, editVendorId }) {
                   </div>
                 ))}
               </div>
+              {editVendorId &&
+                vendorAddressVO &&
+                vendorAddressVO.length > 0 && (
+                  <>
+                    <div className="d-flex align-items-center justify-content-center flex-wrap">
+                      {vendorAddressVO.map((address, index) => (
+                        <div
+                          className="col-md-5 mt-3"
+                          key={index}
+                          style={{
+                            ...styles.submittedDataContainer,
+                            width: "350px",
+                            height: "auto",
+                            borderRadius: "20px",
+                          }} // Set fixed width
+                        >
+                          <div className="row">
+                            <div className="col-md-10">
+                              <h2 style={styles.submittedDataTitle}>
+                                Address {index + 1}
+                              </h2>
+                            </div>
+                            <div className="col-md-2">
+                              <button
+                                key={index}
+                                onClick={() => handleEditAddress(index)}
+                                className="btn btn-link"
+                              >
+                                <FaEdit
+                                  style={{ fontSize: "22px", color: "black" }}
+                                />
+                              </button>
+                            </div>
+                          </div>
+                          {/* Display address details */}
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              GST Registration Status:
+                            </span>
+                            <span>{address.gstRegistrationStatus}</span>
+                          </div>
+                          {address.gstRegistrationStatus === "Registered" && (
+                            <div style={styles.submittedDataItem}>
+                              <span style={styles.submittedDataLabel}>
+                                GST Number:
+                              </span>
+                              <span>{address.gstNumber}</span>
+                            </div>
+                          )}
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Street 1:
+                            </span>
+                            <span>{address.street1}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Street 2:
+                            </span>
+                            <span>{address.street2}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Country:
+                            </span>
+                            <span>{address.country}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              State:
+                            </span>
+                            <span>{address.state}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>City:</span>
+                            <span>{address.city}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Pin Code:
+                            </span>
+                            <span>{address.pinCode}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Contact Person:
+                            </span>
+                            <span>{address.contactName}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Phone Number:
+                            </span>
+                            <span>{address.phoneNumber}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Destination:
+                            </span>
+                            <span>{address.designation}</span>
+                          </div>
+                          <div style={styles.submittedDataItem}>
+                            <span style={styles.submittedDataLabel}>
+                              Email:
+                            </span>
+                            <span>{address.email}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                )}
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>
-              <div className="row">
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <label className="label">
-                    <span
-                      className={
-                        "label-text label-font-size text-base-content d-flex flex-row"
-                      }
-                    >
-                      Bank
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
+              {editVendorId &&
+              vendorBankDetailsVO &&
+              vendorBankDetailsVO.length > 0 ? (
+                <div className="row">
+                  {vendorBankDetailsVO.map((bank) => (
+                    <>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <label className="label">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content d-flex flex-row"
+                            }
+                          >
+                            Bank
+                            <FaStarOfLife className="must" />
+                          </span>
+                        </label>
+                      </div>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <input
+                          type="text"
+                          className="form-control form-sz"
+                          // placeholder="Enter"
+                          value={bank.bank}
+                          name="bank"
+                          onChange={handleInputChange}
+                          disabled={isSubmitting}
+                          onInput={(e) => {
+                            e.target.value = e.target.value
+                              .toUpperCase()
+                              .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                          }}
+                        />
+                        {errors.bank && (
+                          <div className="error-text">{errors.bank}</div>
+                        )}
+                      </div>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <label className="label">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content d-flex flex-row"
+                            }
+                          >
+                            Account No
+                            <FaStarOfLife className="must" />
+                          </span>
+                        </label>
+                      </div>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <input
+                          type="text"
+                          className="form-control form-sz"
+                          // placeholder="Enter"
+                          value={bank.accountNo}
+                          name="accountNo"
+                          onChange={handleInputChange}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.replace(/\D/g, "");
+                          }}
+                          maxLength={30}
+                          disabled={isSubmitting}
+                        />
+                        {errors.accountNo && (
+                          <div className="error-text">{errors.accountNo}</div>
+                        )}
+                      </div>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <label className="label">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content d-flex flex-row"
+                            }
+                          >
+                            Account Name
+                            <FaStarOfLife className="must" />
+                          </span>
+                        </label>
+                      </div>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <input
+                          type="text"
+                          className="form-control form-sz"
+                          // placeholder="Enter"
+                          value={bank.accountname}
+                          name="accountName"
+                          onInput={(e) => {
+                            e.target.value = e.target.value
+                              .toUpperCase()
+                              .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                          }}
+                          onChange={handleInputChange}
+                          disabled={isSubmitting}
+                        />
+                        {errors.accountName && (
+                          <div className="error-text">{errors.accountName}</div>
+                        )}
+                      </div>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <label className="label">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content d-flex flex-row"
+                            }
+                          >
+                            Branch
+                            <FaStarOfLife className="must" />
+                          </span>
+                        </label>
+                      </div>
+                      <div className="col-lg-3 col-md-6 mb-2">
+                        <input
+                          type="text"
+                          className="form-control form-sz"
+                          // placeholder="Enter"
+                          value={bank.branch}
+                          name="branch"
+                          onChange={handleInputChange}
+                          disabled={isSubmitting}
+                          onInput={(e) => {
+                            e.target.value = e.target.value
+                              .toUpperCase()
+                              .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                          }}
+                        />
+                        {errors.branch && (
+                          <div className="error-text">{errors.branch}</div>
+                        )}
+                      </div>
+                      <div className="col-lg-3 col-md-6">
+                        <label className="label">
+                          <span
+                            className={
+                              "label-text label-font-size text-base-content d-flex flex-row"
+                            }
+                          >
+                            IFSC Code
+                            <FaStarOfLife className="must" />
+                          </span>
+                        </label>
+                      </div>
+                      <div className="col-lg-3 col-md-6">
+                        <input
+                          type="text"
+                          className="form-control form-sz"
+                          // placeholder="Enter"
+                          value={bank.ifscCode}
+                          onInput={(e) => {
+                            e.target.value = e.target.value.toUpperCase();
+                          }}
+                          name="ifscCode"
+                          onChange={handleInputChange}
+                          disabled={isSubmitting}
+                        />
+                        {errors.ifscCode && (
+                          <div className="error-text">{errors.ifscCode}</div>
+                        )}
+                      </div>
+                    </>
+                  ))}
                 </div>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <input
-                    type="text"
-                    className="form-control form-sz"
-                    // placeholder="Enter"
-                    value={bank}
-                    name="bank"
-                    onChange={handleInputChange}
-                    disabled={isSubmitting}
-                    onInput={(e) => {
-                      e.target.value = e.target.value
-                        .toUpperCase()
-                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                    }}
-                  />
-                  {errors.bank && (
-                    <div className="error-text">{errors.bank}</div>
-                  )}
+              ) : (
+                <div className="row">
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Bank
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      // placeholder="Enter"
+                      value={bank}
+                      name="bank"
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      onInput={(e) => {
+                        e.target.value = e.target.value
+                          .toUpperCase()
+                          .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                      }}
+                    />
+                    {errors.bank && (
+                      <div className="error-text">{errors.bank}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Account No
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      // placeholder="Enter"
+                      value={accountNo}
+                      name="accountNo"
+                      onChange={handleInputChange}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.replace(/\D/g, "");
+                      }}
+                      maxLength={30}
+                      disabled={isSubmitting}
+                    />
+                    {errors.accountNo && (
+                      <div className="error-text">{errors.accountNo}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Account Name
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      // placeholder="Enter"
+                      value={accountName}
+                      name="accountName"
+                      onInput={(e) => {
+                        e.target.value = e.target.value
+                          .toUpperCase()
+                          .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                      }}
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                    />
+                    {errors.accountName && (
+                      <div className="error-text">{errors.accountName}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        Branch
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6 mb-2">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      // placeholder="Enter"
+                      value={branch}
+                      name="branch"
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                      onInput={(e) => {
+                        e.target.value = e.target.value
+                          .toUpperCase()
+                          .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+                      }}
+                    />
+                    {errors.branch && (
+                      <div className="error-text">{errors.branch}</div>
+                    )}
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label">
+                      <span
+                        className={
+                          "label-text label-font-size text-base-content d-flex flex-row"
+                        }
+                      >
+                        IFSC Code
+                        <FaStarOfLife className="must" />
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      type="text"
+                      className="form-control form-sz"
+                      // placeholder="Enter"
+                      value={ifscCode}
+                      onInput={(e) => {
+                        e.target.value = e.target.value.toUpperCase();
+                      }}
+                      name="ifscCode"
+                      onChange={handleInputChange}
+                      disabled={isSubmitting}
+                    />
+                    {errors.ifscCode && (
+                      <div className="error-text">{errors.ifscCode}</div>
+                    )}
+                  </div>
                 </div>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <label className="label">
-                    <span
-                      className={
-                        "label-text label-font-size text-base-content d-flex flex-row"
-                      }
-                    >
-                      Account No
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <input
-                    type="text"
-                    className="form-control form-sz"
-                    // placeholder="Enter"
-                    value={accountNo}
-                    name="accountNo"
-                    onChange={handleInputChange}
-                    onInput={(e) => {
-                      e.target.value = e.target.value.replace(/\D/g, "");
-                    }}
-                    maxLength={30}
-                    disabled={isSubmitting}
-                  />
-                  {errors.accountNo && (
-                    <div className="error-text">{errors.accountNo}</div>
-                  )}
-                </div>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <label className="label">
-                    <span
-                      className={
-                        "label-text label-font-size text-base-content d-flex flex-row"
-                      }
-                    >
-                      Account Name
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <input
-                    type="text"
-                    className="form-control form-sz"
-                    // placeholder="Enter"
-                    value={accountName}
-                    name="accountName"
-                    onInput={(e) => {
-                      e.target.value = e.target.value
-                        .toUpperCase()
-                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                    }}
-                    onChange={handleInputChange}
-                    disabled={isSubmitting}
-                  />
-                  {errors.accountName && (
-                    <div className="error-text">{errors.accountName}</div>
-                  )}
-                </div>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <label className="label">
-                    <span
-                      className={
-                        "label-text label-font-size text-base-content d-flex flex-row"
-                      }
-                    >
-                      Branch
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-3 col-md-6 mb-2">
-                  <input
-                    type="text"
-                    className="form-control form-sz"
-                    // placeholder="Enter"
-                    value={branch}
-                    name="branch"
-                    onChange={handleInputChange}
-                    disabled={isSubmitting}
-                    onInput={(e) => {
-                      e.target.value = e.target.value
-                        .toUpperCase()
-                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                    }}
-                  />
-                  {errors.branch && (
-                    <div className="error-text">{errors.branch}</div>
-                  )}
-                </div>
-                <div className="col-lg-3 col-md-6">
-                  <label className="label">
-                    <span
-                      className={
-                        "label-text label-font-size text-base-content d-flex flex-row"
-                      }
-                    >
-                      IFSC Code
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-3 col-md-6">
-                  <input
-                    type="text"
-                    className="form-control form-sz"
-                    // placeholder="Enter"
-                    value={ifscCode}
-                    onInput={(e) => {
-                      e.target.value = e.target.value.toUpperCase();
-                    }}
-                    name="ifscCode"
-                    onChange={handleInputChange}
-                    disabled={isSubmitting}
-                  />
-                  {errors.ifscCode && (
-                    <div className="error-text">{errors.ifscCode}</div>
-                  )}
-                </div>
-              </div>
+              )}
             </CustomTabPanel>
           </Box>
           <div className="d-flex flex-row mt-1 mb-2">
-            <button
-              type="button"
-              onClick={handleVender}
-              disabled={addressShow === true}
-              style={{
-                cursor: addressShow ? "not-allowed" : "pointer",
-              }}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Save
-            </button>
-            <button
-              type="button"
-              onClick={handleCloseAddVendor}
-              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Cancel
-            </button>
+            {editVendorId ? (
+              <button
+                type="button"
+                onClick={handleUpdateVender}
+                disabled={addressShow === true}
+                style={{
+                  cursor: addressShow ? "not-allowed" : "pointer",
+                }}
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Update
+              </button>
+            ) : (
+              <>
+                <button
+                  type="button"
+                  onClick={handleVender}
+                  disabled={addressShow === true}
+                  style={{
+                    cursor: addressShow ? "not-allowed" : "pointer",
+                  }}
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCloseAddVendor}
+                  className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Cancel
+                </button>
+              </>
+            )}
           </div>
         </>
 

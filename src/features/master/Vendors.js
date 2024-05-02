@@ -196,7 +196,7 @@ function Vendors() {
         },
       },
       {
-        accessorKey: "status",
+        accessorKey: "active",
         header: "Status",
         size: 50,
         muiTableHeadCellProps: {
