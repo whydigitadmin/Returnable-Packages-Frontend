@@ -202,28 +202,6 @@ function Items() {
         },
       },
       {
-        accessorKey: "skuFrom",
-        header: "SKU From",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "skuTo",
-        header: "SKU To",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
         accessorKey: "length",
         header: "Length",
         size: 50,

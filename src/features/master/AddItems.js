@@ -66,7 +66,7 @@ const IOSSwitch = styled((props) => (
 function AddItem({ addItem, editItemId }) {
   const [value, setValue] = useState("");
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
-  const [assetCategory, setAssetCategory] = useState("");
+  const [assetCategory, setAssetCategory] = useState([]);
   const [assetCodeId, setAssetCodeId] = useState([]);
   const [assetCodeIdVO, setAssetCodeIdVO] = useState([]);
   const [assetName, setAssetName] = useState([]);
@@ -779,7 +779,7 @@ function AddItem({ addItem, editItemId }) {
           </>
         </div>
 
-        <div className="row">
+        {/* <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -826,7 +826,7 @@ function AddItem({ addItem, editItemId }) {
               onChange={handleCategoryChange}
             />
           </div>
-        </div>
+        </div> */}
 
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2">
