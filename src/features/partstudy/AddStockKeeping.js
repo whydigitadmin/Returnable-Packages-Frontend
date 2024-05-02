@@ -171,11 +171,11 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
       errors.inTransitDays = "InTransitDays is required";
     }
     if (!receiverLineStorageDays) {
-      errors.receiverLineStorageDays = "EndUser LineStorage Days is required";
+      errors.receiverLineStorageDays = "Receiver Line Storage Days is required";
     }
     if (!receiverManufacturingLineDays) {
       errors.receiverManufacturingLineDays =
-        "EndUser Manufacturing Line Days  is required";
+        "Receiver Manufacturing Line Days is required";
     }
     if (!otherStorageDays) {
       errors.otherStorageDays = " Other Storage Days is required";
@@ -369,7 +369,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
                 }
               >
                 Receiver Line Storage
-                <FaStarOfLife className="must" />
+                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -396,7 +396,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
                 }
               >
                 Receiver Manufacturing Line
-                <FaStarOfLife className="must" />
+                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>

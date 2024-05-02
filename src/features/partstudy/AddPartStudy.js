@@ -406,7 +406,10 @@ function AddPartStudy({
               <span className="error-text">{errors.partNumber}</span>
             )}
           </div>
-          <h1 className="text-xl font-semibold my-2">Volume Details</h1>
+          <h1 className="text-xl font-semibold my-2">
+            Volume Details{" "}
+            <span className="text-sm font-normal">(Per Month)</span>
+          </h1>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
