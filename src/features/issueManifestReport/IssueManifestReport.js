@@ -385,7 +385,7 @@ export const IssueManifestReport = ({ docId }) => {
                     <td>
                       <strong>Amount In Words:</strong>
                     </td>
-                    <td>Forty Eight Thousand Five Hundred Only</td>
+                    <td>----</td>
                   </tr>
                   <tr>
                     <td>
