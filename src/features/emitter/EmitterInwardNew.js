@@ -669,7 +669,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
           <div className="row mt-4">
             <div className="col-lg-12">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="table table-hover w-full">
                   {/* Table header */}
                   <thead>
                     <tr>
@@ -1245,11 +1245,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
           {view3 && (
             <div className="col-lg-12 mt-6">
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="table table-hover w-full">
                   <thead>
                     <tr>
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white">Action</th> */}
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white">S.No</th> */}
                       <th
                         className="text-black border px-2 text-center"
                         style={{
