@@ -149,92 +149,17 @@ export const InwardManifestDetails = () => {
   });
 
   // OLD USE MEMO
-  // const columns = useMemo(
-  //   () => [
-  //     {
-  //       accessorKey: "actions",
-  //       header: "Actions",
-  //       size: 50,
-  //       muiTableHeadCellProps: {
-  //         align: "center",
-  //       },
-  //       muiTableBodyCellProps: {
-  //         align: "center",
-  //       },
-  //       enableSorting: false,
-  //       enableColumnOrdering: false,
-  //       enableEditing: false,
-  //       Cell: ({ row }) => (
-  //         <div>
-  //           <IconButton onClick={() => handleViewRow(row)}>
-  //             <VisibilityIcon />
-  //           </IconButton>
-  //           {/* <IconButton onClick={() => handleEditRow(row)}>
-  //             <EditIcon />
-  //           </IconButton> */}
-  //         </div>
-  //       ),
-  //     },
-  //     {
-  //       accessorKey: "docId",
-  //       header: "DocId",
-  //       size: 50,
-  //       muiTableHeadCellProps: {
-  //         align: "center",
-  //       },
-  //       muiTableBodyCellProps: {
-  //         align: "center",
-  //       },
-  //     },
-  //     {
-  //       accessorKey: "docDate",
-  //       header: "DocDate",
-  //       size: 50,
-  //       muiTableHeadCellProps: {
-  //         align: "center",
-  //       },
-  //       muiTableBodyCellProps: {
-  //         align: "center",
-  //       },
-  //     },
-  //     {
-  //       accessorKey: "sourceFrom",
-  //       header: "From",
-  //       size: 50,
-  //       muiTableHeadCellProps: {
-  //         align: "center",
-  //       },
-  //       muiTableBodyCellProps: {
-  //         align: "center",
-  //       },
-  //     },
-  //     {
-  //       accessorKey: "stockBranch",
-  //       header: "To",
-  //       size: 50,
-  //       muiTableHeadCellProps: {
-  //         align: "center",
-  //       },
-  //       muiTableBodyCellProps: {
-  //         align: "center",
-  //       },
-  //     },
-  //   ],
-  //   []
-  // );
-
-
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'actions',
-        header: 'Actions',
+        accessorKey: "actions",
+        header: "Actions",
         size: 50,
         muiTableHeadCellProps: {
-          align: 'center',
+          align: "center",
         },
         muiTableBodyCellProps: {
-          align: 'center',
+          align: "center",
         },
         enableSorting: false,
         enableColumnOrdering: false,
@@ -251,63 +176,61 @@ export const InwardManifestDetails = () => {
         ),
       },
       {
-        accessorKey: 'docId',
-        header: 'DocId',
+        accessorKey: "docId",
+        header: "DocId",
         size: 50,
         muiTableHeadCellProps: {
-          align: 'center',
+          align: "center",
         },
         muiTableBodyCellProps: {
-          align: 'center',
-        },
-        Cell: ({ value: docId, row }) => (
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              handleViewRow(row);
-            }}
-          >
-            {docId}
-          </a>
-        ),
-      },
-      {
-        accessorKey: 'docDate',
-        header: 'DocDate',
-        size: 50,
-        muiTableHeadCellProps: {
-          align: 'center',
-        },
-        muiTableBodyCellProps: {
-          align: 'center',
+          align: "center",
         },
       },
       {
-        accessorKey: 'sourceFrom',
-        header: 'From',
+        accessorKey: "docDate",
+        header: "DocDate",
         size: 50,
         muiTableHeadCellProps: {
-          align: 'center',
+          align: "center",
         },
         muiTableBodyCellProps: {
-          align: 'center',
+          align: "center",
         },
       },
       {
-        accessorKey: 'stockBranch',
-        header: 'To',
+        accessorKey: "sourceFrom",
+        header: "From",
         size: 50,
         muiTableHeadCellProps: {
-          align: 'center',
+          align: "center",
         },
         muiTableBodyCellProps: {
-          align: 'center',
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "stockBranch",
+        header: "To",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
         },
       },
     ],
     []
   );
+
+
+
+
+
+
+
+
+
   const table = useMaterialReactTable({
     data,
     columns,

@@ -61,6 +61,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
   const [binDocId, setBinDocId] = useState("");
+  const [downloadDocId, setDownloadDocId] = useState(null);
+
 
   const [tableData, setTableData] = useState([
     {
@@ -104,8 +106,10 @@ function EmitterInwardNew({ addInwardManifeast }) {
 
   const [openDialog, setOpenDialog] = useState(false);
 
-  const handleDownloadClick = () => {
+  const handleDownloadClick = (selectedAllotNo) => {
     setOpenDialog(true);
+    setDownloadDocId(selectedAllotNo)
+    console.log("Download Doc ID:", selectedAllotNo)
   };
 
   const handleCloseDialog = () => {
@@ -210,8 +214,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const getStockBranch = async () => {
     try {
       const response = await axios.get(
-        `${
-          process.env.REACT_APP_API_URL
+        `${process.env.REACT_APP_API_URL
         }/api/master/getAllotmentNo?orgid=${orgId}&emitterId=${localStorage.getItem(
           "emitterId"
         )}`
@@ -409,8 +412,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const getAllBinInward = async (selectedValue) => {
     try {
       const response = await axios.get(
-        `${
-          process.env.REACT_APP_API_URL
+        `${process.env.REACT_APP_API_URL
         }/api/master/getAllBinInwardById?orgId=${orgId}&emitterid=${localStorage.getItem(
           "emitterId"
         )}`
@@ -448,8 +450,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const getAllPendingBinInward = async (selectedValue) => {
     try {
       const response = await axios.get(
-        `${
-          process.env.REACT_APP_API_URL
+        `${process.env.REACT_APP_API_URL
         }/api/master/getWaitingBinInwardDetailsByEmitterAndOrgId?orgId=${orgId}&emitterid=${localStorage.getItem(
           "emitterId"
         )}`
@@ -615,9 +616,15 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const viewSavedRecords = () => {
     getAllBinInward();
     setShowData(true);
-    setView3(true);
+    // setView3(true);
+    setView3(!view3)
     setViewButton(false);
     setView2(false);
+    // setView2(!view2)
+    // setView1(false);
+    setView1(!view1);
+
+
   };
   const handleFileUpload = (files) => {
     setUploadedFiles(files);
@@ -628,6 +635,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
     // Update the selectedFiles state with the array of file names
     setSelectedFiles(fileNames);
   };
+
+
 
   return (
     <>
@@ -642,7 +651,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
           <p className="text-2xl">
             <strong>{view1 ? "Pending Bin Inward" : " Bin Inward"}</strong>
           </p>
-          {viewButton && (
+          {!viewButton && (
             <div className="ml-auto">
               {" "}
               <button
@@ -650,7 +659,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                 className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 onClick={viewSavedRecords}
               >
-                View
+                {view3 ? "Close" : "Inwarded Bins"}
               </button>
             </div>
           )}
@@ -665,22 +674,22 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   <thead>
                     <tr>
                       <th
-                        className="px-2 text-black border"
+                        className="px-2 text-black border text-center"
                         style={{ width: "15%" }}
                       >
                         Allotment No
                       </th>
                       <th
-                        className="px-2 text-black border"
+                        className="px-2 text-black border text-center"
                         style={{ paddingTop: "1%", paddingBottom: "1%" }}
                       >
                         Allotment Date
                       </th>
-                      <th className="px-2 text-black border">Flow</th>
-                      <th className="px-2 text-black border">Kit No</th>
-                      <th className="px-2 text-black border">Req Qty</th>
-                      <th className="px-2 text-black border">Alloted QTY</th>
-                      <th className="px-2 text-black border">Issue Manifest</th>
+                      <th className="px-2 text-black border text-center">Flow</th>
+                      <th className="px-2 text-black border text-center">Kit No</th>
+                      <th className="px-2 text-black border text-center">Req Qty</th>
+                      <th className="px-2 text-black border text-center">Alloted QTY</th>
+                      <th className="px-2 text-black border text-center">Issue Manifest</th>
                     </tr>
                   </thead>
                   {/* Table body */}
@@ -689,7 +698,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       // Render table rows if data is available
                       tableDataPending.map((row) => (
                         <tr key={row.id}>
-                          <td className="border px-2 py-2">
+                          <td className="border px-2 py-2 text-center">
                             <a
                               href="#"
                               onClick={(e) => {
@@ -706,100 +715,35 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               {row.allotNo}
                             </a>
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.allotDate}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, allotDate: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+
+                            {row.allotDate}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.flow}
-                              disabled
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, flow: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+
+                            {row.flow}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.kitCode}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, kitCode: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.kitCode}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.reqKitQty}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, reqKitQty: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.reqKitQty}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.allotKitQty}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, allotKitQty: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.allotKitQty} (
+                            {((row.allotKitQty / row.reqKitQty) * 100).toFixed(2)}%)
                           </td>
                           <td
-                            className="border px-2 py-2"
+                            className="border px-2 py-2 text-center"
                             style={{
                               textDecoration: "underline",
                               cursor: "pointer",
                               width: "auto",
                               color: "blue",
+                              textAlign: "center"
                             }}
-                            onClick={handleDownloadClick}
+                            onClick={() => handleDownloadClick(row.allotNo)}
+
                           >
                             Download
                           </td>
@@ -1307,7 +1251,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       {/* <th className="px-2 py-2 bg-blue-500 text-white">Action</th> */}
                       {/* <th className="px-2 py-2 bg-blue-500 text-white">S.No</th> */}
                       <th
-                        className="text-black border px-2"
+                        className="text-black border px-2 text-center"
                         style={{
                           paddingTop: "1%",
                           paddingBottom: "1%",
@@ -1316,13 +1260,13 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       >
                         DocId
                       </th>
-                      <th className="px-2 text-black border">DocDate</th>
-                      <th className="px-2 text-black border">Allotment No</th>
-                      <th className="px-2 text-black border">Allotment Date</th>
-                      <th className="px-2 text-black border">Flow</th>
-                      <th className="px-2 text-black border">Kit No</th>
-                      <th className="px-2 text-black border">Req Qty</th>
-                      <th className="px-2 text-black border">Alloted QTY</th>
+                      <th className="px-2 text-black border text-center">DocDate</th>
+                      <th className="px-2 text-black border text-center">Allotment No</th>
+                      <th className="px-2 text-black border text-center">Allotment Date</th>
+                      <th className="px-2 text-black border text-center">Flow</th>
+                      <th className="px-2 text-black border text-center">Kit No</th>
+                      <th className="px-2 text-black border text-center">Req Qty</th>
+                      <th className="px-2 text-black border text-center">Alloted QTY</th>
                       {/* <th className="px-2 py-2 bg-blue-500 text-white">
                  Return Qty
                </th> */}
@@ -1332,7 +1276,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                     {paginatedData &&
                       paginatedData.map((row) => (
                         <tr key={row.id}>
-                          <td className="border px-2 py-2">
+                          <td className="border px-2 py-2 text-center">
                             <span
                               onClick={() => {
                                 console.log("Row Data:", row);
@@ -1348,77 +1292,21 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               {row.docid}
                             </span>
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.docDate}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, docDate: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.docDate}
                           </td>
 
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.allotmentNo}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, allotmentNo: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.allotmentNo}
                           </td>
 
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.allotDate}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, allotDate: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.allotDate}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.flow}
-                              disabled
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, flow: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.flow}
                           </td>
-                          <td className="border px-2 py-2">
+                          <td className="border px-2 py-2 text-center text-center">
                             <span
                               onClick={() => {
                                 console.log("Row Data:", row);
@@ -1437,39 +1325,13 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               {row.kitCode}
                             </span>
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.reqKitQty}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, reqKitQty: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.reqKitQty}
                           </td>
-                          <td className="border px-2 py-2">
-                            <input
-                              type="text"
-                              value={row.allotedQty}
-                              onChange={(e) =>
-                                setTableDataView((prev) =>
-                                  prev.map((r) =>
-                                    r.id === row.id
-                                      ? { ...r, allotedQty: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              disabled
-                              style={{ width: "100%" }}
-                            />
+                          <td className="border px-2 py-2 text-center">
+                            {row.allotedQty} (
+                            {((row.allotedQty / row.reqKitQty) * 100).toFixed(2)}%)
+
                           </td>
                         </tr>
                       ))}
@@ -1499,7 +1361,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
         <DialogContent>
           {/* Content of your dialog */}
           {/* Add your download logic or content here */}
-          <IssueManifestReport />
+          <IssueManifestReport docId={downloadDocId} />
         </DialogContent>
       </Dialog>
       <ToastContainer />

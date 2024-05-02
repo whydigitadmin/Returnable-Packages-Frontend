@@ -1,9 +1,50 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { MdPrint } from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
+import axios from "axios";
 
-export const IssueManifestReport = () => {
+export const IssueManifestReport = ({ docId }) => {
   const componentRef = useRef();
+  const [headerData, setHeaderData] = useState([])
+  const [gridData, setGridData] = useState([])
+
+  useEffect(() => {
+    getHeaderDetailsByDocId()
+  }, []);
+
+  const getHeaderDetailsByDocId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getBinAllotmentPdfHeaderDetails?docid=${docId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        console.log("API Response:", response.data.paramObjectsMap.HeaderDetails[0]);
+        setHeaderData(response.data.paramObjectsMap.HeaderDetails[0]);
+        try {
+          const response = await axios.get(
+            // `${process.env.REACT_APP_API_URL}/api/master/getBinAllotmentPdfHeaderDetails?docid=${docId}`
+            `${process.env.REACT_APP_API_URL}/api/master/getBinAllotmentPdfGridDetails?docid=${docId}`
+          );
+          console.log("API Response:", response);
+
+          if (response.status === 200) {
+            console.log("API Response for Grid:", response.data.paramObjectsMap.allotDetails);
+            setGridData(response.data.paramObjectsMap.allotDetails);
+          } else {
+            console.error("API Error:", response.data);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -11,6 +52,7 @@ export const IssueManifestReport = () => {
 
   return (
     <div>
+      {/* {docId} */}
       <style>
         {`
           @media print {
@@ -84,6 +126,7 @@ export const IssueManifestReport = () => {
           }
         `}
       </style>
+      {/* PRINT BUTTON */}
       <div className="text-right mr-5">
         <button
           className="btn btn-primary"
@@ -97,19 +140,23 @@ export const IssueManifestReport = () => {
           <MdPrint style={{ fontSize: "20px" }} />
         </button>
       </div>
+
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-5" ref={componentRef}>
+          {/* HEADINGS */}
           <div className="row">
-            <div className="col-md-6">
+            <div className="col-md-12 text-center">
               <h1 className="text-xl">
                 <strong>
                   SCM AI-PACKS
-                  <br />
+
                   Private Limited
                 </strong>
               </h1>
+              <br />
+              <h3><strong>Bin Allotment</strong></h3>
             </div>
-            <div className="col-md-6">
+            {/* <div className="col-md-6">
               <h1 className="text-xl text-center">
                 <strong>
                   Bin
@@ -117,88 +164,66 @@ export const IssueManifestReport = () => {
                   Allotment
                 </strong>
               </h1>
-            </div>
+            </div> */}
           </div>
-          <div className="row mt-4">
+          {/* <div className="row mt-4">
             <div className="col-md-12 font-weight-bold">
               <hr />
             </div>
+          </div> */}
+
+          <div className="row -flex mt-2 flex-row flex-wrap">
+            {/* <div className="col-md-12"> */}
+            {/* Transaction details table */}
+            <table className="table">
+              <tbody>
+                <tr>
+                  <td className="fw-bold">Transaction No:</td>
+                  <td className="px-3">{headerData.allotno}</td>
+                  <td className="fw-bold">Transaction Date:</td>
+                  <td className="px-3">{headerData.allotDate}</td>
+                  <td className="fw-bold">Dispatch Date:</td>
+                  <td className="px-3">{headerData.binreqdate}</td>
+                </tr>
+              </tbody>
+            </table>
+            {/* </div> */}
           </div>
-          <div className="row mt-2 flex-row">
-            <div className="col-md-5">
-              {/* Transaction details table */}
-              <table className="table">
-                <tbody>
-                  <tr>
-                    <td>Transaction No:</td>
-                    <td>MIM1106</td>
-                  </tr>
-                  <tr>
-                    <td>Transaction Date:</td>
-                    <td>07/03/24</td>
-                  </tr>
-                  <tr>
-                    <td>Dispatch Date:</td>
-                    <td>07/03/24</td>
-                  </tr>
-                  <tr>
-                    <td>Transaction Type:</td>
-                    <td>SAMPLE FOLDABLE PACKAGING</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            <div className="col-md-3"></div>
-            <div className="col-md-4">
-              {/* Checkbox options table */}
-              <table className="table">
-                <tbody>
-                  <tr>
-                    <td>[ ]</td>
-                    <td>Original for Consignee</td>
-                  </tr>
-                  <tr>
-                    <td>[ ]</td>
-                    <td>Duplicate for Transporter</td>
-                  </tr>
-                  <tr>
-                    <td>[ ]</td>
-                    <td>Triplicate for Consignor</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+
           {/* Sender and Receiver details */}
-          <div className="row mt-5">
+          <div className="row mt-2">
             <div className="col-md-6 ">
               <table className="table">
                 <tbody>
                   <tr>
                     <td style={{ textAlign: "right" }}>
-                      <strong>Sender's Name</strong>
+                      <strong>Sender:</strong>
                     </td>
                     <td style={{ textAlign: "left" }}>
-                      SCM AI-PACKS PRIVATE LIMITED
+                      {headerData.senderName}
                     </td>
                   </tr>
                   <tr>
                     <td style={{ textAlign: "right" }}>
-                      <strong>Sender's Address</strong>
+                      <strong>Address:</strong>
                     </td>
                     <td style={{ textAlign: "left" }}>
-                      #8, 03rd Main, 3rd Cross, Hoysala Nagar
+                      {/* #8, 03rd Main, 3rd Cross, Hoysala Nagar */}
+                      {headerData.senderAddress},{" "}{headerData.senderCity}
                       <br />
-                      Ramamurthy Nagar, Bengaluru - 560016
+                      {/* Ramamurthy Nagar, Bengaluru - 560016 */}
+                      {headerData.senderState}
                       <br />
-                      Karnataka
+                      {/* Karnataka */}
+                      {headerData.senderPinCode}
+
                     </td>
                   </tr>
                   <tr>
                     <td style={{ textAlign: "right" }}>
                       <strong>GST:</strong>
                     </td>
-                    <td style={{ textAlign: "left" }}>29ABMCS1982P1ZA</td>
+                    <td style={{ textAlign: "left" }}>{/*29ABMCS1982P1ZA */}{headerData.senderGst}</td>
                   </tr>
                 </tbody>
               </table>
@@ -208,13 +233,15 @@ export const IssueManifestReport = () => {
                 <tbody>
                   <tr>
                     <td style={{ textAlign: "right" }}>
-                      <strong>Receiver's Name:</strong>
+                      <strong>Receiver:</strong>
                     </td>
-                    <td style={{ textAlign: "left" }}>BAXY LIMITED</td>
+                    <td style={{ textAlign: "left" }}>
+                      {/* BAXY LIMITED */}{headerData.receiverName}
+                    </td>
                   </tr>
                   <tr>
                     <td style={{ textAlign: "right" }}>
-                      <strong>Receiver's Address:</strong>
+                      <strong>Address:</strong>
                     </td>
                     <td style={{ textAlign: "left" }}>
                       A-88 Industrial Area, Bhiwadi, Alwar,
@@ -233,7 +260,7 @@ export const IssueManifestReport = () => {
             </div>
           </div>
 
-          <div className="d-flex row mt-5">
+          <div className="d-flex row mt-2">
             {/* Responsive table */}
             <div className="table-responsive">
               <table
@@ -247,15 +274,15 @@ export const IssueManifestReport = () => {
                     >
                       Kit ID
                     </th>
-                    <th
+                    {/* <th
                       style={{ border: "2px solid black", textAlign: "center" }}
                     >
                       Kit Name
-                    </th>
+                    </th> */}
                     <th
                       style={{ border: "2px solid black", textAlign: "center" }}
                     >
-                      KIT Quantity
+                      KIT QTY
                     </th>
                     <th
                       style={{ border: "2px solid black", textAlign: "center" }}
@@ -270,186 +297,87 @@ export const IssueManifestReport = () => {
                     <th
                       style={{ border: "2px solid black", textAlign: "center" }}
                     >
-                      Product Name
+                      Product
                     </th>
                     <th
                       style={{ border: "2px solid black", textAlign: "center" }}
                     >
-                      Product Qty
+                      Product QTY
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      SKIT01
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      Cylinder Head Comp (H276/H230)
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      1
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      3293
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      PP1412
-                      <br />
-                      PL1412
-                      <br />
-                      PS1412
-                      <br />
-                      P1SS01
-                      <br />
-                      SP1A01
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      Pallet
-                      <br />
-                      LID
-                      <br />
-                      Sidewall
-                      <br />
-                      Separator Sheet
-                      <br />
-                      Insert
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      1
-                      <br />
-                      1
-                      <br />
-                      1
-                      <br />
-                      9
-                      <br />8
-                    </td>
-                  </tr>
-                  {/* Additional rows */}
-                  <tr>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      SKIT02
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      Example Product 2
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      2
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      3294
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      PP1413
-                      <br />
-                      PL1413
-                      <br />
-                      PS1413
-                      <br />
-                      P1SS02
-                      <br />
-                      SP1A02
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      Example Product
-                      <br />
-                      LID
-                      <br />
-                      Sidewall
-                      <br />
-                      Separator Sheet
-                      <br />
-                      Insert
-                    </td>
-                    <td
-                      style={{
-                        border: "2px solid black",
-                        textAlign: "center",
-                      }}
-                    >
-                      2
-                      <br />
-                      2
-                      <br />
-                      2
-                      <br />
-                      10
-                      <br />9
-                    </td>
-                  </tr>
+                  {gridData &&
+                    gridData.map((row) => (
+                      <>
+                        <tr>
+                          <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {row.kitcode}
+                          </td>
+                          {/* <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            Kit Name
+                          </td> */}
+                          <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {row.allotkitqty}
+                          </td>
+                          <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            -
+                          </td>
+                          <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {row.productCode}
+                          </td>
+                          <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {row.productName}
+                          </td>
+                          <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {row.productQty}
+                          </td>
+                        </tr>
+
+                      </>
+                    ))}
                 </tbody>
               </table>
             </div>
           </div>
 
           {/* Other Details */}
-          <div className="row mt-5">
+          <div className="row mt-2">
             <div className="col-md-9">
               <table className="table">
                 <tbody>
@@ -461,9 +389,9 @@ export const IssueManifestReport = () => {
                   </tr>
                   <tr>
                     <td>
-                      <strong>Transporter Name:</strong>
+                      <strong>Transporter:</strong>
                     </td>
-                    <td>Market Vendor</td>
+                    <td>Safe Express</td>
                   </tr>
                   <tr>
                     <td>
@@ -473,7 +401,7 @@ export const IssueManifestReport = () => {
                   </tr>
                   <tr>
                     <td>
-                      <strong>Driver No:</strong>
+                      <strong>Driver Ph No:</strong>
                     </td>
                     <td></td>
                   </tr>
@@ -485,7 +413,7 @@ export const IssueManifestReport = () => {
                 <tbody>
                   <tr>
                     <td>
-                      <strong>Amount :</strong>
+                      <strong>Amount:</strong>
                     </td>
                     <td>----</td>
                   </tr>
@@ -494,7 +422,7 @@ export const IssueManifestReport = () => {
             </div>
           </div>
           {/* Signatures */}
-          <div className="row mt-5">
+          <div className="row mt-2">
             <div className="col-md-6">
               <strong className="size">For Sending Location:</strong>
               {/* Add sender signature block here */}
@@ -505,7 +433,7 @@ export const IssueManifestReport = () => {
             </div>
           </div>
           {/* Declaration */}
-          <div className="row mt-5">
+          <div className="row mt-4">
             <div className="col-md-12">
               <strong>Declaration:</strong>
               <p>
