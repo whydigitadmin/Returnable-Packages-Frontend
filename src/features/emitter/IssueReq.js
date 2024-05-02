@@ -263,11 +263,14 @@ function IssueReq() {
     const errors = {};
 
     const kitNoErrors = kitFields.some((field) => !field.kitNo);
-    // if (kitNoErrors) {
-    //   errors.kitNo = "kit Id is required";
-    // }
+    if (kitNoErrors) {
+      errors.kitNo = "Kit is required";
+    }
     if (!selectedDate1) {
       errors.selectedDate1 = "Date is required";
+    }
+    if (!selectedFlowId) {
+      errors.selectedFlowId = "Flow is required";
     }
 
     // if (!demandDate) {
@@ -276,6 +279,12 @@ function IssueReq() {
     const kitQtyErrors = kitFields.some((field) => !field.qty);
     if (kitQtyErrors) {
       errors.kitQty = "Kit quantity is required";
+    }
+
+    const hasZeroQty = kitFields.some((field) => field.qty === "0");
+    if (hasZeroQty) {
+      errors.kitQty = "Kit quantity cannot be 0";
+      // toast.error("Kit Quantity cannot be 0");
     }
 
     if (Object.keys(errors).length === 0) {
@@ -303,7 +312,9 @@ function IssueReq() {
           setSelectedKitNumbers([""]);
           setSelectedKitId("");
           setSelectedKit("");
-          setSelectedDate(null);
+          setSelectedFlowId("");
+          setSelectedPart(null);
+          setSelectedDate1(null);
           getIssueRequest();
           setErrors("");
           toast.success("Bin Requested Successfully", {
@@ -325,16 +336,25 @@ function IssueReq() {
     const errors = {};
 
     const partNoErrors = partFields.some((field) => !field.partNo);
-    // if (partNoErrors) {
-    //   errors.partNo = "part is required";
-    // }
+    if (partNoErrors) {
+      errors.partNo = "Part is required";
+    }
+
+    if (!selectedFlowId) {
+      errors.selectedFlowId = "Flow is required";
+    }
 
     if (!selectedDate1) {
-      errors.selectedDate1 = "date is required";
+      errors.selectedDate1 = "Date is required";
     }
     const partQtyErrors = partFields.some((field) => !field.qty);
     if (partQtyErrors) {
-      errors.partQty = "part is required";
+      errors.partQty = "Part quantity is required";
+    }
+
+    if (kitQtyy === 0) {
+      toast.error("Kit quantity cannot be 0");
+      return; // Prevent further execution
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -368,9 +388,10 @@ function IssueReq() {
           // setSelectedPartNumbers([""]);
           // setSelectedKitId("");
           getIssueRequest();
-          setSelectedPart("");
+          setSelectedPart(null);
+          setSelectedFlowId("");
           setPartFields([{ partNo: "", qty: "" }]);
-          setSelectedDate(null);
+          setSelectedDate1(null);
           setErrors("");
           setKitQtyy("");
         })
@@ -848,19 +869,26 @@ function IssueReq() {
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
                     Flow To <span style={{ color: "red" }}>*</span>
                   </h4>
-                  <select
-                    className="form-select w-56 h-10 mt-1 mb-2"
-                    value={selectedFlowId}
-                    onChange={handleFlowChange}
-                  >
-                    <option value="">Select a Flow</option>
-                    {flowData &&
-                      flowData.map((flowName) => (
-                        <option key={flowName.id} value={flowName.id}>
-                          {flowName.flow}
-                        </option>
-                      ))}
-                  </select>
+                  <div className="d-flex flex-column">
+                    <select
+                      className="form-select w-56 h-10 mt-1 mb-2"
+                      value={selectedFlowId}
+                      onChange={handleFlowChange}
+                    >
+                      <option value="">Select a Flow</option>
+                      {flowData &&
+                        flowData.map((flowName) => (
+                          <option key={flowName.id} value={flowName.id}>
+                            {flowName.flow}
+                          </option>
+                        ))}
+                    </select>
+                    {errors.selectedFlowId && (
+                      <span className="error-text">
+                        {errors.selectedFlowId}
+                      </span>
+                    )}
+                  </div>
                 </div>
 
                 {/* <h4 className="text-xl dark:text-slate-300 font-semibold ms-1">
@@ -1014,26 +1042,27 @@ function IssueReq() {
                               </b>
                             </span>
                           </label>
-                          <select
-                            className="form-select form-sz w-full"
-                            value={field.kitNo}
-                            onChange={(e) => handleKitNoChange(e, index)}
-                          >
-                            <option value="" disabled selected>
-                              Select a kit
-                            </option>
-                            {kitData &&
-                              kitData.map((kit) => (
-                                <option key={kit.id} value={kit.kitName}>
-                                  {kit.kitName}
-                                </option>
-                              ))}
-                          </select>
+                          <div className="d-flex flex-column">
+                            <select
+                              className="form-select form-sz w-full mb-2"
+                              value={field.kitNo}
+                              onChange={(e) => handleKitNoChange(e, index)}
+                            >
+                              <option value="" disabled selected>
+                                Select a kit
+                              </option>
+                              {kitData &&
+                                kitData.map((kit) => (
+                                  <option key={kit.id} value={kit.kitName}>
+                                    {kit.kitName}
+                                  </option>
+                                ))}
+                            </select>
+                            {errors.kitNo && (
+                              <span className="error-text">{errors.kitNo}</span>
+                            )}
+                          </div>
                         </div>
-
-                        {errors.kitNo && (
-                          <span className="error-text">{errors.kitNo}</span>
-                        )}
 
                         <div className="col-lg-3 col-md-6 mb-2">
                           <label className="label">
@@ -1137,27 +1166,32 @@ function IssueReq() {
                               </b>
                             </span>
                           </label>
-                          <select
-                            className="form-select form-sz w-full"
-                            value={field.partNo}
-                            onChange={(e) => {
-                              handlePartNoChange(e, index);
-                            }}
-                          >
-                            <option value="" disabled>
-                              Select a part
-                            </option>
-                            {partData &&
-                              partData.map((part) => (
-                                <option key={part.id} value={part.partName}>
-                                  {part.partName}
-                                </option>
-                              ))}
-                          </select>
+                          <div className="d-flex flex-column">
+                            <select
+                              className="form-select form-sz w-full"
+                              value={field.partNo}
+                              onChange={(e) => {
+                                handlePartNoChange(e, index);
+                              }}
+                            >
+                              <option value="" disabled>
+                                Select a part
+                              </option>
+                              {partData &&
+                                partData.map((part) => (
+                                  <option key={part.id} value={part.partName}>
+                                    {part.partName}
+                                  </option>
+                                ))}
+                            </select>
+                            {errors.partNo && (
+                              <span className="error-text">
+                                {errors.partNo}
+                              </span>
+                            )}
+                          </div>
                         </div>
-                        {errors.partNo && (
-                          <span className="error-text">{errors.partNo}</span>
-                        )}
+
                         <div className="col-lg-3 col-md-8">
                           <label className="label">
                             <span
