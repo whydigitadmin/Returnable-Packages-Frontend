@@ -139,6 +139,10 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   const [editAddressIndex, setEditAddressIndex] = useState(null);
   const [customerVOId, setCustomerVOId] = useState(null);
   const [disableCustomerType, setDisableCustomerType] = React.useState(false);
+  const [sopUploadedFiles, setSopUploadedFiles] = useState([]);
+  const [docUploadedFiles, setDocUploadedFiles] = useState([]);
+  const [responseCustomerCode, setResponseCustomerCode] = useState("");
+  const [responseCustomerId, setResponseCustomerId] = useState("");
   const [newAddress, setNewAddress] = useState({
     gstRegistrationStatus: "",
     gstNumber: "",
@@ -833,6 +837,88 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     }
     setErrors(errorsCopy);
   };
+  // OLD WORKING SAVE
+  // const handleCustomer = () => {
+  //   setIsSubmitting(true);
+  //   console.log("click");
+  //   const errors = {};
+  //   // if (!customerCode) {
+  //   //   errors.customerCode = "Customer Code is required";
+  //   // }
+  //   if (!entityLegalName) {
+  //     errors.entityLegalName = "Customer Org Name is required";
+  //   }
+  //   if (!customerType) {
+  //     errors.customerType = "Customer Type is required";
+  //   }
+  //   if (!displayName) {
+  //     errors.displayName = "Display Name is required";
+  //   }
+  //   // if (!email) {
+  //   //   errors.email = "Email is required";
+  //   // }
+  //   if (!email) {
+  //     errors.email = "Email is required";
+  //   } else if (!isValidEmail(email)) {
+  //     errors.email = "Invalid email format";
+  //   }
+  //   if (!phoneNumber || phoneNumber.length !== 10 || isNaN(phoneNumber)) {
+  //     errors.phoneNumber = "Please enter a valid 10-digit phone number";
+  //   }
+
+  //   console.log("Test", newAddress);
+
+  //   if (Object.keys(errors).length === 0) {
+  //     const formData = {
+  //       id,
+  //       phoneNumber,
+  //       customerActivatePortal,
+  //       customerCode,
+  //       entityLegalName,
+  //       customerType: customerType,
+  //       displayName,
+  //       email,
+  //       active,
+  //       orgId,
+  //       customerAddressDTO: shippingAddresses,
+  //       customerBankDetailsDTO: bankAddresses,
+  //     };
+
+  //     axios
+  //       .post(`${process.env.REACT_APP_API_URL}/api/master/customers`, formData)
+  //       .then((response) => {
+  //         setCustomerId(response.data.paramObjectsMap.customersVO.id);
+  //         const customerCode =
+  //           response.data.paramObjectsMap.customersVO.customerCode;
+  //         console.log("Response:", response.data);
+  //         console.log(
+  //           "CustomerId:",
+  //           response.data.paramObjectsMap.customersVO.id
+  //         );
+
+  //         // addcustomer(true);
+  //         setAddressShow(true);
+  //         setErrors({});
+  //         toast.success(
+  //           `Customer with code ${customerCode} created successfully`,
+  //           {
+  //             autoClose: 2000,
+  //             theme: "colored",
+  //           }
+  //         );
+  //       })
+  //       .catch((error) => {
+  //         toast.error("customer Creation failed", {
+  //           autoClose: 2000,
+  //           theme: "colored",
+  //         });
+  //       });
+  //   } else {
+  //     setErrors(errors);
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
 
   const handleCustomer = () => {
     setIsSubmitting(true);
@@ -886,23 +972,79 @@ function AddCustomer({ addcustomer, editCustomerId }) {
           setCustomerId(response.data.paramObjectsMap.customersVO.id);
           const customerCode =
             response.data.paramObjectsMap.customersVO.customerCode;
+          setResponseCustomerCode(response.data.paramObjectsMap.customersVO.customerCode)
           console.log("Response:", response.data);
           console.log(
             "CustomerId:",
             response.data.paramObjectsMap.customersVO.id
           );
+          const responseCustId = response.data.paramObjectsMap.customersVO.id;
+          // SOP FILE SAVE
+          const formData1 = new FormData();
+          for (let i = 0; i < sopUploadedFiles.length; i++) {
+            formData1.append("file", sopUploadedFiles[i]);
+          }
+          formData1.append("legName", entityLegalName);
 
-          // addcustomer(true);
-          setAddressShow(true);
-          setErrors({});
-          toast.success(
-            `Customer with code ${customerCode} created successfully`,
-            {
-              autoClose: 2000,
-              theme: "colored",
-            }
-          );
+          axios
+            .post(
+              `${process.env.REACT_APP_API_URL}/api/master/uploadFileCustomerSop?id=${responseCustId}&legalname=${entityLegalName}`,
+              formData1,
+              {
+                headers: {
+                  "Content-Type": "multipart/form-data",
+                },
+              }
+            )
+            .then((uploadResponse) => {
+              console.log("File Upload Response:", uploadResponse.data);
+              // DOCUMENT FILE SAVE
+              const formData2 = new FormData();
+              for (let i = 0; i < docUploadedFiles.length; i++) {
+                formData2.append("file", docUploadedFiles[i]);
+              }
+              formData2.append("legName", entityLegalName);
+
+              axios
+                .post(
+                  `${process.env.REACT_APP_API_URL}/api/master/uploadFileCustomerDocument?id=${responseCustId}&legalname=${entityLegalName}`,
+                  formData1,
+                  {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                )
+                .then((uploadResponse) => {
+                  console.log("File Upload Response:", uploadResponse.data);
+
+
+                  // addcustomer(true);
+                  setAddressShow(true);
+                  setErrors({});
+                  toast.success(
+                    `Customer with code ${customerCode} created successfully`,
+                    {
+                      autoClose: 2000,
+                      theme: "colored",
+                    }
+                  );
+                  setTimeout(() => {
+                    addcustomer(true);
+                  }, 2000);
+
+                })
+                // DOCUMENT FILE SAVE CATCH
+                .catch((uploadError) => {
+                  console.error("File Upload Error:", uploadError);
+                });
+            })
+            // SOP FILE SAVE CATCH
+            .catch((uploadError) => {
+              console.error("File Upload Error:", uploadError);
+            });
         })
+        // HEADER SAVE CATCH
         .catch((error) => {
           toast.error("customer Creation failed", {
             autoClose: 2000,
@@ -914,6 +1056,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       setIsSubmitting(false);
     }
   };
+
+
 
   const handleUpdateCustomer = () => {
     setIsSubmitting(true);
@@ -1001,6 +1145,19 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     addcustomer(true);
   };
 
+  const handleFileUpload = (files) => {
+    setSopUploadedFiles(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+  };
+  const handleDocFileUpload = (files) => {
+    setDocUploadedFiles(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+  };
+
   return (
     <>
       <div>
@@ -1082,9 +1239,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   name="customerCode"
                   onChange={handleCustomerChange}
                   readOnly
-                  // onInput={(e) => {
-                  //   e.target.value = e.target.value.toUpperCase();
-                  // }}
+                // onInput={(e) => {
+                //   e.target.value = e.target.value.toUpperCase();
+                // }}
                 />
                 {errors.customerCode && (
                   <div className="error-text">{errors.customerCode}</div>
@@ -1255,7 +1412,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* OLD */}
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <Button
               component="label"
               variant="contained"
@@ -1265,7 +1423,34 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               Upload file
               <VisuallyHiddenInput type="file" />
             </Button>
+          </div> */}
+
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="file"
+              id="file-input"
+              multiple
+              style={{ display: 'none' }}
+              onChange={(e) => handleFileUpload(e.target.files)}
+            />
+            <label htmlFor="file-input">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<FaCloudUploadAlt />}
+              >
+                Upload files
+              </Button>
+            </label>
+            <br />
+            {errors.uploadError && (
+              <span className="error-text mb-1">{errors.uploadFiles}</span>
+            )}
           </div>
+
+
+
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -1273,7 +1458,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          {/* OLD */}
+          {/* <div className="col-lg-3 col-md-6 mb-2">
             <Button
               component="label"
               variant="contained"
@@ -1283,6 +1469,28 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               Upload file
               <VisuallyHiddenInput type="file" />
             </Button>
+          </div> */}
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="file"
+              id="file-input"
+              multiple
+              style={{ display: 'none' }}
+              onChange={(e) => handleDocFileUpload(e.target.files)}
+            />
+            <label htmlFor="file-input">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<FaCloudUploadAlt />}
+              >
+                Upload files
+              </Button>
+            </label>
+            <br />
+            {/* {errors.uploadError && (
+            <span className="error-text mb-1">{errors.uploadFiles}</span>
+          )} */}
           </div>
         </div>
 
