@@ -25,13 +25,11 @@ import { IoIosAdd, IoMdClose } from "react-icons/io";
 import { FiDownload } from "react-icons/fi";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import AddPartStudy from "./AddPartStudy";
-import PackageDesign from "./PackageDesign";
-import Logistics from "./Logistics";
-import StockDetails from "./StockDetails";
-import AddPackage from "./AddPackage";
-import AddLogistics from "./AddLogistics";
-import AddStockKeeping from "./AddStockKeeping";
+import Accordion from "@mui/material/Accordion";
+import AccordionActions from "@mui/material/AccordionActions";
+import AccordionSummary from "@mui/material/AccordionSummary";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NewPartStudy from "./NewPartStudy";
 import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
@@ -80,7 +78,10 @@ function Partstudy() {
   const [data, setData] = React.useState([]);
   const [value, setValue] = React.useState(0);
   const [tableData, setTableData] = useState([]);
-  const [selectedRowData, setSelectedRowData] = useState(null); // State to store selected row data
+  const [basicData, setBasicData] = useState(null);
+  const [packagingData, setPackagingData] = useState(null);
+  const [logisticsData, setLogisticsData] = useState(null);
+  const [stockData, setStockData] = useState(null);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -117,18 +118,6 @@ function Partstudy() {
     }
   };
 
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
-
   const columns = useMemo(
     () => [
       {
@@ -150,20 +139,6 @@ function Partstudy() {
           </IconButton>
         ),
       },
-      // {
-      //   accessorKey: "refPsId",
-      //   header: "Part Study Id",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      //   enableColumnOrdering: false,
-      //   enableEditing: false, //disable editing on this column
-      //   enableSorting: false,
-      // },
       {
         accessorKey: "partStudyDate",
         header: "Part Study Date",
@@ -175,17 +150,6 @@ function Partstudy() {
           align: "center",
         },
       },
-      // {
-      //   accessorKey: "emitterId",
-      //   header: "Emitter ID",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
       {
         accessorKey: "partName",
         header: "Part Name",
@@ -208,50 +172,6 @@ function Partstudy() {
           align: "center",
         },
       },
-      // {
-      //   accessorKey: "weight",
-      //   header: "Weight",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-      // {
-      //   accessorKey: "partVolume",
-      //   header: "Part Volume",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-      // {
-      //   accessorKey: "highestVolume",
-      //   header: "Highest Volume",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-      // {
-      //   accessorKey: "lowestVolume",
-      //   header: "Lowest Volume",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
     ],
     []
   );
@@ -274,7 +194,10 @@ function Partstudy() {
   };
 
   const handleViewRow = (row) => {
-    setSelectedRowData(row.original);
+    setBasicData(row.original);
+    setPackagingData(row.original.packingDetailVO);
+    setLogisticsData(row.original.logisticsVO);
+    setStockData(row.original.stockDetailVO);
     setOpen(true);
   };
 
@@ -330,49 +253,215 @@ function Partstudy() {
           </div>
         </DialogTitle>
         <DialogContent className="mt-4">
-          {selectedRowData && (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Part Study Id</TableCell>
-                    <TableCell>{selectedRowData.refPsId}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Part Study Date</TableCell>
-                    <TableCell>{selectedRowData.partStudyDate}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Emitter ID</TableCell>
-                    <TableCell>{selectedRowData.emitterId}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Part Name</TableCell>
-                    <TableCell>{selectedRowData.partName}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Part No</TableCell>
-                    <TableCell>{selectedRowData.partNumber}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Weight</TableCell>
-                    <TableCell>{selectedRowData.weight}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Part Volume</TableCell>
-                    <TableCell>{selectedRowData.partVolume}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Highest Volume</TableCell>
-                    <TableCell>{selectedRowData.highestVolume}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Lowest Volume</TableCell>
-                    <TableCell>{selectedRowData.lowestVolume}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
+          {basicData && (
+            <Accordion defaultExpanded>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                className="text-sm font-semibold"
+              >
+                BASIC DETAILS
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Part Study Id</TableCell>
+                        <TableCell>{basicData.refPsId}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Part Study Date</TableCell>
+                        <TableCell>{basicData.partStudyDate}</TableCell>
+                      </TableRow>
+                      {/* <TableRow>
+                        <TableCell>Emitter ID</TableCell>
+                        <TableCell>{basicData.emitterId}</TableCell>
+                      </TableRow> */}
+                      <TableRow>
+                        <TableCell>Part Name</TableCell>
+                        <TableCell>{basicData.partName}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Part No</TableCell>
+                        <TableCell>{basicData.partNumber}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Weight</TableCell>
+                        <TableCell>{basicData.weight}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Part Volume</TableCell>
+                        <TableCell>{basicData.partVolume}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Highest Volume</TableCell>
+                        <TableCell>{basicData.highestVolume}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Lowest Volume</TableCell>
+                        <TableCell>{basicData.lowestVolume}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {packagingData && (
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                className="text-sm font-semibold"
+              >
+                PACKING DESIGN
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Length</TableCell>
+                        <TableCell>{packagingData.length}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Breath</TableCell>
+                        <TableCell>{packagingData.breath}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Height</TableCell>
+                        <TableCell>{packagingData.height}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Existing Part</TableCell>
+                        <TableCell>{packagingData.existingPart}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Part Sensitive</TableCell>
+                        <TableCell>{packagingData.partSensitive}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Part Greasy</TableCell>
+                        <TableCell>{packagingData.partGreasy}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Part Orientation</TableCell>
+                        <TableCell>{packagingData.partOrientation}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Multiple Part In Single Unit</TableCell>
+                        <TableCell>
+                          {packagingData.multiPartInSingleUnit}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Stacking</TableCell>
+                        <TableCell>{packagingData.stacking}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Nesting</TableCell>
+                        <TableCell>{packagingData.nesting}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Remarks</TableCell>
+                        <TableCell>{packagingData.remarks}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {logisticsData && (
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                className="text-sm font-semibold"
+              >
+                LOGISTICS DETAILS
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Avg Lot Size</TableCell>
+                        <TableCell>{logisticsData.avgLotSize}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Dispatch Frequency</TableCell>
+                        <TableCell>{logisticsData.dispatchFrequency}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Dispatch To</TableCell>
+                        <TableCell>{logisticsData.diapatchTo}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
+          )}
+          {stockData && (
+            <Accordion>
+              <AccordionSummary
+                expandIcon={<ExpandMoreIcon />}
+                aria-controls="panel1-content"
+                id="panel1-header"
+                className="text-sm font-semibold"
+              >
+                STOCK KEEPING DAYS
+              </AccordionSummary>
+              <AccordionDetails>
+                <TableContainer component={Paper}>
+                  <Table>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell>Emitter Store Days</TableCell>
+                        <TableCell>{stockData.emitterStoreDays}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Emitter Line Days</TableCell>
+                        <TableCell>{stockData.emitterLineDays}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>In Transit Days</TableCell>
+                        <TableCell>{stockData.inTransitDays}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Receiver Line Storage Days</TableCell>
+                        <TableCell>
+                          {stockData.receiverLineStorageDays}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Receiver Manufacturing Line Days</TableCell>
+                        <TableCell>
+                          {stockData.receiverManufacturingLineDays}
+                        </TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Other Storage Days</TableCell>
+                        <TableCell>{stockData.otherStorageDays}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Reverse Logistics Day</TableCell>
+                        <TableCell>{stockData.reverseLogisticsDay}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Total Cycle Time</TableCell>
+                        <TableCell>{stockData.totalCycleTime}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+              </AccordionDetails>
+            </Accordion>
           )}
         </DialogContent>
         <DialogActions>
@@ -386,159 +475,3 @@ function Partstudy() {
 }
 
 export default Partstudy;
-
-// import React, { useMemo, useState, useEffect } from "react";
-// import { IconButton, Tooltip, Box } from "@mui/material";
-// import { Delete, Archive, QrCode2 } from "@mui/icons-material";
-// import {
-//   MaterialReactTable,
-//   useMaterialReactTable,
-// } from "material-react-table";
-// import axios from "axios";
-// import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
-// import { LuWarehouse } from "react-icons/lu";
-// import { TbWeight } from "react-icons/tb";
-// import EditIcon from "@mui/icons-material/Edit";
-
-// const statsData = [
-//   {
-//     title: "No of warehouse",
-//     value: "0",
-//     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-//     description: "",
-//   },
-//   {
-//     title: "Active warehouse",
-//     value: "0",
-//     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-//     description: "",
-//   },
-//   {
-//     title: "Low stock warehouses",
-//     value: "0",
-//     icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-//     description: "",
-//   },
-//   {
-//     title: "Average Transaction",
-//     value: "0",
-//     icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-//     description: "",
-//   },
-// ];
-
-// const Partstudy = () => {
-//   const [tableData, setTableData] = useState([]);
-//   const [data, setData] = React.useState([]);
-//   const [open, setOpen] = React.useState(false);
-//   const [add, setAdd] = React.useState(false);
-//   // const [data, setData] = React.useState([]);
-//   const [value, setValue] = React.useState(0);
-
-//   useEffect(() => {
-//     getAllBasicDetail();
-//   }, []);
-
-//   // Define columns for the table
-//   const columns = useMemo(() => [
-//     {
-//       accessorKey: "partStudyId",
-//       header: "Part Study Id",
-//       enableColumnOrdering: false,
-//       enableEditing: true,
-//       enableSorting: false,
-//       size: 80,
-//     },
-//     { accessorKey: "partStudyDate", header: "Part Study Date", size: 140 },
-//     {
-//       accessorKey: "emitterId",
-//       header: "Emitter ID",
-//       size: 140,
-//     },
-//     { accessorKey: "receiverId", header: "Receiver ID", size: 80 },
-//     { accessorKey: "partName", header: "Part Name", size: 80 },
-//     { accessorKey: "weight", header: "Weight", size: 80 },
-//     { accessorKey: "weightUnit", header: "Weight Unit", size: 80 },
-//     { accessorKey: "partVolume", header: "Part Volume", size: 80 },
-//     { accessorKey: "highestVolume", header: "Highest Volume", size: 80 },
-//     { accessorKey: "lowestVolume", header: "Lowest Volume", size: 80 },
-//   ]);
-
-//   const getAllBasicDetail = async () => {
-//     try {
-//       const response = await axios.get(
-//         `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails`
-//       );
-
-//       if (response.status === 200) {
-//         setTableData(response.data.paramObjectsMap.basicDetailVO);
-//       }
-//     } catch (error) {
-//       console.error("Error fetching data:", error);
-//     }
-//   };
-
-//   const table = useMaterialReactTable({
-//     data,
-//     columns,
-//   });
-
-//   // Function to handle saving row edits
-//   const handleSaveRowEdits = ({ exitEditingMode, row, values }) => {
-//     tableData[row.index] = values;
-//     setTableData([...tableData]);
-//     exitEditingMode();
-//   };
-
-//   // Function to handle cancelling row edits
-//   const handleCancelRowEdits = () => {
-//     // Any cleanup needed when cancelling row edits
-//   };
-
-//   // Function to handle deleting a row
-//   const handleDeleteRow = (row) => {
-//     tableData.splice(row.index, 1);
-//     setTableData([...tableData]);
-//   };
-
-//   // Function to handle accepting a row
-//   const handleAcceptRow = (row) => {
-//     // Any action needed when accepting a row
-//   };
-
-//   // Render actions for each row
-//   const renderRowActions = ({ row }) => (
-//     <Box sx={{ display: "flex", gap: "1rem", justifyContent: "flex-end" }}>
-//       {/* <Tooltip arrow placement="left" title="Delete">
-//         <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-//           <Delete />
-//         </IconButton>
-//       </Tooltip>
-//       <Tooltip arrow placement="bottom" title="Print QR Code">
-//         <IconButton>
-//           <QrCode2 />
-//         </IconButton>
-//       </Tooltip> */}
-//       <Tooltip arrow placement="right" title="Accept">
-//         <IconButton onClick={() => handleSaveRowEdits(row)}>
-//           <EditIcon />
-//         </IconButton>
-//       </Tooltip>
-//     </Box>
-//   );
-
-//   return (
-//     <MaterialReactTable
-//       columns={columns}
-//       data={tableData}
-//       enableEditing
-//       editingMode="modal"
-//       enableColumnOrdering
-//       onEditingRowSave={handleSaveRowEdits}
-//       onEditingRowCancel={handleCancelRowEdits}
-//       renderRowActions={renderRowActions}
-//     />
-//   );
-// };
-
-// export default Partstudy;
