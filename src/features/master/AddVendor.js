@@ -126,7 +126,7 @@ function AddVendor({ addVendors, editVendorId }) {
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [emailAddress, setEmailAddress] = React.useState("");
   const [id, setId] = React.useState();
-  const [vendorId, setVendorId] = React.useState(null);
+  const [vendorId, setVendorId] = React.useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [addressShow, setAddressShow] = React.useState(false);
   // const [isAddressValid, setIsAddressValid] = React.useState(false);
@@ -675,6 +675,26 @@ function AddVendor({ addVendors, editVendorId }) {
         break;
     }
   };
+  const handleBankInputChange = (event) => {
+    const { name, value } = event.target;
+    switch (name) {
+      case "accountName":
+        setAccountName(value);
+        break;
+      case "accountNo":
+        setAccountNum(value);
+        break;
+      case "bank":
+        setBank(value);
+        break;
+      case "branch":
+        setBranch(value);
+        break;
+      case "ifscCode":
+        setIfscCode(value);
+        break;
+    }
+  };
 
   const handleVender = () => {
     setIsSubmitting(true);
@@ -731,13 +751,14 @@ function AddVendor({ addVendors, editVendorId }) {
             bank: bank,
             branch: branch,
             ifscCode: ifscCode,
+            vendorId,
           },
         ],
       };
 
       console.log("test", formData);
       axios
-        .post(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
+        .put(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
         .then((response) => {
           setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
           console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
@@ -779,13 +800,13 @@ function AddVendor({ addVendors, editVendorId }) {
       errors.email = "Email is required";
     }
     if (!entityLegalName) {
-      errors.entityLegalName = "EntityLegalName is required";
+      errors.entityLegalName = "Entity Legal Name is required";
     }
     if (!displyName) {
       errors.displyName = "Display Name is required";
     }
     if (!phoneNumber) {
-      errors.phoneNumber = "PhoneNumber is required";
+      errors.phoneNumber = "Phone Number is required";
     }
     // if (!bank) {
     //   errors.bank = "Bank is required";
@@ -856,64 +877,6 @@ function AddVendor({ addVendors, editVendorId }) {
     } else {
       // If there are errors, update the state to display them
       setIsSubmitting(false);
-      setErrors(errors);
-    }
-  };
-
-  const handleBankVender = () => {
-    // const bankVendorId = vendorId;
-
-    const errors = {};
-
-    console.log("vendorIds", vendorId);
-    if (!bank) {
-      errors.bank = "Bank Name is required";
-    }
-    if (!accountNo) {
-      errors.accountNo = "account No is required";
-    }
-    if (!accountName) {
-      errors.accountName = "Account Name No is required";
-    }
-    if (!branch) {
-      errors.branch = "branch Name No is required";
-    }
-    if (!ifscCode) {
-      errors.ifscCode = "ifsc Code  No is required";
-    }
-
-    if (Object.keys(errors).length === 0) {
-      const formDataBank = {
-        bank,
-        accountNo,
-        accountName,
-        branch,
-        ifscCode,
-        vendorId,
-        orgId,
-        id,
-      };
-
-      console.log("test", formDataBank);
-      axios
-        .put(
-          `${process.env.REACT_APP_API_URL}/api/master/vendorBankDetails`,
-          formDataBank
-        )
-        .then((response) => {
-          console.log("Response:", response.data);
-          setAccountNum("");
-          setBank("");
-          setDisplyName("");
-          setBranch("");
-          setIfscCode("");
-          setErrors({});
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-        });
-    } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -1396,7 +1359,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           // placeholder="Enter"
                           value={bank.bank}
                           name="bank"
-                          onChange={handleInputChange}
+                          onChange={handleBankInputChange}
                           disabled={isSubmitting}
                           onInput={(e) => {
                             e.target.value = e.target.value
@@ -1427,7 +1390,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           // placeholder="Enter"
                           value={bank.accountNo}
                           name="accountNo"
-                          onChange={handleInputChange}
+                          onChange={handleBankInputChange}
                           onInput={(e) => {
                             e.target.value = e.target.value.replace(/\D/g, "");
                           }}
@@ -1462,7 +1425,7 @@ function AddVendor({ addVendors, editVendorId }) {
                               .toUpperCase()
                               .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
                           }}
-                          onChange={handleInputChange}
+                          onChange={handleBankInputChange}
                           disabled={isSubmitting}
                         />
                         {errors.accountName && (
@@ -1488,7 +1451,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           // placeholder="Enter"
                           value={bank.branch}
                           name="branch"
-                          onChange={handleInputChange}
+                          onChange={handleBankInputChange}
                           disabled={isSubmitting}
                           onInput={(e) => {
                             e.target.value = e.target.value
@@ -1522,7 +1485,7 @@ function AddVendor({ addVendors, editVendorId }) {
                             e.target.value = e.target.value.toUpperCase();
                           }}
                           name="ifscCode"
-                          onChange={handleInputChange}
+                          onChange={handleBankInputChange}
                           disabled={isSubmitting}
                         />
                         {errors.ifscCode && (
