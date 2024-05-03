@@ -846,6 +846,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                     <span className="error-text mb-1">{errors.docDate}</span>
                                 )}
                             </div>
+
                             {/* REQ NO FIELD */}
                             <div className="col-lg-3 col-md-6">
                                 <label className="label mb-4">
@@ -944,11 +945,10 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                 />
                             </div>
                             {/* PART NAME FIELD */}
-                            <div className="col-lg-3 col-md-6">
+                            {/* <div className="col-lg-3 col-md-6">
                                 <label className="label mb-4">
                                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                                         Part
-                                        {/* <FaStarOfLife className="must" /> */}
                                     </span>
                                 </label>
                             </div>
@@ -959,7 +959,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                     value={reqPartName}
                                     disabled
                                 />
-                            </div>
+                            </div> */}
                             {/* REQ QTY FIELD */}
                             <div className="col-lg-3 col-md-6">
                                 <label className="label mb-4">
@@ -1012,7 +1012,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                 )}
                             </div>
                             {/* STOCK TO FIELD */}
-                            <div className="col-lg-3 col-md-6">
+                            {/* <div className="col-lg-3 col-md-6">
                                 <label className="label mb-4">
                                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                                         Stock To
@@ -1040,7 +1040,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                 {errors.stockTo && (
                                     <span className="error-text mb-1">{errors.stockTo}</span>
                                 )}
-                            </div>
+                            </div> */}
                             {/* AVL QTY FIELD */}
                             <div className="col-lg-3 col-md-6">
                                 <label className="label mb-4">
@@ -1093,10 +1093,9 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
 
                             </div>
 
-                            {minQty}
 
                         </div>
-                        {!selectedRowId && (
+                        {/* {!selectedRowId && (
                             <>
                                 <div className="mt-2">
                                     <button
@@ -1107,7 +1106,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                     </button>
                                 </div>
                             </>
-                        )}
+                        )} */}
                         {/* <div className="row mt-2">
                             <div className="col-lg-12">
                                 <div className="overflow-x-auto">
@@ -1209,11 +1208,11 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                     <table className="w-full">
                                         <thead>
                                             <tr>
-                                                {!viewBinAllotmentId && (
+                                                {/* {!viewBinAllotmentId && (
                                                     <th className="px-2 py-2 bg-blue-500 text-white text-center">
                                                         Action
                                                     </th>
-                                                )}
+                                                )} */}
                                                 <th className="px-2 py-2 bg-blue-500 text-white text-center">
                                                     S.No
                                                 </th>
@@ -1238,7 +1237,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                             {tableData &&
                                                 tableData.map((row) => (
                                                     <tr key={row.id}>
-                                                        {!viewBinAllotmentId && (
+                                                        {/* {!viewBinAllotmentId && (
                                                             <>
                                                                 <td className="border px-2 py-2">
                                                                     <button
@@ -1249,7 +1248,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                                                     </button>
                                                                 </td>
                                                             </>
-                                                        )}
+                                                        )} */}
                                                         <td className="border px-2 py-2">{row.id}</td>
                                                         <td>
                                                             <input
@@ -1266,6 +1265,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                                                 disabled={selectedRowId ? true : false}
                                                                 ref={assetIdInputRef}
                                                             />
+                                                            {row.assetId}
                                                         </td>
                                                         <td>
                                                             <input
