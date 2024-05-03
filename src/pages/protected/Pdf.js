@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Invoice Generator" }));
+    dispatch(setPageTitle({ title: "Purchase Order" }));
   }, []);
 
   return <Pdf />;

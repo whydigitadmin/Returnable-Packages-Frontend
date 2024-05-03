@@ -695,7 +695,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Purchase Order</span>,
+        name: <span className="ml-1">Purchase Order Old</span>,
       },
 
       {
@@ -732,7 +732,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Invoice</span>,
+        name: <span className="ml-1">Purchase Order</span>,
       },
     ],
   },
