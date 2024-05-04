@@ -421,7 +421,7 @@ function AddVendor({ addVendors, editVendorId }) {
       padding: "20px",
       borderRadius: "5px",
       backgroundColor: "#f9f9f9",
-      marginLeft: "40px",
+      // marginLeft: "40px",
     },
     submittedDataTitle: {
       fontWeight: "bold",
@@ -431,6 +431,7 @@ function AddVendor({ addVendors, editVendorId }) {
     },
     submittedDataItem: {
       display: "flex",
+      justifyContent: "space-between",
       marginBottom: "5px",
       fontSize: "0.9rem",
     },
@@ -439,6 +440,13 @@ function AddVendor({ addVendors, editVendorId }) {
       fontWeight: "bold",
       marginRight: "10px",
       color: "#555",
+    },
+    submittedData: {
+      // display: "flex",
+      // flexWrap: "wrap",
+      textAlign: "end",
+      wordWrap: "break-word",
+      width: "180px",
     },
   };
 
@@ -1132,31 +1140,33 @@ function AddVendor({ addVendors, editVendorId }) {
                   </button>
                 </div>
               </div>
-              <div className="d-flex align-items-center justify-content-center flex-wrap">
+              <div className="d-flex flex-wrap">
                 {shippingAddresses.map((address, index) => (
                   <div
-                    className="col-md-5 mt-3"
+                    className="mt-3 me-2 card"
                     key={index}
-                    style={styles.submittedDataContainer}
+                    style={{
+                      ...styles.submittedDataContainer,
+                      width: "300px",
+                      borderRadius: "20px",
+                    }}
                   >
-                    <div className="row">
-                      <div className="col-md-10">
+                    <div style={styles.submittedDataItem}>
+                      <div>
                         <h2 style={styles.submittedDataTitle}>
                           Address {index + 1}
                         </h2>
                       </div>
-                      <div className="col-md-2">
+                      <div>
                         <FaTrash
-                          className="cursor-pointer w-4 h-8 me-3"
+                          className="cursor-pointer w-4 h-8 pb-2"
                           onClick={() => handleDeleteAddress(index)}
                         />
                       </div>
                     </div>
 
                     <div style={styles.submittedDataItem}>
-                      <span style={styles.submittedDataLabel}>
-                        GST Registration Status:
-                      </span>
+                      <span style={styles.submittedDataLabel}>GST Status:</span>
                       <span>{address.gstRegistrationStatus}</span>
                     </div>
                     {address.gstRegistrationStatus === "Registered" && (
@@ -1169,11 +1179,15 @@ function AddVendor({ addVendors, editVendorId }) {
                     )}
                     <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Street 1:</span>
-                      <span>{address.street1}</span>
+                      <span style={styles.submittedData}>
+                        {address.street1}
+                      </span>
                     </div>
                     <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Street 2:</span>
-                      <span>{address.street2}</span>
+                      <span style={styles.submittedData}>
+                        {address.street2}
+                      </span>
                     </div>
                     <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Country:</span>
@@ -1224,40 +1238,38 @@ function AddVendor({ addVendors, editVendorId }) {
                 vendorAddressVO &&
                 vendorAddressVO.length > 0 && (
                   <>
-                    <div className="d-flex align-items-center justify-content-center flex-wrap">
+                    <div className="d-flex flex-wrap">
                       {vendorAddressVO.map((address, index) => (
                         <div
-                          className="col-md-5 mt-3"
+                          className="mt-3 me-2 card"
                           key={index}
                           style={{
                             ...styles.submittedDataContainer,
-                            width: "350px",
+                            width: "300px",
                             height: "auto",
                             borderRadius: "20px",
                           }} // Set fixed width
                         >
-                          <div className="row">
-                            <div className="col-md-10">
+                          <div style={styles.submittedDataItem}>
+                            <div>
                               <h2 style={styles.submittedDataTitle}>
                                 Address {index + 1}
                               </h2>
                             </div>
-                            <div className="col-md-2">
+                            <div>
                               <button
                                 key={index}
                                 onClick={() => handleEditAddress(index)}
-                                className="btn btn-link"
+                                // className="btn btn-link"
                               >
-                                <FaEdit
-                                  style={{ fontSize: "22px", color: "black" }}
-                                />
+                                <FaEdit className="cursor-pointer w-4 h-8 pb-2" />
                               </button>
                             </div>
                           </div>
                           {/* Display address details */}
                           <div style={styles.submittedDataItem}>
                             <span style={styles.submittedDataLabel}>
-                              GST Registration Status:
+                              GST Status:
                             </span>
                             <span>{address.gstRegistrationStatus}</span>
                           </div>
@@ -1273,13 +1285,17 @@ function AddVendor({ addVendors, editVendorId }) {
                             <span style={styles.submittedDataLabel}>
                               Street 1:
                             </span>
-                            <span>{address.street1}</span>
+                            <span style={styles.submittedData}>
+                              {address.street1}
+                            </span>
                           </div>
                           <div style={styles.submittedDataItem}>
                             <span style={styles.submittedDataLabel}>
                               Street 2:
                             </span>
-                            <span>{address.street2}</span>
+                            <span style={styles.submittedData}>
+                              {address.street2}
+                            </span>
                           </div>
                           <div style={styles.submittedDataItem}>
                             <span style={styles.submittedDataLabel}>
