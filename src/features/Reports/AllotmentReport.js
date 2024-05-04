@@ -86,10 +86,6 @@ function AllotmentReport() {
 
   return (
     <>
-      {/* * ---------------------- Select Period Content ------------------------- */}
-      {/* <DashboardTopBar updateDashboardPeriod={updateDashboardPeriod} /> */}
-
-      {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"> */}
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
           <button className="btn btn-ghost btn-sm normal-case" onClick={handleClearData}><ArrowPathIcon className="w-4 mr-2" />Refresh</button>
@@ -113,7 +109,6 @@ function AllotmentReport() {
           </div>
 
           <div className="col-lg-3 col-md-6 mb-2">
-            {/* <div className=""> */}
             <Datepicker
               containerClassName="w-72 "
               value={dateValue}
@@ -127,9 +122,6 @@ function AllotmentReport() {
             />
           </div>
         </div>
-        {/* <div className="text-right ">
-          <button className="btn btn-ghost btn-sm normal-case" onClick={handleClearData}><ArrowPathIcon className="w-4 mr-2" />Refresh</button>
-        </div> */}
       </div>
 
 
