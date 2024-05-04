@@ -1,6 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import GetAppIcon from '@mui/icons-material/GetApp';
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -139,6 +140,11 @@ function AllotedBinsTable({ viewAllotedTable }) {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
+            <IconButton
+            // onClick={() => handleViewRow(row)}
+            >
+              <GetAppIcon />
+            </IconButton>
           </div>
         ),
       },
@@ -189,6 +195,17 @@ function AllotedBinsTable({ viewAllotedTable }) {
       {
         accessorKey: "binReqDate",
         header: "Req Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "kitCode",
+        header: "Kit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
