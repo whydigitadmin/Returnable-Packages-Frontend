@@ -23,6 +23,7 @@ import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import DashBoardComponent from "../master/DashBoardComponent";
 import EmitterBinAllotment from "./EmitterBinAllotment";
+import AllotedBinsTable from "./AllotedBinsTable";
 
 import {
   Paper,
@@ -68,10 +69,20 @@ export const BinAllotmentDetails = () => {
   const [openView, setOpenView] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [allotedBinData, setAllotedBinData] = React.useState([]);
   const [userAddressData, setUserAddressData] = React.useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [viewAllotedBins, setViewAllotedBins] = useState(false);
+  const [allotedBinTableView, setAllotedBinTableView] = useState(false);
+  const [visibleCard, setVisibleCard] = useState(false)
+
+  const handleViewAllotedBins = () => {
+    setViewAllotedBins(true)
+    setAllotedBinTableView(true)
+  }
+
 
   const handleViewClickOpen = () => {
     setOpenView(true);
@@ -97,10 +108,13 @@ export const BinAllotmentDetails = () => {
     setAddBinAllotment(false);
     setEditBinRequest(false);
     getAllBinRequest();
+    setAllotedBinTableView(false)
+    setViewAllotedBins(false)
   };
 
   useEffect(() => {
     getAllBinRequest();
+    // getAllBinAllotmentData();
     console.log("selected row id is:", selectedRowId)
   }, [selectedRowId]);
 
@@ -120,11 +134,8 @@ export const BinAllotmentDetails = () => {
   };
 
   const handleEditRow = (row) => {
-    // setSelectedRowId(row.original.reqNo);
     console.log("setSelectedRowId", row.original.reqNo);
     setSelectedRowId(row.original.reqNo);
-    // setEditBinRequest(true);
-    // setOpenView(true);
     console.log("Real state of selected row id is:", selectedRowId);
     setEditBinRequest(true);
 
@@ -159,9 +170,6 @@ export const BinAllotmentDetails = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            {/* <IconButton onClick={() => handleViewRow(row)}>
-              <VisibilityIcon />
-            </IconButton> */}
             <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
             </IconButton>
@@ -193,6 +201,28 @@ export const BinAllotmentDetails = () => {
       {
         accessorKey: "reqDate",
         header: "Req Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "flow",
+        header: "Flow",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "kitCode",
+        header: "Kit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -235,23 +265,115 @@ export const BinAllotmentDetails = () => {
     columns,
   });
 
-  const handleSaveRowEdits = () => { };
+  const getAllBinAllotmentData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
+      );
 
-  const handleCancelRowEdits = () => { };
-
-  const handleEdit = (rowData) => {
-    // Implement your logic to handle the edit action for the specific row
-    console.log("Edit clicked for row:", rowData);
+      if (response.status === 200) {
+        setAllotedBinData(response.data.paramObjectsMap.binAllotmentNewVO.reverse());
+        console.log(
+          "Response from API is:",
+          response.data.paramObjectsMap.binAllotmentNewVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const handleDelete = (rowData) => {
-    // Implement your logic to handle the delete action for the specific row
-    console.log("Delete clicked for row:", rowData);
-  };
+
+  const columns1 = useMemo(
+    () => [
+
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            {/* <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton> */}
+          </div>
+        ),
+      },
+      {
+        accessorKey: "binReqNo",
+        header: "Req No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "emitter",
+        header: "Emitter",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "binReqDate",
+        header: "Req Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "reqKitQty",
+        header: "Req QTY",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "allotkKitQty",
+        header: "Allotted QTY",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+    ],
+    []
+  );
+  const allotedTable = useMaterialReactTable({
+    data,
+    columns,
+  });
 
   return (
     <>
-      {(addBinAllotment && <EmitterBinAllotment addBinAllotment={handleBack} />) ||
+      {(viewAllotedBins && <AllotedBinsTable viewAllotedTable={handleBack} />) ||
         (editBinRequest && (
           <EmitterBinAllotment addBinAllotment={handleBack} editBinRequestId={selectedRowId} />
         )) || (
@@ -263,17 +385,18 @@ export const BinAllotmentDetails = () => {
               })}
             </div>
 
-            {/* BULK UPLOAD AND ADD NEW BUTTON */}
-            {/* <div className="">
-              <div className="flex justify-end mt-4 w-full">
+            {/* ALLOTED BINS BUTTON */}
+            <div className="">
+              <div className="flex justify-content-between mt-4 w-full">
+                <h1 className="text-xl font-semibold mt-3">Pending Allotment List</h1>
 
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
-                  onClick={handleClickOpen}
+                  onClick={handleViewAllotedBins}
                 >
                   <img
-                    src="/upload.png"
+                    src="/inwardManifestReport.png"
                     alt="pending-status-icon"
                     title="add"
                     style={{
@@ -287,156 +410,20 @@ export const BinAllotmentDetails = () => {
                     className="text-form text-base"
                     style={{ marginLeft: "10px" }}
                   >
-                    Bulk Upload
-                  </span>
-                </button>
-                <button
-                  className="btn btn-ghost btn-lg text-sm col-xs-1"
-                  style={{ color: "blue" }}
-                  onClick={handleAddBinAllotmentOpen}
-                >
-                  <img
-                    src="/new.png"
-                    alt="pending-status-icon"
-                    title="add"
-                    style={{
-                      width: 30,
-                      height: 30,
-                      margin: "auto",
-                      hover: "pointer",
-                    }}
-                  />
-                  <span
-                    className="text-form text-base"
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Bin Allotment
+                    Alloted Bins
                   </span>
                 </button>
               </div>
-            </div> */}
-
+            </div>
             {/* LISTVIEW TABLE */}
-            <div className="mt-4">
+            <div className="mt-2">
               <MaterialReactTable table={table} />
             </div>
 
-            {/* BULK UPLOAD MODAL */}
-            {/* <Dialog
-              fullWidth={true}
-              maxWidth={"sm"}
-              open={open}
-              onClose={handleClose}
-            >
-              <div className="d-flex justify-content-between">
-                <DialogTitle>Upload File</DialogTitle>
-                <IoMdClose
-                  onClick={handleClose}
-                  className="cursor-pointer w-8 h-8 mt-3 me-3"
-                />
-              </div>
-              <DialogContent>
-                <DialogContentText className="d-flex flex-column">
-                  Choose a file to upload
-                  <div className="d-flex justify-content-center">
-                    <div className="col-lg-4 text-center my-3">
-                      <Button
-                        component="label"
-                        variant="contained"
-                        startIcon={<FaCloudUploadAlt />}
-                      >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="col-lg-4 mt-3">
-                    <Button
-                      size="small"
-                      component="label"
-                      className="text-form"
-                      variant="contained"
-                      startIcon={<FiDownload />}
-                    >
-                      Download Sample File
-                    </Button>
-                  </div>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions className="mb-2 me-2">
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button component="label" variant="contained">
-                  Submit
-                </Button>
-              </DialogActions>
-            </Dialog> */}
+
+
           </div>
         )}
-
-      {/* VIEW MODAL */}
-      {/* <Dialog open={openView} onClose={handleViewClose} maxWidth="sm" fullWidth>
-        <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
-          <div className="row">
-            <div className="col-md-11">
-              <Typography variant="h6">User Details</Typography>
-            </div>
-            <div className="col-md-1">
-              <IconButton onClick={handleViewClose} aria-label="close">
-                <CloseIcon />
-              </IconButton>
-            </div>
-          </div>
-        </DialogTitle>
-        <DialogContent className="mt-4">
-          {selectedRowData && (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Email ID</TableCell>
-                    <TableCell>{selectedRowData.email}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Phone</TableCell>
-                    <TableCell>{selectedRowData.pno}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Address</TableCell>
-                    <TableCell>
-                      {selectedRowData.userAddressVO.address1}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>City</TableCell>
-                    {selectedRowData.userAddressVO.city ? (
-                      <TableCell>
-                        {selectedRowData.userAddressVO.city}
-                      </TableCell>
-                    ) : (
-                      <TableCell>-</TableCell>
-                    )}
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>State</TableCell>
-                    <TableCell>{selectedRowData.userAddressVO.state}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Country</TableCell>
-                    <TableCell>
-                      {selectedRowData.userAddressVO.country}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>PinCode</TableCell>
-                    <TableCell>{selectedRowData.userAddressVO.pin}</TableCell>
-                  </TableRow>
-                  
-                </TableBody>
-              </Table>
-            </TableContainer>
-          )}
-        </DialogContent>
-      </Dialog> */}
     </>
   );
 };

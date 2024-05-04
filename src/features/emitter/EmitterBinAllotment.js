@@ -16,8 +16,9 @@ import {
 } from "material-react-table";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Link } from "react-router-dom";
 
-function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
+function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     const [addInwardManifeast, setAddInwardManifeast] = useState("");
     const [stockFrom, setStockFrom] = useState("");
     const [stockTo, setStockTo] = useState("");
@@ -44,12 +45,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
     const [viewBinData, setViewBinData] = useState([]);
     const rfIdInputRef = useRef(null);
     const assetIdInputRef = useRef(null);
-    const [viewAllotedBins, setViewAllotedBins] = useState(false);
     const [data, setData] = React.useState([]);
     const [selectedRowId, setSelectedRowId] = useState(null);
     const [minQty, setMinQty] = useState("");
+    const [allotDate, setAllotDate] = useState("");
 
-    const [viewBinAllotmentId, setViewBinAllotmentId] = useState(null);
+
     const [toDate, setToDate] = useState(null);
     const [extDate, setExtDate] = useState(null);
     const [finYear, setFinYear] = useState("");
@@ -100,17 +101,16 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
 
     useEffect(() => {
         {
-            viewBinAllotmentId && viewAllotedBinByDocId();
+            viewId && viewAllotedBinByDocId();
         }
+        console.log("VIEWID is:", viewId)
         getNewDocId();
         getStockBranch();
         getBinRequestByReqNo();
         // getAvlQtyByBranch();
         // getAllBinRequest()
-        // { selectedRowId && viewAllotedBinByDocId() }
         viewAllotedBinByDocId();
-        console.log("selected DocID is:", selectedRowId);
-    }, [tableData.assetCode, selectedRowId, avlQty]);
+    }, [tableData.assetCode, avlQty]);
 
     const getNewDocId = async () => {
         try {
@@ -135,7 +135,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
     const getBinRequestByReqNo = async () => {
         try {
             const response = await axios.get(
-                // `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgid=1&reqNo=24BR10087`
                 `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgid=${orgId}&reqNo=${editBinRequestId}`
             );
             console.log("API Response:", response);
@@ -164,142 +163,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
         }
     };
 
-    const handleViewAllotedBins = () => {
-        setViewAllotedBins(!viewAllotedBins);
-        {
-            !viewAllotedBins && getAllBinAllotmentData();
-        }
-    };
-
-    const handleViewRow = (row) => {
-        setSelectedRowId(row.original.docId);
-        console.log("setSelectedRowID", row.original.docId);
-        setViewAllotedBins(false);
-    };
-
-    const columns = useMemo(
-        () => [
-            {
-                accessorKey: "actions",
-                header: "Actions",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-                enableSorting: false,
-                enableColumnOrdering: false,
-                enableEditing: false,
-                Cell: ({ row }) => (
-                    <div>
-                        <IconButton onClick={() => handleViewRow(row)}>
-                            <VisibilityIcon />
-                        </IconButton>
-                        {/* <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton> */}
-                    </div>
-                ),
-            },
-            {
-                accessorKey: "binReqNo",
-                header: "Req No",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "emitter",
-                header: "Emitter",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "binReqDate",
-                header: "Req Date",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "reqKitQty",
-                header: "Req QTY",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "allotkKitQty",
-                header: "Allotted QTY",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-
-            // {
-            //   accessorKey: "active",
-            //   header: "Active",
-            //   size: 50,
-            //   muiTableHeadCellProps: {
-            //     align: "center",
-            //   },
-            //   muiTableBodyCellProps: {
-            //     align: "center",
-            //   },
-            //   Cell: ({ cell: { value } }) => (
-            //     <span>{value ? "Active" : "Active"}</span>
-            //   ),
-            // },
-        ],
-        []
-    );
-
-    const table = useMaterialReactTable({
-        data,
-        columns,
-    });
-
-    const getAllBinAllotmentData = async () => {
-        try {
-            const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
-            );
-
-            if (response.status === 200) {
-                setData(response.data.paramObjectsMap.binAllotmentNewVO.reverse());
-                console.log(
-                    "Response from API is:",
-                    response.data.paramObjectsMap.binAllotmentNewVO
-                );
-            }
-        } catch (error) {
-            console.error("Error fetching data:", error);
-        }
-    };
-
     const handleStockFromChange = (e) => {
         const selectedValue = e.target.value;
         setStockFrom(selectedValue);
@@ -320,8 +183,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
     const viewAllotedBinByDocId = async () => {
         try {
             const response = await axios.get(
-                `${process.env.REACT_APP_API_URL}/api/emitter/getAllAllotmentById?docId=${selectedRowId}`
-                // `${process.env.REACT_APP_API_URL}/api/emitter/getAllAllotmentById?docId=24BA10009`
+                `${process.env.REACT_APP_API_URL}/api/emitter/getAllAllotmentById?docId=${viewId}`
             );
             if (response.status === 200) {
                 setViewBinData(response.data.paramObjectsMap.binAllotmentNewVO);
@@ -330,7 +192,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                     response.data.paramObjectsMap.binAllotmentNewVO
                 );
                 setDocId(response.data.paramObjectsMap.binAllotmentNewVO[0].docId);
-                // setDocDate(response.data.paramObjectsMap.binAllotmentNewVO[0].docDate);
+                setAllotDate(response.data.paramObjectsMap.binAllotmentNewVO[0].docDate);
                 setStockFrom(
                     response.data.paramObjectsMap.binAllotmentNewVO[0].stockBranch
                 );
@@ -536,12 +398,17 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                 )
                 .then((response) => {
                     console.log("After save Response:", response.data);
+                    const responseDocId = response.data.paramObjectsMap.binAllotmentVO.docId;
                     handleNew();
-                    toast.success("Emitter Bin Allotment Created Successfully!", {
+                    toast.success(`Bin Allotment ${responseDocId} Created Successfully!`, {
                         autoClose: 2000,
                         theme: "colored",
                     });
-                    addBinAllotment(false);
+
+                    setTimeout(() => {
+                        addBinAllotment(false);
+                    }, 2000)
+
                 })
                 .catch((error) => {
                     console.error("Error:", error);
@@ -753,6 +620,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                 assetId: row.tagCode,
                                 rfId: row.rfId,
                                 asset: row.asset,
+                                assetCode: row.assetCode,
                                 qty: 1,
                             }));
                             setTableData(viewTableData);
@@ -772,64 +640,67 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
         <>
             <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
                 <div className="d-flex justify-content-end">
-                    <div className="">
-                        <button
-                            type="button"
-                            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                            onClick={handleViewAllotedBins}
-                        >
-                            {viewAllotedBins ? "Close Alloted Bins" : "View Alloted Bins"}
-                        </button>
-                    </div>
-                    {!viewAllotedBins && (
+                    <Link to="/app/binallotmentdetails">
                         <IoMdClose
                             onClick={handleEmitterBinAllotmentClose}
                             className="cursor-pointer w-8 h-8 mb-3"
                         />
-                    )}
+                    </Link>
                 </div>
 
-                {viewAllotedBins ? (
-                    <>
-                        {/* LISTVIEW TABLE */}
-                        <div className="mt-4">
-                            <MaterialReactTable table={table} />
+
+
+                <div className="row mt-3">
+                    {/* DOC ID FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Doc Id:
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            placeholder="Auto Gen"
+                            value={viewId ? viewId : docId}
+                            onChange={(e) => setDocId(e.target.value)}
+                            disabled
+                        />
+                        {errors.docId && (
+                            <span className="error-text mb-1">{errors.docId}</span>
+                        )}
+                    </div>
+                    {/* DOC DATE FIELD */}
+                    {viewId ? (<><div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Alloted Date:
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                        <div className="col-lg-3 col-md-6">
+                            <input
+                                className="form-control form-sz mb-2"
+                                placeholder="Auto Gen"
+                                value={allotDate}
+                                // onChange={(e) => setDocId(e.target.value)}
+                                disabled
+                            />
+                            {errors.allotDate && (
+                                <span className="error-text mb-1">{errors.allotDate}</span>
+                            )}
+                        </div></>) : (
+                        <><div className="col-lg-3 col-md-6">
+                            <label className="label mb-4">
+                                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                    Doc Date:
+                                    {/* <FaStarOfLife className="must" /> */}
+                                </span>
+                            </label>
                         </div>
-                    </>
-                ) : (
-                    <>
-                        <div className="row mt-3">
-                            {/* DOC ID FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Doc Id:
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    placeholder="Auto Gen"
-                                    // value={docId}
-                                    value={viewBinAllotmentId ? viewBinAllotmentId : docId}
-                                    onChange={(e) => setDocId(e.target.value)}
-                                    disabled
-                                />
-                                {errors.docId && (
-                                    <span className="error-text mb-1">{errors.docId}</span>
-                                )}
-                            </div>
-                            {/* DOC DATE FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Doc Date:
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
                             <div className="col-lg-3 col-md-6">
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DesktopDatePicker
@@ -845,107 +716,130 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                 {errors.docDate && (
                                     <span className="error-text mb-1">{errors.docDate}</span>
                                 )}
-                            </div>
+                            </div></>)}
+                    {/* <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Doc Date:
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DesktopDatePicker
+                                value={docDate}
+                                onChange={(date) => setDocDate(date)}
+                                slotProps={{
+                                    textField: { size: "small", clearable: true },
+                                }}
+                                format="DD/MM/YYYY"
+                                disabled
+                            />
+                        </LocalizationProvider>
+                        {errors.docDate && (
+                            <span className="error-text mb-1">{errors.docDate}</span>
+                        )}
+                    </div> */}
 
-                            {/* REQ NO FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Req No
-                                        <FaStarOfLife className="must" />
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="reqno"
-                                    value={reqNo}
-                                    disabled
-                                />
-                                {errors.reqNo && (
-                                    <span className="error-text">{errors.reqNo}</span>
-                                )}
-                            </div>
-                            {/* REQ DATE FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Req Date:
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    placeholder="Req Date"
-                                    value={reqDate}
-                                    disabled
-                                />
-                                {errors.reqData && (
-                                    <span className="error-text mb-1">{errors.reqData}</span>
-                                )}
-                            </div>
-                            {/* EMITTER FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Emitter
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="emitter"
-                                    value={emitter}
-                                    disabled
-                                />
-                                {errors.emitter && (
-                                    <span className="error-text">{errors.emitter}</span>
-                                )}
-                            </div>
-                            {/* Flow FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Flow
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="emitter"
-                                    value={flow}
-                                    disabled
-                                />
-                                {errors.flow && (
-                                    <span className="error-text">{errors.flow}</span>
-                                )}
-                            </div>
-                            {/* KIT NAME FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Kit
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="kitName"
-                                    value={reqKitName}
-                                    disabled
-                                />
-                            </div>
-                            {/* PART NAME FIELD */}
-                            {/* <div className="col-lg-3 col-md-6">
+                    {/* REQ NO FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Req No
+                                <FaStarOfLife className="must" />
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="reqno"
+                            value={reqNo}
+                            disabled
+                        />
+                        {errors.reqNo && (
+                            <span className="error-text">{errors.reqNo}</span>
+                        )}
+                    </div>
+                    {/* REQ DATE FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Req Date:
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            placeholder="Req Date"
+                            value={reqDate}
+                            disabled
+                        />
+                        {errors.reqData && (
+                            <span className="error-text mb-1">{errors.reqData}</span>
+                        )}
+                    </div>
+                    {/* EMITTER FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Emitter
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="emitter"
+                            value={emitter}
+                            disabled
+                        />
+                        {errors.emitter && (
+                            <span className="error-text">{errors.emitter}</span>
+                        )}
+                    </div>
+                    {/* Flow FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Flow
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="emitter"
+                            value={flow}
+                            disabled
+                        />
+                        {errors.flow && (
+                            <span className="error-text">{errors.flow}</span>
+                        )}
+                    </div>
+                    {/* KIT NAME FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Kit
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="kitName"
+                            value={reqKitName}
+                            disabled
+                        />
+                    </div>
+                    {/* PART NAME FIELD */}
+                    {/* <div className="col-lg-3 col-md-6">
                                 <label className="label mb-4">
                                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                                         Part
@@ -960,59 +854,59 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                     disabled
                                 />
                             </div> */}
-                            {/* REQ QTY FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Req QTY
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="reqQTY"
-                                    value={reqQty}
-                                    disabled
-                                // onChange={(e) => setReqQty(e.target.value)}
-                                />
-                                {errors.reqQty && (
-                                    <span className="error-text">{errors.reqQty}</span>
-                                )}
-                            </div>
-                            {/* STOCK FROM FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Stock From
-                                        <FaStarOfLife className="must" />
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <select
-                                    className="form-select form-sz w-full mb-2"
-                                    onChange={handleStockFromChange}
-                                    value={stockFrom}
-                                    disabled={selectedRowId ? true : false}
-                                >
-                                    <option value="" disabled>
-                                        Select Stock Branch
+                    {/* REQ QTY FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Req QTY
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="reqQTY"
+                            value={reqQty}
+                            disabled
+                        // onChange={(e) => setReqQty(e.target.value)}
+                        />
+                        {errors.reqQty && (
+                            <span className="error-text">{errors.reqQty}</span>
+                        )}
+                    </div>
+                    {/* STOCK FROM FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Stock From
+                                <FaStarOfLife className="must" />
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <select
+                            className="form-select form-sz w-full mb-2"
+                            onChange={handleStockFromChange}
+                            value={stockFrom}
+                            disabled={viewId ? true : false}
+                        >
+                            <option value="" disabled>
+                                Select Stock Branch
+                            </option>
+                            {stockBranchList.length > 0 &&
+                                stockBranchList.map((list) => (
+                                    <option key={list.id} value={list.branchCode}>
+                                        {list.branchCode}
                                     </option>
-                                    {stockBranchList.length > 0 &&
-                                        stockBranchList.map((list) => (
-                                            <option key={list.id} value={list.branchCode}>
-                                                {list.branchCode}
-                                            </option>
-                                        ))}
-                                </select>
-                                {errors.stockFrom && (
-                                    <span className="error-text mb-1">{errors.stockFrom}</span>
-                                )}
-                            </div>
-                            {/* STOCK TO FIELD */}
-                            {/* <div className="col-lg-3 col-md-6">
+                                ))}
+                        </select>
+                        {errors.stockFrom && (
+                            <span className="error-text mb-1">{errors.stockFrom}</span>
+                        )}
+                    </div>
+                    {/* STOCK TO FIELD */}
+                    {/* <div className="col-lg-3 col-md-6">
                                 <label className="label mb-4">
                                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                                         Stock To
@@ -1041,61 +935,62 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                     <span className="error-text mb-1">{errors.stockTo}</span>
                                 )}
                             </div> */}
-                            {/* AVL QTY FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Avl QTY
-                                        {/* <FaStarOfLife className="must" /> */}
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="avlQty"
-                                    value={avlQty}
-                                    disabled
-                                />
-                                {errors.avlQty && (
-                                    <span className="error-text">{errors.avlQty}</span>
-                                )}
-                            </div>
-                            {/* ALLOCATE QTY FIELD */}
-                            <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Allocate QTY
-                                        <FaStarOfLife className="must" />
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="alotQty"
-                                    value={alotQty}
-                                    onChange={(e) => {
-                                        const inputValue = e.target.value.toUpperCase().replace(/[^0-9]/g, ''); // Only allow numeric input
-                                        const newValue = parseInt(inputValue, 10);
-                                        if (!isNaN(newValue)) {
-                                            if (newValue <= minQty) {
-                                                setAlotQty(newValue);
-                                            } else {
-                                                setAlotQty("");
-                                            }
-                                        } else {
-                                            setAlotQty('');
-                                        }
-                                    }}
-                                    onKeyDown={(e) => handleAllotedQtyChange(e)}
-                                />
+                    {/* AVL QTY FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Avl QTY
+                                {/* <FaStarOfLife className="must" /> */}
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="avlQty"
+                            value={avlQty}
+                            disabled
+                        />
+                        {errors.avlQty && (
+                            <span className="error-text">{errors.avlQty}</span>
+                        )}
+                    </div>
+                    {/* ALLOCATE QTY FIELD */}
+                    <div className="col-lg-3 col-md-6">
+                        <label className="label mb-4">
+                            <span className="label-text label-font-size text-base-content d-flex flex-row">
+                                Allocate QTY
+                                <FaStarOfLife className="must" />
+                            </span>
+                        </label>
+                    </div>
+                    <div className="col-lg-3 col-md-6">
+                        <input
+                            className="form-control form-sz mb-2"
+                            name="alotQty"
+                            value={alotQty}
+                            onChange={(e) => {
+                                const inputValue = e.target.value.toUpperCase().replace(/[^0-9]/g, ''); // Only allow numeric input
+                                const newValue = parseInt(inputValue, 10);
+                                if (!isNaN(newValue)) {
+                                    if (newValue <= minQty) {
+                                        setAlotQty(newValue);
+                                    } else {
+                                        setAlotQty("");
+                                    }
+                                } else {
+                                    setAlotQty('');
+                                }
+                            }}
+                            onKeyDown={(e) => handleAllotedQtyChange(e)}
+                            disabled={viewId ? true : false}
+                        />
 
-                            </div>
+                    </div>
 
 
-                        </div>
-                        {/* {!selectedRowId && (
+                </div>
+                {/* {!selectedRowId && (
                             <>
                                 <div className="mt-2">
                                     <button
@@ -1107,13 +1002,13 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                 </div>
                             </>
                         )} */}
-                        {/* <div className="row mt-2">
+                {/* <div className="row mt-2">
                             <div className="col-lg-12">
                                 <div className="overflow-x-auto">
                                     <table className="w-full">
                                         <thead>
                                             <tr>
-                                                {!viewBinAllotmentId && (
+                                                {!viewId && (
                                                     <th className="px-2 py-2 bg-blue-500 text-white text-center">
                                                         Action
                                                     </th>
@@ -1142,7 +1037,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                             {tableData &&
                                                 tableData.map((row) => (
                                                     <tr key={row.id}>
-                                                        {!viewBinAllotmentId && (
+                                                        {!viewId && (
                                                             <>
                                                                 <td className="border px-2 py-2">
                                                                     <button
@@ -1202,42 +1097,42 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                             <div className="error-text mt-2">{errors.tableData}</div>
                         )} */}
 
-                        <div className="row mt-2">
-                            <div className="col-lg-12">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr>
-                                                {/* {!viewBinAllotmentId && (
+                <div className="row mt-2">
+                    <div className="col-lg-12">
+                        <div className="overflow-x-auto">
+                            <table className="w-full">
+                                <thead>
+                                    <tr>
+                                        {/* {!viewId && (
                                                     <th className="px-2 py-2 bg-blue-500 text-white text-center">
                                                         Action
                                                     </th>
                                                 )} */}
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    S.No
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    Tag Code
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    RF ID
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    Asset
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    Asset Code
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    QTY
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {tableData &&
-                                                tableData.map((row) => (
-                                                    <tr key={row.id}>
-                                                        {/* {!viewBinAllotmentId && (
+                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                            S.No
+                                        </th>
+                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                            Tag Code
+                                        </th>
+                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                            RF ID
+                                        </th>
+                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                            Asset
+                                        </th>
+                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                            Asset Code
+                                        </th>
+                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                            QTY
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {tableData &&
+                                        tableData.map((row) => (
+                                            <tr key={row.id}>
+                                                {/* {!viewId && (
                                                             <>
                                                                 <td className="border px-2 py-2">
                                                                     <button
@@ -1249,76 +1144,76 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId }) {
                                                                 </td>
                                                             </>
                                                         )} */}
-                                                        <td className="border px-2 py-2">{row.id}</td>
-                                                        <td>
-                                                            <input
-                                                                type="text"
-                                                                name="assetId"
-                                                                value={row.assetId}
-                                                                onChange={(e) =>
-                                                                    handleTagCodeChange(
-                                                                        row.id,
-                                                                        "assetId",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                disabled={selectedRowId ? true : false}
-                                                                ref={assetIdInputRef}
-                                                            />
-                                                            {row.assetId}
-                                                        </td>
-                                                        <td>
-                                                            <input
-                                                                type="text"
-                                                                name="rfId"
-                                                                value={row.rfId}
-                                                                onChange={(e) =>
-                                                                    handleRfIdChange(
-                                                                        row.id,
-                                                                        "rfId",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                ref={rfIdInputRef}
-                                                                disabled={selectedRowId ? true : false}
-                                                                style={{ width: "100%" }}
-                                                            />
-                                                        </td>
-                                                        <td>{row.asset}</td>
-                                                        <td>{row.assetCode}</td>
-                                                        <td>{row.qty}</td>
-                                                    </tr>
-                                                ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
+                                                <td className="border px-2 py-2">{row.id}</td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        name="assetId"
+                                                        value={row.assetId}
+                                                        onChange={(e) =>
+                                                            handleTagCodeChange(
+                                                                row.id,
+                                                                "assetId",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        disabled={viewId ? true : false}
+                                                        ref={assetIdInputRef}
+                                                    />
+
+                                                </td>
+                                                <td>
+                                                    <input
+                                                        type="text"
+                                                        name="rfId"
+                                                        value={row.rfId}
+                                                        onChange={(e) =>
+                                                            handleRfIdChange(
+                                                                row.id,
+                                                                "rfId",
+                                                                e.target.value
+                                                            )
+                                                        }
+                                                        ref={rfIdInputRef}
+                                                        disabled={viewId ? true : false}
+                                                        style={{ width: "100%" }}
+                                                    />
+                                                </td>
+                                                <td>{row.asset}</td>
+                                                <td>{row.assetCode}</td>
+                                                <td>{row.qty}</td>
+                                            </tr>
+                                        ))}
+                                </tbody>
+                            </table>
                         </div>
-                        {errors.tableData && (
-                            <div className="error-text mt-2">{errors.tableData}</div>
-                        )}
-                        {!selectedRowId && (
-                            <>
-                                <div className="mt-4">
-                                    <button
-                                        type="button"
-                                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                                        onClick={handleSave}
-                                    >
-                                        Save
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                                        onClick={handleNew}
-                                    >
-                                        Cancel
-                                    </button>
-                                </div>
-                            </>
-                        )}
+                    </div>
+                </div>
+                {errors.tableData && (
+                    <div className="error-text mt-2">{errors.tableData}</div>
+                )}
+                {!viewId && (
+                    <>
+                        <div className="mt-4">
+                            <button
+                                type="button"
+                                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                onClick={handleSave}
+                            >
+                                Save
+                            </button>
+                            <button
+                                type="button"
+                                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                                onClick={handleNew}
+                            >
+                                Cancel
+                            </button>
+                        </div>
                     </>
                 )}
+
+
             </div >
             <ToastContainer />
         </>
