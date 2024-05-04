@@ -754,8 +754,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       border: "1px solid #ccc",
       padding: "20px",
       borderRadius: "5px",
-      backgroundColor: "#f9f9f9",
-      marginLeft: "40px",
+      // backgroundColor: "#f9f9f9",
+      // marginLeft: "40px",
     },
     submittedDataTitle: {
       fontWeight: "bold",
@@ -765,6 +765,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     },
     submittedDataItem: {
       display: "flex",
+      justifyContent: "space-between",
       marginBottom: "5px",
       fontSize: "0.9rem",
     },
@@ -773,6 +774,13 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       fontWeight: "bold",
       marginRight: "10px",
       color: "#555",
+    },
+    submittedData: {
+      // display: "flex",
+      // flexWrap: "wrap",
+      textAlign: "end",
+      wordWrap: "break-word",
+      width: "180px",
     },
   };
 
@@ -919,7 +927,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   //   }
   // };
 
-
   const handleCustomer = () => {
     setIsSubmitting(true);
     console.log("click");
@@ -972,7 +979,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
           setCustomerId(response.data.paramObjectsMap.customersVO.id);
           const customerCode =
             response.data.paramObjectsMap.customersVO.customerCode;
-          setResponseCustomerCode(response.data.paramObjectsMap.customersVO.customerCode)
+          setResponseCustomerCode(
+            response.data.paramObjectsMap.customersVO.customerCode
+          );
           console.log("Response:", response.data);
           console.log(
             "CustomerId:",
@@ -1018,7 +1027,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 .then((uploadResponse) => {
                   console.log("File Upload Response:", uploadResponse.data);
 
-
                   // addcustomer(true);
                   setAddressShow(true);
                   setErrors({});
@@ -1032,7 +1040,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   setTimeout(() => {
                     addcustomer(true);
                   }, 2000);
-
                 })
                 // DOCUMENT FILE SAVE CATCH
                 .catch((uploadError) => {
@@ -1056,8 +1063,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       setIsSubmitting(false);
     }
   };
-
-
 
   const handleUpdateCustomer = () => {
     setIsSubmitting(true);
@@ -1239,9 +1244,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   name="customerCode"
                   onChange={handleCustomerChange}
                   readOnly
-                // onInput={(e) => {
-                //   e.target.value = e.target.value.toUpperCase();
-                // }}
+                  // onInput={(e) => {
+                  //   e.target.value = e.target.value.toUpperCase();
+                  // }}
                 />
                 {errors.customerCode && (
                   <div className="error-text">{errors.customerCode}</div>
@@ -1430,7 +1435,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               type="file"
               id="file-input"
               multiple
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               onChange={(e) => handleFileUpload(e.target.files)}
             />
             <label htmlFor="file-input">
@@ -1447,9 +1452,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
           </div>
-
-
-
 
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -1475,7 +1477,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               type="file"
               id="file-input"
               multiple
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
               onChange={(e) => handleDocFileUpload(e.target.files)}
             />
             <label htmlFor="file-input">
@@ -1522,37 +1524,34 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </div>
             </div>
 
-            <div className="d-flex align-items-center justify-content-center flex-wrap">
+            <div className="d-flex flex-wrap">
               <>
                 {shippingAddresses.map((address, index) => (
                   <div
-                    className="col-md-5 mt-3"
+                    className="mt-3 me-2 card"
                     key={index}
                     style={{
                       ...styles.submittedDataContainer,
-                      width: "350px",
-                      height: "430px",
+                      width: "300px",
                       borderRadius: "20px",
                     }} // Set fixed width
                   >
-                    <div className="row">
-                      <div className="col-md-10">
+                    <div style={styles.submittedDataItem}>
+                      <div>
                         <h2 style={styles.submittedDataTitle}>
                           Address {index + 1}
                         </h2>
                       </div>
-                      <div className="col-md-2">
+                      <div>
                         <FaTrash
-                          className="cursor-pointer w-4 h-8 me-3"
+                          className="cursor-pointer w-4 h-8 pb-2"
                           onClick={() => handleDeleteAddress(index)}
                         />
                       </div>
                     </div>
 
                     <div style={styles.submittedDataItem}>
-                      <span style={styles.submittedDataLabel}>
-                        GST Registration Status:
-                      </span>
+                      <span style={styles.submittedDataLabel}>GST Status:</span>
                       <span>{address.gstRegistrationStatus}</span>
                     </div>
                     {address.gstRegistrationStatus === "Registered" && (
@@ -1565,11 +1564,15 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     )}
                     <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Street 1:</span>
-                      <span>{address.street1}</span>
+                      <span style={styles.submittedData}>
+                        {address.street1}
+                      </span>
                     </div>
                     <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Street 2:</span>
-                      <span>{address.street2}</span>
+                      <span style={styles.submittedData}>
+                        {address.street2}
+                      </span>
                     </div>
                     <div style={styles.submittedDataItem}>
                       <span style={styles.submittedDataLabel}>Country:</span>
@@ -1621,25 +1624,24 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               customerAddressVO &&
               customerAddressVO.length > 0 && (
                 <>
-                  <div className="d-flex align-items-center justify-content-center flex-wrap">
+                  <div className="d-flex flex-wrap">
                     {customerAddressVO.map((address, index) => (
                       <div
-                        className="col-md-5 mt-3"
+                        className="mt-3 me-2 card"
                         key={index}
                         style={{
                           ...styles.submittedDataContainer,
-                          width: "350px",
-                          height: "430px",
+                          width: "300px",
                           borderRadius: "20px",
                         }} // Set fixed width
                       >
-                        <div className="row">
-                          <div className="col-md-10">
+                        <div style={styles.submittedDataItem}>
+                          <div>
                             <h2 style={styles.submittedDataTitle}>
                               Address {index + 1}
                             </h2>
                           </div>
-                          <div className="col-md-2">
+                          <div>
                             <button
                               key={index}
                               onClick={() => handleEditAddress(index)}
@@ -1654,7 +1656,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                         {/* Display address details */}
                         <div style={styles.submittedDataItem}>
                           <span style={styles.submittedDataLabel}>
-                            GST Registration Status:
+                            GST Status:
                           </span>
                           <span>{address.gstRegistrationStatus}</span>
                         </div>
@@ -1670,13 +1672,17 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                           <span style={styles.submittedDataLabel}>
                             Street 1:
                           </span>
-                          <span>{address.street1}</span>
+                          <span style={styles.submittedData}>
+                            {address.street1}
+                          </span>
                         </div>
                         <div style={styles.submittedDataItem}>
                           <span style={styles.submittedDataLabel}>
                             Street 2:
                           </span>
-                          <span>{address.street2}</span>
+                          <span style={styles.submittedData}>
+                            {address.street2}
+                          </span>
                         </div>
                         <div style={styles.submittedDataItem}>
                           <span style={styles.submittedDataLabel}>
@@ -1738,22 +1744,26 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 </button>
               </div>
             </div>
-            <div className="d-flex align-items-center justify-content-center flex-wrap">
+            <div className="d-flex flex-wrap">
               {bankAddresses.map((bank, index) => (
                 <div
-                  className="col-md-5 mt-3"
+                  className="mt-3 me-2 card"
                   key={index}
-                  style={styles.submittedDataContainer}
+                  style={{
+                    ...styles.submittedDataContainer,
+                    width: "300px",
+                    borderRadius: "20px",
+                  }}
                 >
-                  <div className="row">
-                    <div className="col-md-10">
+                  <div style={styles.submittedDataItem}>
+                    <div>
                       <h2 style={styles.submittedDataTitle}>
                         Bank {index + 1}
                       </h2>
                     </div>
-                    <div className="col-md-2">
+                    <div>
                       <FaTrash
-                        className="cursor-pointer w-4 h-8 me-3"
+                        className="cursor-pointer w-4 h-8 pb-2"
                         onClick={() => handleDeleteBank(index)}
                       />
                     </div>
@@ -1788,22 +1798,26 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               customerBankAddressVO &&
               customerBankAddressVO.length > 0 && (
                 <>
-                  <div className="d-flex align-items-center justify-content-center flex-wrap">
+                  <div className="d-flex flex-wrap">
                     {customerBankAddressVO.map((bank, index) => (
                       <div
-                        className="col-md-5 mt-3"
+                        className="mt-3 me-2 card"
                         key={index}
-                        style={styles.submittedDataContainer}
+                        style={{
+                          ...styles.submittedDataContainer,
+                          width: "300px",
+                          borderRadius: "20px",
+                        }}
                       >
-                        <div className="row">
-                          <div className="col-md-10">
+                        <div style={styles.submittedDataItem}>
+                          <div>
                             <h2 style={styles.submittedDataTitle}>
                               Bank {index + 1}
                             </h2>
                           </div>
-                          <div className="col-md-2">
+                          <div>
                             <FaEdit
-                              className="cursor-pointer w-4 h-8 me-3"
+                              className="cursor-pointer w-4 h-8 pb-2"
                               onClick={() => handleEditBankAddress(index)}
                             />
                           </div>
