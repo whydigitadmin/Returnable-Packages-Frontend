@@ -126,6 +126,7 @@ const BinInwardOem = lazy(() => import("../pages/protected/BinInwardOem"));
 const BinOutwardOem = lazy(() => import("../pages/protected/BinOutwardOem"));
 const BinAllotmentDetails = lazy(() => import("../pages/protected/BinAllotmentDetails"));
 const CompanyDetails = lazy(() => import("../pages/protected/CompanyDetails"));
+const AllotmentReport = lazy(() => import("../pages/protected/AllotmentReport"));
 const routes = [
   {
     path: "/dashboard", // the url
@@ -495,6 +496,10 @@ const routes = [
   {
     path: "/companydetails",
     component: CompanyDetails,
+  },
+  {
+    path: "/allotmentreport",
+    component: AllotmentReport,
   },
 ];
 

@@ -1108,22 +1108,22 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                                                         Action
                                                     </th>
                                                 )} */}
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                        <th className="px-2 py-2 bg-blue-500 text-white">
                                             S.No
                                         </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                        <th className="px-2 py-2 bg-blue-500 text-white">
                                             Tag Code
                                         </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                        <th className="px-2 py-2 bg-blue-500 text-white">
                                             RF ID
                                         </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                        <th className="px-2 py-2 bg-blue-500 text-white">
                                             Asset
                                         </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                        <th className="px-2 py-2 bg-blue-500 text-white">
                                             Asset Code
                                         </th>
-                                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                                        <th className="px-2 py-2 bg-blue-500 text-white">
                                             QTY
                                         </th>
                                     </tr>
@@ -1146,7 +1146,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                                                         )} */}
                                                 <td className="border px-2 py-2">{row.id}</td>
                                                 <td>
-                                                    <input
+                                                    {/* <input
                                                         type="text"
                                                         name="assetId"
                                                         value={row.assetId}
@@ -1159,11 +1159,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                                                         }
                                                         disabled={viewId ? true : false}
                                                         ref={assetIdInputRef}
-                                                    />
+                                                    /> */}
+                                                    {row.assetId}
 
                                                 </td>
                                                 <td>
-                                                    <input
+                                                    {/* <input
                                                         type="text"
                                                         name="rfId"
                                                         value={row.rfId}
@@ -1177,7 +1178,8 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                                                         ref={rfIdInputRef}
                                                         disabled={viewId ? true : false}
                                                         style={{ width: "100%" }}
-                                                    />
+                                                    /> */}
+                                                    {row.rfId}
                                                 </td>
                                                 <td>{row.asset}</td>
                                                 <td>{row.assetCode}</td>
