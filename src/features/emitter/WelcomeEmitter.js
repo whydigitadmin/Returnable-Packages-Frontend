@@ -112,8 +112,8 @@ function WelcomeEmitter() {
                 {userDetail.lastLogin === null
                   ? moment().format("MMMM Do YYYY, h:mm:ss a")
                   : moment(userDetail.lastLogin).format(
-                      "MMMM Do YYYY, h:mm:ss a"
-                    )}
+                    "MMMM Do YYYY, h:mm:ss a"
+                  )}
               </span>
             </p>
             {/* <p className="text-2xl ms-2">Tue</p>
@@ -192,7 +192,7 @@ function WelcomeEmitter() {
                 <Link to="/app/IssueReq">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    // style={{ width: "14rem" }}
+                  // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -219,7 +219,7 @@ function WelcomeEmitter() {
                 <Link to="/app/EmitterInwardNew">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    // style={{ width: "14rem" }}
+                  // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -242,7 +242,7 @@ function WelcomeEmitter() {
                 <Link to="/app/BinOutward">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    // style={{ width: "14rem" }}
+                  // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -269,7 +269,7 @@ function WelcomeEmitter() {
                 <Link to="/app/StockAdjustment">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    // style={{ width: "14rem" }}
+                  // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -294,10 +294,11 @@ function WelcomeEmitter() {
               </div>
 
               <div className="col-lg-4 col-md-6 col-sm-4">
-                <Link to="">
+                {/* <Link to="/app/emitterstockledgerreport"> */}
+                <Link to="#">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    // style={{ width: "14rem" }}
+                  // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -321,10 +322,10 @@ function WelcomeEmitter() {
                 </Link>
               </div>
               <div className="col-lg-4 col-md-6 col-sm-4">
-                <Link to="/app/StockAdjustment">
+                <Link to="/app/emitterallotmentreport">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    // style={{ width: "14rem" }}
+                  // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -353,7 +354,7 @@ function WelcomeEmitter() {
                 <Link to="/app/StockAdjustment">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                    // style={{ width: "14rem" }}
+                  // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">

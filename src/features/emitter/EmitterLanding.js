@@ -6,32 +6,32 @@ import React from "react";
 import WelcomeEmitter from "./WelcomeEmitter";
 import WelcomeOEM from "./WelcomeOEM";
 
-const statsData = [
-  {
-    title: "New Users",
-    value: "34000",
-    icon: <UserGroupIcon className="w-8 h-8" />,
-    description: "↗︎ 2300 (22%)",
-  },
-  {
-    title: "Total Sales",
-    value: "34,545",
-    icon: <CreditCardIcon className="w-8 h-8" />,
-    description: "Current month",
-  },
-  {
-    title: "Pending Leads",
-    value: "450",
-    icon: <CircleStackIcon className="w-8 h-8" />,
-    description: "50 in hot leads",
-  },
-  {
-    title: "Active Users",
-    value: "56000",
-    icon: <UsersIcon className="w-8 h-8" />,
-    description: "↙ 300 (18%)",
-  },
-];
+// const statsData = [
+//   {
+//     title: "New Users",
+//     value: "34000",
+//     icon: <UserGroupIcon className="w-8 h-8" />,
+//     description: "↗︎ 2300 (22%)",
+//   },
+//   {
+//     title: "Total Sales",
+//     value: "34,545",
+//     icon: <CreditCardIcon className="w-8 h-8" />,
+//     description: "Current month",
+//   },
+//   {
+//     title: "Pending Leads",
+//     value: "450",
+//     icon: <CircleStackIcon className="w-8 h-8" />,
+//     description: "50 in hot leads",
+//   },
+//   {
+//     title: "Active Users",
+//     value: "56000",
+//     icon: <UsersIcon className="w-8 h-8" />,
+//     description: "↙ 300 (18%)",
+//   },
+// ];
 
 export const EmitterLanding = () => {
   return (
