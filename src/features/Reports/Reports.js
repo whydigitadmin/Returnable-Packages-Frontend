@@ -1,7 +1,6 @@
 import * as React from "react";
 import { LuFileSpreadsheet } from "react-icons/lu";
-import { Link } from 'react-router-dom';
-
+import { Link } from "react-router-dom";
 
 function Reports() {
   return (
@@ -69,13 +68,15 @@ function Reports() {
           </div> */}
           <div className="col-sm-4">
             <div>
-              <h4 className="text-2xl font-semibold mt-4 mb-3">Admin</h4>
+              <h4 className="text-2xl font-semibold mb-3">Admin</h4>
               <ul>
                 <li className="d-flex flex-row mb-3 ">
                   <LuFileSpreadsheet className="mt-1 me-1" />
-                  <Link to="/app/allotmentreport">
-                    Allotment
-                  </Link>
+                  <Link to="/app/allotmentreport">Allotment</Link>
+                </li>
+                <li className="d-flex flex-row mb-3 ">
+                  <LuFileSpreadsheet className="mt-1 me-1" />
+                  <Link to="/app/assettaggingreport">Asset Tagging</Link>
                 </li>
                 <li className="d-flex flex-row mb-3">
                   <LuFileSpreadsheet className="mt-1 me-1" />

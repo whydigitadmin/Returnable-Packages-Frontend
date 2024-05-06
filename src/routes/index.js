@@ -124,9 +124,16 @@ const ProofofDispatchDetails = lazy(() =>
 const Pdf = lazy(() => import("../pages/protected/Pdf"));
 const BinInwardOem = lazy(() => import("../pages/protected/BinInwardOem"));
 const BinOutwardOem = lazy(() => import("../pages/protected/BinOutwardOem"));
-const BinAllotmentDetails = lazy(() => import("../pages/protected/BinAllotmentDetails"));
+const BinAllotmentDetails = lazy(() =>
+  import("../pages/protected/BinAllotmentDetails")
+);
 const CompanyDetails = lazy(() => import("../pages/protected/CompanyDetails"));
-const AllotmentReport = lazy(() => import("../pages/protected/AllotmentReport"));
+const AllotmentReport = lazy(() =>
+  import("../pages/protected/AllotmentReport")
+);
+const AssetTaggingReport = lazy(() =>
+  import("../pages/protected/AssetTaggingReport")
+);
 const routes = [
   {
     path: "/dashboard", // the url
@@ -500,6 +507,10 @@ const routes = [
   {
     path: "/allotmentreport",
     component: AllotmentReport,
+  },
+  {
+    path: "/assettaggingreport",
+    component: AssetTaggingReport,
   },
 ];
 
