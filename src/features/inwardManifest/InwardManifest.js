@@ -11,7 +11,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMdClose } from "react-icons/io";
 
-
 const DOCDATA = [
   {
     id: 1,
@@ -24,7 +23,6 @@ const DOCDATA = [
 ];
 
 function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
-  // viewAssetInwardId = 1;
   const [docdata, setDocData] = useState(DOCDATA);
   const [docDate, setDocDate] = useState(dayjs().format('DD-MM-YYYY'));
   const [toDate, setToDate] = useState(null);
@@ -37,7 +35,6 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const [filteredStockBranch, setFilteredStockBranch] = useState("");
   const rfIdInputRef = useRef(null);
   const assetIdInputRef = useRef(null);
-
   const [stockBranch, setStockBranch] = useState("");
   const [docId, setDocId] = useState("");
   const [allAsset, setAllAsset] = useState("");
@@ -118,16 +115,16 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
       console.error("Error fetching data:", error);
     }
   };
+
   const getNewDocId = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getDocIdByBinInward`
+        `${process.env.REACT_APP_API_URL}/api/master/getDocIdByAssetInward`
       );
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        setDocId(response.data.paramObjectsMap.binDocId);
-        // console.log("API:", extractedAssets);
+        setDocId(response.data.paramObjectsMap.assetInwardDocId);
       } else {
         console.error("API Error:", response.data);
       }
@@ -139,11 +136,10 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const handleStockFromChange = (e) => {
     const selectedValue = e.target.value;
     setStockFrom(selectedValue);
-    // Filter out the selected value from the options of Source To dropdown
     const filteredBranches = stockBranch.filter(
       (branch) => branch.branchCode !== selectedValue
     );
-    setStockTo(""); // Reset the Source To dropdown value
+    setStockTo("");
     setFilteredStockBranch(filteredBranches);
   };
 
@@ -155,7 +151,6 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        // Extracting assetName and skuId from each asset item
         const extractedAssets = response.data.paramObjectsMap.assetVO.map(
           (assetItem) => ({
             assetName: assetItem.assetName,
@@ -181,10 +176,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
 
       if (response.status === 200) {
         setStockBranch(response.data.paramObjectsMap.branch);
-
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -211,11 +203,9 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
     );
 
     if (field === 'assetId') {
-      // Check if the value was pasted (assume pasting takes more than 200ms)
       const isPasted = value.length > 1 && value !== tableData.find((row) => row.id === id).assetId;
 
       if (isPasted) {
-        // Store the previous RF ID value
         const prevAssetId = value;
 
         try {
@@ -234,7 +224,6 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
                 : r
             );
 
-            // Check if the last row has RF ID filled; if not, add a new row
             const lastRow = updatedTableData[updatedTableData.length - 1];
             if (!lastRow || lastRow.assetId !== "") {
               const newRow = {
@@ -276,11 +265,9 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
     );
 
     if (field === 'rfId') {
-      // Check if the value was pasted (assume pasting takes more than 200ms)
       const isPasted = value.length > 1 && value !== tableData.find((row) => row.id === id).rfId;
 
       if (isPasted) {
-        // Store the previous RF ID value
         const prevRfId = value;
 
         try {
@@ -299,7 +286,6 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
                 : r
             );
 
-            // Check if the last row has RF ID filled; if not, add a new row
             const lastRow = updatedTableData[updatedTableData.length - 1];
             if (!lastRow || lastRow.rfId !== "") {
               const newRow = {
@@ -387,12 +373,11 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
 
     if (Object.keys(errors).length === 0) {
       const formData = {
-        assetInwardDetailDTO: tableFormData,
-        docId,
         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-        stockBranch: stockTo,
         sourceFrom: stockFrom,
+        stockBranch: stockTo,
         orgId,
+        assetInwardDetailDTO: tableFormData,
       };
 
       axios
