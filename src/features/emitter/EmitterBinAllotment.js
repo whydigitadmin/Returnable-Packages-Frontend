@@ -28,6 +28,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     const [docDate, setDocDate] = useState(dayjs());
     const [emitter, setEmitter] = useState("");
     const [flow, setFlow] = useState("");
+    const [flowId, setFlowId] = useState("");
     const [reqKitName, setReqKitName] = useState("");
     const [reqPartName, setReqPartName] = useState("");
     const [reqQty, setReqQty] = useState("");
@@ -154,6 +155,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                 setReqQty(response.data.paramObjectsMap.BinAllotment[0].reqKitQty);
                 setEmitterId(response.data.paramObjectsMap.BinAllotment[0].emitterid);
                 setFlow(response.data.paramObjectsMap.BinAllotment[0].flow);
+                setFlowId(response.data.paramObjectsMap.BinAllotment[0].flowid);
                 setReqPartNo(response.data.paramObjectsMap.BinAllotment[0].emitterid);
             } else {
                 console.error("API Error:", response.data);
@@ -371,6 +373,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             delete errors.tableData;
         }
 
+
         if (Object.keys(errors).length === 0) {
             const formData = {
                 docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
@@ -378,7 +381,8 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                 binReqNo: reqNo,
                 binReqDate: reqDate,
                 emitterId: emitterId,
-                // flow: flow,
+                flowid: flowId,
+                flow: flow,
                 kitCode: reqKitName,
                 reqKitQty: reqQty,
                 avlKitQty: avlQty,
@@ -647,8 +651,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                         />
                     </Link>
                 </div>
-
-
 
                 <div className="row mt-3">
                     {/* DOC ID FIELD */}

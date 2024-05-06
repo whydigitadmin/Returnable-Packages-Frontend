@@ -9,12 +9,59 @@ import ShareIcon from '@heroicons/react/24/outline/ShareIcon'
 import EnvelopeIcon from '@heroicons/react/24/outline/EnvelopeIcon'
 import EllipsisVerticalIcon from '@heroicons/react/24/outline/EllipsisVerticalIcon'
 import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
-import { useState } from "react"
+// import { useState } from "react"
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { IoMdClose } from "react-icons/io";
 import { FaStarOfLife } from "react-icons/fa";
+import EditIcon from "@mui/icons-material/Edit";
+import IconButton from "@mui/material/IconButton";
 
 
+import {
+  MaterialReactTable,
+  createMRTColumnHelper,
+  useMaterialReactTable,
+} from 'material-react-table';
+import { Box, Button } from '@mui/material';
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
+import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
+import axios from "axios";
+
+
+const columnHelper = createMRTColumnHelper();
+
+// const columns = [
+//   columnHelper.accessor('id', {
+//     header: 'ID',
+//     size: 40,
+//   }),
+//   columnHelper.accessor('firstName', {
+//     header: 'First Name',
+//     size: 120,
+//   }),
+//   columnHelper.accessor('lastName', {
+//     header: 'Last Name',
+//     size: 120,
+//   }),
+//   columnHelper.accessor('company', {
+//     header: 'Company',
+//     size: 300,
+//   }),
+//   columnHelper.accessor('city', {
+//     header: 'City',
+//   }),
+//   columnHelper.accessor('country', {
+//     header: 'Country',
+//     size: 220,
+//   }),
+// ];
+
+const csvConfig = mkConfig({
+  fieldSeparator: ',',
+  decimalSeparator: '.',
+  useKeysAsHeaders: true,
+});
 
 const statsData = [
   {
@@ -58,11 +105,52 @@ function AllotmentReport() {
     startDate: new Date(),
     endDate: new Date()
   });
+  const [emitter, setEmitter] = useState("");
+  const [kit, setKit] = useState("");
+  const [flow, setFlow] = useState("");
+  const [data, setData] = useState([]);
+  const [emitterList, setEmitterList] = useState([]);
+  const [kitList, setKitList] = useState([]);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [tableView, setTableView] = useState(false);
+
+
+
+  useEffect(() => {
+  }, []);
+
+  const getAllBinAllotmentReport = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomizedAllotmentDetails?emitter=${emitter}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
+      );
+      if (response.status === 200) {
+        const binAllotmentVO = response.data.paramObjectsMap.binAllotmentVO;
+        const newData = binAllotmentVO.map(item => ({
+          binReqNo: item.binReqNo,
+          binReqDate: item.binReqDate,
+          docId: item.docId,
+          docDate: item.docDate,
+          emitter: item.emitter,
+          flow: item.flow,
+          kitCode: item.kitCode,
+          reqKitQty: item.reqKitQty,
+          allotkKitQty: item.allotkKitQty,
+
+        }));
+        setData([...data, ...newData]);
+        console.log("The Data from the API is:", data);
+        setTableView(true);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleDatePickerValueChange = (newValue) => {
     console.log("newValue:", newValue);
     setDateValue(newValue);
-    updateDashboardPeriod(newValue)
+    // updateDashboardPeriod(newValue)
   }
   const handleClearData = () => {
     setDateValue({
@@ -73,28 +161,237 @@ function AllotmentReport() {
     //   startDate: new Date(),
     //   endDate: new Date()
     // });
+    setEmitter("")
+    setFlow("")
+    setKit("")
+    setTableView(false)
+  }
+  // const updateDashboardPeriod = (newRange) => {
+  //   dispatch(
+  //     showNotification({
+  //       message: `Period updated to ${newRange.startDate} to ${newRange.endDate}`,
+  //       status: 1,
+  //     })
+  //   );
+  // };
+
+  const handleEmitterChange = (e) => {
+    setEmitter(e.target.value)
+  }
+  const handleKitChange = (e) => {
+    setKit(e.target.value)
   }
 
-  const updateDashboardPeriod = (newRange) => {
-    dispatch(
-      showNotification({
-        message: `Period updated to ${newRange.startDate} to ${newRange.endDate}`,
-        status: 1,
-      })
-    );
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "actions",
+        header: "Actions",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        enableSorting: false,
+        enableColumnOrdering: false,
+        enableEditing: false,
+        Cell: ({ row }) => (
+          <div>
+            <IconButton
+            // onClick={() => handleEditRow(row)}
+            >
+              <EditIcon />
+            </IconButton>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "binReqNo",
+        header: "Req No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "binReqDate",
+        header: "Req Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "docId",
+        header: "Allotment No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "docDate",
+        header: "Alloted Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "emitter",
+        header: "Emitter",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+
+      {
+        accessorKey: "flow",
+        header: "Flow",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "kitCode",
+        header: "Kit",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "reqKitQty",
+        header: "Req QTY",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "allotkKitQty",
+        header: "Alloted QTY",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+    ],
+    []
+  );
+
+  const handleExportRows = (rows) => {
+    const rowData = rows.map((row) => row.original);
+    const csv = generateCsv(csvConfig)(rowData);
+    download(csvConfig)(csv);
   };
+  const handleExportData = () => {
+    const csv = generateCsv(csvConfig)(data);
+    download(csvConfig)(csv);
+  };
+
+  const table = useMaterialReactTable({
+    columns,
+    data,
+    // enableRowSelection: true,
+    columnFilterDisplayMode: 'popover',
+    paginationDisplayMode: 'pages',
+    positionToolbarAlertBanner: 'bottom',
+    renderTopToolbarCustomActions: ({ table }) => (
+      <Box
+        sx={{
+          display: 'flex',
+          gap: '16px',
+          padding: '8px',
+          flexWrap: 'wrap',
+        }}
+      >
+        <Button
+          //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
+          onClick={handleExportData}
+          startIcon={<FileDownloadIcon />}
+        >
+          Export All Data
+        </Button>
+        {/* <Button
+          disabled={table.getPrePaginationRowModel().rows.length === 0}
+          //export all rows, including from the next page, (still respects filtering and sorting)
+          onClick={() =>
+            handleExportRows(table.getPrePaginationRowModel().rows)
+          }
+          startIcon={<FileDownloadIcon />}
+        >
+          Export All Rows
+        </Button>
+        <Button
+          disabled={table.getRowModel().rows.length === 0}
+          //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
+          onClick={() => handleExportRows(table.getRowModel().rows)}
+          startIcon={<FileDownloadIcon />}
+        >
+          Export Page Rows
+        </Button>
+        <Button
+          disabled={
+            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
+          }
+          //only export selected rows
+          onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
+          startIcon={<FileDownloadIcon />}
+        >
+          Export Selected Rows
+        </Button> */}
+      </Box>
+    ),
+  });
+
 
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
-          <button className="btn btn-ghost btn-sm normal-case" onClick={handleClearData}><ArrowPathIcon className="w-4 mr-2" />Refresh</button>
+
+
+
+          {/* <button className="btn btn-ghost btn-sm normal-case" onClick={handleClearData}><ArrowPathIcon className="w-4 mr-2" />Refresh</button> */}
           <IoMdClose
             // onClick={handleUserCreationClose}
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
         <div className="row">
+          {/* DATE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -107,13 +404,12 @@ function AllotmentReport() {
               </span>
             </label>
           </div>
-
           <div className="col-lg-3 col-md-6 mb-2">
             <Datepicker
-              containerClassName="w-72 "
+              containerClassName="datesize"
               value={dateValue}
               theme={"light"}
-              inputClassName="input input-bordered w-72"
+              inputClassName="input input-bordered datesize p-3"
               popoverDirection={"down"}
               toggleClassName="invisible"
               onChange={handleDatePickerValueChange}
@@ -121,7 +417,133 @@ function AllotmentReport() {
               primaryColor={"white"}
             />
           </div>
+          {/* EMITTER FIELD */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Emitter
+                {/* <FaStarOfLife className="must" /> */}
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            {/* <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleEmitterChange}
+              value={emitter}
+            >
+              <option value="" disabled>
+                Select Emitter
+              </option>
+              {emitterList.length > 0 &&
+                emitterList.map((list) => (
+                  <option key={list.id} value={list.emitterName}>
+                    {list.emitterName}
+                  </option>
+                ))}
+            </select> */}
+            <input
+              className="form-control form-sz mb-2"
+              value={emitter}
+              onChange={(e) => setEmitter(e.target.value)}
+            />
+          </div>
+          {/* KIT FIELD */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Kit
+                {/* <FaStarOfLife className="must" /> */}
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              className="form-control form-sz mb-2"
+              value={kit}
+              onChange={(e) => setKit(e.target.value)}
+            />
+            {/* <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleKitChange}
+              value={kit}
+            >
+              <option value="" disabled>
+                Select Kit
+              </option>
+              {kitList.length > 0 &&
+                kitList.map((list) => (
+                  <option key={list.id} value={list.kitName}>
+                    {list.kitName}
+                  </option>
+                ))}
+            </select> */}
+          </div>
+          {/* FLOW FIELD */}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Flow
+                {/* <FaStarOfLife className="must" /> */}
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            {/* <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleFlowChange}
+              value={flow}
+            >
+              <option value="" disabled>
+                Select Flow
+              </option>
+              {kitList.length > 0 &&
+                kitList.map((list) => (
+                  <option key={list.id} value={list.kitName}>
+                    {list.kitName}
+                  </option>
+                ))}
+            </select> */}
+            <input
+              className="form-control form-sz mb-2"
+              value={flow}
+              onChange={(e) => setFlow(e.target.value)}
+            />
+          </div>
         </div>
+        <div className="mt-4">
+          <button
+            type="button"
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={getAllBinAllotmentReport}
+          >
+            Search
+          </button>
+          <button
+            type="button"
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={handleClearData}
+          >
+            Clear
+          </button>
+        </div>
+        {tableView && <>
+          <div className="mt-2">
+            <MaterialReactTable table={table} />
+          </div>
+        </>}
       </div>
 
 
