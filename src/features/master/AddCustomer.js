@@ -143,6 +143,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   const [docUploadedFiles, setDocUploadedFiles] = useState([]);
   const [responseCustomerCode, setResponseCustomerCode] = useState("");
   const [responseCustomerId, setResponseCustomerId] = useState("");
+  const [selectedSopFiles, setSelectedSopFiles] = useState([]);
+  const [selectedDocFiles, setSelectedDocFiles] = useState([]);
   const [newAddress, setNewAddress] = useState({
     gstRegistrationStatus: "",
     gstNumber: "",
@@ -1008,6 +1010,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             .then((uploadResponse) => {
               console.log("File Upload Response:", uploadResponse.data);
               // DOCUMENT FILE SAVE
+              setSelectedSopFiles("")
+
               const formData2 = new FormData();
               for (let i = 0; i < docUploadedFiles.length; i++) {
                 formData2.append("file", docUploadedFiles[i]);
@@ -1028,6 +1032,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   console.log("File Upload Response:", uploadResponse.data);
 
                   // addcustomer(true);
+                  setSelectedDocFiles("")
                   setAddressShow(true);
                   setErrors({});
                   toast.success(
@@ -1151,16 +1156,24 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   };
 
   const handleFileUpload = (files) => {
+    console.log("Test")
     setSopUploadedFiles(files);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
     }
+    const fileNames = Array.from(files).map((file) => file.name);
+    setSelectedSopFiles(fileNames);
   };
   const handleDocFileUpload = (files) => {
     setDocUploadedFiles(files);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
     }
+    const fileNames = Array.from(files).map((file) => file.name);
+    setSelectedDocFiles(fileNames);
+    console.log("LOCAL FILE NAME IS:", fileNames)
+    console.log("SELECTED DOC FILES IS:", selectedDocFiles)
+
   };
 
   return (
@@ -1244,9 +1257,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   name="customerCode"
                   onChange={handleCustomerChange}
                   readOnly
-                  // onInput={(e) => {
-                  //   e.target.value = e.target.value.toUpperCase();
-                  // }}
+                // onInput={(e) => {
+                //   e.target.value = e.target.value.toUpperCase();
+                // }}
                 />
                 {errors.customerCode && (
                   <div className="error-text">{errors.customerCode}</div>
@@ -1417,19 +1430,6 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          {/* OLD */}
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form mb-2"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
-          </div> */}
-
           <div className="col-lg-3 col-md-6">
             <input
               type="file"
@@ -1448,6 +1448,12 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </Button>
             </label>
             <br />
+            {/* Display the selected file names */}
+            {selectedSopFiles && selectedSopFiles.map((fileName, index) => (
+              <div style={{ font: "10px" }} key={index}>
+                {fileName}
+              </div>
+            ))}
             {errors.uploadError && (
               <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
@@ -1460,27 +1466,15 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          {/* OLD */}
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form mb-2"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
-          </div> */}
           <div className="col-lg-3 col-md-6">
             <input
               type="file"
-              id="file-input"
+              id="file-input1"
               multiple
               style={{ display: "none" }}
               onChange={(e) => handleDocFileUpload(e.target.files)}
             />
-            <label htmlFor="file-input">
+            <label htmlFor="file-input1">
               <Button
                 variant="contained"
                 component="span"
@@ -1490,6 +1484,12 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </Button>
             </label>
             <br />
+            {/* Display the selected file names */}
+            {selectedDocFiles && selectedDocFiles.map((fileName, index) => (
+              <div style={{ font: "10px" }} key={index}>
+                {fileName}
+              </div>
+            ))}
             {/* {errors.uploadError && (
             <span className="error-text mb-1">{errors.uploadFiles}</span>
           )} */}
