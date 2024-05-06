@@ -4,19 +4,15 @@ import CircleStackIcon from "@heroicons/react/24/outline/CircleStackIcon";
 import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../common/headerSlice";
-import ArrowDownTrayIcon from '@heroicons/react/24/outline/ArrowDownTrayIcon'
-import ShareIcon from '@heroicons/react/24/outline/ShareIcon'
-import EnvelopeIcon from '@heroicons/react/24/outline/EnvelopeIcon'
-import EllipsisVerticalIcon from '@heroicons/react/24/outline/EllipsisVerticalIcon'
-import ArrowPathIcon from '@heroicons/react/24/outline/ArrowPathIcon'
+import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
 // import { useState } from "react"
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { IoMdClose } from "react-icons/io";
 import { FaStarOfLife } from "react-icons/fa";
-import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "@mui/material/IconButton";
 import { Link } from 'react-router-dom';
+
+
 
 
 
@@ -317,13 +313,16 @@ function AllotmentReport() {
           flexWrap: 'wrap',
         }}
       >
-        <Button
+        {/* <Button
           //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
           onClick={handleExportData}
           startIcon={<FileDownloadIcon />}
         >
           Export All Data
-        </Button>
+        </Button> */}
+        <button className="btn btn-ghost btn-sm normal-case"
+          onClick={handleExportData}><CloudDownloadOutlinedIcon className="w-4 mr-2" />Download</button>
+
         {/* <Button
           disabled={table.getPrePaginationRowModel().rows.length === 0}
           //export all rows, including from the next page, (still respects filtering and sorting)
@@ -517,7 +516,7 @@ function AllotmentReport() {
           </button>
         </div>
         {tableView && <>
-          <div className="mt-2">
+          <div className="mt-4">
             <MaterialReactTable table={table} />
           </div>
         </>}
