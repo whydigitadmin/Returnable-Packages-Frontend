@@ -5,7 +5,6 @@ import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../common/headerSlice";
 import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
-// import { useState } from "react"
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { IoMdClose } from "react-icons/io";
@@ -18,7 +17,7 @@ import {
 } from 'material-react-table';
 import { Box, Button } from '@mui/material';
 import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
+import { mkConfig, generateCsv, download } from 'export-to-csv';
 import axios from "axios";
 
 const csvConfig = mkConfig({
@@ -26,33 +25,6 @@ const csvConfig = mkConfig({
     decimalSeparator: '.',
     useKeysAsHeaders: true,
 });
-
-const statsData = [
-    {
-        title: "New Users",
-        value: "34700",
-        icon: <UserGroupIcon className="w-8 h-8" />,
-        description: "↗︎ 2300 (22%)",
-    },
-    {
-        title: "Total Sales",
-        value: "34,545",
-        icon: <CreditCardIcon className="w-8 h-8" />,
-        description: "Current month",
-    },
-    {
-        title: "Pending Leads",
-        value: "450",
-        icon: <CircleStackIcon className="w-8 h-8" />,
-        description: "50 in hot leads",
-    },
-    {
-        title: "Active Users",
-        value: "5600",
-        icon: <UsersIcon className="w-8 h-8" />,
-        description: "↙ 300 (18%)",
-    },
-];
 
 const periodOptions = [
     { name: "Today", value: "TODAY" },
@@ -73,8 +45,6 @@ function EmitterStockLedgerReport() {
     const [kit, setKit] = useState("");
     const [flow, setFlow] = useState("");
     const [data, setData] = useState([]);
-    const [emitterList, setEmitterList] = useState([]);
-    const [kitList, setKitList] = useState([]);
     const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
     const [tableView, setTableView] = useState(false);
 
@@ -121,10 +91,6 @@ function EmitterStockLedgerReport() {
             startDate: null,
             endDate: null
         });
-        // updateDashboardPeriod({
-        //   startDate: new Date(),
-        //   endDate: new Date()
-        // });
         setEmitter("")
         setFlow("")
         setKit("")
@@ -150,7 +116,7 @@ function EmitterStockLedgerReport() {
         () => [
             {
                 accessorKey: "docId",
-                header: "Allotment No",
+                header: "Kit Code",
                 size: 50,
                 muiTableHeadCellProps: {
                     align: "center",
@@ -161,7 +127,7 @@ function EmitterStockLedgerReport() {
             },
             {
                 accessorKey: "docDate",
-                header: "Alloted Date",
+                header: "Opening Bal",
                 size: 50,
                 muiTableHeadCellProps: {
                     align: "center",
@@ -172,7 +138,7 @@ function EmitterStockLedgerReport() {
             },
             {
                 accessorKey: "binReqNo",
-                header: "Req No",
+                header: "Received QTY",
                 size: 50,
                 muiTableHeadCellProps: {
                     align: "center",
@@ -183,7 +149,7 @@ function EmitterStockLedgerReport() {
             },
             {
                 accessorKey: "binReqDate",
-                header: "Req Date",
+                header: "Dispatch QTY",
                 size: 50,
                 muiTableHeadCellProps: {
                     align: "center",
@@ -195,7 +161,7 @@ function EmitterStockLedgerReport() {
 
             {
                 accessorKey: "emitter",
-                header: "Emitter",
+                header: "Closing QTY",
                 size: 50,
                 muiTableHeadCellProps: {
                     align: "center",
@@ -205,50 +171,7 @@ function EmitterStockLedgerReport() {
                 },
             },
 
-            {
-                accessorKey: "flow",
-                header: "Flow",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "kitCode",
-                header: "Kit",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "reqKitQty",
-                header: "Req QTY",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "allotkKitQty",
-                header: "Alloted QTY",
-                size: 50,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
+
         ],
         []
     );
@@ -318,171 +241,122 @@ function EmitterStockLedgerReport() {
 
     return (
         <>
-            <div className="card w-full p-6 bg-base-100 shadow-xl">
-                <div className="d-flex justify-content-end">
-                    <Link to="/app/reports">
-                        <IoMdClose
-                            className="cursor-pointer w-8 h-8 mb-3"
-                        />
-                    </Link>
-                </div>
-                <div className="row">
-                    {/* DATE FIELD */}
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        <label className="label">
-                            <span
-                                className={
-                                    "label-text label-font-size text-base-content d-flex flex-row"
-                                }
-                            >
-                                Select Date
-                                <FaStarOfLife className="must" />
-                            </span>
-                        </label>
+            <div className="container-sm">
+                <div className="card w-full p-6 bg-base-100 shadow-xl">
+                    <div className="d-flex justify-content-end">
+                        <Link to="/app/emitterLanding">
+                            <IoMdClose
+                                className="cursor-pointer w-8 h-8 mb-3"
+                            />
+                        </Link>
                     </div>
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        <Datepicker
-                            containerClassName="datesize"
-                            value={dateValue}
-                            theme={"light"}
-                            inputClassName="input input-bordered datesize p-3"
-                            popoverDirection={"down"}
-                            toggleClassName="invisible"
-                            onChange={handleDatePickerValueChange}
-                            showShortcuts={true}
-                            primaryColor={"white"}
-                        />
+                    <div className="row">
+                        {/* DATE FIELD */}
+                        <div className="col-lg-3 col-md-6 mb-2">
+                            <label className="label">
+                                <span
+                                    className={
+                                        "label-text label-font-size text-base-content d-flex flex-row"
+                                    }
+                                >
+                                    Select Date
+                                    <FaStarOfLife className="must" />
+                                </span>
+                            </label>
+                        </div>
+                        <div className="col-lg-3 col-md-6 mb-2">
+                            <Datepicker
+                                containerClassName="datesize"
+                                value={dateValue}
+                                theme={"light"}
+                                inputClassName="input input-bordered datesize p-3"
+                                popoverDirection={"down"}
+                                toggleClassName="invisible"
+                                onChange={handleDatePickerValueChange}
+                                showShortcuts={true}
+                                primaryColor={"white"}
+                            />
+                        </div>
+                        {/* EMITTER FIELD */}
+                        {/* <div className="col-lg-3 col-md-6 mb-2">
+                            <label className="label">
+                                <span
+                                    className={
+                                        "label-text label-font-size text-base-content d-flex flex-row"
+                                    }
+                                >
+                                    Emitter
+                                </span>
+                            </label>
+                        </div>
+                        <div className="col-lg-3 col-md-6 mb-2">
+                            <input
+                                className="form-control form-sz mb-2"
+                                value={emitter}
+                                onChange={(e) => setEmitter(e.target.value)}
+                            />
+                        </div>
+                        <div className="col-lg-3 col-md-6 mb-2">
+                            <label className="label">
+                                <span
+                                    className={
+                                        "label-text label-font-size text-base-content d-flex flex-row"
+                                    }
+                                >
+                                    Kit
+                                </span>
+                            </label>
+                        </div>
+                        <div className="col-lg-3 col-md-6 mb-2">
+                            <input
+                                className="form-control form-sz mb-2"
+                                value={kit}
+                                onChange={(e) => setKit(e.target.value)}
+                            />
+                        </div>
+                        <div className="col-lg-3 col-md-6 mb-2">
+                            <label className="label">
+                                <span
+                                    className={
+                                        "label-text label-font-size text-base-content d-flex flex-row"
+                                    }
+                                >
+                                    Flow
+                                </span>
+                            </label>
+                        </div>
+                        <div className="col-lg-3 col-md-6 mb-2">
+                            <input
+                                className="form-control form-sz mb-2"
+                                value={flow}
+                                onChange={(e) => setFlow(e.target.value)}
+                            />
+                        </div> */}
                     </div>
-                    {/* EMITTER FIELD */}
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        <label className="label">
-                            <span
-                                className={
-                                    "label-text label-font-size text-base-content d-flex flex-row"
-                                }
-                            >
-                                Emitter
-                                {/* <FaStarOfLife className="must" /> */}
-                            </span>
-                        </label>
-                    </div>
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        {/* <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleEmitterChange}
-              value={emitter}
-            >
-              <option value="" disabled>
-                Select Emitter
-              </option>
-              {emitterList.length > 0 &&
-                emitterList.map((list) => (
-                  <option key={list.id} value={list.emitterName}>
-                    {list.emitterName}
-                  </option>
-                ))}
-            </select> */}
-                        <input
-                            className="form-control form-sz mb-2"
-                            value={emitter}
-                            onChange={(e) => setEmitter(e.target.value)}
-                        />
-                    </div>
-                    {/* KIT FIELD */}
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        <label className="label">
-                            <span
-                                className={
-                                    "label-text label-font-size text-base-content d-flex flex-row"
-                                }
-                            >
-                                Kit
-                                {/* <FaStarOfLife className="must" /> */}
-                            </span>
-                        </label>
-                    </div>
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        <input
-                            className="form-control form-sz mb-2"
-                            value={kit}
-                            onChange={(e) => setKit(e.target.value)}
-                        />
-                        {/* <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleKitChange}
-              value={kit}
-            >
-              <option value="" disabled>
-                Select Kit
-              </option>
-              {kitList.length > 0 &&
-                kitList.map((list) => (
-                  <option key={list.id} value={list.kitName}>
-                    {list.kitName}
-                  </option>
-                ))}
-            </select> */}
-                    </div>
-                    {/* FLOW FIELD */}
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        <label className="label">
-                            <span
-                                className={
-                                    "label-text label-font-size text-base-content d-flex flex-row"
-                                }
-                            >
-                                Flow
-                                {/* <FaStarOfLife className="must" /> */}
-                            </span>
-                        </label>
-                    </div>
-                    <div className="col-lg-3 col-md-6 mb-2">
-                        {/* <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleFlowChange}
-              value={flow}
-            >
-              <option value="" disabled>
-                Select Flow
-              </option>
-              {kitList.length > 0 &&
-                kitList.map((list) => (
-                  <option key={list.id} value={list.kitName}>
-                    {list.kitName}
-                  </option>
-                ))}
-            </select> */}
-                        <input
-                            className="form-control form-sz mb-2"
-                            value={flow}
-                            onChange={(e) => setFlow(e.target.value)}
-                        />
-                    </div>
-                </div>
-                <div className="mt-4">
-                    <button
-                        type="button"
-                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                        onClick={getAllBinAllotmentReport}
-                    >
-                        Search
-                    </button>
-                    <button
-                        type="button"
-                        className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                        onClick={handleClearData}
-                    >
-                        Clear
-                    </button>
-                </div>
-                {tableView && <>
                     <div className="mt-4">
-                        <MaterialReactTable table={table} />
+                        <button
+                            type="button"
+                            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                            onClick={getAllBinAllotmentReport}
+                        >
+                            Search
+                        </button>
+                        <button
+                            type="button"
+                            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                            onClick={handleClearData}
+                        >
+                            Clear
+                        </button>
                     </div>
-                </>}
+                    {tableView && <>
+                        <div className="mt-4">
+                            <MaterialReactTable table={table} />
+                        </div>
+                    </>}
+                </div>
+
             </div>
-
-
         </>
     );
 }
