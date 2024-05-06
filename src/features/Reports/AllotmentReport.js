@@ -16,6 +16,8 @@ import { IoMdClose } from "react-icons/io";
 import { FaStarOfLife } from "react-icons/fa";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
+import { Link } from 'react-router-dom';
+
 
 
 import {
@@ -185,8 +187,8 @@ function AllotmentReport() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "actions",
-        header: "Actions",
+        accessorKey: "docId",
+        header: "Allotment No",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -194,18 +196,17 @@ function AllotmentReport() {
         muiTableBodyCellProps: {
           align: "center",
         },
-        enableSorting: false,
-        enableColumnOrdering: false,
-        enableEditing: false,
-        Cell: ({ row }) => (
-          <div>
-            <IconButton
-            // onClick={() => handleEditRow(row)}
-            >
-              <EditIcon />
-            </IconButton>
-          </div>
-        ),
+      },
+      {
+        accessorKey: "docDate",
+        header: "Alloted Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
       },
       {
         accessorKey: "binReqNo",
@@ -229,28 +230,7 @@ function AllotmentReport() {
           align: "center",
         },
       },
-      {
-        accessorKey: "docId",
-        header: "Allotment No",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "docDate",
-        header: "Alloted Date",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+
       {
         accessorKey: "emitter",
         header: "Emitter",
@@ -381,14 +361,11 @@ function AllotmentReport() {
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
-
-
-
-          {/* <button className="btn btn-ghost btn-sm normal-case" onClick={handleClearData}><ArrowPathIcon className="w-4 mr-2" />Refresh</button> */}
-          <IoMdClose
-            // onClick={handleUserCreationClose}
-            className="cursor-pointer w-8 h-8 mb-3"
-          />
+          <Link to="/app/reports">
+            <IoMdClose
+              className="cursor-pointer w-8 h-8 mb-3"
+            />
+          </Link>
         </div>
         <div className="row">
           {/* DATE FIELD */}
