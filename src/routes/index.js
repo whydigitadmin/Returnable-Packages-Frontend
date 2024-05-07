@@ -134,8 +134,15 @@ const AllotmentReport = lazy(() =>
 const AssetTaggingReport = lazy(() =>
   import("../pages/protected/AssetTaggingReport")
 );
-const EmitterAllotmentReport = lazy(() => import("../pages/protected/EmitterAllotmentReport"));
-const EmitterStockLedgerReport = lazy(() => import("../pages/protected/EmitterStockLedgerReport"));
+const AssetStockReport = lazy(() =>
+  import("../pages/protected/AssetStockReport")
+);
+const EmitterAllotmentReport = lazy(() =>
+  import("../pages/protected/EmitterAllotmentReport")
+);
+const EmitterStockLedgerReport = lazy(() =>
+  import("../pages/protected/EmitterStockLedgerReport")
+);
 const routes = [
   {
     path: "/dashboard", // the url
@@ -515,9 +522,14 @@ const routes = [
     component: AssetTaggingReport,
   },
   {
+    path: "/assetstockreport",
+    component: AssetStockReport,
+  },
+  {
     path: "/emitterallotmentreport",
     component: EmitterAllotmentReport,
-  }, {
+  },
+  {
     path: "/emitterstockledgerreport",
     component: EmitterStockLedgerReport,
   },

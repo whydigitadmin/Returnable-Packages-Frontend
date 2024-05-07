@@ -78,6 +78,10 @@ function Reports() {
                   <LuFileSpreadsheet className="mt-1 me-1" />
                   <Link to="/app/assettaggingreport">Asset Tagging</Link>
                 </li>
+                <li className="d-flex flex-row mb-3 ">
+                  <LuFileSpreadsheet className="mt-1 me-1" />
+                  <Link to="/app/assetstockreport">Asset Stock Report</Link>
+                </li>
                 <li className="d-flex flex-row mb-3">
                   <LuFileSpreadsheet className="mt-1 me-1" />
                   MaterialRequest
