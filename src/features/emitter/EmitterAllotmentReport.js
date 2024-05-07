@@ -100,18 +100,20 @@ function EmitterAllotmentReport() {
   const [kit, setKit] = useState("");
   const [flow, setFlow] = useState("");
   const [data, setData] = useState([]);
-  const [emitterList, setEmitterList] = useState([]);
   const [kitList, setKitList] = useState([]);
+  const [flowList, setFlowList] = useState([]);
+  const [loginEmitterId, setLoginEmitterId] = React.useState(localStorage.getItem("emitterId"));
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [tableView, setTableView] = useState(false);
 
   useEffect(() => {
+    handleClearData();
   }, []);
 
-  const getAllBinAllotmentReport = async () => {
+  const getAllBinAllotmentReportByEmitterId = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getCustomizedAllotmentDetails?emitter=${emitter}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomizedAllotmentDetails?emitter=${loginEmitterId}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
       );
       if (response.status === 200) {
         const binAllotmentVO = response.data.paramObjectsMap.binAllotmentVO;
@@ -160,12 +162,10 @@ function EmitterAllotmentReport() {
   //   );
   // };
 
-  const handleEmitterChange = (e) => {
-    setEmitter(e.target.value)
-  }
-  const handleKitChange = (e) => {
-    setKit(e.target.value)
-  }
+
+  // const handleKitChange = (e) => {
+  //   setKit(e.target.value)
+  // }
 
   const columns = useMemo(
     () => [
@@ -382,7 +382,7 @@ function EmitterAllotmentReport() {
               />
             </div>
             {/* EMITTER FIELD */}
-            <div className="col-lg-3 col-md-6 mb-2">
+            {/* <div className="col-lg-3 col-md-6 mb-2">
               <label className="label">
                 <span
                   className={
@@ -390,32 +390,31 @@ function EmitterAllotmentReport() {
                   }
                 >
                   Emitter
-                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
             <div className="col-lg-3 col-md-6 mb-2">
-              {/* <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleEmitterChange}
-              value={emitter}
-            >
-              <option value="" disabled>
-                Select Emitter
-              </option>
-              {emitterList.length > 0 &&
+              <select
+                className="form-select form-sz w-full mb-2"
+                onChange={handleEmitterChange}
+                value={emitter}
+              >
+                <option value="" disabled>
+                  Select Emitter
+                </option>
+                {emitterList.length > 0 &&
                 emitterList.map((list) => (
                   <option key={list.id} value={list.emitterName}>
                     {list.emitterName}
                   </option>
                 ))}
-            </select> */}
+              </select>
               <input
                 className="form-control form-sz mb-2"
                 value={emitter}
                 onChange={(e) => setEmitter(e.target.value)}
               />
-            </div>
+            </div> */}
             {/* KIT FIELD */}
             <div className="col-lg-3 col-md-6 mb-2">
               <label className="label">
@@ -430,26 +429,21 @@ function EmitterAllotmentReport() {
               </label>
             </div>
             <div className="col-lg-3 col-md-6 mb-2">
-              <input
-                className="form-control form-sz mb-2"
-                value={kit}
+              <select
+                className="form-select form-sz w-full mb-2"
                 onChange={(e) => setKit(e.target.value)}
-              />
-              {/* <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleKitChange}
-              value={kit}
-            >
-              <option value="" disabled>
-                Select Kit
-              </option>
-              {kitList.length > 0 &&
+                value={kit}
+              >
+                <option value="" disabled>
+                  Select Kit
+                </option>
+                {/* {kitList.length > 0 &&
                 kitList.map((list) => (
                   <option key={list.id} value={list.kitName}>
                     {list.kitName}
                   </option>
-                ))}
-            </select> */}
+                ))} */}
+              </select>
             </div>
             {/* FLOW FIELD */}
             <div className="col-lg-3 col-md-6 mb-2">
@@ -465,33 +459,28 @@ function EmitterAllotmentReport() {
               </label>
             </div>
             <div className="col-lg-3 col-md-6 mb-2">
-              {/* <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleFlowChange}
-              value={flow}
-            >
-              <option value="" disabled>
-                Select Flow
-              </option>
-              {kitList.length > 0 &&
+              <select
+                className="form-select form-sz w-full mb-2"
+                onChange={(e) => setFlow(e.target.value)}
+                value={flow}
+              >
+                <option value="" disabled>
+                  Select Flow
+                </option>
+                {/* {kitList.length > 0 &&
                 kitList.map((list) => (
                   <option key={list.id} value={list.kitName}>
                     {list.kitName}
                   </option>
-                ))}
-            </select> */}
-              <input
-                className="form-control form-sz mb-2"
-                value={flow}
-                onChange={(e) => setFlow(e.target.value)}
-              />
+                ))} */}
+              </select>
             </div>
           </div>
           <div className="mt-4">
             <button
               type="button"
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              onClick={getAllBinAllotmentReport}
+              onClick={getAllBinAllotmentReportByEmitterId}
             >
               Search
             </button>

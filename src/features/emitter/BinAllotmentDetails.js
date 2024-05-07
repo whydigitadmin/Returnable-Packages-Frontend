@@ -72,6 +72,7 @@ export const BinAllotmentDetails = () => {
   const [allotedBinData, setAllotedBinData] = React.useState([]);
   const [userAddressData, setUserAddressData] = React.useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [loginUserId, setLoginUserId] = React.useState(localStorage.getItem("userId"));
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [viewAllotedBins, setViewAllotedBins] = useState(false);
@@ -114,14 +115,13 @@ export const BinAllotmentDetails = () => {
 
   useEffect(() => {
     getAllBinRequest();
-    // getAllBinAllotmentData();
-    console.log("selected row id is:", selectedRowId)
+    // console.log("selected row id is:", selectedRowId)
   }, [selectedRowId]);
 
   const getAllBinRequest = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequestreportByOrgId?OrgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequestreportByOrgId?OrgId=${orgId}&userId=${loginUserId}`
       );
 
       if (response.status === 200) {
@@ -188,17 +188,6 @@ export const BinAllotmentDetails = () => {
         },
       },
       {
-        accessorKey: "emitter",
-        header: "Emitter",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
         accessorKey: "reqDate",
         header: "Req Date",
         size: 50,
@@ -209,6 +198,18 @@ export const BinAllotmentDetails = () => {
           align: "center",
         },
       },
+      {
+        accessorKey: "emitter",
+        header: "Emitter",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+
       {
         accessorKey: "flow",
         header: "Flow",
@@ -222,7 +223,7 @@ export const BinAllotmentDetails = () => {
       },
       {
         accessorKey: "kitCode",
-        header: "Kit",
+        header: "Kit No",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -265,23 +266,23 @@ export const BinAllotmentDetails = () => {
     columns,
   });
 
-  const getAllBinAllotmentData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
-      );
+  // const getAllBinAllotmentData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
+  //     );
 
-      if (response.status === 200) {
-        setAllotedBinData(response.data.paramObjectsMap.binAllotmentNewVO.reverse());
-        console.log(
-          "Response from API is:",
-          response.data.paramObjectsMap.binAllotmentNewVO
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //     if (response.status === 200) {
+  //       setAllotedBinData(response.data.paramObjectsMap.binAllotmentNewVO.reverse());
+  //       console.log(
+  //         "Response from API is:",
+  //         response.data.paramObjectsMap.binAllotmentNewVO
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const allotedTable = useMaterialReactTable({
     data,
