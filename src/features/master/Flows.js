@@ -170,6 +170,17 @@ function Flows() {
         },
       },
       {
+        accessorKey: "warehouseLocation",
+        header: "Warehouse",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
         accessorKey: "emitter",
         header: "Emitter",
         size: 50,

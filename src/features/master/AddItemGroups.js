@@ -380,14 +380,17 @@ function AddItemGroups({ addItem }) {
             theme: "colored",
           });
         } else {
-
           console.log("Kit created with successfully:", response.data);
 
-
-          toast.success("Kit " + response.data.paramObjectsMap.KitVO.kitCode + " created successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          toast.success(
+            "Kit " +
+              response.data.paramObjectsMap.KitVO.kitCode +
+              " created successfully!",
+            {
+              autoClose: 2000,
+              theme: "colored",
+            }
+          );
           // Add any further actions you want to take after successful kit creation
           setTimeout(() => {
             handleItem();
@@ -481,7 +484,7 @@ function AddItemGroups({ addItem }) {
         </div>
         <div className="row">
           <div className="col-lg-3 col-md-6">
-            <label className="label mt-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -494,7 +497,7 @@ function AddItemGroups({ addItem }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <input
-              className="form-control form-sz mb-2 p-2 mt-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 uppercase"
+              className="form-control form-sz mb-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 uppercase"
               name="kitCode"
               type="text"
               value={kitCode}
@@ -633,13 +636,13 @@ function AddItemGroups({ addItem }) {
                               <FaSave
                                 onClick={() => handleSaveRow(index)}
                                 className="cursor-pointer w-6 h-6"
-                              // style={{ marginLeft: 10 }}
+                                // style={{ marginLeft: 10 }}
                               />
                             ) : (
                               <FaEdit
                                 onClick={() => handleToggleEdit(index)}
                                 className="cursor-pointer w-6 h-6"
-                              // style={{ marginLeft: 10 }}
+                                // style={{ marginLeft: 10 }}
                               />
                             )}
                           </div>
@@ -653,7 +656,7 @@ function AddItemGroups({ addItem }) {
                             <FaTrash
                               onClick={() => handleDeleteRow(index)}
                               className="cursor-pointer w-6 h-6"
-                            // style={{ marginLeft: 10 }}
+                              // style={{ marginLeft: 10 }}
                             />
                           </div>
                         </div>
