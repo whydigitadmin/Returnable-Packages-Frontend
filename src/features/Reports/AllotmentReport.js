@@ -5,7 +5,6 @@ import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../common/headerSlice";
 import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
-// import { useState } from "react"
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { IoMdClose } from "react-icons/io";
@@ -65,9 +64,13 @@ const periodOptions = [
 
 function AllotmentReport() {
   const dispatch = useDispatch();
+  // const [dateValue, setDateValue] = useState({
+  //   startDate: new Date(),
+  //   endDate: new Date()
+  // });
   const [dateValue, setDateValue] = useState({
-    startDate: new Date(),
-    endDate: new Date()
+    startDate: "",
+    endDate: ""
   });
   const [emitter, setEmitter] = useState("");
   const [kit, setKit] = useState("");
@@ -75,14 +78,63 @@ function AllotmentReport() {
   const [data, setData] = useState([]);
   const [emitterList, setEmitterList] = useState([]);
   const [kitList, setKitList] = useState([]);
+  const [flowList, setFlowList] = useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [tableView, setTableView] = useState(false);
 
 
 
   useEffect(() => {
+    getAllEmitter()
+    getAllKit()
+    getAllFlow()
   }, []);
 
+  const getAllEmitter = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/customers?orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        const newData = response.data.paramObjectsMap.customersVO.map(item => ({
+          displayName: item.displayName,
+        }));
+        setEmitterList([...data, ...newData]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getAllKit = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit?orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        const newData = response.data.paramObjectsMap.KitVO.map(item => ({
+          kitCode: item.kitCode,
+        }));
+        setKitList([...data, ...newData]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getAllFlow = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit?orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        const newData = response.data.paramObjectsMap.KitVO.map(item => ({
+          flow: item.kitCode,
+        }));
+        setFlowList([...data, ...newData]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const getAllBinAllotmentReport = async () => {
     try {
       const response = await axios.get(
@@ -258,10 +310,18 @@ function AllotmentReport() {
     const csv = generateCsv(csvConfig)(rowData);
     download(csvConfig)(csv);
   };
+
   const handleExportData = () => {
     const csv = generateCsv(csvConfig)(data);
-    download(csvConfig)(csv);
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    const filename = `AllBinAllotment_${currentDate}.csv`;
+    download({ ...csvConfig, filename })(csv);
   };
+
 
   const table = useMaterialReactTable({
     columns,
@@ -315,7 +375,6 @@ function AllotmentReport() {
     ),
   });
 
-
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
@@ -362,12 +421,11 @@ function AllotmentReport() {
                 }
               >
                 Emitter
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            {/* <select
+            <select
               className="form-select form-sz w-full mb-2"
               onChange={handleEmitterChange}
               value={emitter}
@@ -377,16 +435,11 @@ function AllotmentReport() {
               </option>
               {emitterList.length > 0 &&
                 emitterList.map((list) => (
-                  <option key={list.id} value={list.emitterName}>
-                    {list.emitterName}
+                  <option key={list.id} value={list.displayName}>
+                    {list.displayName}
                   </option>
                 ))}
-            </select> */}
-            <input
-              className="form-control form-sz mb-2"
-              value={emitter}
-              onChange={(e) => setEmitter(e.target.value)}
-            />
+            </select>
           </div>
           {/* KIT FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
@@ -397,17 +450,11 @@ function AllotmentReport() {
                 }
               >
                 Kit
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              value={kit}
-              onChange={(e) => setKit(e.target.value)}
-            />
-            {/* <select
+            <select
               className="form-select form-sz w-full mb-2"
               onChange={handleKitChange}
               value={kit}
@@ -417,11 +464,11 @@ function AllotmentReport() {
               </option>
               {kitList.length > 0 &&
                 kitList.map((list) => (
-                  <option key={list.id} value={list.kitName}>
-                    {list.kitName}
+                  <option key={list.id} value={list.kitCode}>
+                    {list.kitCode}
                   </option>
                 ))}
-            </select> */}
+            </select>
           </div>
           {/* FLOW FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
@@ -432,31 +479,25 @@ function AllotmentReport() {
                 }
               >
                 Flow
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            {/* <select
+            <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleFlowChange}
+              onChange={(e) => setFlow(e.target.value)}
               value={flow}
             >
               <option value="" disabled>
                 Select Flow
               </option>
-              {kitList.length > 0 &&
-                kitList.map((list) => (
-                  <option key={list.id} value={list.kitName}>
-                    {list.kitName}
+              {flowList.length > 0 &&
+                flowList.map((list) => (
+                  <option key={list.id} value={list.flow}>
+                    {list.flow}
                   </option>
                 ))}
-            </select> */}
-            <input
-              className="form-control form-sz mb-2"
-              value={flow}
-              onChange={(e) => setFlow(e.target.value)}
-            />
+            </select>
           </div>
         </div>
         <div className="mt-4">

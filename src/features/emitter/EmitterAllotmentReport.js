@@ -19,35 +19,6 @@ import { Box, Button } from '@mui/material';
 import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
 import axios from "axios";
 
-
-const columnHelper = createMRTColumnHelper();
-
-// const columns = [
-//   columnHelper.accessor('id', {
-//     header: 'ID',
-//     size: 40,
-//   }),
-//   columnHelper.accessor('firstName', {
-//     header: 'First Name',
-//     size: 120,
-//   }),
-//   columnHelper.accessor('lastName', {
-//     header: 'Last Name',
-//     size: 120,
-//   }),
-//   columnHelper.accessor('company', {
-//     header: 'Company',
-//     size: 300,
-//   }),
-//   columnHelper.accessor('city', {
-//     header: 'City',
-//   }),
-//   columnHelper.accessor('country', {
-//     header: 'Country',
-//     size: 220,
-//   }),
-// ];
-
 const csvConfig = mkConfig({
   fieldSeparator: ',',
   decimalSeparator: '.',
@@ -92,11 +63,14 @@ const periodOptions = [
 
 function EmitterAllotmentReport() {
   const dispatch = useDispatch();
+  // const [dateValue, setDateValue] = useState({
+  //   startDate: new Date(),
+  //   endDate: new Date()
+  // });
   const [dateValue, setDateValue] = useState({
-    startDate: new Date(),
-    endDate: new Date()
+    startDate: "",
+    endDate: ""
   });
-  const [emitter, setEmitter] = useState("");
   const [kit, setKit] = useState("");
   const [flow, setFlow] = useState("");
   const [data, setData] = useState([]);
@@ -108,12 +82,43 @@ function EmitterAllotmentReport() {
 
   useEffect(() => {
     handleClearData();
+    getAllFlow()
+    getAllKit()
   }, []);
-
+  const getAllKit = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getKitDetailsByEmitterId?emitterId=${loginEmitterId}&orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        const newData = response.data.paramObjectsMap.flow.map(item => ({
+          kitcode: item.kitcode,
+        }));
+        setKitList([...data, ...newData]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getAllFlow = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow?emitterId=${loginEmitterId}&orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        const newData = response.data.paramObjectsMap.flowVO.map(item => ({
+          flowName: item.flowName,
+        }));
+        setFlowList([...data, ...newData]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const getAllBinAllotmentReportByEmitterId = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getCustomizedAllotmentDetails?emitter=${loginEmitterId}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getCustomizedAllotmentDetailsByEmitter?emitterId=${loginEmitterId}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
       );
       if (response.status === 200) {
         const binAllotmentVO = response.data.paramObjectsMap.binAllotmentVO;
@@ -145,10 +150,9 @@ function EmitterAllotmentReport() {
   }
   const handleClearData = () => {
     setDateValue({
-      startDate: null,
-      endDate: null
+      startDate: "",
+      endDate: ""
     });
-    setEmitter("")
     setFlow("")
     setKit("")
     setTableView(false)
@@ -162,10 +166,6 @@ function EmitterAllotmentReport() {
   //   );
   // };
 
-
-  // const handleKitChange = (e) => {
-  //   setKit(e.target.value)
-  // }
 
   const columns = useMemo(
     () => [
@@ -279,10 +279,18 @@ function EmitterAllotmentReport() {
     const csv = generateCsv(csvConfig)(rowData);
     download(csvConfig)(csv);
   };
+
   const handleExportData = () => {
     const csv = generateCsv(csvConfig)(data);
-    download(csvConfig)(csv);
+    const currentDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    });
+    const filename = `BinAllotment_${loginEmitterId}_${currentDate}.csv`;
+    download({ ...csvConfig, filename })(csv);
   };
+
 
   const table = useMaterialReactTable({
     columns,
@@ -300,44 +308,8 @@ function EmitterAllotmentReport() {
           flexWrap: 'wrap',
         }}
       >
-        {/* <Button
-          //export all data that is currently in the table (ignore pagination, sorting, filtering, etc.)
-          onClick={handleExportData}
-          startIcon={<FileDownloadIcon />}
-        >
-          Export All Data
-        </Button> */}
         <button className="btn btn-ghost btn-sm normal-case"
           onClick={handleExportData}><CloudDownloadOutlinedIcon className="w-4 mr-2" />Download</button>
-
-        {/* <Button
-          disabled={table.getPrePaginationRowModel().rows.length === 0}
-          //export all rows, including from the next page, (still respects filtering and sorting)
-          onClick={() =>
-            handleExportRows(table.getPrePaginationRowModel().rows)
-          }
-          startIcon={<FileDownloadIcon />}
-        >
-          Export All Rows
-        </Button>
-        <Button
-          disabled={table.getRowModel().rows.length === 0}
-          //export all rows as seen on the screen (respects pagination, sorting, filtering, etc.)
-          onClick={() => handleExportRows(table.getRowModel().rows)}
-          startIcon={<FileDownloadIcon />}
-        >
-          Export Page Rows
-        </Button>
-        <Button
-          disabled={
-            !table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()
-          }
-          //only export selected rows
-          onClick={() => handleExportRows(table.getSelectedRowModel().rows)}
-          startIcon={<FileDownloadIcon />}
-        >
-          Export Selected Rows
-        </Button> */}
       </Box>
     ),
   });
@@ -381,40 +353,6 @@ function EmitterAllotmentReport() {
                 primaryColor={"white"}
               />
             </div>
-            {/* EMITTER FIELD */}
-            {/* <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Emitter
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <select
-                className="form-select form-sz w-full mb-2"
-                onChange={handleEmitterChange}
-                value={emitter}
-              >
-                <option value="" disabled>
-                  Select Emitter
-                </option>
-                {emitterList.length > 0 &&
-                emitterList.map((list) => (
-                  <option key={list.id} value={list.emitterName}>
-                    {list.emitterName}
-                  </option>
-                ))}
-              </select>
-              <input
-                className="form-control form-sz mb-2"
-                value={emitter}
-                onChange={(e) => setEmitter(e.target.value)}
-              />
-            </div> */}
             {/* KIT FIELD */}
             <div className="col-lg-3 col-md-6 mb-2">
               <label className="label">
@@ -424,7 +362,6 @@ function EmitterAllotmentReport() {
                   }
                 >
                   Kit
-                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
@@ -437,12 +374,12 @@ function EmitterAllotmentReport() {
                 <option value="" disabled>
                   Select Kit
                 </option>
-                {/* {kitList.length > 0 &&
-                kitList.map((list) => (
-                  <option key={list.id} value={list.kitName}>
-                    {list.kitName}
-                  </option>
-                ))} */}
+                {kitList.length > 0 &&
+                  kitList.map((list) => (
+                    <option key={list.id} value={list.kitcode}>
+                      {list.kitcode}
+                    </option>
+                  ))}
               </select>
             </div>
             {/* FLOW FIELD */}
@@ -454,7 +391,6 @@ function EmitterAllotmentReport() {
                   }
                 >
                   Flow
-                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
@@ -467,12 +403,12 @@ function EmitterAllotmentReport() {
                 <option value="" disabled>
                   Select Flow
                 </option>
-                {/* {kitList.length > 0 &&
-                kitList.map((list) => (
-                  <option key={list.id} value={list.kitName}>
-                    {list.kitName}
-                  </option>
-                ))} */}
+                {flowList.length > 0 &&
+                  flowList.map((list) => (
+                    <option key={list.id} value={list.flowName}>
+                      {list.flowName}
+                    </option>
+                  ))}
               </select>
             </div>
           </div>
