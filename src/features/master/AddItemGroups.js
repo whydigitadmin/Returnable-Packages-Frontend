@@ -11,7 +11,7 @@ import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function AddItemGroups({ addItem }) {
+function AddItemGroups({ addItem, kitEditId }) {
   const [openAssetModal, setOpenAssetModal] = React.useState(false);
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
@@ -65,6 +65,10 @@ function AddItemGroups({ addItem }) {
   };
 
   useEffect(() => {
+    if (kitEditId) {
+      getAllKitData();
+      console.log("kitEditId", kitEditId);
+    }
     getAllAssetCategory();
   }, []);
 
@@ -83,6 +87,25 @@ function AddItemGroups({ addItem }) {
     setSelectedAssetCategory(false);
     setSelectedName(false);
     setSelectedCode(false);
+  };
+
+  const getAllKitData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getallkit`
+      );
+
+      if (response.status === 200) {
+        const kits = response.data.paramObjectsMap.KitVO;
+        console.log("kits", response.data.paramObjectsMap.KitVO);
+
+        const kitCodes = kits.map((kit) => kit);
+        // setKitCode(kitCodes);
+        console.log("code", kitCodes);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
   // const handleKitId = (event) => {
   //   setKitCode(event.target.value);
@@ -407,9 +430,73 @@ function AddItemGroups({ addItem }) {
       setErrors(errors);
     }
   };
+  const handleUpdateKit = async () => {
+    const errors = {};
+    if (!kitCode) {
+      errors.kitCode = "Kit Id is required";
+    }
+    if (!partQuantity) {
+      errors.partQuantity = "Part Quantity is required";
+    }
+    if (kitAssetDTO.length === 0) {
+      errors.kitAssetDTO = "Please add at least one asset detail";
+    }
+
+    if (Object.keys(errors).length === 0) {
+      try {
+        const kitData = {
+          kitCode,
+          partQuantity,
+          kitAssetDTO,
+          orgId,
+          // Add other properties from your form if needed
+        };
+        const response = await axios.put(
+          `${process.env.REACT_APP_API_URL}/api/master/updateKit`,
+          kitData
+        );
+        if (response.data.status === "Error" || !response.data.status) {
+          console.error("Error creating kit:", response.data.paramObjectsMap);
+          toast.error("Kit creation failed!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        } else {
+          console.log("Kit created with successfully:", response.data);
+
+          toast.success(
+            "Kit " +
+              response.data.paramObjectsMap.KitVO.kitCode +
+              " created successfully!",
+            {
+              autoClose: 2000,
+              theme: "colored",
+            }
+          );
+          // Add any further actions you want to take after successful kit creation
+          setTimeout(() => {
+            handleItem();
+          }, 3000);
+        }
+      } catch (error) {
+        console.error("Error creating kit:", error);
+        toast.error("Kit creation failed!", {
+          autoClose: 2000,
+          theme: "colored",
+        });
+      }
+    } else {
+      setErrors(errors);
+    }
+  };
 
   const handleItem = () => {
-    addItem(false);
+    if (kitCode || partQuantity || kitAssetDTO > 0) {
+      handleAssetOpen(true);
+    } else {
+      handleAssetOpen(false);
+      addItem(false);
+    }
   };
 
   const handleDeleteRow = (index) => {
@@ -477,65 +564,66 @@ function AddItemGroups({ addItem }) {
 
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
-          <IoMdClose
-            onClick={handleItem}
-            className="cursor-pointer w-8 h-8 mb-3"
-          />
+          <IoMdClose onClick={handleItem} className="cursor-pointer w-8 h-8" />
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Kit Id
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <input
-              className="form-control form-sz mb-2 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500 uppercase"
-              name="kitCode"
-              type="text"
-              value={kitCode}
-              onInput={handleKitId}
-              placeholder={"PLS0000/MMYY/0000"}
-              required
-            />
-            {errors.kitCode && (
-              <span className="error-text">{errors.kitCode}</span>
-            )}
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Part Quantity
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              name="partQuantity"
-              type="number"
-              value={partQuantity}
-              onChange={handlePartQuantityChange}
-            />
-            {errors.partQuantity && (
-              <span className="error-text">{errors.partQuantity}</span>
-            )}
+          <div className="col-lg-9 col-md-12">
+            <div className="row">
+              <div className="col-lg-3 col-md-6 mt-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Kit Id
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mt-2">
+                <input
+                  className="form-control form-sz mb-2 p-2 uppercase"
+                  name="kitCode"
+                  type="text"
+                  value={kitCode}
+                  onInput={handleKitId}
+                  placeholder={"PLS0000/MMYY/0000"}
+                  required
+                />
+                {errors.kitCode && (
+                  <span className="error-text">{errors.kitCode}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-6 mt-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Part Quantity
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mt-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  name="partQuantity"
+                  type="number"
+                  value={partQuantity}
+                  onChange={handlePartQuantityChange}
+                />
+                {errors.partQuantity && (
+                  <span className="error-text">{errors.partQuantity}</span>
+                )}
+              </div>
+            </div>
           </div>
 
           {/* </div> */}
-          <div className="col-lg-12 col-md-12 text-right">
+          <div className="col-lg-3 col-md-12 text-right">
             <div className="d-flex justify-content-end">
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -670,23 +758,34 @@ function AddItemGroups({ addItem }) {
             </div>
           </div>
         )}
-        <div className="d-flex flex-row mt-3">
-          <button
-            type="button"
-            onClick={handleKitCreation}
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleItem}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
-        </div>
-        <br></br>
+        {kitEditId ? (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleUpdateKit}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Update
+            </button>
+          </div>
+        ) : (
+          <div className="d-flex flex-row mt-3">
+            <button
+              type="button"
+              onClick={handleKitCreation}
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Save
+            </button>
+            <button
+              type="button"
+              onClick={handleItem}
+              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            >
+              Cancel
+            </button>
+          </div>
+        )}
       </div>
       <Dialog
         fullWidth={true}

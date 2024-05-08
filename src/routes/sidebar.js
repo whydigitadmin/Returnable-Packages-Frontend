@@ -5,7 +5,7 @@ const submenuIconClasses = `h-5 w-5`;
 
 const routes = [
   {
-    path: "/app/dashboard",
+    path: "/app/welcome",
     icon: (
       <img
         src="/dashboard.png"

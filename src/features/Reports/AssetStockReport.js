@@ -28,7 +28,7 @@ function AssetStockReport() {
   const getAllAssetStockReport = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAvailableAssetDetails`
+        `${process.env.REACT_APP_API_URL}/api/master/getAvailableAssetDetails?orgId=${orgId}`
       );
       if (response.status === 200) {
         const assetDetails = response.data.paramObjectsMap.assetDetails;

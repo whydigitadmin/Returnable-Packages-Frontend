@@ -63,8 +63,8 @@ function WelcomeEmitter() {
           response.data.paramObjectsMap.userVO.customersVO.displayName
         );
         localStorage.setItem(
-          "emitterId",
-          response.data.paramObjectsMap.userVO.customersVO.id
+          "displayName",
+          response.data.paramObjectsMap.userVO.customersVO.displayName
         );
         localStorage.setItem(
           "emitterId",
@@ -112,8 +112,8 @@ function WelcomeEmitter() {
                 {userDetail.lastLogin === null
                   ? moment().format("MMMM Do YYYY, h:mm:ss a")
                   : moment(userDetail.lastLogin).format(
-                    "MMMM Do YYYY, h:mm:ss a"
-                  )}
+                      "MMMM Do YYYY, h:mm:ss a"
+                    )}
               </span>
             </p>
             {/* <p className="text-2xl ms-2">Tue</p>
@@ -192,7 +192,7 @@ function WelcomeEmitter() {
                 <Link to="/app/IssueReq">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                  // style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -219,7 +219,7 @@ function WelcomeEmitter() {
                 <Link to="/app/EmitterInwardNew">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                  // style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -242,7 +242,7 @@ function WelcomeEmitter() {
                 <Link to="/app/BinOutward">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                  // style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -269,7 +269,7 @@ function WelcomeEmitter() {
                 <Link to="/app/StockAdjustment">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                  // style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -297,7 +297,7 @@ function WelcomeEmitter() {
                 <Link to="/app/emitterstockledgerreport">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                  // style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -324,7 +324,7 @@ function WelcomeEmitter() {
                 <Link to="/app/emitterallotmentreport">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                  // style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">
@@ -353,7 +353,7 @@ function WelcomeEmitter() {
                 <Link to="/app/StockAdjustment">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-                  // style={{ width: "14rem" }}
+                    // style={{ width: "14rem" }}
                   >
                     <div className="">
                       <div className="d-flex flex-row">

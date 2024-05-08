@@ -63,7 +63,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const [binDocId, setBinDocId] = useState("");
   const [downloadDocId, setDownloadDocId] = useState(null);
 
-
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -108,8 +107,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
 
   const handleDownloadClick = (selectedAllotNo) => {
     setOpenDialog(true);
-    setDownloadDocId(selectedAllotNo)
-    console.log("Download Doc ID:", selectedAllotNo)
+    setDownloadDocId(selectedAllotNo);
+    console.log("Download Doc ID:", selectedAllotNo);
   };
 
   const handleCloseDialog = () => {
@@ -214,7 +213,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const getStockBranch = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL
+        `${
+          process.env.REACT_APP_API_URL
         }/api/master/getAllotmentNo?orgid=${orgId}&emitterId=${localStorage.getItem(
           "emitterId"
         )}`
@@ -412,7 +412,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const getAllBinInward = async (selectedValue) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL
+        `${
+          process.env.REACT_APP_API_URL
         }/api/master/getAllBinInwardById?orgId=${orgId}&emitterid=${localStorage.getItem(
           "emitterId"
         )}`
@@ -450,7 +451,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const getAllPendingBinInward = async (selectedValue) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL
+        `${
+          process.env.REACT_APP_API_URL
         }/api/master/getWaitingBinInwardDetailsByEmitterAndOrgId?orgId=${orgId}&emitterid=${localStorage.getItem(
           "emitterId"
         )}`
@@ -507,7 +509,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
     if (Object.keys(errors).length === 0) {
       const formData = {
         binInwardDetailsDTO: tableFormData,
-        docId,
         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
         allotedQty,
         allotmentNo,
@@ -518,6 +519,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
         allotDate: allottedDate,
         orgId,
         emitterId: localStorage.getItem("emitterId"),
+        reqKitQty,
         returnQty: returnQty ? returnQty : 0,
         returnRemarks,
       };
@@ -577,6 +579,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
               console.log("File Upload Response:", uploadResponse.data);
               setAllotmentNo("");
               setSelectedFiles("");
+              getAllPendingBinInward();
+              // window.location.reload();
               // toast.success("Proof of Delivery Saved Successfully!", {
               //   autoClose: 2000,
               //   theme: "colored",
@@ -617,14 +621,12 @@ function EmitterInwardNew({ addInwardManifeast }) {
     getAllBinInward();
     setShowData(true);
     // setView3(true);
-    setView3(!view3)
+    setView3(!view3);
     setViewButton(false);
     setView2(false);
     // setView2(!view2)
     // setView1(false);
     setView1(!view1);
-
-
   };
   const handleFileUpload = (files) => {
     setUploadedFiles(files);
@@ -635,8 +637,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
     // Update the selectedFiles state with the array of file names
     setSelectedFiles(fileNames);
   };
-
-
 
   return (
     <>
@@ -685,11 +685,21 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       >
                         Allotment Date
                       </th>
-                      <th className="px-2 text-black border text-center">Flow</th>
-                      <th className="px-2 text-black border text-center">Kit No</th>
-                      <th className="px-2 text-black border text-center">Req Qty</th>
-                      <th className="px-2 text-black border text-center">Alloted QTY</th>
-                      <th className="px-2 text-black border text-center">Issue Manifest</th>
+                      <th className="px-2 text-black border text-center">
+                        Flow
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Kit No
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Req Qty
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Alloted QTY
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Issue Manifest
+                      </th>
                     </tr>
                   </thead>
                   {/* Table body */}
@@ -716,11 +726,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             </a>
                           </td>
                           <td className="border px-2 py-2 text-center">
-
                             {row.allotDate}
                           </td>
                           <td className="border px-2 py-2 text-center">
-
                             {row.flow}
                           </td>
                           <td className="border px-2 py-2 text-center">
@@ -731,7 +739,10 @@ function EmitterInwardNew({ addInwardManifeast }) {
                           </td>
                           <td className="border px-2 py-2 text-center">
                             {row.allotKitQty} (
-                            {((row.allotKitQty / row.reqKitQty) * 100).toFixed(2)}%)
+                            {((row.allotKitQty / row.reqKitQty) * 100).toFixed(
+                              2
+                            )}
+                            %)
                           </td>
                           <td
                             className="border px-2 py-2 text-center"
@@ -740,10 +751,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               cursor: "pointer",
                               width: "auto",
                               color: "blue",
-                              textAlign: "center"
+                              textAlign: "center",
                             }}
                             onClick={() => handleDownloadClick(row.allotNo)}
-
                           >
                             Download
                           </td>
@@ -1258,13 +1268,27 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       >
                         DocId
                       </th>
-                      <th className="px-2 text-black border text-center">DocDate</th>
-                      <th className="px-2 text-black border text-center">Allotment No</th>
-                      <th className="px-2 text-black border text-center">Allotment Date</th>
-                      <th className="px-2 text-black border text-center">Flow</th>
-                      <th className="px-2 text-black border text-center">Kit No</th>
-                      <th className="px-2 text-black border text-center">Req Qty</th>
-                      <th className="px-2 text-black border text-center">Alloted QTY</th>
+                      <th className="px-2 text-black border text-center">
+                        DocDate
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Allotment No
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Allotment Date
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Flow
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Kit No
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Req Qty
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Alloted QTY
+                      </th>
                       {/* <th className="px-2 py-2 bg-blue-500 text-white">
                  Return Qty
                </th> */}
@@ -1328,8 +1352,10 @@ function EmitterInwardNew({ addInwardManifeast }) {
                           </td>
                           <td className="border px-2 py-2 text-center">
                             {row.allotedQty} (
-                            {((row.allotedQty / row.reqKitQty) * 100).toFixed(2)}%)
-
+                            {((row.allotedQty / row.reqKitQty) * 100).toFixed(
+                              2
+                            )}
+                            %)
                           </td>
                         </tr>
                       ))}

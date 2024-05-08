@@ -31,12 +31,35 @@ function BinOutward() {
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
+  const [displayName, setDisplayName] = useState(
+    localStorage.getItem("displayName")
+  );
   const [errors, setErrors] = useState({});
   const [tableData, setTableData] = useState([]);
 
   useEffect(() => {
     getAddressById();
+    getOutwardDocId();
   }, []);
+
+  const getOutwardDocId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByBinOutward`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.binOutwardDocId);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleSelectedFlow = (event) => {
     const selectedId = event.target.value;
@@ -149,11 +172,11 @@ function BinOutward() {
 
     if (Object.keys(errors).length === 0) {
       const requestData = {
-        binOutwardDetails: tableData,
+        binOutwardDetailsDTO: tableData,
         createdBy: userName,
         destination,
         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-        emitter: userName,
+        emitter: displayName,
         emitterId,
         flow,
         kit,
@@ -175,6 +198,7 @@ function BinOutward() {
           setDestination("");
           setOutwardKitQty("");
           setErrors("");
+          getOutwardDocId();
           // toast.success("Outward Qty updated");
         })
         .catch((error) => {
