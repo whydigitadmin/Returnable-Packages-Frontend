@@ -274,7 +274,7 @@ const routes = [
     name: <span className="ml-2">Operational</span>,
     submenu: [
       {
-        path: "/app/itemGroup",
+        path: "/app/assetcategory",
         icon: (
           <img
             src="/asset.png"
@@ -283,7 +283,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span>Asset Group</span>,
+        name: <span>Asset Category</span>,
       },
       {
         path: "/app/items",

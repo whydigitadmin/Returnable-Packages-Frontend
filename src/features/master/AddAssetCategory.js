@@ -64,7 +64,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddItemSpecification({
+function AddAssetCategory({
   addItemSpecification,
   editItemSpecificationId,
 }) {
@@ -559,4 +559,4 @@ function AddItemSpecification({
   );
 }
 
-export default AddItemSpecification;
+export default AddAssetCategory;
