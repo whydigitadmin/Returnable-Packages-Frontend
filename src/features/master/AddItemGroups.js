@@ -187,13 +187,13 @@ function AddItemGroups({ addItem, kitEditId }) {
     getAssetIdByName(event.target.value);
   };
 
-  // const handleAsseCodeChange = (event) => {
+  // const handleAssetCodeChange = (event) => {
   //   const selectedAssetCodeId = event.target.value;
   //   setAssetCodeId(selectedAssetCodeId);
   //   setSelectedCode(true);
   // };
 
-  const handleAsseCodeChange = (event) => {
+  const handleAssetCodeChange = (event) => {
     const selectedAssetCodeId = event.target.value;
     // Check if the selected code already exists
     const codeExists = kitAssetDTO.some(
@@ -602,6 +602,31 @@ function AddItemGroups({ addItem, kitEditId }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
+                    Kit Description
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mt-2">
+                <textarea
+                  className="form-control form-sz mb-2 p-2 uppercase"
+                  name="kitCode"
+                  type="text"
+                  // value={kitCode}
+                  // onInput={handleKitId}
+                  required
+                />
+                {errors.kitCode && (
+                  <span className="error-text">{errors.kitCode}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-6 mt-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
                     Part Quantity
                     <FaStarOfLife className="must" />
                   </span>
@@ -849,7 +874,7 @@ function AddItemGroups({ addItem, kitEditId }) {
                     "label-text label-font-size text-base-content d-flex flex-row p-1"
                   }
                 >
-                  Name
+                  Category
                   <FaStarOfLife className="must" />
                 </span>
               </div>
@@ -882,7 +907,7 @@ function AddItemGroups({ addItem, kitEditId }) {
                     "label-text label-font-size text-base-content d-flex flex-row p-1"
                   }
                 >
-                  Code
+                  Asset Code
                   <FaStarOfLife className="must" />
                 </span>
               </div>
@@ -891,7 +916,7 @@ function AddItemGroups({ addItem, kitEditId }) {
                   name="Select Asset"
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="input input-bordered ps-2"
-                  onChange={handleAsseCodeChange}
+                  onChange={handleAssetCodeChange}
                   value={assetCodeId}
                   disabled
                 >

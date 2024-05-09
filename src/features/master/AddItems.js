@@ -5,6 +5,7 @@ import DialogContent from "@mui/material/DialogContent";
 import Switch from "@mui/material/Switch";
 import { styled } from "@mui/material/styles";
 import { default as Axios, default as axios } from "axios";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import * as React from "react";
 import { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
@@ -643,33 +644,6 @@ function AddItem({ addItem, editItemId }) {
           />
         </div>
         <div className="row">
-          {/* <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Warehouse Location
-              </span>
-            </label>
-          </div> */}
-          {/* <div className="col-lg-3 col-md-6">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleWarehouseChange}
-              value={warehouse}
-              // disabled={selected}
-            >
-              <option value="" disabled>
-                Select a Warehouse
-              </option>
-              {warehouseLocationVO.length > 0 &&
-                warehouseLocationVO.map((list) => (
-                  <option key={list.warehouseId} value={list.warehouseLocation}>
-                    {list.warehouseLocation}
-                  </option>
-                ))}
-            </select>
-          </div> */}
-        </div>
-        <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
               <span
@@ -707,7 +681,8 @@ function AddItem({ addItem, editItemId }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Name
+                Category
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
@@ -719,7 +694,7 @@ function AddItem({ addItem, editItemId }) {
               // disabled={nameSelected}
             >
               <option value="" disabled>
-                Select a Name
+                Select a Category
               </option>
               {assetNameVO.length > 0 &&
                 assetNameVO.map((name) => (
@@ -729,14 +704,19 @@ function AddItem({ addItem, editItemId }) {
                 ))}
             </select>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
-                Code
+              <span
+                className={
+                  " d-flex flex-row label-text label-font-size text-base-content"
+                }
+              >
+                Category Code
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <select
               className="form-select form-sz w-full mb-2"
               onChange={handleAsseCodeChange}
@@ -755,28 +735,113 @@ function AddItem({ addItem, editItemId }) {
                 ))}
             </select>
           </div>
-          <>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Quantity
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-8">
-              <input
-                className="form-control form-sz mb-2"
-                name="assetQty"
-                type="number"
-                value={assetQty}
-                onChange={handleCategoryChange}
-              />
-            </div>
-          </>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Asset Code
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <input
+              className="form-control form-sz mb-2"
+              name="assetQty"
+              type="number"
+              value={assetQty}
+              onChange={handleCategoryChange}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Asset Description
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <textarea
+              className="form-control form-sz mb-2"
+              name="assetQty"
+              type="text"
+              value={assetQty}
+              // onChange={handleCategoryChange}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Po No
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleCategoryChange}
+              value={poNo}
+              name="poNo"
+              // disabled={codeSelected}
+            >
+              <option value="" disabled>
+                Select a Po No
+              </option>
+              {poVO.length > 0 &&
+                poVO.map((name, index) => (
+                  <option key={index} value={name.pono}>
+                    {name.pono}
+                  </option>
+                ))}
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                PO Date <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <input
+              className="form-control form-sz mb-2"
+              disabled
+              type={"text"}
+              placeholder={""}
+              name="poDate"
+              value={poDate}
+              onChange={handleCategoryChange}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Active
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+            <FormControlLabel
+              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            />
+          </div>
         </div>
 
         {/* <div className="row">
@@ -828,61 +893,6 @@ function AddItem({ addItem, editItemId }) {
           </div>
         </div> */}
 
-        <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                Po No
-                <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleCategoryChange}
-              value={poNo}
-              name="poNo"
-              // disabled={codeSelected}
-            >
-              <option value="" disabled>
-                Select a Code
-              </option>
-              {poVO.length > 0 &&
-                poVO.map((name, index) => (
-                  <option key={index} value={name.pono}>
-                    {name.pono}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                PO Date <FaStarOfLife className="must" />
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              disabled
-              type={"text"}
-              placeholder={""}
-              name="poDate"
-              value={poDate}
-              onChange={handleCategoryChange}
-            />
-          </div>
-        </div>
         <h1 className="text-xl font-semibold my-2">Details</h1>
         <div className="row">
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">

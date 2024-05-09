@@ -364,7 +364,7 @@ function AddItemSpecification({
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Name
+                Category
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -393,7 +393,7 @@ function AddItemSpecification({
                   "label-text label-font-size text-base-content d-flex"
                 }
               >
-                Code
+                Category Code
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -412,7 +412,7 @@ function AddItemSpecification({
               <span className="error-text">{errors.assetCodeId}</span>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          {/* <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
               <span
                 className={
@@ -467,7 +467,7 @@ function AddItemSpecification({
                 onChange={handleCategoryChange}
                 className="input mb-2 p-1 input-bordered"
               />
-              {/* <select
+              <select
                 style={{ height: 40, fontSize: "0.800rem", width: 56 }}
                 className="input mb-2 p-1 input-bordered ms-1"
                 name="dimUnit"
@@ -482,9 +482,9 @@ function AddItemSpecification({
                 <option value="cm">cm</option>
                 <option value="feet">feet</option>
                 <option value="meter">meter</option>
-              </select> */}
+              </select>
             </div>
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
