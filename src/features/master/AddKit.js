@@ -11,7 +11,7 @@ import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function AddItemGroups({ addItem, kitEditId }) {
+function AddKit({ addItem, kitEditId }) {
   const [openAssetModal, setOpenAssetModal] = React.useState(false);
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
@@ -407,8 +407,8 @@ function AddItemGroups({ addItem, kitEditId }) {
 
           toast.success(
             "Kit " +
-              response.data.paramObjectsMap.KitVO.kitCode +
-              " created successfully!",
+            response.data.paramObjectsMap.KitVO.kitCode +
+            " created successfully!",
             {
               autoClose: 2000,
               theme: "colored",
@@ -466,8 +466,8 @@ function AddItemGroups({ addItem, kitEditId }) {
 
           toast.success(
             "Kit " +
-              response.data.paramObjectsMap.KitVO.kitCode +
-              " created successfully!",
+            response.data.paramObjectsMap.KitVO.kitCode +
+            " created successfully!",
             {
               autoClose: 2000,
               theme: "colored",
@@ -749,13 +749,13 @@ function AddItemGroups({ addItem, kitEditId }) {
                               <FaSave
                                 onClick={() => handleSaveRow(index)}
                                 className="cursor-pointer w-6 h-6"
-                                // style={{ marginLeft: 10 }}
+                              // style={{ marginLeft: 10 }}
                               />
                             ) : (
                               <FaEdit
                                 onClick={() => handleToggleEdit(index)}
                                 className="cursor-pointer w-6 h-6"
-                                // style={{ marginLeft: 10 }}
+                              // style={{ marginLeft: 10 }}
                               />
                             )}
                           </div>
@@ -769,7 +769,7 @@ function AddItemGroups({ addItem, kitEditId }) {
                             <FaTrash
                               onClick={() => handleDeleteRow(index)}
                               className="cursor-pointer w-6 h-6"
-                              // style={{ marginLeft: 10 }}
+                            // style={{ marginLeft: 10 }}
                             />
                           </div>
                         </div>
@@ -1003,4 +1003,4 @@ function AddItemGroups({ addItem, kitEditId }) {
   );
 }
 
-export default AddItemGroups;
+export default AddKit;

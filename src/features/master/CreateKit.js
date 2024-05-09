@@ -18,7 +18,8 @@ import { IoIosAdd, IoMdClose } from "react-icons/io";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import { LuTimerReset } from "react-icons/lu";
-import AddItemGroups from "./AddItemGroups";
+// import AddItemGroups from "./AddKit";
+import AddKit from "./AddKit";
 import DashBoardComponent from "./DashBoardComponent";
 
 const statsData = [
@@ -211,9 +212,9 @@ function CreateKit() {
 
   return (
     <>
-      {(addItem && <AddItemGroups addItem={handleBack} />) ||
+      {(addItem && <AddKit addItem={handleBack} />) ||
         (editKit && (
-          <AddItemGroups addItem={handleBack} kitEditId={selectedRowId} />
+          <AddKit addItem={handleBack} kitEditId={selectedRowId} />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
