@@ -16,7 +16,7 @@ function InternalPage() {
         <Link to="/app/binallotmentdetails">
           <div
             className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-          // style={{ width: "14rem" }}
+            // style={{ width: "14rem" }}
           >
             <div className="">
               <div className="d-flex flex-row">
@@ -32,7 +32,7 @@ function InternalPage() {
                     marginRight: "6px",
                   }}
                 />
-                <h4 className="text-xl font-semibold">Bin Request</h4>
+                <h4 className="text-xl font-semibold">Bin Allotment</h4>
               </div>
             </div>
           </div>
@@ -43,7 +43,7 @@ function InternalPage() {
         <Link to="/app/inwardManifestDetails">
           <div
             className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-          // style={{ width: "14rem" }}
+            // style={{ width: "14rem" }}
           >
             <div className="">
               <div className="d-flex flex-row">
@@ -55,7 +55,7 @@ function InternalPage() {
                     marginRight: "6px",
                   }}
                 />
-                <h4 className="text-xl font-semibold">Bin Inward</h4>
+                <h4 className="text-xl font-semibold">Asset Inward</h4>
               </div>
             </div>
           </div>
@@ -66,7 +66,7 @@ function InternalPage() {
         <Link to="/app/EmptyRetrievalManifest">
           <div
             className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-          // style={{ width: "14rem" }}
+            // style={{ width: "14rem" }}
           >
             <div className="">
               <div className="d-flex flex-row">
@@ -82,7 +82,7 @@ function InternalPage() {
                     marginRight: "6px",
                   }}
                 />
-                <h4 className="text-xl font-semibold">Bin Outward</h4>
+                <h4 className="text-xl font-semibold">Asset Outward</h4>
               </div>
             </div>
           </div>
@@ -93,7 +93,7 @@ function InternalPage() {
         <Link to="/app/reports">
           <div
             className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
-          // style={{ width: "14rem" }}
+            // style={{ width: "14rem" }}
           >
             <div className="">
               <div className="d-flex flex-row">

@@ -36,7 +36,7 @@ const Partstudy = lazy(() => import("../pages/protected/PartStudy"));
 const PackageDesign = lazy(() => import("../pages/protected/PackageDesign"));
 const Logistics = lazy(() => import("../pages/protected/Logistics"));
 const Stock = lazy(() => import("../pages/protected/Stock"));
-const Items = lazy(() => import("../pages/protected/Items"));
+const Asset = lazy(() => import("../pages/protected/Asset"));
 const AssetCategory = lazy(() => import("../pages/protected/AssetCategory"));
 const CreateKit = lazy(() => import("../pages/protected/CreateKit"));
 const Customer = lazy(() => import("../pages/protected/Customer"));
@@ -237,8 +237,8 @@ const routes = [
     component: AssetCategory,
   },
   {
-    path: "/items",
-    component: Items,
+    path: "/createasset",
+    component: Asset,
   },
   {
     path: "/createkit",

@@ -286,7 +286,7 @@ const routes = [
         name: <span>Asset Category</span>,
       },
       {
-        path: "/app/items",
+        path: "/app/createasset",
         icon: (
           <img
             src="/createAsset.png"
