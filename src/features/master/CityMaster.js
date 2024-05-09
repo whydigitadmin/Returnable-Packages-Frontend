@@ -48,6 +48,8 @@ export const CityMaster = () => {
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.cityid);
     setEdit(true);
+    setCountry(row.original.country);
+    setState(row.original.state);
     setCity(row.original.cityName);
     setCode(row.original.cityCode);
     // console.log("Selected row id:", row.original.cityid);
@@ -183,7 +185,6 @@ export const CityMaster = () => {
         country: country,
         state: state,
       };
-      console.log("test1", formData);
       axios
         .post(`${process.env.REACT_APP_API_URL}/api/basicMaster/city`, formData)
         .then((response) => {
@@ -219,9 +220,10 @@ export const CityMaster = () => {
       modifiedBy: userDetail.firstName,
       active: true,
       cancel: false,
-      country: "India",
-      state: "Tamilnadu",
+      country: country,
+      state: state,
     };
+    console.log("FORM DATA IS:", formData)
 
     axios
       .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/city`, formData)
@@ -229,7 +231,9 @@ export const CityMaster = () => {
         console.log("Update Response:", response.data);
         getCityData();
         setEdit(false);
-        setUpdateLoading(false); // Reset loading state
+        setUpdateLoading(false);
+        setCountry("")
+        setState("")
         setCity("");
         setCode("");
         toast.success("City Updation successfully", {
@@ -239,7 +243,7 @@ export const CityMaster = () => {
       })
       .catch((error) => {
         console.error("Error updating data:", error);
-        setUpdateLoading(false); // Reset loading state on error
+        setUpdateLoading(false);
       });
   };
 
