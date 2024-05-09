@@ -181,6 +181,7 @@ export const StockBranch = () => {
           setCode("");
           setErrors({});
           getAllStockbranch();
+          setSelectedRowId("")
           toast.success("Stock Branch updated successfully!", {
             autoClose: 2000,
             theme: "colored",

@@ -125,6 +125,9 @@ export const State = () => {
   const handleCancel = () => {
     setState("");
     setCode("");
+    setStateNo("")
+    setCountry("")
+    setErrors("")
   };
 
   const handleState = () => {
@@ -158,6 +161,7 @@ export const State = () => {
           setCode("");
           setStateNo("")
           setCountryData([]);
+          setCountry("")
           setErrors("");
           toast.success("State Created successfully", {
             autoClose: 2000,
@@ -197,6 +201,7 @@ export const State = () => {
         setState("");
         setCode("");
         setStateNo("");
+        setCountry("")
         toast.success("State Updation successfully", {
           autoClose: 2000,
           theme: "colored",

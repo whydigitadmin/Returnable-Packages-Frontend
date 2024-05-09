@@ -156,6 +156,9 @@ export const CityMaster = () => {
   const handleCancel = () => {
     setCity("");
     setCode("");
+    setCountry("")
+    setState("")
+    setErrors("")
   };
 
   const handleCity = () => {
