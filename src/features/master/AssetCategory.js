@@ -65,6 +65,7 @@ function AssetCategory() {
     const [assetCategory, setAssetCategory] = React.useState("");
     const [assetCategoryId, setAssetCategoryId] = React.useState("");
     const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+    const [loginUserName, setLoginUserName] = React.useState(localStorage.getItem("userName"));
     const [active, setActive] = React.useState(true);
     const [data, setData] = React.useState([]);
     const [errors, setErrors] = useState({});
@@ -147,7 +148,7 @@ function AssetCategory() {
             //   break;
         }
     };
-
+    //SAVE TYPE
     const handleAddAssetCategory = () => {
         const errors = {};
         if (!assetCategory) {
@@ -158,8 +159,10 @@ function AssetCategory() {
         }
         if (Object.keys(errors).length === 0) {
             const formData = {
-                assetCategory,
-                assetCategoryId,
+                assetType: assetCategory,
+                typeCode: assetCategoryId,
+                createdby: loginUserName,
+                modifiedby: loginUserName,
                 orgId,
                 active,
             };

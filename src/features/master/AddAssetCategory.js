@@ -76,8 +76,9 @@ function AddAssetCategory({
   const [length, setLength] = useState();
   const [breath, setBreath] = useState();
   const [height, setHeight] = useState();
-  const [dimUnit, setDimUnit] = useState("1");
+  const [dimUnit, setDimUnit] = useState();
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [loginUserName, setLoginUserName] = React.useState(localStorage.getItem("userName"));
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
@@ -101,7 +102,6 @@ function AddAssetCategory({
   const getAllAssetCategory = async () => {
     try {
       const response = await axios.get(
-        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
         `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
       );
 
@@ -166,7 +166,7 @@ function AddAssetCategory({
     }
   };
 
-  // SAVE ASSETCATEGORY
+  // SAVE API
   const handleAssetCategory = () => {
     const errors = {};
     if (!assetCodeId) {
@@ -175,29 +175,32 @@ function AddAssetCategory({
     if (!assetName) {
       errors.assetName = "Name is required";
     }
-    if (!length) {
-      errors.length = "Length is required";
-    }
-    if (!breath) {
-      errors.breath = "Breath is required";
-    }
-    if (!height) {
-      errors.height = "Height is required";
-    }
+    // if (!length) {
+    //   errors.length = "Length is required";
+    // }
+    // if (!breath) {
+    //   errors.breath = "Breath is required";
+    // }
+    // if (!height) {
+    //   errors.height = "Height is required";
+    // }
     // if (!dimUnit) {
     //   errors.dimUnit = "Unit is required";
     // }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        assetCategory,
-        assetName,
+        assetType: assetCategory,
+        category: assetName,
+        categoryCode: assetCodeId,
         length,
         breath,
         height,
         dimUnit,
-        orgId,
-        assetCodeId,
         active,
+        orgId: orgId,
+        createdby: loginUserName,
+        modifiedby: loginUserName,
+
       };
       Axios.post(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
@@ -241,29 +244,32 @@ function AddAssetCategory({
     if (!assetName) {
       errors.assetName = "Name is required";
     }
-    if (!length) {
-      errors.length = "Length is required";
-    }
-    if (!breath) {
-      errors.breath = "Breath is required";
-    }
-    if (!height) {
-      errors.height = "Height is required";
-    }
+    // if (!length) {
+    //   errors.length = "Length is required";
+    // }
+    // if (!breath) {
+    //   errors.breath = "Breath is required";
+    // }
+    // if (!height) {
+    //   errors.height = "Height is required";
+    // }
     // if (!dimUnit) {
     //   errors.dimUnit = "Unit is required";
     // }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        assetName,
+        assetType: assetCategory,
+        category: assetName,
+        categoryCode: assetCodeId,
         length,
         breath,
         height,
         dimUnit,
-        orgId,
-        assetCodeId,
         active,
-        assetCategory,
+        orgId: orgId,
+        createdby: loginUserName,
+        modifiedby: loginUserName,
+
       };
       Axios.put(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
@@ -350,8 +356,8 @@ function AddAssetCategory({
               </option>
               {assetCategoryVO.length > 0 &&
                 assetCategoryVO.map((list) => (
-                  <option key={list.id} value={list.assetCategory}>
-                    {list.assetCategory}
+                  <option key={list.id} value={list.assetType}>
+                    {list.assetType}
                   </option>
                 ))}
             </select>
