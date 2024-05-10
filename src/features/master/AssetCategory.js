@@ -238,7 +238,7 @@ function AssetCategory() {
             //   },
             // },
             {
-                accessorKey: "assetCategory",
+                accessorKey: "assetType",
                 header: "Type",
                 size: 50,
                 muiTableHeadCellProps: {
@@ -249,7 +249,7 @@ function AssetCategory() {
                 },
             },
             {
-                accessorKey: "assetName",
+                accessorKey: "category",
                 header: "Asset",
                 size: 50,
                 muiTableHeadCellProps: {
@@ -260,8 +260,8 @@ function AssetCategory() {
                 },
             },
             {
-                accessorKey: "assetCodeId",
-                header: "Code",
+                accessorKey: "categoryCode",
+                header: "Category Code",
                 size: 30,
                 muiTableHeadCellProps: {
                     align: "center",
@@ -270,39 +270,39 @@ function AssetCategory() {
                     align: "center",
                 },
             },
-            {
-                accessorKey: "length",
-                header: "Length",
-                size: 20,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "breath",
-                header: "Breath",
-                size: 20,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
-            {
-                accessorKey: "height",
-                header: "Height",
-                size: 20,
-                muiTableHeadCellProps: {
-                    align: "center",
-                },
-                muiTableBodyCellProps: {
-                    align: "center",
-                },
-            },
+            // {
+            //     accessorKey: "length",
+            //     header: "Length",
+            //     size: 20,
+            //     muiTableHeadCellProps: {
+            //         align: "center",
+            //     },
+            //     muiTableBodyCellProps: {
+            //         align: "center",
+            //     },
+            // },
+            // {
+            //     accessorKey: "breath",
+            //     header: "Breath",
+            //     size: 20,
+            //     muiTableHeadCellProps: {
+            //         align: "center",
+            //     },
+            //     muiTableBodyCellProps: {
+            //         align: "center",
+            //     },
+            // },
+            // {
+            //     accessorKey: "height",
+            //     header: "Height",
+            //     size: 20,
+            //     muiTableHeadCellProps: {
+            //         align: "center",
+            //     },
+            //     muiTableBodyCellProps: {
+            //         align: "center",
+            //     },
+            // },
         ],
         []
     );
@@ -486,7 +486,7 @@ function AssetCategory() {
                             <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
                                 <div className="row">
                                     <div className="col-md-11">
-                                        <Typography variant="h6">Asset Group Details</Typography>
+                                        <Typography variant="h6">Asset Category Details</Typography>
                                     </div>
                                     <div className="col-md-1">
                                         <IconButton onClick={handleViewClose} aria-label="close">
@@ -501,32 +501,16 @@ function AssetCategory() {
                                         <Table>
                                             <TableBody>
                                                 <TableRow>
-                                                    <TableCell>User ID</TableCell>
-                                                    <TableCell>{selectedRowData.id}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
                                                     <TableCell>Type</TableCell>
-                                                    <TableCell>{selectedRowData.assetCategory}</TableCell>
+                                                    <TableCell>{selectedRowData.assetType}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell>Asset</TableCell>
-                                                    <TableCell>{selectedRowData.assetName}</TableCell>
+                                                    <TableCell>{selectedRowData.category}</TableCell>
                                                 </TableRow>
                                                 <TableRow>
                                                     <TableCell>Code</TableCell>
-                                                    <TableCell>{selectedRowData.assetCodeId}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell>Length</TableCell>
-                                                    <TableCell>{selectedRowData.length}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell>Breath</TableCell>
-                                                    <TableCell>{selectedRowData.breath}</TableCell>
-                                                </TableRow>
-                                                <TableRow>
-                                                    <TableCell>Height</TableCell>
-                                                    <TableCell>{selectedRowData.height}</TableCell>
+                                                    <TableCell>{selectedRowData.categoryCode}</TableCell>
                                                 </TableRow>
                                             </TableBody>
                                         </Table>
