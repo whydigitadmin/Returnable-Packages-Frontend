@@ -13,28 +13,31 @@ import "react-toastify/dist/ReactToastify.css";
 
 function AddKit({ addItem, kitEditId }) {
   const [openAssetModal, setOpenAssetModal] = React.useState(false);
-  const [assetCategoryVO, setAssetCategoryVO] = useState([]);
-  const [assetCategory, setAssetCategory] = useState("");
+  const [assetTypeList, setAssetTypeList] = useState([]);
+  const [assetType, setAssetType] = useState("");
   const [assetCodeId, setAssetCodeId] = useState([]);
   const [assetCodeIdVO, setAssetCodeIdVO] = useState([]);
   const [assetName, setAssetName] = useState([]);
   const [assetNameVO, setAssetNameVO] = useState([]);
   const [assetQty, setAssetQty] = useState();
+  const [assetCode, setAssetCode] = useState();
+  const [assetDesc, setAssetDesc] = useState();
   const [partQuantity, setPartQuantity] = useState();
   const [showPartQuantity, setShowPartQuantity] = useState(false);
   const [errors, setErrors] = useState({});
   const [kitCode, setKitCode] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [kitAssetDTO, setKitAssetDTO] = useState([]);
-  const [selectedAssetCategory, setSelectedAssetCategory] = useState(false);
+  const [selectedAssetType, setSelectedAssetType] = useState(false);
   const [selectedName, setSelectedName] = useState(false);
   const [selectedCode, setSelectedCode] = useState(false);
+  const [assetCodeList, setAssetCodeList] = useState([]);
 
   // Update this function to add asset details to the state
   const handleAddAssetDetails = () => {
     const errors = {};
-    if (!assetCategory) {
-      errors.assetCategory = "Asset Type is required";
+    if (!assetType) {
+      errors.assetType = "Asset Type is required";
     }
     if (!assetCodeId) {
       errors.assetCodeId = "Code is required";
@@ -45,12 +48,9 @@ function AddKit({ addItem, kitEditId }) {
     if (!assetQty) {
       errors.assetQty = "Asset Quantity is required";
     }
-    // if (showPartQuantity && !partQuantity) {
-    //   errors.partQuantity = "Part Quantity is required";
-    // }
     if (Object.keys(errors).length === 0) {
       const newAssetDetails = {
-        assetCategory,
+        assetType,
         assetCodeId,
         assetName,
         quantity: assetQty,
@@ -59,7 +59,6 @@ function AddKit({ addItem, kitEditId }) {
       setKitAssetDTO([...kitAssetDTO, newAssetDetails]);
       handleAssetClose();
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -69,22 +68,25 @@ function AddKit({ addItem, kitEditId }) {
       getAllKitData();
       console.log("kitEditId", kitEditId);
     }
-    getAllAssetCategory();
+    getAllAssetType();
   }, []);
 
   const handleAssetOpen = () => {
     setOpenAssetModal(true);
   };
+
   const handleAssetClose = () => {
     setOpenAssetModal(false);
-    setAssetCategory("");
+    setAssetType("");
     setAssetCodeId("");
     setAssetName("");
     setAssetQty("");
+    setAssetCode("")
+    setAssetDesc("")
     // setPartQuantity("");
     setShowPartQuantity(false);
     setErrors({});
-    setSelectedAssetCategory(false);
+    setSelectedAssetType(false);
     setSelectedName(false);
     setSelectedCode(false);
   };
@@ -170,22 +172,42 @@ function AddKit({ addItem, kitEditId }) {
     setPartQuantity(event.target.value);
   };
 
-  const handleAssetCategoryChange = (event) => {
-    const selectedCategory = event.target.value;
-    setAssetCategory(selectedCategory);
-    setSelectedAssetCategory(true);
-    // Toggle visibility of part quantity input based on the selected category
-    setShowPartQuantity(selectedCategory === "CUSTOMIZED");
-    // Call function to fetch asset names based on the selected category
-    getAssetNamesByCategory(selectedCategory);
+  const handleAssetTypeChange = (event) => {
+    const selectedAssetType = event.target.value;
+    setAssetType(selectedAssetType);
+    setAssetName("")
+    setAssetCodeId("")
+
+    // setSelectedAssetType(true);
+    // // Toggle visibility of part quantity input based on the selected category
+    // setShowPartQuantity(selectedCategory === "CUSTOMIZED");
+    // // Call function to fetch asset names based on the selected category
+    getAssetNamesByCategory(selectedAssetType);
   };
 
   const handleAssetNameChange = (event) => {
     setAssetName(event.target.value);
     setSelectedName(true);
     // Call function to fetch asset names based on the selected category
-    getAssetIdByName(event.target.value);
+    getAssetPrefixByCategory(event.target.value);
+    getAssetCodeByCategory(event.target.value);
   };
+
+  const handleAssetCodeNewChange = (event) => {
+    setAssetCode(event.target.value);
+    const selectedAssetcode = event.target.value;
+
+    // Find the branch with the selected branch name
+    const tempAssetDesc = assetCodeList.find(
+      (list) => list.assetCodeId === selectedAssetcode
+    );
+
+    // Update the state with the branch code
+    // setBranchCode(tempBranch ? tempBranch.branchcode : "");
+    console.log("THE ASSET DESCRIPTIONS IS:", tempAssetDesc.assetName)
+    setAssetDesc(tempAssetDesc.assetName)
+
+  }
 
   // const handleAssetCodeChange = (event) => {
   //   const selectedAssetCodeId = event.target.value;
@@ -211,21 +233,21 @@ function AddKit({ addItem, kitEditId }) {
       setSelectedCode(true);
     }
   };
-
-  const getAllAssetCategory = async () => {
+  // GET ALL ASSET TYPE
+  const getAllAssetType = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        const assetCategories =
-          response.data.paramObjectsMap.assetGroupVO.assetCategory;
-        setAssetCategoryVO(assetCategories);
+        const assetTypes = response.data.paramObjectsMap.assetCategoryVO;
+        setAssetTypeList(assetTypes);
+        console.log("type", assetTypes);
 
-        if (assetCategories.length > 0) {
-          setAssetCategory(assetCategories[0].assetCategory);
-        }
+        // if (assetTypes.length > 0) {
+        //   setAssetType(assetTypes[0].assetCategory);
+        // }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -233,43 +255,45 @@ function AddKit({ addItem, kitEditId }) {
   };
 
   const getAssetNamesByCategory = async (category) => {
+    console.log("Asset Category API Called")
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
         {
           params: {
             orgId: orgId,
-            assetCategory: category,
+            assetCategory: category
           },
         }
       );
       console.log("Response from API:", response.data);
       if (response.status === 200) {
-        const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
-        // // Filter asset names based on the selected category
-        setAssetNameVO(response.data.paramObjectsMap.assetGroupVO.assetName);
-        console.log("assetName", assetGroupVO);
+        // const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
+        // console.log("THE ASSETGROUPVO FROM API IS:", response.data.paramObjectsMap.assetGroupVO)
+        setAssetNameVO(response.data.paramObjectsMap.assetGroupVO.category);
+
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
-  const getAssetIdByName = async (category) => {
+  const getAssetPrefixByCategory = async (name) => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
         {
           params: {
             orgId: orgId,
-            assetName: category,
+            assetCategory: assetType,
+            assetName: name,
           },
         }
       );
       console.log("Response from API:", response.data);
       if (response.status === 200) {
         setAssetCodeIdVO(
-          response.data.paramObjectsMap.assetGroupVO.assetCodeId
+          response.data.paramObjectsMap.assetGroupVO.categoryCode
         );
         setAssetCodeId(
           response.data.paramObjectsMap.assetGroupVO.assetCodeId[0]
@@ -279,98 +303,30 @@ function AddKit({ addItem, kitEditId }) {
       console.error("Error fetching data:", error);
     }
   };
+  // GET ASSETCODE BY CATEGORY
+  const getAssetCodeByCategory = async (name) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetByCategory?category=${name}&orgId=${orgId}`,
+      );
+      console.log("Response from API:", response.data);
+      if (response.status === 200) {
+        setAssetCodeList(response.data.paramObjectsMap.assetVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
-  // const handleKitCreation = async () => {
-  //   const errors = {};
-  //   if (!kitCode) {
-  //     errors.kitCode = "Kit Id is required";
-  //   }
-  //   if (!partQuantity) {
-  //     errors.partQuantity = "Part Quantity is required";
-  //   }
-  //   if (kitAssetDTO.length === 0) {
-  //     errors.kitAssetDTO = "Please add at least one asset detail";
-  //   }
 
-  //   if (Object.keys(errors).length === 0) {
-  //     try {
-  //       const kitData = {
-  //         kitCode,
-  //         partQuantity,
-  //         kitAssetDTO,
-  //         orgId,
-  //         // Add other properties from your form if needed
-  //       };
-  //       const response = await axios.post(
-  //         `${process.env.REACT_APP_API_URL}/api/master/createkit`,
-  //         kitData
-  //       );
-  //       console.log("Kit created successfully:", response.data);
-  //       toast.success("Kit created successfully!", {
-  //         autoClose: 2000,
-  //         theme: "colored",
-  //       });
-  //       // Add any further actions you want to take after successful kit creation
-  //       setTimeout(() => {
-  //         handleItem();
-  //       }, 3000);
-  //     } catch (error) {
-  //       console.error("Error creating kit:", error);
-  //       toast.error("Kit created Failed!", {
-  //         autoClose: 2000,
-  //         theme: "colored",
-  //       });
-  //     }
-  //   } else {
-  //     setErrors(errors);
-  //   }
-  // };
 
-  // const handleKitCreation = () => {
-  //   const errors = {};
-  //   if (!kitCode) {
-  //     errors.kitCode = "Kit Id is required";
-  //   }
-  //   if (!partQuantity) {
-  //     errors.partQuantity = "Part Quantity is required";
-  //   }
-  //   if (kitAssetDTO.length === 0) {
-  //     errors.kitAssetDTO = "Please add at least one asset detail";
-  //   }
 
-  //   if (Object.keys(errors).length === 0) {
-  //     const kitData = {
-  //       kitCode,
-  //       partQuantity,
-  //       kitAssetDTO,
-  //       orgId,
-  //       // Add other properties from your form if needed
-  //     };
-  //     axios
-  //       .post(`${process.env.REACT_APP_API_URL}/api/master/createkit`, kitData)
-  //       .then((response) => {
-  //         console.log("Kit created successfully:", response.data);
-  //         toast.success("Kit created successfully!", {
-  //           autoClose: 2000,
-  //           theme: "colored",
-  //         });
-  //         // Add any further actions you want to take after successful kit creation
-  //         setTimeout(() => {
-  //           handleItem();
-  //         }, 3000);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error creating kit:", error);
-  //         toast.error("Kit creation failed!", {
-  //           autoClose: 2000,
-  //           theme: "colored",
-  //         });
-  //       });
-  //   } else {
-  //     setErrors(errors);
-  //   }
-  // };
 
+
+
+
+
+  // SAVE API
   const handleKitCreation = async () => {
     const errors = {};
     if (!kitCode) {
@@ -430,6 +386,7 @@ function AddKit({ addItem, kitEditId }) {
       setErrors(errors);
     }
   };
+  // UPDATE API
   const handleUpdateKit = async () => {
     const errors = {};
     if (!kitCode) {
@@ -519,44 +476,6 @@ function AddKit({ addItem, kitEditId }) {
     // You may also want to handle saving the changes to the backend here
   };
 
-  // const handleEditRow = (index) => {
-  //   // Get the data of the selected row from kitAssetDTO
-  //   const selectedAsset = kitAssetDTO[index];
-
-  //   // Update the state variables with the data of the selected row
-  //   setAssetCategory(selectedAsset.assetCategory);
-  //   setAssetName(selectedAsset.assetName);
-  //   setAssetCodeId(selectedAsset.assetCodeId);
-  //   setAssetQty(selectedAsset.quantity);
-  //   setPartQuantity(selectedAsset.partQuantity);
-
-  //   // Open the Dialog box for editing
-  //   setOpenAssetModal(true);
-  // };
-
-  // const handleKitId = (event) => {
-  //   const { value } = event.target;
-
-  //   // Check if the entered kit ID is the same as the previous one
-  //   if (value === kitCode) {
-  //     toast.error("You entered the same Kit ID again.", {
-  //       position: "top-center",
-  //     });
-  //     return; // Stop further execution
-  //   }
-
-  //   // Check if the entered kit ID already exists
-  //   const kitExists = kitAssetDTO.some((asset) => asset.kitCode === value);
-  //   if (kitExists) {
-  //     // Display toast message for existing kit ID
-  //     toast.error("The Kit ID already exists.", {
-  //       position: "top-center",
-  //     });
-  //   } else {
-  //     // Update the kit code state if it doesn't exist
-  //     setKitCode(value);
-  //   }
-  // };
 
   return (
     <>
@@ -835,13 +754,14 @@ function AddKit({ addItem, kitEditId }) {
         <DialogContent>
           <DialogContentText>
             <div className="row">
+              {/* ASSET TYPE FIELD */}
               <div className="col-lg-3 col-md-3 mb-2">
                 <span
                   className={
                     "label-text label-font-size text-base-content d-flex flex-row p-1"
                   }
                 >
-                  Type
+                  Asset Type
                   <FaStarOfLife className="must" />
                 </span>
               </div>
@@ -850,24 +770,24 @@ function AddKit({ addItem, kitEditId }) {
                   name="Select Asset"
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="input input-bordered ps-2"
-                  onChange={handleAssetCategoryChange}
-                  value={assetCategory}
+                  onChange={handleAssetTypeChange}
+                  value={assetType}
                 >
                   <option value="" selected>
                     Select an Asset Type
                   </option>
-                  {assetCategoryVO.length > 0 &&
-                    assetCategoryVO.map((list) => (
-                      <option key={list.id} value={list}>
-                        {list}
+                  {assetTypeList.length > 0 &&
+                    assetTypeList.map((list) => (
+                      <option key={list.id} value={list.assetType}>
+                        {list.assetType}
                       </option>
                     ))}
                 </select>
-                {errors.assetCategory && (
-                  <span className="error-text">{errors.assetCategory}</span>
+                {errors.assetType && (
+                  <span className="error-text">{errors.assetType}</span>
                 )}
               </div>
-
+              {/* ASSET NAME FIELD */}
               <div className="col-lg-3 col-md-3 mb-2">
                 <span
                   className={
@@ -900,14 +820,14 @@ function AddKit({ addItem, kitEditId }) {
                   <span className="error-text">{errors.assetName}</span>
                 )}
               </div>
-
+              {/* CATEGORY CODE FIELD */}
               <div className="col-lg-3 col-md-3 mb-2">
                 <span
                   className={
                     "label-text label-font-size text-base-content d-flex flex-row p-1"
                   }
                 >
-                  Asset Code
+                  Category Code
                   <FaStarOfLife className="must" />
                 </span>
               </div>
@@ -920,9 +840,6 @@ function AddKit({ addItem, kitEditId }) {
                   value={assetCodeId}
                   disabled
                 >
-                  {/* <option value="" disabled>
-                    Select an Asset Code
-                  </option> */}
                   {assetCodeIdVO.length > 0 &&
                     assetCodeIdVO.map((name) => (
                       <option key={name.id} value={name}>
@@ -934,6 +851,68 @@ function AddKit({ addItem, kitEditId }) {
                   <span className="error-text">{errors.assetCodeId}</span>
                 )}
               </div>
+              {/* ASSET CODE FIELD */}
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Asset Code
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-3 mb-2">
+                <select
+                  name="Select Asset Code"
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="input input-bordered ps-2"
+                  // onChange={(e) => { setAssetCode(e.target.value) }}
+                  onChange={handleAssetCodeNewChange}
+                  value={assetCode}
+                >
+                  <option value="" disabled>
+                    Select an Asset Code
+                  </option>
+                  {assetCodeList.length > 0 &&
+                    assetCodeList.map((name) => (
+                      <option key={name.id} value={name.assetCodeId}>
+                        {name.assetCodeId}
+                      </option>
+                    ))}
+                </select>
+                {errors.assetCode && (
+                  <span className="error-text">{errors.assetCode}</span>
+                )}
+              </div>
+              {/* ASSET DESCRIPTION FIELD */}
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Asset Description
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type="text"
+                  name="assetDesc"
+                  value={assetDesc}
+                // onChange={handleQuantityChange}
+                />
+                {errors.assetDesc && (
+                  <span className="error-text">{errors.assetDesc}</span>
+                )}
+              </div>
+              {/* ASSET QTY FIELD */}
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
                   <span
@@ -958,33 +937,6 @@ function AddKit({ addItem, kitEditId }) {
                   <span className="error-text">{errors.assetQty}</span>
                 )}
               </div>
-              {/* {showPartQuantity && ( // Conditionally render the Part Quantity input field
-                <>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content d-flex flex-row"
-                        }
-                      >
-                        Part Quantity
-                        <FaStarOfLife className="must" />
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <input
-                      className="form-control form-sz mb-2"
-                      name="partQuantity"
-                      value={partQuantity}
-                      onChange={handlePartQuantityChange}
-                    />
-                    {errors.partQuantity && (
-                      <span className="error-text">{errors.partQuantity}</span>
-                    )}
-                  </div>
-                </>
-              )} */}
             </div>
           </DialogContentText>
         </DialogContent>
