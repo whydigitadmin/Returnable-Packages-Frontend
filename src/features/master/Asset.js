@@ -29,8 +29,8 @@ import { FaRegObjectGroup } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { LuTimerReset } from "react-icons/lu";
-import AddItem from "./AddItems";
 import DashBoardComponent from "./DashBoardComponent";
+import AddAsset from "./AddAsset";
 
 const statsData = [
   {
@@ -267,9 +267,9 @@ function Asset() {
 
   return (
     <>
-      {(add && <AddItem addItem={handleBack} />) ||
+      {(add && <AddAsset addItem={handleBack} />) ||
         (edit && (
-          <AddItem addItem={handleBack} editItemId={selectedRowId} />
+          <AddAsset addItem={handleBack} editItemId={selectedRowId} />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">

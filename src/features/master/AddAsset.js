@@ -64,7 +64,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddItem({ addItem, editItemId }) {
+function AddAsset({ addItem, editItemId }) {
   const [value, setValue] = useState("");
   const [assetCategoryVO, setAssetCategoryVO] = useState([]);
   const [assetCategory, setAssetCategory] = useState([]);
@@ -1283,4 +1283,4 @@ function AddItem({ addItem, editItemId }) {
   );
 }
 
-export default AddItem;
+export default AddAsset;
