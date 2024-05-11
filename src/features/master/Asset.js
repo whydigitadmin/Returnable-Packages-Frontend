@@ -157,19 +157,8 @@ function Asset() {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "id",
-      //   header: "Id",
-      //   size: 30,
-      //   muiTableHeadCellProps: {
-      //     align: "first",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "first",
-      //   },
-      // },
       {
-        accessorKey: "assetCategory",
+        accessorKey: "assetType",
         header: "Type",
         size: 50,
         muiTableHeadCellProps: {
@@ -180,8 +169,19 @@ function Asset() {
         },
       },
       {
-        accessorKey: "assetName",
-        header: "Asset",
+        accessorKey: "category",
+        header: "Category",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "categoryCode",
+        header: "Category Code",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -192,7 +192,18 @@ function Asset() {
       },
       {
         accessorKey: "assetCodeId",
-        header: "Code",
+        header: "Asset Code",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "assetName",
+        header: "Asset Description",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

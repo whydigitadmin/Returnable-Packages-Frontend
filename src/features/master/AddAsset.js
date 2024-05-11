@@ -66,17 +66,19 @@ const IOSSwitch = styled((props) => (
 
 function AddAsset({ addItem, editItemId }) {
   const [value, setValue] = useState("");
-  const [assetCategoryVO, setAssetCategoryVO] = useState([]);
-  const [assetCategory, setAssetCategory] = useState([]);
-  const [assetCodeId, setAssetCodeId] = useState([]);
-  const [assetCodeIdVO, setAssetCodeIdVO] = useState([]);
-  const [assetName, setAssetName] = useState([]);
-  const [assetNameVO, setAssetNameVO] = useState([]);
+  const [assetTypeVO, setAssetTypeVO] = useState([]);
+  const [assetType, setAssetType] = useState([]);
+  const [assetTypeSelected, setAssetTypeSelected] = useState(false);
+  const [assetCodeId, setAssetCodeId] = useState("");
+  const [category, setCategory] = useState([]);
+  const [categoryVO, setCategoryVO] = useState([]);
+  const [categorySelected, setCategorySelected] = useState(false);
+  const [categoryCode, setCategoryCode] = useState("");
+  const [assetName, setAssetName] = useState("");
   const [assetQty, setAssetQty] = useState();
-  const [brand, setBrand] = useState("");
-  const [brandVO, setBrandVO] = useState([]);
   const [length, setLength] = useState("");
   const [breath, setBreath] = useState("");
+  const [brand, setBrand] = useState("");
   const [chargableWeight, setChargableWeight] = useState("");
   const [height, setHeight] = useState("");
   const [dimUnit, setDimUnit] = useState("");
@@ -88,7 +90,6 @@ function AddAsset({ addItem, editItemId }) {
   const [id, setId] = useState("");
   const [maintanencePeriod, setMaintanencePeriod] = useState("");
   const [manufacturer, setManufacturer] = useState("");
-  const [manufacturerVO, setManufacturerVO] = useState([]);
   const [scrapValue, setScrapValue] = useState("");
   const [sellPrice, setSellPrice] = useState("");
   const [taxRate, setTaxRate] = useState("");
@@ -97,58 +98,57 @@ function AddAsset({ addItem, editItemId }) {
   const [weight, setWeight] = useState("");
   const [weightUnit, setWeightUnit] = useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
-  const [showAssetQtyInput, setShowAssetQtyInput] = useState(false);
-  const [showQuantity, setShowQuantity] = useState(true);
-  const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [warehouse, setWarehouse] = useState("");
   const [poVO, setPoVO] = useState([]);
   const [poNo, setPoNo] = useState("");
   const [poDate, setPoDate] = useState("");
-  const [selected, setSelected] = useState(false);
-  const [categorySelected, setCategorySelected] = useState(false);
-  const [nameSelected, setNameSelected] = useState(false);
-  const [codeSelected, setCodeSelected] = useState(false);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
-  const handleAssetCategoryChange = (event) => {
+  const handleAssetTypeChange = (event) => {
     const selectedCategory = event.target.value;
-    setAssetCategory(selectedCategory);
-    setCategorySelected(true);
-    // Call function to fetch asset names based on the selected category
+    setAssetType(selectedCategory);
+    setAssetTypeSelected(true);
     getAssetNamesByCategory(event.target.value);
   };
 
-  const handleAssetNameChange = (event) => {
+  const handleAssetCategoryChange = (event) => {
     const selectedType = event.target.value;
-    setAssetName(selectedType);
-    setNameSelected(true);
-    // Call function to fetch asset names based on the selected category
+    setCategory(selectedType);
+    setCategorySelected(true);
     getAssetIdByName(event.target.value);
   };
 
-  const handleAsseCodeChange = (event) => {
-    const selectedAssetCodeId = event.target.value;
-    console.log("Test", selectedAssetCodeId);
-    setAssetCodeId(selectedAssetCodeId);
-    setCodeSelected(true);
+  //   const handleAssetCodeChange = (event) => {
+  //     const selectedAssetCodeId = event.target.value;
+  //     console.log("Test", selectedAssetCodeId);
+  //     setAssetCodeId(selectedAssetCodeId);
+  //     setCodeSelected(true);
 
-    // Check if a valid Asset Code is selected
-    // if (selectedAssetCodeId) {
-    //   setShowAssetQtyInput(true); // Show Asset Qty input
-    // } else {
-    //   setShowAssetQtyInput(false); // Hide Asset Qty input
-    // }
+  //     // Check if a valid Asset Code is selected
+  //     // if (selectedAssetCodeId) {
+  //     //   setShowAssetQtyInput(true); // Show Asset Qty input
+  //     // } else {
+  //     //   setShowAssetQtyInput(false); // Hide Asset Qty input
+  //     // }
 
-    if (selectedAssetCodeId) {
-      setShowQuantity(false); // Show Asset Qty input
-    } else {
-      setShowQuantity(true); // Hide Asset Qty input
-    }
-    // Call function to fetch asset names based on the selected category
-    getAssetDimById(selectedAssetCodeId);
-  };
+  //     // if (selectedAssetCodeId) {
+  //     //   setShowQuantity(false); // Show Asset Qty input
+  //     // } else {
+  //     //   setShowQuantity(true); // Hide Asset Qty input
+  //     // }
+  //     // Call function to fetch asset names based on the selected category
+  //     getAssetDimById(selectedAssetCodeId);
+  //   };
+
+  //   const handleAssetCodeChange = (event) => {
+  //     setCategoryCode(event.target.value);
+  //     console.log("setCategoryCode", event.target.value);
+  //   };
 
   useEffect(() => {
     getAllAssetCategory();
@@ -168,12 +168,11 @@ function AddAsset({ addItem, editItemId }) {
         // setUserData(response.data.paramObjectsMap.userVO);
         console.log("Edit User Details", response.data.paramObjectsMap.assetVO);
         setId(response.data.paramObjectsMap.assetVO.id);
-        setAssetCategory(response.data.paramObjectsMap.assetVO.assetCategory);
-        setAssetName(response.data.paramObjectsMap.assetVO.assetName);
+        setAssetType(response.data.paramObjectsMap.assetVO.assetType);
+        setCategory(response.data.paramObjectsMap.assetVO.category);
+        setCategoryCode(response.data.paramObjectsMap.assetVO.categoryCode);
         setAssetCodeId(response.data.paramObjectsMap.assetVO.assetCodeId);
-        setAssetQty(response.data.paramObjectsMap.assetVO.quantity);
-        setSkuFrom(response.data.paramObjectsMap.assetVO.skuFrom);
-        setSkuTo(response.data.paramObjectsMap.assetVO.skuTo);
+        setAssetName(response.data.paramObjectsMap.assetVO.assetName);
         setLength(response.data.paramObjectsMap.assetVO.length);
         setBreath(response.data.paramObjectsMap.assetVO.breath);
         setChargableWeight(
@@ -206,9 +205,8 @@ function AddAsset({ addItem, editItemId }) {
       );
 
       if (response.status === 200) {
-        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
+        // setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
       }
-      // console.log("list", response.data.paramObjectsMap.WarehouseLocation);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -223,7 +221,6 @@ function AddAsset({ addItem, editItemId }) {
       if (response.status === 200) {
         setPoVO(response.data.paramObjectsMap.pono);
       }
-      // console.log("list", response.data.paramObjectsMap.WarehouseLocation);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -232,17 +229,12 @@ function AddAsset({ addItem, editItemId }) {
   const getAllAssetCategory = async () => {
     try {
       const response = await axios.get(
-        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup`
         `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
       );
 
       if (response.status === 200) {
         const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
-        setAssetCategoryVO(assetCategories);
-
-        if (assetCategories.length > 0) {
-          setAssetCategory(assetCategories[0].assetCategory);
-        }
+        setAssetTypeVO(assetCategories);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -252,7 +244,6 @@ function AddAsset({ addItem, editItemId }) {
   const getAssetNamesByCategory = async (category) => {
     try {
       const response = await axios.get(
-        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup?orgId=${orgId}`,
         {
           params: {
@@ -261,14 +252,12 @@ function AddAsset({ addItem, editItemId }) {
           },
         }
       );
-      // console.log("Response from API:", response.data);
       if (response.status === 200) {
-        const assetGroup =
-          response.data.paramObjectsMap.assetGroupVO.assetGroupVO;
-        // // Filter asset names based on the selected category
-
-        setAssetNameVO(response.data.paramObjectsMap.assetGroupVO.assetGroupVO);
-        console.log("assetName", assetGroup);
+        setCategoryVO(response.data.paramObjectsMap.assetGroupVO.assetGroupVO);
+        console.log(
+          "Response from category:",
+          response.data.paramObjectsMap.assetGroupVO.assetGroupVO
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -286,13 +275,9 @@ function AddAsset({ addItem, editItemId }) {
           },
         }
       );
-      console.log("Response from API:", response.data);
       if (response.status === 200) {
-        setAssetCodeIdVO(
-          response.data.paramObjectsMap.assetGroupVO.assetCodeId
-        );
-        setAssetCodeId(
-          response.data.paramObjectsMap.assetGroupVO.assetCodeId[0]
+        setCategoryCode(
+          response.data.paramObjectsMap.assetGroupVO.categoryCode[0]
         );
       }
     } catch (error) {
@@ -300,54 +285,60 @@ function AddAsset({ addItem, editItemId }) {
     }
   };
 
-  const getAssetDimById = async (category) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
-        {
-          params: {
-            orgId: orgId,
-            assetCodeId: category,
-          },
-        }
-      );
-      console.log("Response from API:", response.data);
-      if (response.status === 200) {
-        setSkuFrom(response.data.paramObjectsMap.assetGroupVO.skuLatestCount);
-        setManufacturerVO(response.data.paramObjectsMap.assetGroupVO.company);
-        setBrandVO(response.data.paramObjectsMap.assetGroupVO.brand);
-        const units = response.data.paramObjectsMap.assetGroupVO.assetGroupVO;
+  //   const getAssetDimById = async (category) => {
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+  //         {
+  //           params: {
+  //             orgId: orgId,
+  //             assetCodeId: category,
+  //           },
+  //         }
+  //       );
+  //       console.log("Response from API:", response.data);
+  //       if (response.status === 200) {
+  //         setSkuFrom(response.data.paramObjectsMap.assetGroupVO.skuLatestCount);
+  //         setManufacturerVO(response.data.paramObjectsMap.assetGroupVO.company);
+  //         setBrandVO(response.data.paramObjectsMap.assetGroupVO.brand);
+  //         const units = response.data.paramObjectsMap.assetGroupVO.assetGroupVO;
 
-        if (units.length > 0) {
-          setLength(units[0].length);
-          setBreath(units[0].breath);
-          setHeight(units[0].height);
-          // setDimUnit(units[0].dimUnit);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //         if (units.length > 0) {
+  //           setLength(units[0].length);
+  //           setBreath(units[0].breath);
+  //           setHeight(units[0].height);
+  //           // setDimUnit(units[0].dimUnit);
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
 
-  const calculateSkuTo = (assetQty, skuFrom) => {
-    const calculatedSkuTo = parseInt(skuFrom) + parseInt(assetQty);
-    return calculatedSkuTo;
-  };
+  //   const calculateSkuTo = (assetQty, skuFrom) => {
+  //     const calculatedSkuTo = parseInt(skuFrom) + parseInt(assetQty);
+  //     return calculatedSkuTo;
+  //   };
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
     switch (name) {
-      case "assetQty":
-        setAssetQty(value);
-        setSkuTo(calculateSkuTo(value, skuFrom));
+      //   case "assetQty":
+      //     setAssetQty(value);
+      //     setSkuTo(calculateSkuTo(value, skuFrom));
+      //     break;
+      //   case "skuFrom":
+      //     setSkuFrom(value);
+      //     setSkuTo(calculateSkuTo(assetQty, value));
+      //     break;
+      //   case "skuTo":
+      //     setSkuTo(value);
+      //     break;
+      case "assetName":
+        setAssetName(value);
         break;
-      case "skuFrom":
-        setSkuFrom(value);
-        setSkuTo(calculateSkuTo(assetQty, value));
-        break;
-      case "skuTo":
-        setSkuTo(value);
+      case "assetCodeId":
+        setAssetCodeId(value);
         break;
       case "value":
         setValue(value);
@@ -431,9 +422,11 @@ function AddAsset({ addItem, editItemId }) {
     if (Object.keys(errors).length === 0) {
       const formData = {
         active,
-        assetCategory,
+        assetType,
+        categoryCode,
         assetCodeId,
         assetName,
+        category,
         brand,
         breath,
         chargableWeight,
@@ -458,6 +451,8 @@ function AddAsset({ addItem, editItemId }) {
         orgId,
         poDate,
         poNo,
+        createdby: userName,
+        modifiedby: userName,
       };
       Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
         .then((response) => {
@@ -466,9 +461,7 @@ function AddAsset({ addItem, editItemId }) {
             autoClose: 2000,
             theme: "colored",
           });
-          setTimeout(() => {
-            addItem(false);
-          }, 2000); // Adjust the delay time as needed
+          addItem(false);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -489,8 +482,10 @@ function AddAsset({ addItem, editItemId }) {
     if (Object.keys(errors).length === 0) {
       const formData = {
         active,
-        assetCategory,
+        assetType,
+        categoryCode,
         assetCodeId,
+        category,
         assetName,
         brand,
         breath,
@@ -513,6 +508,8 @@ function AddAsset({ addItem, editItemId }) {
         skuTo,
         weight,
         weightUnit,
+        createdby: userName,
+        modifiedby: userName,
         orgId,
       };
       Axios.put(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
@@ -533,68 +530,13 @@ function AddAsset({ addItem, editItemId }) {
     }
   };
 
-  const handleWarehouseChange = (event) => {
-    const selectedWarehouse = event.target.value;
-    setWarehouse(selectedWarehouse);
-    setSelected(true); // Set selected to true once a value is selected
-  };
-
-  const handleUnitChange = (e) => {
-    setDimUnit(e.target.value);
-  };
-
-  const handleWeightChange = (e) => {
-    setWeightUnit(e.target.value);
-  };
-
-  const handleManufacturerChange = (e) => {
-    setManufacturer(e.target.value);
-  };
-
-  const handleBrandChange = (e) => {
-    setBrand(e.target.value);
-  };
-
-  // const handleAssetClose = () => {
-  //   addItem(false);
-  // };
-
-  // CLOSE BUTTON WITH CONFIRMATION
-  // const handleAssetClose = () => {
-  //   if (warehouse ||
-  //     assetCategory ||
-  //     assetName ||
-  //     assetCodeId > 0 ||
-  //     assetQty ||
-  //     height ||
-  //     skuFrom ||
-  //     skuTo ||
-  //     length ||
-  //     breath ||
-  //     height ||
-  //     eanUpc ||
-  //     weight ||
-  //     value ||
-  //     expectedLife ||
-  //     expectedTrips ||
-  //     hsnCode ||
-  //     taxRate ||
-  //     costPrice ||
-  //     sellPrice ||
-  //     scrapValue) {
-  //     // setOpenConfirmationDialog(true);
-
-  //   } else {
-  //     setOpenConfirmationDialog(false);
-  //     addItem(false);
-  //   }
-  // }
   const handleAssetClose = () => {
     if (
       warehouse ||
-      assetCategory ||
-      assetName > 0 ||
+      assetType ||
+      category > 0 ||
       assetCodeId > 0 ||
+      categoryCode ||
       assetQty ||
       height ||
       skuFrom ||
@@ -659,17 +601,17 @@ function AddAsset({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleAssetCategoryChange}
-              value={assetCategory}
-              // disabled={categorySelected}
+              onChange={handleAssetTypeChange}
+              value={assetType}
+              disabled={assetTypeSelected}
             >
               <option value="" disabled>
                 Select an Type
               </option>
-              {assetCategoryVO.length > 0 &&
-                assetCategoryVO.map((list) => (
-                  <option key={list.id} value={list.assetCategory}>
-                    {list.assetCategory}
+              {assetTypeVO.length > 0 &&
+                assetTypeVO.map((list) => (
+                  <option key={list.id} value={list.assetType}>
+                    {list.assetType}
                   </option>
                 ))}
             </select>
@@ -689,17 +631,17 @@ function AddAsset({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleAssetNameChange}
-              value={assetName}
-              // disabled={nameSelected}
+              onChange={handleAssetCategoryChange}
+              value={category}
+              disabled={categorySelected}
             >
               <option value="" disabled>
                 Select a Category
               </option>
-              {assetNameVO.length > 0 &&
-                assetNameVO.map((name) => (
-                  <option key={name.id} value={name.assetName}>
-                    {name.assetName}
+              {categoryVO.length > 0 &&
+                categoryVO.map((name) => (
+                  <option key={name.id} value={name.category}>
+                    {name.category}
                   </option>
                 ))}
             </select>
@@ -717,23 +659,24 @@ function AddAsset({ addItem, editItemId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <select
+            {/* <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleAsseCodeChange}
-              value={assetCodeId}
-              // disabled={codeSelected}
+            //   onChange={handleAssetCodeChange}
+              value={categoryCode}
               disabled
             >
-              {/* <option value="" disabled>
-                Select a Code
-              </option> */}
-              {assetCodeIdVO.length > 0 &&
-                assetCodeIdVO.map((name) => (
+              {categoryCodeVO.length > 0 &&
+                categoryCodeVO.map((name) => (
                   <option key={name.id} value={name}>
                     {name}
                   </option>
                 ))}
-            </select>
+            </select> */}
+            <input
+              className="form-control form-sz mb-2"
+              value={categoryCode}
+              disabled
+            />
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -750,10 +693,15 @@ function AddAsset({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <input
               className="form-control form-sz mb-2"
-              name="assetQty"
-              type="number"
-              value={assetQty}
+              name="assetCodeId"
+              type="text"
+              value={assetCodeId}
               onChange={handleCategoryChange}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z0-9\s]/g, "");
+              }}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
@@ -769,12 +717,17 @@ function AddAsset({ addItem, editItemId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            <textarea
+            <input
               className="form-control form-sz mb-2"
-              name="assetQty"
+              name="assetName"
               type="text"
-              value={assetQty}
-              // onChange={handleCategoryChange}
+              value={assetName}
+              onChange={handleCategoryChange}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z\s]/g, "");
+              }}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
@@ -1030,7 +983,7 @@ function AddAsset({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
-                Gross Weight
+                Gross Weight (kg)
               </span>
             </label>
           </div>
@@ -1063,7 +1016,7 @@ function AddAsset({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>
-                Chargeable Weight
+                Chargeable Weight (kg)
               </span>
             </label>
           </div>
