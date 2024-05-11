@@ -161,7 +161,7 @@ function Flows() {
       {
         accessorKey: "flowName",
         header: "Flow Name",
-        size: 50,
+        size: 300,
         muiTableHeadCellProps: {
           align: "center",
         },

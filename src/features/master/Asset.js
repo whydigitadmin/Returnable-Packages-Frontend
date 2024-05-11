@@ -70,7 +70,6 @@ function Asset() {
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
-    console.log("setSelectedRowID", row.original.id);
     setEdit(true);
   };
 
@@ -80,7 +79,6 @@ function Asset() {
 
   const handleViewRow = (row) => {
     setSelectedRowData(row.original);
-    console.log("setSelectedRowData", row.original);
     setOpenView(true);
   };
 
@@ -114,6 +112,10 @@ function Asset() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.assetVO.reverse());
+        // const filteredData = response.data.paramObjectsMap.assetVO.filter(
+        //   (asset) => asset.eflag === true
+        // );
+        // setData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -414,28 +416,24 @@ function Asset() {
                     <Table>
                       <TableBody>
                         <TableRow>
-                          <TableCell>User ID</TableCell>
-                          <TableCell>{selectedRowData.id}</TableCell>
-                        </TableRow>
-                        <TableRow>
                           <TableCell>Type</TableCell>
-                          <TableCell>{selectedRowData.assetCategory}</TableCell>
+                          <TableCell>{selectedRowData.assetType}</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell>Asset</TableCell>
-                          <TableCell>{selectedRowData.assetName}</TableCell>
+                          <TableCell>Category</TableCell>
+                          <TableCell>{selectedRowData.category}</TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Category Code</TableCell>
+                          <TableCell>{selectedRowData.categoryCode}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>Code</TableCell>
                           <TableCell>{selectedRowData.assetCodeId}</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell>SKU From</TableCell>
-                          <TableCell>{selectedRowData.skuFrom}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>SKU To</TableCell>
-                          <TableCell>{selectedRowData.skuTo}</TableCell>
+                          <TableCell>Asset Desc</TableCell>
+                          <TableCell>{selectedRowData.assetName}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>Length</TableCell>

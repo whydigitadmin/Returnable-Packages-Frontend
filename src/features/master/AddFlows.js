@@ -73,7 +73,8 @@ function AddFlows({ addFlows }) {
   const [destination, setDestination] = useState("");
   const [active, setActive] = useState(true);
   const [id, setId] = useState();
-  const [kitName, setKitName] = useState("");
+  const [kitNo, setKitName] = useState("");
+  const [kitDesc, setKitDesc] = useState("");
   const [partName, setPartName] = useState("");
   const [partNumber, setPartNumber] = useState(null);
   const [partStudyNameVO, setPartStudyNameVO] = useState([]);
@@ -83,6 +84,9 @@ function AddFlows({ addFlows }) {
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [getkit, setGetKit] = React.useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [warehouseLocationValue, setWarehouseLocationValue] = useState("");
   const [openKitModal, setOpenKitModal] = React.useState(false);
@@ -182,6 +186,7 @@ function AddFlows({ addFlows }) {
   };
   const handleSelectKitName = (event) => {
     setKitName(event.target.value);
+    getKitByKit(event.target.value);
   };
 
   const getPartStudyId = async (emitterId) => {
@@ -322,6 +327,8 @@ function AddFlows({ addFlows }) {
         orgin: origin,
         destination,
         active,
+        createdby: userName,
+        modifiedby: userName,
         warehouseId: warehouseLocationValue,
         // warehouseLocation: warehouseLocationValue,
         flowDetailDTO: kitDTO,
@@ -377,6 +384,20 @@ function AddFlows({ addFlows }) {
       console.error("Error fetching data:", error);
     }
   };
+  const getKitByKit = async (kit) => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/kitDetails?kitName=${kit}`
+      );
+
+      if (response.status === 200) {
+        setKitDesc(response.data.paramObjectsMap.KitVO.kitDesc);
+        console.log("kitDesc", response.data.paramObjectsMap.KitVO.kitDesc);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleKitOpen = () => {
     setOpenKitModal(true);
@@ -393,8 +414,8 @@ function AddFlows({ addFlows }) {
 
   const handleAddKitDetails = () => {
     const errors = {};
-    if (!kitName) {
-      errors.kitName = "Kit is required";
+    if (!kitNo) {
+      errors.kitNo = "Kit is required";
     }
     if (!partName) {
       errors.partName = "Part Name is required";
@@ -407,7 +428,7 @@ function AddFlows({ addFlows }) {
     }
     if (Object.keys(errors).length === 0) {
       const existingKit = kitDTO.find(
-        (kit) => kit.kitName === kitName && kit.partNumber === partNumber
+        (kit) => kit.kitNo === kitNo && kit.partNumber === partNumber
       );
       if (existingKit) {
         toast.error("This kit and part number combination already exists", {
@@ -427,7 +448,8 @@ function AddFlows({ addFlows }) {
           });
         } else {
           const newKitDetails = {
-            kitName,
+            kitNo,
+            kitDesc,
             partName,
             partNumber,
             cycleTime,
@@ -715,7 +737,7 @@ function AddFlows({ addFlows }) {
                 <tbody>
                   {kitDTO.map((kit, index) => (
                     <tr key={index}>
-                      <td className="text-center">{kit.kitName}</td>
+                      <td className="text-center">{kit.kitNo}</td>
                       <td className="text-center">{kit.partName}</td>
                       <td className="text-center">{kit.partNumber}</td>
                       <td className="text-center">{kit.cycleTime}</td>
@@ -778,7 +800,7 @@ function AddFlows({ addFlows }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Kit Name
+                    Kit
                     <FaStarOfLife className="must" />
                   </span>
                 </label>
@@ -786,18 +808,18 @@ function AddFlows({ addFlows }) {
               <div className="col-lg-3 col-md-6">
                 <select
                   className="form-select form-sz w-full"
-                  value={kitName}
+                  value={kitNo}
                   onChange={handleSelectKitName}
                 >
                   <option value="">Select a kit</option>
                   {getkit.map((kitId) => (
-                    <option key={kitId.id} value={kitId.kitCode}>
-                      {kitId.kitCode}
+                    <option key={kitId.id} value={kitId.kitNo}>
+                      {kitId.kitNo}
                     </option>
                   ))}
                 </select>
-                {errors.kitName && (
-                  <span className="error-text mb-1">{errors.kitName}</span>
+                {errors.kitNo && (
+                  <span className="error-text mb-1">{errors.kitNo}</span>
                 )}
               </div>
               {/* Part Name */}
@@ -834,6 +856,25 @@ function AddFlows({ addFlows }) {
                 )}
               </div>
               {/* part no field */}
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Kit Desc
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  disabled
+                  value={kitDesc}
+                />
+              </div>
               <div className="col-lg-3 col-md-6">
                 <label className="label mb-4">
                   <span
