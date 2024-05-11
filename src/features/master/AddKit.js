@@ -32,13 +32,16 @@ function AddKit({ addItem, kitEditId }) {
   const [selectedCode, setSelectedCode] = useState(false);
   const [assetCodeList, setAssetCodeList] = useState([]);
   const [kitDesc, setKitDesc] = useState("");
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
 
 
 
   useEffect(() => {
     if (kitEditId) {
-      getAllKitData();
+    getKitById();
+      // getKitById()
+      // getAllKitData();
       console.log("kitEditId", kitEditId);
     }
     // getAllAssetType();
@@ -47,6 +50,56 @@ function AddKit({ addItem, kitEditId }) {
   useEffect(() => {
     getAllAssetType();
   }, [assetCodeList])
+
+  
+  // CLOSE BUTTON WITH CONFIRMATION
+  const handleUserCreationClose = () => {
+    if (
+      kitCode ||
+      kitDesc ||
+      partQuantity ||
+      kitAssetDTO > 0
+    ) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+      addItem(false); // USER CREATION SCREEN CLOSE AFTER UPDATE
+    }
+  };
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
+    addItem(false);
+  };
+
+
+
+
+
+
+
+
+  const getKitById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/kit/${kitEditId}`
+
+      );
+      if (response.status === 200) {
+        console.log("kits", response.data.paramObjectsMap.KitVO);
+        setKitCode(response.data.paramObjectsMap.KitVO.kitNo);
+        setKitDesc(response.data.paramObjectsMap.KitVO.kitDesc);
+        setPartQuantity(response.data.paramObjectsMap.KitVO.partQty);
+        setKitAssetDTO(response.data.paramObjectsMap.KitVO.kitAssetVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleAssetOpen = () => {
     setOpenAssetModal(true);
@@ -71,24 +124,24 @@ function AddKit({ addItem, kitEditId }) {
     setSelectedCode(false);
   };
 
-  const getAllKitData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getallkit`
-      );
+  // const getAllKitData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/getallkit`
+  //     );
 
-      if (response.status === 200) {
-        const kits = response.data.paramObjectsMap.KitVO;
-        console.log("kits", response.data.paramObjectsMap.KitVO);
+  //     if (response.status === 200) {
+  //       const kits = response.data.paramObjectsMap.KitVO;
+  //       console.log("kits", response.data.paramObjectsMap.KitVO);
 
-        const kitCodes = kits.map((kit) => kit);
-        // setKitCode(kitCodes);
-        console.log("code", kitCodes);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //       const kitCodes = kits.map((kit) => kit);
+  //       // setKitCode(kitCodes);
+  //       console.log("code", kitCodes);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
   // const handleKitId = (event) => {
   //   setKitCode(event.target.value);
   // };
@@ -417,6 +470,9 @@ function AddKit({ addItem, kitEditId }) {
     if (!kitCode) {
       errors.kitCode = "Kit Id is required";
     }
+    if (!kitDesc) {
+      errors.kitDesc = "Kit Description is required";
+    }
     if (!partQuantity) {
       errors.partQuantity = "Part Quantity is required";
     }
@@ -427,29 +483,30 @@ function AddKit({ addItem, kitEditId }) {
     if (Object.keys(errors).length === 0) {
       try {
         const kitData = {
-          kitCode,
+          id: kitEditId,
+          kitNo: kitCode,
+          kitDesc,
           partQuantity,
           kitAssetDTO,
           orgId,
-          // Add other properties from your form if needed
         };
         const response = await axios.put(
           `${process.env.REACT_APP_API_URL}/api/master/updateKit`,
           kitData
         );
         if (response.data.status === "Error" || !response.data.status) {
-          console.error("Error creating kit:", response.data.paramObjectsMap);
-          toast.error("Kit creation failed!", {
+          console.error("Error update kit:", response.data.paramObjectsMap);
+          toast.error("Kit Updation failed!", {
             autoClose: 2000,
             theme: "colored",
           });
         } else {
-          console.log("Kit created with successfully:", response.data);
+          console.log("Kit Updated successfully:", response.data);
 
           toast.success(
             "Kit " +
-            response.data.paramObjectsMap.KitVO.kitCode +
-            " created successfully!",
+            response.data.paramObjectsMap.KitVO.kitNo +
+            " Updated successfully!",
             {
               autoClose: 2000,
               theme: "colored",
@@ -457,7 +514,8 @@ function AddKit({ addItem, kitEditId }) {
           );
           // Add any further actions you want to take after successful kit creation
           setTimeout(() => {
-            handleItem();
+            // handleItem();
+            addItem(false);
           }, 3000);
         }
       } catch (error) {
@@ -507,7 +565,8 @@ function AddKit({ addItem, kitEditId }) {
 
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
-          <IoMdClose onClick={handleItem} className="cursor-pointer w-8 h-8" />
+          {/* <IoMdClose onClick={handleItem} className="cursor-pointer w-8 h-8" /> */}
+          <IoMdClose onClick={handleUserCreationClose} className="cursor-pointer w-8 h-8" />
         </div>
         <div className="row">
           <div className="col-lg-9 col-md-12">
@@ -553,14 +612,12 @@ function AddKit({ addItem, kitEditId }) {
                 </label>
               </div>
               <div className="col-lg-3 col-md-6 mt-2">
-                <textarea
+                <input
                   className="form-control form-sz mb-2 p-2 uppercase"
                   name="kitCode"
                   type="text"
                   value={kitDesc}
                   onChange={(e) => setKitDesc(e.target.value)}
-                // onInput={handleKitId}
-                // required
                 />
                 {errors.kitDesc && (
                   <span className="error-text">{errors.kitDesc}</span>
@@ -972,6 +1029,23 @@ function AddKit({ addItem, kitEditId }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+
+
+{/* CLOSE CONFIRMATION MODAL */}
+<Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
+        </DialogActions>
+      </Dialog>
+
+
+
+
     </>
   );
 }

@@ -97,7 +97,7 @@ function CreateKit() {
   }, [data]);
 
   const handleEditRow = (row) => {
-    setSelectedRowId(row.original.kitCode);
+    setSelectedRowId(row.original.id);
     setEditKit(true);
   };
 
@@ -338,7 +338,8 @@ function CreateKit() {
                 {selectedKitDetails && (
                   <div>
                     <p className="kit-detail">
-                      <strong>Kit ID :</strong> {selectedKitDetails.kitNo} <br />
+                      <strong>Kit ID :</strong> {selectedKitDetails.kitNo}{" "}
+                      <br />
                       <strong>Kit Desc :</strong> {selectedKitDetails.kitDesc}
                     </p>
 
@@ -348,20 +349,34 @@ function CreateKit() {
                         <table className="asset-table">
                           <thead>
                             <tr>
-                              <th>Category</th>
-                              <th>Asset Name</th>
-                              <th>Asset Code</th>
-                              <th>Quantity</th>
+                              <th style={{ textAlign: "center" }}>
+                                Asset Type
+                              </th>
+                              <th style={{ textAlign: "center" }}>
+                                Asset Category
+                              </th>
+                              <th style={{ textAlign: "center" }}>
+                                Asset Code
+                              </th>
+                              <th style={{ textAlign: "center" }}>Quantity</th>
                             </tr>
                           </thead>
                           <tbody>
                             {Object.keys(kitAssetCategory).map((category) =>
                               kitAssetCategory[category].map((asset) => (
                                 <tr key={asset.id}>
-                                  <td>{category}</td>
-                                  <td>{asset.assetName}</td>
-                                  <td>{asset.assetCodeId}</td>
-                                  <td>{asset.quantity}</td>
+                                  <td style={{ textAlign: "center" }}>
+                                    {asset.assetType}
+                                  </td>
+                                  <td style={{ textAlign: "center" }}>
+                                    {asset.assetCategory}
+                                  </td>
+                                  <td style={{ textAlign: "center" }}>
+                                    {asset.assetCodeId}
+                                  </td>
+                                  <td style={{ textAlign: "center" }}>
+                                    {asset.quantity}
+                                  </td>
                                 </tr>
                               ))
                             )}
