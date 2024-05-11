@@ -184,7 +184,7 @@ function CreateKit() {
         ),
       },
       {
-        accessorKey: "kitCode",
+        accessorKey: "kitNo",
         header: "Kit ID",
         size: 50,
         muiTableHeadCellProps: {
@@ -338,7 +338,8 @@ function CreateKit() {
                 {selectedKitDetails && (
                   <div>
                     <p className="kit-detail">
-                      <strong>Kit ID :</strong> {selectedKitDetails.kitCode}
+                      <strong>Kit ID :</strong> {selectedKitDetails.kitNo} <br />
+                      <strong>Kit Desc :</strong> {selectedKitDetails.kitDesc}
                     </p>
 
                     {kitAssetCategory && (
@@ -349,6 +350,7 @@ function CreateKit() {
                             <tr>
                               <th>Category</th>
                               <th>Asset Name</th>
+                              <th>Asset Code</th>
                               <th>Quantity</th>
                             </tr>
                           </thead>
@@ -358,6 +360,7 @@ function CreateKit() {
                                 <tr key={asset.id}>
                                   <td>{category}</td>
                                   <td>{asset.assetName}</td>
+                                  <td>{asset.assetCodeId}</td>
                                   <td>{asset.quantity}</td>
                                 </tr>
                               ))
