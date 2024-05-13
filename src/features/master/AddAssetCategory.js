@@ -64,10 +64,7 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddAssetCategory({
-  addItemSpecification,
-  editItemSpecificationId,
-}) {
+function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
   const [id, setId] = useState("");
   const [assetName, setAssetName] = useState("");
   const [assetCodeId, setAssetCodeId] = useState("");
@@ -78,7 +75,9 @@ function AddAssetCategory({
   const [height, setHeight] = useState();
   const [dimUnit, setDimUnit] = useState();
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [loginUserName, setLoginUserName] = React.useState(localStorage.getItem("userName"));
+  const [loginUserName, setLoginUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
@@ -92,6 +91,7 @@ function AddAssetCategory({
   // };
 
   useEffect(() => {
+    console.log("THE EDIT ID IS:", editItemSpecificationId);
     getAllAssetCategory();
     {
       editItemSpecificationId && getItemGroupByAssetCode();
@@ -200,7 +200,6 @@ function AddAssetCategory({
         orgId: orgId,
         createdby: loginUserName,
         modifiedby: loginUserName,
-
       };
       Axios.post(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
@@ -269,7 +268,6 @@ function AddAssetCategory({
         orgId: orgId,
         createdby: loginUserName,
         modifiedby: loginUserName,
-
       };
       Axios.put(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
@@ -387,6 +385,7 @@ function AddAssetCategory({
                   .toUpperCase()
                   .replace(/[^A-Z\s]/g, "");
               }}
+              disabled={editItemSpecificationId ? true : false}
             />
             {errors.assetName && (
               <span className="error-text">{errors.assetName}</span>
@@ -413,6 +412,7 @@ function AddAssetCategory({
               onInput={(e) => {
                 e.target.value = e.target.value.toUpperCase();
               }}
+              disabled={editItemSpecificationId ? true : false}
             />
             {errors.assetCodeId && (
               <span className="error-text">{errors.assetCodeId}</span>

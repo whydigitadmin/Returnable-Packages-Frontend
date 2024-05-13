@@ -21,6 +21,11 @@ import {
   FaTrash,
   FaEdit,
 } from "react-icons/fa";
+import {
+  stringValidation,
+  stringAndNoValidation,
+  stringAndNoAndSpecialCharValidation,
+} from "../../utils/userInputValidation";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -1010,7 +1015,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             .then((uploadResponse) => {
               console.log("File Upload Response:", uploadResponse.data);
               // DOCUMENT FILE SAVE
-              setSelectedSopFiles("")
+              setSelectedSopFiles("");
 
               const formData2 = new FormData();
               for (let i = 0; i < docUploadedFiles.length; i++) {
@@ -1032,7 +1037,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   console.log("File Upload Response:", uploadResponse.data);
 
                   // addcustomer(true);
-                  setSelectedDocFiles("")
+                  setSelectedDocFiles("");
                   setAddressShow(true);
                   setErrors({});
                   toast.success(
@@ -1156,7 +1161,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   };
 
   const handleFileUpload = (files) => {
-    console.log("Test")
+    console.log("Test");
     setSopUploadedFiles(files);
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
@@ -1171,9 +1176,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     }
     const fileNames = Array.from(files).map((file) => file.name);
     setSelectedDocFiles(fileNames);
-    console.log("LOCAL FILE NAME IS:", fileNames)
-    console.log("SELECTED DOC FILES IS:", selectedDocFiles)
-
+    console.log("LOCAL FILE NAME IS:", fileNames);
+    console.log("SELECTED DOC FILES IS:", selectedDocFiles);
   };
 
   return (
@@ -1257,9 +1261,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   name="customerCode"
                   onChange={handleCustomerChange}
                   readOnly
-                // onInput={(e) => {
-                //   e.target.value = e.target.value.toUpperCase();
-                // }}
+                  // onInput={(e) => {
+                  //   e.target.value = e.target.value.toUpperCase();
+                  // }}
                 />
                 {errors.customerCode && (
                   <div className="error-text">{errors.customerCode}</div>
@@ -1317,11 +1321,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               name="displayName"
               onChange={handleCustomerChange}
               disabled={isSubmitting}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
             />
             {errors.displayName && (
               <div className="error-text">{errors.displayName}</div>
@@ -1449,11 +1449,12 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             </label>
             <br />
             {/* Display the selected file names */}
-            {selectedSopFiles && selectedSopFiles.map((fileName, index) => (
-              <div style={{ font: "10px" }} key={index}>
-                {fileName}
-              </div>
-            ))}
+            {selectedSopFiles &&
+              selectedSopFiles.map((fileName, index) => (
+                <div style={{ font: "10px" }} key={index}>
+                  {fileName}
+                </div>
+              ))}
             {errors.uploadError && (
               <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
@@ -1485,11 +1486,12 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             </label>
             <br />
             {/* Display the selected file names */}
-            {selectedDocFiles && selectedDocFiles.map((fileName, index) => (
-              <div style={{ font: "10px" }} key={index}>
-                {fileName}
-              </div>
-            ))}
+            {selectedDocFiles &&
+              selectedDocFiles.map((fileName, index) => (
+                <div style={{ font: "10px" }} key={index}>
+                  {fileName}
+                </div>
+              ))}
             {/* {errors.uploadError && (
             <span className="error-text mb-1">{errors.uploadFiles}</span>
           )} */}
