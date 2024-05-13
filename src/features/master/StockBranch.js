@@ -12,6 +12,10 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  stringValidation,
+  codeFieldValidation,
+} from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -66,11 +70,10 @@ const IOSSwitch = styled((props) => (
 
 export const StockBranch = () => {
   const [branch, setBranch] = useState("");
-  const [branchCode, setCode] = useState("");
+  const [branchCode, setBranchCode] = useState("");
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
-  const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [data, setData] = React.useState([]);
   const [userDetail, setUserDetail] = useState(
@@ -86,7 +89,7 @@ export const StockBranch = () => {
         setBranch(formatedBranch.toUpperCase());
         break;
       case "code":
-        setCode(formatedCode.toUpperCase());
+        setBranchCode(formatedCode.toUpperCase());
         break;
       default:
         break;
@@ -137,7 +140,7 @@ export const StockBranch = () => {
         .then((response) => {
           console.log("Response:", response.data);
           setBranch("");
-          setCode("");
+          setBranchCode("");
           setErrors({});
           getAllStockbranch();
           toast.success("Bin Inward Saved Successfully!", {
@@ -178,10 +181,10 @@ export const StockBranch = () => {
         .then((response) => {
           console.log("Response:", response.data);
           setBranch("");
-          setCode("");
+          setBranchCode("");
           setErrors({});
           getAllStockbranch();
-          setSelectedRowId("")
+          setSelectedRowId("");
           toast.success("Stock Branch updated successfully!", {
             autoClose: 2000,
             theme: "colored",
@@ -196,15 +199,11 @@ export const StockBranch = () => {
     }
   };
 
-  const handleViewRow = (row) => {
-    setSelectedRowData(row.original);
-  };
-
   const handleEditRow = (row) => {
     setErrors({});
     setSelectedRowId(row.original.id);
     setBranch(row.original.branch);
-    setCode(row.original.branchCode);
+    setBranchCode(row.original.branchCode);
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -294,10 +293,10 @@ export const StockBranch = () => {
             name="branch"
             value={branch}
             maxLength={20}
-            onInput={(e) => {
-              e.target.value = e.target.value.toUpperCase();
+            onInput={stringValidation}
+            onChange={(e) => {
+              setBranch(e.target.value);
             }}
-            onChange={handleStockChange}
           />
           {errors.branch && <span className="error-text">{errors.branch}</span>}
         </div>
@@ -319,10 +318,10 @@ export const StockBranch = () => {
             name="code"
             value={branchCode}
             maxLength={6}
-            onInput={(e) => {
-              e.target.value = e.target.value.toUpperCase();
+            onInput={codeFieldValidation}
+            onChange={(e) => {
+              setBranchCode(e.target.value);
             }}
-            onChange={handleStockChange}
           />
           {errors.branchCode && (
             <span className="error-text">{errors.branchCode}</span>
