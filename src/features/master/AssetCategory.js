@@ -83,6 +83,7 @@ function AssetCategory() {
   const handleViewRow = (row) => {
     setSelectedRowData(row.original);
     console.log("setSelectedRowData", row.original);
+    console.log("THE ACTIVE FIELD IS ", row.original.active);
     setOpenView(true);
   };
 
@@ -126,7 +127,7 @@ function AssetCategory() {
         );
         console.log(
           "TESTING:",
-          response.data.paramObjectsMap.assetGroupVO.assetGroupVO
+          response.data.paramObjectsMap.assetGroupVO.assetGroupVO.reverse()
         );
       }
     } catch (error) {
@@ -136,7 +137,6 @@ function AssetCategory() {
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
-
     console.log("Test11", event.target.value);
     switch (name) {
       case "assetCategory":
@@ -227,17 +227,6 @@ function AssetCategory() {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "id",
-      //   header: "ID",
-      //   size: 30,
-      //   muiTableHeadCellProps: {
-      //     align: "first",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "first",
-      //   },
-      // },
       {
         accessorKey: "assetType",
         header: "Type",
@@ -271,39 +260,18 @@ function AssetCategory() {
           align: "center",
         },
       },
-      // {
-      //     accessorKey: "length",
-      //     header: "Length",
-      //     size: 20,
-      //     muiTableHeadCellProps: {
-      //         align: "center",
-      //     },
-      //     muiTableBodyCellProps: {
-      //         align: "center",
-      //     },
-      // },
-      // {
-      //     accessorKey: "breath",
-      //     header: "Breath",
-      //     size: 20,
-      //     muiTableHeadCellProps: {
-      //         align: "center",
-      //     },
-      //     muiTableBodyCellProps: {
-      //         align: "center",
-      //     },
-      // },
-      // {
-      //     accessorKey: "height",
-      //     header: "Height",
-      //     size: 20,
-      //     muiTableHeadCellProps: {
-      //         align: "center",
-      //     },
-      //     muiTableBodyCellProps: {
-      //         align: "center",
-      //     },
-      // },
+      {
+        accessorKey: "active",
+        header: "Active",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        Cell: ({ value }) => <span>{1 ? "T" : "F"}</span>,
+      },
     ],
     []
   );
