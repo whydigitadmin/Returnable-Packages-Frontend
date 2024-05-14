@@ -12,6 +12,7 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { stringValidation } from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -68,7 +69,7 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
   const [id, setId] = useState("");
   const [assetName, setAssetName] = useState("");
   const [assetCodeId, setAssetCodeId] = useState("");
-  const [assetCategoryVO, setAssetCategoryVO] = useState([]);
+  const [assetTypeList, setAssetTypeList] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
   const [length, setLength] = useState();
   const [breath, setBreath] = useState();
@@ -92,27 +93,48 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
 
   useEffect(() => {
     console.log("THE EDIT ID IS:", editItemSpecificationId);
-    getAllAssetCategory();
+    getAllAssetType();
     {
-      editItemSpecificationId && getItemGroupByAssetCode();
+      // editItemSpecificationId && getItemGroupByAssetCode();
+      editItemSpecificationId && getAssetCategoryById();
     }
   }, []);
 
-  // ALL ASSET CATEGORY
-  const getAllAssetCategory = async () => {
+  // GET ALL ASSET TYPE
+  const getAllAssetType = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/getAllAssetCategory?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        const assetCategories = response.data.paramObjectsMap.assetCategoryVO;
-        setAssetCategoryVO(assetCategories);
-        console.log("type", assetCategories);
+        const localAssetTypes = response.data.paramObjectsMap.assetCategoryVO;
+        setAssetTypeList(localAssetTypes);
+        console.log("type", localAssetTypes);
 
-        if (assetCategories.length > 0) {
-          setAssetCategory(assetCategories[0].assetCategory);
+        if (localAssetTypes.length > 0) {
+          setAssetCategory(localAssetTypes[0].assetCategory);
         }
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  // GET ASSET CATEGORY BY ID
+  const getAssetCategoryById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup/${editItemSpecificationId}`
+      );
+
+      if (response.status === 200) {
+        console.log(
+          "THE GET ASSET CATEGORY ID FROM API IS",
+          response.data.paramObjectsMap.assetGroupVO
+        );
+        setAssetCategory(response.data.paramObjectsMap.assetGroupVO.assetType);
+        setAssetName(response.data.paramObjectsMap.assetGroupVO.category);
+        setAssetCodeId(response.data.paramObjectsMap.assetGroupVO.categoryCode);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -175,27 +197,11 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
     if (!assetName) {
       errors.assetName = "Name is required";
     }
-    // if (!length) {
-    //   errors.length = "Length is required";
-    // }
-    // if (!breath) {
-    //   errors.breath = "Breath is required";
-    // }
-    // if (!height) {
-    //   errors.height = "Height is required";
-    // }
-    // if (!dimUnit) {
-    //   errors.dimUnit = "Unit is required";
-    // }
     if (Object.keys(errors).length === 0) {
       const formData = {
         assetType: assetCategory,
         category: assetName,
         categoryCode: assetCodeId,
-        length,
-        breath,
-        height,
-        dimUnit,
         active,
         orgId: orgId,
         createdby: loginUserName,
@@ -214,7 +220,7 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
           setDimUnit("");
           setId("");
           setAssetCodeId("");
-          setAssetCategoryVO([]);
+          setAssetTypeList([]);
 
           // addItemSpecification(true);
           toast.success("Specification Created successfully", {
@@ -237,37 +243,35 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
   // UPDATE ASSETCATEGORY
   const handleUpdateAssetCategory = () => {
     const errors = {};
+    if (!assetCategory) {
+      errors.assetCategory = "Type is required";
+    }
     if (!assetCodeId) {
       errors.assetCodeId = "Code is required";
     }
     if (!assetName) {
       errors.assetName = "Name is required";
     }
-    // if (!length) {
-    //   errors.length = "Length is required";
-    // }
-    // if (!breath) {
-    //   errors.breath = "Breath is required";
-    // }
-    // if (!height) {
-    //   errors.height = "Height is required";
-    // }
-    // if (!dimUnit) {
-    //   errors.dimUnit = "Unit is required";
-    // }
+
+    const formData = {
+      id: editItemSpecificationId,
+      assetType: assetCategory,
+      category: assetName,
+      categoryCode: assetCodeId,
+      active,
+      orgId: orgId,
+      modifiedBy: loginUserName,
+    };
+    console.log("DATA TO UPDATE IS:", formData);
     if (Object.keys(errors).length === 0) {
       const formData = {
+        id: editItemSpecificationId,
         assetType: assetCategory,
         category: assetName,
         categoryCode: assetCodeId,
-        length,
-        breath,
-        height,
-        dimUnit,
         active,
         orgId: orgId,
-        createdby: loginUserName,
-        modifiedby: loginUserName,
+        modifiedBy: loginUserName,
       };
       Axios.put(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
@@ -277,6 +281,13 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
           console.log("Response:", response.data);
           addItemSpecification(false);
           // addItemSpecification(true);
+          toast.success("Specification Updated successfully", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            handleConfirmationYes();
+          }, 2000);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -317,6 +328,11 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
     addItemSpecification(true);
   };
 
+  const handleSwitchChange = (event) => {
+    setActive(event.target.checked);
+    console.log("THE CHECKED STATUS IS:", event.target.checked);
+  };
+
   return (
     <>
       <div>
@@ -352,8 +368,8 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
               <option value="" disabled>
                 Select an Type
               </option>
-              {assetCategoryVO.length > 0 &&
-                assetCategoryVO.map((list) => (
+              {assetTypeList.length > 0 &&
+                assetTypeList.map((list) => (
                   <option key={list.id} value={list.assetType}>
                     {list.assetType}
                   </option>
@@ -380,12 +396,13 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
               name="assetName"
               value={assetName}
               onChange={handleCategoryChange}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
-              disabled={editItemSpecificationId ? true : false}
+              // onInput={(e) => {
+              //   e.target.value = e.target.value
+              //     .toUpperCase()
+              //     .replace(/[^A-Z\s]/g, "");
+              // }}
+              onInput={stringValidation}
+              // disabled={editItemSpecificationId ? true : false}
             />
             {errors.assetName && (
               <span className="error-text">{errors.assetName}</span>
@@ -412,7 +429,7 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
               onInput={(e) => {
                 e.target.value = e.target.value.toUpperCase();
               }}
-              disabled={editItemSpecificationId ? true : false}
+              // disabled={editItemSpecificationId ? true : false}
             />
             {errors.assetCodeId && (
               <span className="error-text">{errors.assetCodeId}</span>
@@ -499,8 +516,18 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <FormControlLabel
+            {/* <FormControlLabel
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            /> */}
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={active}
+                  onChange={handleSwitchChange}
+                  // defaultChecked
+                />
+              }
+              label="Active"
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2"></div>
