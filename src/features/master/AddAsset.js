@@ -70,7 +70,7 @@ function AddAsset({ addItem, editItemId }) {
   const [assetType, setAssetType] = useState([]);
   const [assetTypeSelected, setAssetTypeSelected] = useState(false);
   const [assetCodeId, setAssetCodeId] = useState("");
-  const [category, setCategory] = useState([]);
+  const [category, setCategory] = useState("");
   const [categoryVO, setCategoryVO] = useState([]);
   const [categorySelected, setCategorySelected] = useState(false);
   const [categoryCode, setCategoryCode] = useState("");
@@ -83,6 +83,10 @@ function AddAsset({ addItem, editItemId }) {
   const [height, setHeight] = useState("");
   const [dimUnit, setDimUnit] = useState("");
   const [costPrice, setCostPrice] = useState("");
+  const [emitter, setEmitter] = useState("");
+  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [design, setDesign] = useState("");
+  const [material, setMaterial] = useState("");
   const [eanUpc, setEanUpc] = useState("");
   const [expectedLife, setExpectedLife] = useState("");
   const [expectedTrips, setExpectedTrips] = useState("");
@@ -113,7 +117,7 @@ function AddAsset({ addItem, editItemId }) {
     const selectedCategory = event.target.value;
     setAssetType(selectedCategory);
     setAssetTypeSelected(true);
-    getAssetNamesByCategory(event.target.value);
+    getAssetNamesByCategory(selectedCategory);
   };
 
   const handleAssetCategoryChange = (event) => {
@@ -151,9 +155,10 @@ function AddAsset({ addItem, editItemId }) {
   //   };
 
   useEffect(() => {
+    getCustomersList();
     getAllAssetCategory();
     getWarehouseLocationList();
-    getAssetNamesByCategory();
+    editItemId && getAssetNamesByCategory();
     getPOList();
     editItemId && getItemByAssetCode();
   }, []);
@@ -244,7 +249,7 @@ function AddAsset({ addItem, editItemId }) {
   const getAssetNamesByCategory = async (category) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup?orgId=${orgId}`,
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
         {
           params: {
             orgId: orgId,
@@ -253,10 +258,10 @@ function AddAsset({ addItem, editItemId }) {
         }
       );
       if (response.status === 200) {
-        setCategoryVO(response.data.paramObjectsMap.assetGroupVO.assetGroupVO);
+        setCategoryVO(response.data.paramObjectsMap.assetGroupVO.category);
         console.log(
           "Response from category:",
-          response.data.paramObjectsMap.assetGroupVO.assetGroupVO
+          response.data.paramObjectsMap.assetGroupVO.assetGroupVO.category
         );
       }
     } catch (error) {
@@ -319,6 +324,22 @@ function AddAsset({ addItem, editItemId }) {
   //     const calculatedSkuTo = parseInt(skuFrom) + parseInt(assetQty);
   //     return calculatedSkuTo;
   //   };
+
+  const getCustomersList = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setEmitterCustomersVO(
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleCategoryChange = (event) => {
     const { name, value } = event.target;
@@ -456,12 +477,19 @@ function AddAsset({ addItem, editItemId }) {
       };
       Axios.post(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
         .then((response) => {
-          console.log("Response:", response.data);
-          toast.success("Asset Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          addItem(false);
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            addItem(false);
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -640,8 +668,8 @@ function AddAsset({ addItem, editItemId }) {
               </option>
               {categoryVO.length > 0 &&
                 categoryVO.map((name) => (
-                  <option key={name.id} value={name.category}>
-                    {name.category}
+                  <option key={name.id} value={name}>
+                    {name}
                   </option>
                 ))}
             </select>
@@ -848,10 +876,42 @@ function AddAsset({ addItem, editItemId }) {
 
         <h1 className="text-xl font-semibold my-2">Details</h1>
         <div className="row">
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Belongs to
+                {/* <FaStarOfLife className="must" /> */}
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              className="form-select form-sz w-full mb-2"
+              // onChange={handleEmitterChange}
+              value={emitter}
+            >
+              <option value="" disabled>
+                Select an Emitter
+              </option>
+              {emitterCustomersVO.length > 0 &&
+                emitterCustomersVO.map((list) => (
+                  <option key={list.id} value={list.id}>
+                    {list.displayName}
+                  </option>
+                ))}
+            </select>
+            {errors.emitter && (
+              <span className="error-text mb-1">{errors.emitter}</span>
+            )}
+          </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
-                Dimensions
+                Size Identification
               </span>
             </label>
           </div>
@@ -915,6 +975,67 @@ function AddAsset({ addItem, editItemId }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
+              <span className={"label-text text-base-content "}>
+                Material identification
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              name="material"
+              className="form-select form-sz w-full mb-2"
+              value={material}
+              // onChange={handleUnitChange}
+            >
+              <option value="" disabled>
+                Select a Material
+              </option>
+              <option value="Plastic">Plastic</option>
+              <option value="Wooden">Wooden</option>
+              <option value="Metal">Metal</option>
+              <option value="Cardboard">Cardboard</option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text text-base-content "}>Design</span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <select
+              name="design"
+              className="form-select form-sz w-full mb-2"
+              value={design}
+              // onChange={handleUnitChange}
+            >
+              <option value="" disabled>
+                Select a design
+              </option>
+              <option value="Only Sleeve foldable">Only Sleeve foldable</option>
+              <option value="With pallet and foldable">
+                With pallet and foldable
+              </option>
+            </select>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text text-base-content "}>
+                Manufacture part code
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              placeholder=""
+              className="input mb-2 input-bordered form-sz w-full"
+              // name="eanUpc"
+              type="text"
+              // value={eanUpc}
+              // onChange={handleCategoryChange}
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span className={"label-text text-base-content "}>EAN/UPC</span>
             </label>
           </div>
@@ -928,8 +1049,6 @@ function AddAsset({ addItem, editItemId }) {
               onChange={handleCategoryChange}
             />
           </div>
-        </div>
-        <div className="row">
           {/* <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content "}>

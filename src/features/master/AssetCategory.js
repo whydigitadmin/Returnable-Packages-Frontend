@@ -172,14 +172,20 @@ function AssetCategory() {
         formData
       )
         .then((response) => {
-          console.log("Response:", response.data);
-          setAssetCategory("");
-          setAssetCategoryId("");
-          toast.success("Category Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          handleClose();
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            setAssetCategory("");
+            setAssetCategoryId("");
+            toast.success("Category Created successfully", {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            handleClose();
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -270,7 +276,6 @@ function AssetCategory() {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ value }) => <span>{1 ? "T" : "F"}</span>,
       },
     ],
     []

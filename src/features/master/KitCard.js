@@ -6,7 +6,7 @@ export const KitCard = () => {
   const [kitCode, setKitCode] = useState("");
   const [errors, setErrors] = useState({});
   const [kitData, setKitData] = useState(null);
-  const [kitVO, setKitVO] = useState("");
+  const [kitVO, setKitVO] = useState([]);
   const [hoveredImage, setHoveredImage] = useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
 
@@ -52,9 +52,10 @@ export const KitCard = () => {
 
       if (response.status === 200) {
         const kitCodes = response.data.paramObjectsMap.KitVO.map(
-          (kit) => kit.kitCode
+          (kit) => kit.kitNo
         );
         setKitVO(kitCodes);
+        console.log("kitCodes", kitCodes);
         // Handle success
       } else {
         // Handle error
@@ -149,7 +150,7 @@ export const KitCard = () => {
                   <tr>
                     <th>Asset</th>
                     <th>Asset Category</th>
-                    <th>Asset Name</th>
+                    <th>Asset Code</th>
                     <th>Quantity</th>
                   </tr>
                 </thead>
@@ -182,7 +183,7 @@ export const KitCard = () => {
                           />
                         </td>
                         <td>{asset.assetCategory}</td>
-                        <td>{asset.assetName}</td>
+                        <td>{asset.assetCodeId}</td>
                         <td>{asset.quantity}</td>
                       </tr>
                     );

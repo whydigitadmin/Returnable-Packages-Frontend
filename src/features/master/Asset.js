@@ -19,6 +19,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
+import Tooltip from "@mui/material/Tooltip";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -153,9 +154,22 @@ function Asset() {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag ? "Editing is disabled for this asset" : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },

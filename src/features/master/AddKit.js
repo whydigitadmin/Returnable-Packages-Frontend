@@ -19,8 +19,11 @@ function AddKit({ addItem, kitEditId }) {
   const [assetName, setAssetName] = useState("");
   const [assetNameList, setAssetNameList] = useState([]);
   const [assetQty, setAssetQty] = useState();
-  const [assetCode, setAssetCode] = useState();
+  const [assetCode, setAssetCode] = useState("");
   const [assetDesc, setAssetDesc] = useState();
+  const [emitter, setEmitter] = useState("");
+  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [partName, setPartName] = useState("");
   const [partQuantity, setPartQuantity] = useState();
   const [showPartQuantity, setShowPartQuantity] = useState(false);
   const [errors, setErrors] = useState({});
@@ -34,12 +37,9 @@ function AddKit({ addItem, kitEditId }) {
   const [kitDesc, setKitDesc] = useState("");
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
-
-
-
   useEffect(() => {
     if (kitEditId) {
-    getKitById();
+      getKitById();
       // getKitById()
       // getAllKitData();
       console.log("kitEditId", kitEditId);
@@ -48,18 +48,29 @@ function AddKit({ addItem, kitEditId }) {
   }, []);
 
   useEffect(() => {
+    getCustomersList();
     getAllAssetType();
-  }, [assetCodeList])
+  }, [assetCodeList]);
 
-  
+  const getCustomersList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setEmitterCustomersVO(
+          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   // CLOSE BUTTON WITH CONFIRMATION
   const handleUserCreationClose = () => {
-    if (
-      kitCode ||
-      kitDesc ||
-      partQuantity ||
-      kitAssetDTO > 0
-    ) {
+    if (kitCode || kitDesc || partQuantity || kitAssetDTO > 0) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
@@ -76,18 +87,10 @@ function AddKit({ addItem, kitEditId }) {
     addItem(false);
   };
 
-
-
-
-
-
-
-
   const getKitById = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/kit/${kitEditId}`
-
       );
       if (response.status === 200) {
         console.log("kits", response.data.paramObjectsMap.KitVO);
@@ -111,10 +114,10 @@ function AddKit({ addItem, kitEditId }) {
     setAssetCodeId("");
     setAssetName("");
     setAssetQty("");
-    setAssetCode("")
-    setAssetDesc("")
-    setAssetNameList("")
-    setAssetCodeList("")
+    setAssetCode("");
+    setAssetDesc("");
+    setAssetNameList("");
+    setAssetCodeList("");
 
     // setPartQuantity("");
     setShowPartQuantity(false);
@@ -208,11 +211,11 @@ function AddKit({ addItem, kitEditId }) {
   const handleAssetTypeChange = (event) => {
     const selectedAssetType = event.target.value;
     setAssetType(selectedAssetType);
-    setAssetName("")
-    setAssetCodeId("")
-    setAssetCode("")
-    setAssetDesc("")
-    setAssetQty("")
+    setAssetName("");
+    setAssetCodeId("");
+    setAssetCode("");
+    setAssetDesc("");
+    setAssetQty("");
 
     // setSelectedAssetType(true);
     // // Toggle visibility of part quantity input based on the selected category
@@ -240,10 +243,9 @@ function AddKit({ addItem, kitEditId }) {
 
     // Update the state with the branch code
     // setBranchCode(tempBranch ? tempBranch.branchcode : "");
-    console.log("THE ASSET DESCRIPTIONS IS:", tempAssetDesc.assetName)
-    setAssetDesc(tempAssetDesc.assetName)
-
-  }
+    console.log("THE ASSET DESCRIPTIONS IS:", tempAssetDesc.assetName);
+    setAssetDesc(tempAssetDesc.assetName);
+  };
 
   // const handleAssetCodeChange = (event) => {
   //   const selectedAssetCodeId = event.target.value;
@@ -290,14 +292,14 @@ function AddKit({ addItem, kitEditId }) {
   };
 
   const getAssetNamesByCategory = async (category) => {
-    console.log("Asset Category API Called")
+    console.log("Asset Category API Called");
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
         {
           params: {
             orgId: orgId,
-            assetCategory: category
+            assetCategory: category,
           },
         }
       );
@@ -306,7 +308,6 @@ function AddKit({ addItem, kitEditId }) {
         // const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
         // console.log("THE ASSETGROUPVO FROM API IS:", response.data.paramObjectsMap.assetGroupVO)
         setAssetNameList(response.data.paramObjectsMap.assetGroupVO.category);
-
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -330,7 +331,10 @@ function AddKit({ addItem, kitEditId }) {
         setAssetCodeId(
           response.data.paramObjectsMap.assetGroupVO.categoryCode[0]
         );
-        console.log("THE ASSET CODE ID IS:", response.data.paramObjectsMap.assetGroupVO.categoryCode[0])
+        console.log(
+          "THE ASSET CODE ID IS:",
+          response.data.paramObjectsMap.assetGroupVO.categoryCode[0]
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -340,7 +344,7 @@ function AddKit({ addItem, kitEditId }) {
   const getAssetCodeByCategory = async (name) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetByCategory?category=${name}&orgId=${orgId}`,
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetByCategory?category=${name}&orgId=${orgId}`
       );
       console.log("Response from API:", response.data);
       if (response.status === 200) {
@@ -351,24 +355,18 @@ function AddKit({ addItem, kitEditId }) {
     }
   };
 
-
-
-
-
-
   const handleNew = () => {
-    setKitCode("")
-    setKitDesc("")
-    setPartQuantity("")
-    setKitAssetDTO("")
-    setAssetType("")
-    setAssetName("")
-    setAssetCodeId("")
-    setAssetCode("")
-    setAssetDesc("")
-    setAssetQty("")
-
-  }
+    setKitCode("");
+    setKitDesc("");
+    setPartQuantity("");
+    setKitAssetDTO("");
+    setAssetType("");
+    setAssetName("");
+    setAssetCodeId("");
+    setAssetCode("");
+    setAssetDesc("");
+    setAssetQty("");
+  };
   // Update this function to add asset details to the state
   const handleAddAssetDetails = () => {
     const errors = {};
@@ -440,8 +438,8 @@ function AddKit({ addItem, kitEditId }) {
           handleNew();
           toast.success(
             "Kit " +
-            response.data.paramObjectsMap.KitVO.kitNo +
-            " created successfully!",
+              response.data.paramObjectsMap.KitVO.kitNo +
+              " created successfully!",
             {
               autoClose: 2000,
               theme: "colored",
@@ -449,9 +447,7 @@ function AddKit({ addItem, kitEditId }) {
           );
           setTimeout(() => {
             addItem(false);
-
           }, 2000);
-
         }
       } catch (error) {
         console.error("Error creating kit:", error);
@@ -505,8 +501,8 @@ function AddKit({ addItem, kitEditId }) {
 
           toast.success(
             "Kit " +
-            response.data.paramObjectsMap.KitVO.kitNo +
-            " Updated successfully!",
+              response.data.paramObjectsMap.KitVO.kitNo +
+              " Updated successfully!",
             {
               autoClose: 2000,
               theme: "colored",
@@ -558,15 +554,17 @@ function AddKit({ addItem, kitEditId }) {
     // You may also want to handle saving the changes to the backend here
   };
 
-
   return (
     <>
       <ToastContainer position="top-center" autoClose={3000} hideProgressBar />
 
       <div className="card w-full p-6 bg-base-100 shadow-xl">
-        <div className="d-flex justify-content-end">
+        <div className="d-flex justify-content-end mb-2">
           {/* <IoMdClose onClick={handleItem} className="cursor-pointer w-8 h-8" /> */}
-          <IoMdClose onClick={handleUserCreationClose} className="cursor-pointer w-8 h-8" />
+          <IoMdClose
+            onClick={handleUserCreationClose}
+            className="cursor-pointer w-8 h-8"
+          />
         </div>
         <div className="row">
           <div className="col-lg-9 col-md-12">
@@ -753,13 +751,13 @@ function AddKit({ addItem, kitEditId }) {
                               <FaSave
                                 onClick={() => handleSaveRow(index)}
                                 className="cursor-pointer w-6 h-6"
-                              // style={{ marginLeft: 10 }}
+                                // style={{ marginLeft: 10 }}
                               />
                             ) : (
                               <FaEdit
                                 onClick={() => handleToggleEdit(index)}
                                 className="cursor-pointer w-6 h-6"
-                              // style={{ marginLeft: 10 }}
+                                // style={{ marginLeft: 10 }}
                               />
                             )}
                           </div>
@@ -773,7 +771,7 @@ function AddKit({ addItem, kitEditId }) {
                             <FaTrash
                               onClick={() => handleDeleteRow(index)}
                               className="cursor-pointer w-6 h-6"
-                            // style={{ marginLeft: 10 }}
+                              // style={{ marginLeft: 10 }}
                             />
                           </div>
                         </div>
@@ -919,7 +917,7 @@ function AddKit({ addItem, kitEditId }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
+                  className="form-control form-sz"
                   type="text"
                   name="category code"
                   value={assetCodeId}
@@ -944,7 +942,7 @@ function AddKit({ addItem, kitEditId }) {
               </div>
               <div className="col-lg-3 col-md-3 mb-2">
                 <select
-                  name="Select Asset Code"
+                  name=""
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="input input-bordered ps-2"
                   // onChange={(e) => { setAssetCode(e.target.value) }}
@@ -965,6 +963,72 @@ function AddKit({ addItem, kitEditId }) {
                   <span className="error-text">{errors.assetCode}</span>
                 )}
               </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-2">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Belongs to
+                    {/* <FaStarOfLife className="must" /> */}
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <select
+                  className="form-select form-sz w-full mb-2"
+                  // onChange={handleEmitterChange}
+                  value={emitter}
+                  disabled
+                >
+                  <option value="" disabled>
+                    Select an Emitter
+                  </option>
+                  {emitterCustomersVO.length > 0 &&
+                    emitterCustomersVO.map((list) => (
+                      <option key={list.id} value={list.id}>
+                        {list.displayName}
+                      </option>
+                    ))}
+                </select>
+                {errors.emitter && (
+                  <span className="error-text mb-1">{errors.emitter}</span>
+                )}
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-2">
+                  <span
+                    className={
+                      "label-text label-font-size text-base-content d-flex flex-row"
+                    }
+                  >
+                    Part Name
+                    {/* <FaStarOfLife className="must" /> */}
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <select
+                  className="form-select form-sz w-full"
+                  // onChange={handlePartName}
+                  value={partName}
+                  disabled
+                >
+                  <option value="" disabled>
+                    Select a part name
+                  </option>
+                  {/* {partStudyNameVO.length > 0 &&
+                partStudyNameVO.map((list) => (
+                  <option key={list.id} value={list}>
+                    {list}
+                  </option>
+                ))} */}
+                </select>
+                {errors.partName && (
+                  <span className="error-text mb-1">{errors.partName}</span>
+                )}
+              </div>
               {/* ASSET DESCRIPTION FIELD */}
               <div className="col-lg-3 col-md-6 mb-2">
                 <label className="label">
@@ -980,7 +1044,7 @@ function AddKit({ addItem, kitEditId }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
+                  className="form-control form-sz"
                   type="text"
                   name="assetDesc"
                   value={assetDesc}
@@ -1005,7 +1069,7 @@ function AddKit({ addItem, kitEditId }) {
               </div>
               <div className="col-lg-3 col-md-6 mb-2">
                 <input
-                  className="form-control form-sz mb-2"
+                  className="form-control form-sz"
                   type="number"
                   name="assetQty"
                   value={assetQty}
@@ -1030,10 +1094,8 @@ function AddKit({ addItem, kitEditId }) {
         </DialogActions>
       </Dialog>
 
-
-
-{/* CLOSE CONFIRMATION MODAL */}
-<Dialog open={openConfirmationDialog}>
+      {/* CLOSE CONFIRMATION MODAL */}
+      <Dialog open={openConfirmationDialog}>
         <DialogContent>
           <p>Are you sure you want to close without saving changes?</p>
         </DialogContent>
@@ -1042,10 +1104,6 @@ function AddKit({ addItem, kitEditId }) {
           <Button onClick={handleConfirmationYes}>Yes</Button>
         </DialogActions>
       </Dialog>
-
-
-
-
     </>
   );
 }
