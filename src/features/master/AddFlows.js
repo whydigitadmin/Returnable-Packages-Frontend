@@ -65,12 +65,14 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-function AddFlows({ addFlows }) {
+function AddFlows({ addFlows, editFlowId }) {
   const [flowName, setFlowName] = useState("");
   const [emitter, setEmitter] = useState("");
   const [receiver, setReceiver] = useState("");
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
+  const [editDestination, setEditDestination] = useState("");
+  const [editFilteredList, setEditFilteredList] = useState([]);
   const [active, setActive] = useState(true);
   const [id, setId] = useState();
   const [kitNo, setKitName] = useState("");
@@ -96,6 +98,7 @@ function AddFlows({ addFlows }) {
   const [filteredCity, setFilteredCity] = useState([]);
   const [displayName, setDisplayName] = useState("");
   const [receiverName, setReceiverName] = useState("");
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -108,8 +111,34 @@ function AddFlows({ addFlows }) {
     getCustomersList();
     getAllKitData();
     getWarehouseLocationList();
-    getStateData();
+    getStateData(); // city data api
+    console.log("THE CITY FIELD VALIE IS:", city);
+    {
+      editFlowId && getFlowById();
+      // editFlowId && editDestinationList();
+      // handleFileterdCityChange();
+    }
   }, []);
+  const editDestinationList = async (value) => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+      );
+      // console.log("API Response:", response);
+
+      if (response.status === 200) {
+        console.log("origin:", value);
+        const cityVo = response.data.paramObjectsMap.cityVO;
+        const filteredCity = cityVo.filter((list) => list.cityCode !== value);
+        console.log("THE EDIT FILETERED CITY ARE:", filteredCity);
+        setEditFilteredList(filteredCity);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
     console.log("Selected emitter ID:", emitter);
@@ -161,6 +190,36 @@ function AddFlows({ addFlows }) {
     // Call the function when emitter, origin, or destination changes
     generateFlowName();
   }, [displayName, origin, destination, receiverName]);
+
+  const getFlowById = async () => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow/${editFlowId}`
+      );
+
+      if (response.status === 200) {
+        console.log(
+          "GET FLOW BY ID API RESPONSE:",
+          response.data.paramObjectsMap.flowVO
+        );
+        // handleFileterdCityChange();
+        setFlowName(response.data.paramObjectsMap.flowVO.flowName);
+        setEmitter(response.data.paramObjectsMap.flowVO.emitterId);
+        setReceiver(response.data.paramObjectsMap.flowVO.receiverId);
+        setOrigin(response.data.paramObjectsMap.flowVO.orgin);
+        setEditDestination(response.data.paramObjectsMap.flowVO.destination);
+        setWarehouseLocationValue(
+          response.data.paramObjectsMap.flowVO.warehouseLocation
+        );
+        setKitDTO(response.data.paramObjectsMap.flowVO.flowDetailVO);
+        // console.log("kit", response.data.paramObjectsMap.KitVO);
+        editDestinationList(response.data.paramObjectsMap.flowVO.orgin);
+      }
+      // handleFileterdCityChange();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleFlows = () => {
     addFlows(false);
@@ -288,13 +347,85 @@ function AddFlows({ addFlows }) {
   const handleCityChange = (e) => {
     const selectedValue = e.target.value;
     setOrigin(selectedValue);
-    // Filter out the selected value from the options of Source To dropdown
     const filteredCity = city.filter((list) => list.cityCode !== selectedValue);
-    setDestination(""); // Reset the Source To dropdown value
+    console.log("THE FILETERED CITY ARE:", filteredCity);
+    setDestination("");
     setFilteredCity(filteredCity);
   };
-
+  const handleEditDestinationChange = (e) => {
+    setEditDestination(e.target.value);
+  };
+  // SAVE API
   const handleSave = () => {
+    const errors = {};
+    if (!flowName) {
+      errors.flowName = "Flow name is required";
+    }
+    if (!emitter) {
+      errors.emitter = "Emitter is required";
+    }
+    if (!receiver) {
+      errors.receiver = "Receiver is required";
+    }
+    if (!origin) {
+      errors.origin = "origin is required";
+    }
+    if (!destination) {
+      errors.destination = "Destination is required";
+    }
+    if (!warehouseLocationValue) {
+      errors.warehouseLocationValue = "Warehouse Location is required";
+    }
+    if (kitDTO.length === 0) {
+      errors.kitDTO = "Please add at least one Kit detail";
+    }
+    if (Object.keys(errors).length === 0) {
+      const formData = {
+        id,
+        orgId,
+        flowName,
+        emitterId: emitter,
+        receiverId: receiver,
+        orgin: origin,
+        destination,
+        active,
+        createdby: userName,
+        modifiedby: userName,
+        warehouseId: warehouseLocationValue,
+        // warehouseLocation: warehouseLocationValue,
+        flowDetailDTO: kitDTO,
+      };
+
+      Axios.post(`${process.env.REACT_APP_API_URL}/api/master/flow`, formData)
+        .then((response) => {
+          if (response.data.status === "Error") {
+            console.error("Error creating kit:", response.data.paramObjectsMap);
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+
+            setTimeout(() => {
+              addFlows(true);
+            }, 3000);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
+
+  // UPDATE API
+  const handleUpdte = () => {
     const errors = {};
     if (!flowName) {
       errors.flowName = "Flow name is required";
@@ -356,10 +487,7 @@ function AddFlows({ addFlows }) {
 
       if (response.status === 200) {
         setCity(response.data.paramObjectsMap.cityVO);
-        // setTableData(response.data.paramObjectsMap.cityVO);
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -470,13 +598,40 @@ function AddFlows({ addFlows }) {
     setKitDTO(updatedKitDTO);
   };
 
+  // CLOSE BUTTON WITH CONFIRMATION
+  const handleAddFlowClose = () => {
+    if (
+      flowName ||
+      emitter ||
+      receiver ||
+      origin ||
+      destination ||
+      warehouseLocationValue ||
+      kitDTO > 0
+    ) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+      addFlows(false); // USER CREATION SCREEN CLOSE AFTER UPDATE
+    }
+  };
+
+  const handleConfirmationClose = () => {
+    setOpenConfirmationDialog(false);
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
+    addFlows(false);
+  };
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-3">Master Flow Details</h1>
           <IoMdClose
-            onClick={handleFlows}
+            // onClick={handleFlows}
+            onClick={handleAddFlowClose}
             className="cursor-pointer w-8 h-8 mb-3"
           />
         </div>
@@ -624,22 +779,41 @@ function AddFlows({ addFlows }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleInputChange}
-              value={destination}
-              name="destination"
-            >
-              <option value="" disabled>
-                Select an destination
-              </option>
-              {filteredCity.length > 0 &&
-                filteredCity.map((list) => (
-                  <option key={list.id} value={list.cityCode}>
-                    {list.cityName}
-                  </option>
-                ))}
-            </select>
+            {editFlowId ? (
+              <select
+                className="form-select form-sz w-full mb-2"
+                onChange={handleEditDestinationChange}
+                value={editDestination}
+                name="destination"
+              >
+                <option value="" disabled>
+                  Select an destination
+                </option>
+                {editFilteredList.length > 0 &&
+                  editFilteredList.map((list) => (
+                    <option key={list.id} value={list.cityCode}>
+                      {list.cityName}
+                    </option>
+                  ))}
+              </select>
+            ) : (
+              <select
+                className="form-select form-sz w-full mb-2"
+                onChange={handleInputChange}
+                value={destination}
+                name="destination"
+              >
+                <option value="" disabled>
+                  Select an destination
+                </option>
+                {filteredCity.length > 0 &&
+                  filteredCity.map((list) => (
+                    <option key={list.id} value={list.cityCode}>
+                      {list.cityName}
+                    </option>
+                  ))}
+              </select>
+            )}
             {errors.destination && (
               <span className="error-text mb-1">{errors.destination}</span>
             )}
@@ -697,10 +871,8 @@ function AddFlows({ addFlows }) {
             />
           </div>
         </div>
-
+        {/* ADD KIT BUTTON */}
         <div className="d-flex justify-content-between">
-          {/* <h1 className="text-xl font-semibold mb-4">Sub Flow Details</h1> */}
-          {/* <div className="d-flex flex-column"> */}
           <div className="ml-auto">
             <button
               className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -708,8 +880,23 @@ function AddFlows({ addFlows }) {
               onClick={handleKitOpen}
               disabled={emitter === ""}
             >
-              <IoIosAdd style={{ fontSize: 45, color: "blue" }} />
-              <span className="text-form text-base">KIT</span>
+              <img
+                src="/new.png"
+                alt="new-icon"
+                title="new"
+                style={{
+                  width: 30,
+                  height: 30,
+                  margin: "auto",
+                  hover: "pointer",
+                }}
+              />
+              <span
+                className="text-form text-base"
+                style={{ marginLeft: "10px" }}
+              >
+                Kit
+              </span>
             </button>
             {errors.kitDTO && (
               <span className="error-text mb-1">{errors.kitDTO}</span>
@@ -756,20 +943,34 @@ function AddFlows({ addFlows }) {
           </div>
         )}
         <div className="d-flex flex-row mt-3">
-          <button
-            type="button"
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            onClick={handleSave}
-          >
-            Save
-          </button>
-          <button
-            type="button"
-            onClick={handleFlows}
-            className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-          >
-            Cancel
-          </button>
+          {editFlowId ? (
+            <>
+              <button
+                type="button"
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                // onClick={handleUpdte}
+              >
+                Update
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={handleSave}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={handleFlows}
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Cancel
+              </button>
+            </>
+          )}
         </div>
       </div>
 
@@ -928,6 +1129,19 @@ function AddFlows({ addFlows }) {
           </Button>
         </DialogActions>
       </Dialog>
+
+      {/* CLOSE CONFIRMATION MODAL */}
+      <Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleConfirmationClose}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
+        </DialogActions>
+      </Dialog>
+
+      <ToastContainer />
     </>
   );
 }

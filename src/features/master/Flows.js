@@ -1,4 +1,5 @@
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   IconButton,
   Table,
@@ -65,9 +66,11 @@ const statsData = [
 function Flows() {
   const [open, setOpen] = React.useState(false);
   const [addFlows, setAddFlows] = React.useState(false);
+  const [editFlow, setEditFlow] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [city, setCity] = React.useState("");
   const [selectedRowData, setSelectedRowData] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState("");
   const [createModalOpenView, setCreateModalOpenView] = useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -80,6 +83,7 @@ function Flows() {
   const handleBack = () => {
     setAddFlows(false);
     getFlowData();
+    setEditFlow(false);
   };
 
   const handleClose = () => {
@@ -113,6 +117,11 @@ function Flows() {
   const handleViewRow = (row) => {
     setSelectedRowData(row.original);
     setOpen(true);
+  };
+  const handleEditRow = (row) => {
+    setSelectedRowId(row.original.id);
+    console.log("THE EDIT ROW ID IS:", row.original.id);
+    setEditFlow(true);
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -153,9 +162,14 @@ function Flows() {
         enableColumnOrdering: false,
         enableEditing: false,
         Cell: ({ row }) => (
-          <IconButton onClick={() => handleViewRow(row)}>
-            <VisibilityIcon />
-          </IconButton>
+          <div>
+            <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
         ),
       },
       {
@@ -233,138 +247,142 @@ function Flows() {
   });
   return (
     <>
-      {addFlows ? (
+      {/* {addFlows ? (
         <AddFlows addFlows={handleBack} />
-      ) : (
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-            {statsData.map((d, k) => {
-              return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-            })}
-          </div>
-          <div className="">
-            <div className="flex justify-between mt-4">
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleClickOpen}
-              >
-                <img
-                  src="/upload.png"
-                  alt="upload-icon"
-                  title="upload"
-                  style={{
-                    width: 30,
-                    height: 30,
-                    margin: "auto",
-                    hover: "pointer",
-                  }}
-                />
-                <span
-                  className="text-form text-base"
-                  style={{ marginLeft: "10px" }}
-                >
-                  Bulk Upload
-                </span>
-              </button>
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleAddFlows}
-              >
-                <img
-                  src="/new.png"
-                  alt="new-icon"
-                  title="new"
-                  style={{
-                    width: 30,
-                    height: 30,
-                    margin: "auto",
-                    hover: "pointer",
-                  }}
-                />
-                <span
-                  className="text-form text-base"
-                  style={{ marginLeft: "10px" }}
-                >
-                  Flow
-                </span>
-              </button>
+      ) : ( */}
+      {(addFlows && <AddFlows addFlows={handleBack} />) ||
+        (editFlow && (
+          <AddFlows addFlows={handleBack} editFlowId={selectedRowId} />
+        )) || (
+          <div className="card w-full p-6 bg-base-100 shadow-xl">
+            <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+              {statsData.map((d, k) => {
+                return <DashBoardComponent key={k} {...d} colorIndex={k} />;
+              })}
             </div>
-          </div>
-          <div className="mt-4">
-            <MaterialReactTable
-              table={table}
-              displayColumnDefOptions={{
-                "mrt-row-actions": {
-                  muiTableHeadCellProps: {
-                    align: "center",
-                  },
-                  size: 120,
-                },
-              }}
-              renderRowActions={({ row, table }) => (
-                <Tooltip arrow placement="left" title="Operate">
-                  <IconButton
-                    color="error"
-                    onClick={() => handleVisibilityClick(row.original)}
+            <div className="">
+              <div className="flex justify-between mt-4">
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleClickOpen}
+                >
+                  <img
+                    src="/upload.png"
+                    alt="upload-icon"
+                    title="upload"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
                   >
-                    <VisibilityIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-            />
-          </div>
-          <Dialog
-            fullWidth={true}
-            maxWidth={"sm"}
-            open={open}
-            onClose={handleClose}
-          >
-            <div className="d-flex justify-content-between">
-              <DialogTitle>Upload File</DialogTitle>
-              <IoMdClose
-                onClick={handleClose}
-                className="cursor-pointer w-8 h-8 mt-3 me-3"
+                    Bulk Upload
+                  </span>
+                </button>
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleAddFlows}
+                >
+                  <img
+                    src="/new.png"
+                    alt="new-icon"
+                    title="new"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Flow
+                  </span>
+                </button>
+              </div>
+            </div>
+            <div className="mt-4">
+              <MaterialReactTable
+                table={table}
+                displayColumnDefOptions={{
+                  "mrt-row-actions": {
+                    muiTableHeadCellProps: {
+                      align: "center",
+                    },
+                    size: 120,
+                  },
+                }}
+                renderRowActions={({ row, table }) => (
+                  <Tooltip arrow placement="left" title="Operate">
+                    <IconButton
+                      color="error"
+                      onClick={() => handleVisibilityClick(row.original)}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
               />
             </div>
-            <DialogContent>
-              <DialogContentText className="d-flex flex-column">
-                Choose a file to upload
-                <div className="d-flex justify-content-center">
-                  <div className="col-lg-4 text-center my-3">
+            <Dialog
+              fullWidth={true}
+              maxWidth={"sm"}
+              open={open}
+              onClose={handleClose}
+            >
+              <div className="d-flex justify-content-between">
+                <DialogTitle>Upload File</DialogTitle>
+                <IoMdClose
+                  onClick={handleClose}
+                  className="cursor-pointer w-8 h-8 mt-3 me-3"
+                />
+              </div>
+              <DialogContent>
+                <DialogContentText className="d-flex flex-column">
+                  Choose a file to upload
+                  <div className="d-flex justify-content-center">
+                    <div className="col-lg-4 text-center my-3">
+                      <Button
+                        component="label"
+                        variant="contained"
+                        startIcon={<FaCloudUploadAlt />}
+                      >
+                        Upload file
+                        <VisuallyHiddenInput type="file" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="col-lg-4 mt-3">
                     <Button
+                      size="small"
                       component="label"
+                      className="text-form"
                       variant="contained"
-                      startIcon={<FaCloudUploadAlt />}
+                      startIcon={<FiDownload />}
                     >
-                      Upload file
-                      <VisuallyHiddenInput type="file" />
+                      Download Sample File
                     </Button>
                   </div>
-                </div>
-                <div className="col-lg-4 mt-3">
-                  <Button
-                    size="small"
-                    component="label"
-                    className="text-form"
-                    variant="contained"
-                    startIcon={<FiDownload />}
-                  >
-                    Download Sample File
-                  </Button>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions className="mb-2 me-2">
-              <Button onClick={handleClose}>Cancel</Button>
-              <Button component="label" variant="contained">
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
+                </DialogContentText>
+              </DialogContent>
+              <DialogActions className="mb-2 me-2">
+                <Button onClick={handleClose}>Cancel</Button>
+                <Button component="label" variant="contained">
+                  Submit
+                </Button>
+              </DialogActions>
+            </Dialog>
 
-          {/* <Dialog
+            {/* <Dialog
             open={Boolean(selectedRowData)}
             onClose={() => setSelectedRowData(null)}
           >
@@ -401,8 +419,8 @@ function Flows() {
             </DialogContent>
             <Button onClick={() => setSelectedRowData(null)}>Close</Button>
           </Dialog> */}
-        </div>
-      )}
+          </div>
+        )}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
           <div className="row">

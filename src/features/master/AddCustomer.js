@@ -1291,11 +1291,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               name="entityLegalName"
               onChange={handleCustomerChange}
               disabled={isSubmitting}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
             />
             {errors.entityLegalName && (
               <div className="error-text">{errors.entityLegalName}</div>
