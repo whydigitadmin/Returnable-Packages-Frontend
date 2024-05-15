@@ -98,6 +98,8 @@ export const AsstTagging = () => {
   const [selectedBarcodeRows, setSelectedBarcodeRows] = useState([]);
   const [selectedQRCodeRows, setSelectedQRCodeRows] = useState([]);
   const [cancelledAssets, setCancelledAssets] = useState([]);
+  const [assetCategory, setAssetCategory] = useState("");
+  const [assetCategoryList, setAssetCategoryList] = useState([]);
 
   const handleOpenBarcodeScannerDialog = (tagCode) => {
     setSelectedBarcode(tagCode);
@@ -130,6 +132,7 @@ export const AsstTagging = () => {
   useEffect(() => {
     getAllTagCode(assetValue, assetCodeValue, endNoValue, startNoValue);
     getAllAssetCode();
+    getAllAssetCategory();
   }, [assetValue, assetCodeValue, endNoValue, startNoValue]);
 
   useEffect(() => {
@@ -217,6 +220,53 @@ export const AsstTagging = () => {
     }
   };
 
+  const getAllAssetCategory = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        {
+          params: {
+            orgId: orgId,
+            // assetCategory: assetType,
+            // assetName: name,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const assetCategories =
+          response.data.paramObjectsMap.assetGroupVO.category;
+        // response.data.paramObjectsMap.assetGroupVO.assetGroupVO.category;
+        console.log(
+          "THE ASSET CATEGORY IS:",
+          response.data.paramObjectsMap.assetGroupVO.category
+        );
+        setAssetCategoryList(assetCategories);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAssetCodeByCategory = async (name) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAllAssetByCategory?category=${name}&orgId=${orgId}`
+      );
+      console.log("Response from API:", response.data);
+      if (response.status === 200) {
+        setAssetList(response.data.paramObjectsMap.assetVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleAssetCategoryChange = (event) => {
+    setAssetCategory(event.target.value);
+    getAssetCodeByCategory(event.target.value);
+  };
+
   const handleChangeAssetCode = (e) => {
     const selectedCode = e.target.value;
     const selectedAsset = assetList.find(
@@ -271,15 +321,16 @@ export const AsstTagging = () => {
 
         // Now proceed to save the data
         const formData = {
-          asset: assetName,
-          assetCode: assetCode,
-          createdBy: userDetail.firstName,
-          docDate: toDate,
           docId: docId,
-          orgId: userDetail.orgId,
+          docDate: toDate,
+          category: assetCategory,
+          assetCode: assetCode,
+          asset: assetName,
           seqFrom: seqFrom,
           seqTo: seqTo,
           taggingDetailsDTO: taggingDetailsDTO,
+          orgId: userDetail.orgId,
+          createdBy: userDetail.firstName,
         };
 
         const response = await axios.post(
@@ -510,6 +561,40 @@ export const AsstTagging = () => {
           )}
         </div>
 
+        {/* ASSET CATEGORY FIELD */}
+        <div className="col-lg-3 col-md-3 mb-2">
+          <span
+            className={
+              "label-text label-font-size text-base-content d-flex flex-row p-1"
+            }
+          >
+            Asset Category
+            <FaStarOfLife className="must" />
+          </span>
+        </div>
+        <div className="col-lg-3 col-md-3 mb-2">
+          <select
+            name="Select Category"
+            style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+            className="input input-bordered ps-2"
+            onChange={handleAssetCategoryChange}
+            value={assetCategory}
+          >
+            <option value="" selected>
+              Select an Asset Category
+            </option>
+            {assetCategoryList.length > 0 &&
+              assetCategoryList.map((list) => (
+                <option key={list.id} value={list}>
+                  {list}
+                </option>
+              ))}
+          </select>
+          {errors.assetCategory && (
+            <span className="error-text">{errors.assetCategory}</span>
+          )}
+        </div>
+
         {/* Asset Code */}
         <div className="col-lg-3 col-md-3">
           <label className="label mb-1">
@@ -538,14 +623,14 @@ export const AsstTagging = () => {
         </div>
 
         {/* Asset */}
-        <div className="col-lg-3 col-md-3">
+        <div className="col-lg-3 col-md-4">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
               Asset <FaStarOfLife className="must" /> &nbsp;
             </span>
           </label>
         </div>
-        <div className="col-lg-3 col-md-3">
+        <div className="col-lg-3 col-md-4">
           <input
             className="form-control form-sz"
             type="text"

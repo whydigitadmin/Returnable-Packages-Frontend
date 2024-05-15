@@ -5,7 +5,8 @@ import "./style.css";
 
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
-const EmitterLanding = lazy(() => import("../pages/protected/EmitterLanding"));
+const WelcomeEmitter = lazy(() => import("../pages/protected/WelcomeEmitter"));
+const WelcomeOEM = lazy(() => import("../pages/protected/WelcomeOem"));
 const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const EmitterInward = lazy(() => import("../pages/protected/EmitterInward"));
 const EmitterInwardNew = lazy(() =>
@@ -205,8 +206,12 @@ const routes = [
     component: Services,
   },
   {
-    path: "/EmitterLanding",
-    component: EmitterLanding,
+    path: "/welcomeemitter",
+    component: WelcomeEmitter,
+  },
+  {
+    path: "/welcomeoem",
+    component: WelcomeOEM,
   },
   {
     path: "/IssueReq",

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { EmitterLanding } from "../../features/emitter/EmitterLanding";
+import WelcomeEmitter from "../../features/emitter/WelcomeEmitter";
 
 function InternalPage() {
   const dispatch = useDispatch();
@@ -20,7 +20,7 @@ function InternalPage() {
     );
   }, [dispatch]);
 
-  return <EmitterLanding />;
+  return <WelcomeEmitter />;
 }
 
 export default InternalPage;

@@ -84,11 +84,10 @@ function Login() {
           console.log("token", response.data);
           if (localStorage.getItem("userDetails") === "ROLE_USER") {
             window.location.href = "/app/welcome";
-          } else if (
-            localStorage.getItem("userDetails") === "ROLE_EMITTER" ||
-            "ROLE_OEM"
-          ) {
-            window.location.href = "/app/EmitterLanding";
+          } else if (localStorage.getItem("userDetails") === "ROLE_EMITTER") {
+            window.location.href = "/app/welcomeemitter";
+          } else if (localStorage.getItem("userDetails") === "ROLE_OEM") {
+            window.location.href = "/app/welcomeoem";
           } else if (localStorage.getItem("userDetails") === "ROLE_ADMIN") {
             window.location.href = "/app/welcome";
           }
