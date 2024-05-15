@@ -826,7 +826,7 @@ function AddFlows({ addFlows, editFlowId }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Warehouse Handling Location
+                Supplier Warehouse
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -838,7 +838,41 @@ function AddFlows({ addFlows, editFlowId }) {
               value={warehouseLocationValue}
             >
               <option value="" disabled>
-                Select Warehouse Location
+                Select Supplier Warehouse
+              </option>
+              {warehouseLocationVO.length > 0 &&
+                warehouseLocationVO.map((list) => (
+                  <option key={list.warehouseId} value={list.warehouseId}>
+                    {list.warehouseLocation}
+                  </option>
+                ))}
+            </select>
+            {errors.warehouseLocationValue && (
+              <span className="error-text mb-1">
+                {errors.warehouseLocationValue}
+              </span>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Retrieval Warehouse
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={handleWarehouseLocationChange}
+              value={warehouseLocationValue}
+            >
+              <option value="" disabled>
+                Select Retrieval Warehouse
               </option>
               {warehouseLocationVO.length > 0 &&
                 warehouseLocationVO.map((list) => (

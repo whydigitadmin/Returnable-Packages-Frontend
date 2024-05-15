@@ -2,6 +2,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
+import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import {
@@ -235,9 +236,24 @@ export const StockBranch = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag
+                  ? "Editing is disabled for this Stock Branch"
+                  : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },
@@ -261,6 +277,17 @@ export const StockBranch = () => {
         },
         muiTableBodyCellProps: {
           align: "center",
+        },
+      },
+      {
+        accessorKey: "active",
+        header: "Active",
+        size: 50,
+        muiTableHeadCellProps: {
+          textAlign: "center",
+        },
+        muiTableBodyCellProps: {
+          textAlign: "center",
         },
       },
     ],

@@ -161,7 +161,7 @@ export const GatheringEmpty = () => {
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Kit No:
+                  Asset Code:
                   <FaStarOfLife className="must" />
                 </span>
               </label>
@@ -175,7 +175,7 @@ export const GatheringEmpty = () => {
                 value={kitCode}
               >
                 <option value="" selected>
-                  Select an Kit
+                  Select an Asset
                 </option>
                 {/* {kitCodeList.length > 0 &&
                   kitCodeList.map((list) => (
@@ -192,7 +192,7 @@ export const GatheringEmpty = () => {
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Gathered Kit Qty:
+                  Gathered Asset Qty:
                   {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>

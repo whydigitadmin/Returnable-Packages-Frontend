@@ -16,6 +16,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -25,6 +26,7 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { stringValidation } from "../../utils/userInputValidation";
 
 const statsData = [
   {
@@ -236,9 +238,22 @@ function Unit() {
             {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton> */}
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag ? "Editing is disabled for this Unit" : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },
@@ -274,9 +289,6 @@ function Unit() {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
       },
     ],
     []
@@ -314,11 +326,7 @@ function Unit() {
               type={"text"}
               value={unit}
               name="unit"
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={stringValidation}
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"

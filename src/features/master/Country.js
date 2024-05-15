@@ -4,12 +4,16 @@ import EditIcon from "@mui/icons-material/Edit";
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-
+import Tooltip from "@mui/material/Tooltip";
 //import DashBoardComponent from "./DashBoardComponent";
 import IconButton from "@mui/material/IconButton";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  codeFieldValidation,
+  stringValidation,
+} from "../../utils/userInputValidation";
 
 export const Country = () => {
   const [open, setOpen] = React.useState(false);
@@ -128,7 +132,6 @@ export const Country = () => {
     }
   };
 
-
   // SAVE COUNTRY WITH DESKTOP NOTIFICATION
   // const handleCountry = () => {
   //   console.log("test");
@@ -184,15 +187,10 @@ export const Country = () => {
   // };
 
   const handleNew = () => {
-    setCountry("")
-    setCode("")
-    setErrors("")
-  }
-
-
-
-
-
+    setCountry("");
+    setCode("");
+    setErrors("");
+  };
 
   const handleUpdateCountry = () => {
     console.log("test");
@@ -227,7 +225,7 @@ export const Country = () => {
           setCountry("");
           setCode("");
           setErrors("");
-          setSelectedRowId("")
+          setSelectedRowId("");
           toast.success("Country Updated successfully", {
             autoClose: 2000,
             theme: "colored",
@@ -263,9 +261,22 @@ export const Country = () => {
             {/* <IconButton onClick={() => handleViewRow(row)}>
                 <VisibilityIcon />
               </IconButton> */}
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag ? "Editing is disabled for this Country" : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },
@@ -312,9 +323,6 @@ export const Country = () => {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
       },
     ],
     []
@@ -352,11 +360,7 @@ export const Country = () => {
               style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
               type={"text"}
               value={country}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={stringValidation}
               name="country"
               // placeholder={"Enter"}
               onChange={handleInputChange}
@@ -386,9 +390,7 @@ export const Country = () => {
               type={"text"}
               value={code}
               name="code"
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={codeFieldValidation}
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"

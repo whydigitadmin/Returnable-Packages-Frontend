@@ -11,6 +11,10 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  codeFieldValidation,
+  stringAndNoAndSpecialCharValidation,
+} from "../../utils/userInputValidation";
 
 const ITEM_HEIGHT = 35;
 const ITEM_PADDING_TOP = 5;
@@ -498,11 +502,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               type={"text"}
               // placeholder={"Enter"}
               name="locationName"
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
               value={locationName}
               onChange={handleInputChange}
             />
@@ -552,11 +552,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               className="form-control form-sz mb-2"
               type={"text"}
               // placeholder={"Enter"}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={codeFieldValidation}
               name="name"
               value={name}
               onChange={handleInputChange}
@@ -768,7 +764,11 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
-              <span className={"label-text label-font-size text-base-content"}>
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
                 Stock Branch <FaStarOfLife className="must" />
               </span>
             </label>

@@ -22,6 +22,7 @@ function AddKit({ addItem, kitEditId }) {
   const [assetCode, setAssetCode] = useState("");
   const [assetDesc, setAssetDesc] = useState();
   const [emitter, setEmitter] = useState("");
+  const [partCode, setPartCode] = useState("");
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [partName, setPartName] = useState("");
   const [partQuantity, setPartQuantity] = useState();
@@ -51,6 +52,13 @@ function AddKit({ addItem, kitEditId }) {
     getCustomersList();
     getAllAssetType();
   }, [assetCodeList]);
+
+  const handleEmitterChange = (event) => {
+    setEmitter(event.target.value);
+  };
+  const handlePartCode = (event) => {
+    setPartCode(event.target.value);
+  };
 
   const getCustomersList = async () => {
     try {
@@ -390,6 +398,8 @@ function AddKit({ addItem, kitEditId }) {
         assetCodeId: assetCode,
         assetDesc: assetDesc,
         quantity: assetQty,
+        belongsTo: emitter,
+        manufacturePartCode: partCode,
         // partQuantity,
       };
       setKitAssetDTO([...kitAssetDTO, newAssetDetails]);
@@ -978,13 +988,11 @@ function AddKit({ addItem, kitEditId }) {
               <div className="col-lg-3 col-md-6">
                 <select
                   className="form-select form-sz w-full mb-2"
-                  // onChange={handleEmitterChange}
+                  onChange={handleEmitterChange}
                   value={emitter}
                   disabled
                 >
-                  <option value="" disabled>
-                    Select an Emitter
-                  </option>
+                  <option value="" disabled></option>
                   {emitterCustomersVO.length > 0 &&
                     emitterCustomersVO.map((list) => (
                       <option key={list.id} value={list.id}>
@@ -1003,7 +1011,7 @@ function AddKit({ addItem, kitEditId }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Part Name
+                    Manufacture Part Code
                     {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
@@ -1011,13 +1019,11 @@ function AddKit({ addItem, kitEditId }) {
               <div className="col-lg-3 col-md-6">
                 <select
                   className="form-select form-sz w-full"
-                  // onChange={handlePartName}
-                  value={partName}
+                  onChange={handlePartCode}
+                  value={partCode}
                   disabled
                 >
-                  <option value="" disabled>
-                    Select a part name
-                  </option>
+                  <option value="" disabled></option>
                   {/* {partStudyNameVO.length > 0 &&
                 partStudyNameVO.map((list) => (
                   <option key={list.id} value={list}>

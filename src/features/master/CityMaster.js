@@ -13,6 +13,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -22,6 +23,10 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  codeFieldValidation,
+  stringValidation,
+} from "../../utils/userInputValidation";
 
 export const CityMaster = () => {
   const [open, setOpen] = React.useState(false);
@@ -156,9 +161,9 @@ export const CityMaster = () => {
   const handleCancel = () => {
     setCity("");
     setCode("");
-    setCountry("")
-    setState("")
-    setErrors("")
+    setCountry("");
+    setState("");
+    setErrors("");
   };
 
   const handleCity = () => {
@@ -226,7 +231,7 @@ export const CityMaster = () => {
       country: country,
       state: state,
     };
-    console.log("FORM DATA IS:", formData)
+    console.log("FORM DATA IS:", formData);
 
     axios
       .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/city`, formData)
@@ -235,8 +240,8 @@ export const CityMaster = () => {
         getCityData();
         setEdit(false);
         setUpdateLoading(false);
-        setCountry("")
-        setState("")
+        setCountry("");
+        setState("");
         setCity("");
         setCode("");
         toast.success("City Updation successfully", {
@@ -270,9 +275,22 @@ export const CityMaster = () => {
             {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton> */}
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag ? "Editing is disabled for this City" : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },
@@ -319,9 +337,6 @@ export const CityMaster = () => {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
       },
     ],
     []
@@ -420,11 +435,7 @@ export const CityMaster = () => {
               type={"text"}
               value={city}
               name="city"
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
-              }}
+              onInput={stringValidation}
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"
@@ -452,9 +463,7 @@ export const CityMaster = () => {
               value={code}
               name="code"
               // placeholder={"Enter"}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={codeFieldValidation}
               onChange={handleInputChange}
               className="input input-bordered p-2"
             />

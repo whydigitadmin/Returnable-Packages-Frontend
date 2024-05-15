@@ -13,6 +13,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Tooltip,
 } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -22,6 +23,10 @@ import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  codeFieldValidation,
+  stringValidation,
+} from "../../utils/userInputValidation";
 
 export const State = () => {
   const [open, setOpen] = React.useState(false);
@@ -125,9 +130,9 @@ export const State = () => {
   const handleCancel = () => {
     setState("");
     setCode("");
-    setStateNo("")
-    setCountry("")
-    setErrors("")
+    setStateNo("");
+    setCountry("");
+    setErrors("");
   };
 
   const handleState = () => {
@@ -159,9 +164,9 @@ export const State = () => {
           getStateData();
           setState("");
           setCode("");
-          setStateNo("")
+          setStateNo("");
           setCountryData([]);
-          setCountry("")
+          setCountry("");
           setErrors("");
           toast.success("State Created successfully", {
             autoClose: 2000,
@@ -201,7 +206,7 @@ export const State = () => {
         setState("");
         setCode("");
         setStateNo("");
-        setCountry("")
+        setCountry("");
         toast.success("State Updation successfully", {
           autoClose: 2000,
           theme: "colored",
@@ -233,9 +238,22 @@ export const State = () => {
             {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton> */}
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag ? "Editing is disabled for this State" : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },
@@ -283,9 +301,6 @@ export const State = () => {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
       },
     ],
     []
@@ -299,8 +314,6 @@ export const State = () => {
       </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row">
-
-
           {/* STATE CODE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -320,10 +333,7 @@ export const State = () => {
               type={"text"}
               value={code}
               name="code"
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase().replace(/[^A-Za-z]/g, "");
-
-              }}
+              onInput={codeFieldValidation}
               maxLength={2}
               onChange={handleInputChange}
               className="input input-bordered p-2"
@@ -351,14 +361,14 @@ export const State = () => {
               name="stateno"
               onInput={(e) => {
                 e.target.value = e.target.value.replace(/\D/g, "");
-
               }}
               onChange={handleInputChange}
               className="input input-bordered p-2"
               maxLength={3}
-
             />
-            {errors.stateNo && <div className="error-text">{errors.stateNo}</div>}
+            {errors.stateNo && (
+              <div className="error-text">{errors.stateNo}</div>
+            )}
           </div>
           {/* STATE NAME FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
@@ -379,11 +389,7 @@ export const State = () => {
               type={"text"}
               value={state}
               name="state"
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z]/g, "");
-              }}
+              onInput={stringValidation}
               // placeholder={"Enter"}
               onChange={handleInputChange}
               className="input input-bordered p-2"

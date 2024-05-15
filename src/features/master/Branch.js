@@ -10,6 +10,10 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  codeFieldValidation,
+  stringValidation,
+} from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -441,11 +445,7 @@ function Branch({ addBranch, editWarehouse }) {
             type={"text"}
             // placeholder={"Enter"}
             name="branch"
-            onInput={(e) => {
-              e.target.value = e.target.value
-                .toUpperCase()
-                .replace(/[^A-Z\s]/g, "");
-            }}
+            onInput={stringValidation}
             value={branch}
             onChange={handleInputChange}
           />
@@ -470,11 +470,7 @@ function Branch({ addBranch, editWarehouse }) {
             type={"text"}
             // placeholder={"Enter"}
             name="branchCode"
-            onInput={(e) => {
-              e.target.value = e.target.value
-                .toUpperCase()
-                .replace(/[^A-Z\s]/g, "");
-            }}
+            onInput={codeFieldValidation}
             value={branchCode}
             onChange={handleInputChange}
           />

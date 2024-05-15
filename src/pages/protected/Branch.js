@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import BranchDetail from "../../features/admin/BranchDetail";
+import BranchDetail from "../../features/master/BranchDetail";
 import { setPageTitle } from "../../features/common/headerSlice";
 
 function InternalPage() {

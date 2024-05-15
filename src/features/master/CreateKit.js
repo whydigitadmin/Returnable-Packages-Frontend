@@ -15,6 +15,7 @@ import { FaBoxes, FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegObjectGroup } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
 import { IoIosAdd, IoMdClose } from "react-icons/io";
+import Tooltip from "@mui/material/Tooltip";
 import EditIcon from "@mui/icons-material/Edit";
 import IconButton from "@mui/material/IconButton";
 import { LuTimerReset } from "react-icons/lu";
@@ -177,9 +178,22 @@ function CreateKit() {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag ? "Editing is disabled for this Kit" : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },
@@ -200,7 +214,17 @@ function CreateKit() {
           },
         }),
       },
-      // ... (other columns if needed)
+      {
+        accessorKey: "active",
+        header: "Active",
+        size: 50,
+        muiTableHeadCellProps: {
+          textAlign: "center",
+        },
+        muiTableBodyCellProps: {
+          textAlign: "center",
+        },
+      },
     ],
     [data] // Dependency array
   );

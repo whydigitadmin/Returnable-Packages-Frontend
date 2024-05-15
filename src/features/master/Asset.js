@@ -113,10 +113,6 @@ function Asset() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.assetVO.reverse());
-        // const filteredData = response.data.paramObjectsMap.assetVO.filter(
-        //   (asset) => asset.eflag === true
-        // );
-        // setData(filteredData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -284,6 +280,17 @@ function Asset() {
           align: "center",
         },
       },
+      // {
+      //   accessorKey: "active",
+      //   header: "Active",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
     ],
     []
   );

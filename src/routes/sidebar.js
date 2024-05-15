@@ -178,7 +178,7 @@ const routes = [
           <img
             src="https://cdn-icons-png.flaticon.com/128/11743/11743089.png"
             alt="StockBranch"
-            style={{ width: "29px", height: "auto" }}
+            style={{ width: "34px", height: "auto" }}
             className={`${iconClasses} inline`}
           />
         ),
@@ -191,11 +191,11 @@ const routes = [
           <img
             src="/report.png"
             alt="StockBranch"
-            style={{ width: "29px", height: "auto" }}
+            style={{ width: "34px", height: "auto" }}
             className={`${iconClasses} inline`}
           />
         ),
-        name: <span style={{ marginLeft: "6px" }}>Stock Branch</span>,
+        name: <span>Stock Branch</span>,
       },
       {
         path: "/app/Country",
@@ -240,11 +240,11 @@ const routes = [
           <img
             src="/warehouse.png"
             alt="Warehouse"
-            style={{ width: "28px", height: "auto" }}
+            style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span className="ml-1">Warehouse</span>,
+        name: <span className="">Warehouse</span>,
       },
       {
         path: "/app/unit",

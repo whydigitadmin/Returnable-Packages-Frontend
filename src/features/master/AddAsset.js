@@ -12,6 +12,7 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { stringAndNoAndSpecialCharValidation } from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -82,17 +83,18 @@ function AddAsset({ addItem, editItemId }) {
   const [chargableWeight, setChargableWeight] = useState("");
   const [height, setHeight] = useState("");
   const [dimUnit, setDimUnit] = useState("");
+  const [design, setDesign] = useState("");
   const [costPrice, setCostPrice] = useState("");
   const [emitter, setEmitter] = useState("");
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
-  const [design, setDesign] = useState("");
-  const [material, setMaterial] = useState("");
   const [eanUpc, setEanUpc] = useState("");
   const [expectedLife, setExpectedLife] = useState("");
   const [expectedTrips, setExpectedTrips] = useState("");
   const [hsnCode, setHsnCode] = useState("");
   const [id, setId] = useState("");
   const [maintanencePeriod, setMaintanencePeriod] = useState("");
+  const [manufacturePartCode, setManufacturePartCode] = useState("");
+  const [materialIdentification, setMaterialIdentification] = useState("");
   const [manufacturer, setManufacturer] = useState("");
   const [scrapValue, setScrapValue] = useState("");
   const [sellPrice, setSellPrice] = useState("");
@@ -125,6 +127,16 @@ function AddAsset({ addItem, editItemId }) {
     setCategory(selectedType);
     setCategorySelected(true);
     getAssetIdByName(event.target.value);
+  };
+
+  const handleEmitterChange = (event) => {
+    setEmitter(event.target.value);
+  };
+  const handleMaterialChange = (event) => {
+    setMaterialIdentification(event.target.value);
+  };
+  const handleDesignChange = (event) => {
+    setDesign(event.target.value);
   };
 
   //   const handleAssetCodeChange = (event) => {
@@ -382,6 +394,9 @@ function AddAsset({ addItem, editItemId }) {
       case "costPrice":
         setCostPrice(value);
         break;
+      case "manufacturePartCode":
+        setManufacturePartCode(value);
+        break;
       case "eanUpc":
         setEanUpc(value);
         break;
@@ -448,10 +463,12 @@ function AddAsset({ addItem, editItemId }) {
         assetCodeId,
         assetName,
         category,
+        belongsTo: emitter,
         brand,
         breath,
         chargableWeight,
         costPrice,
+        design,
         dimUnit,
         eanUpc,
         expectedLife,
@@ -461,6 +478,8 @@ function AddAsset({ addItem, editItemId }) {
         length,
         hsnCode,
         maintanencePeriod,
+        manufacturePartCode,
+        materialIdentification,
         manufacturer,
         scrapValue,
         sellPrice,
@@ -515,10 +534,12 @@ function AddAsset({ addItem, editItemId }) {
         assetCodeId,
         category,
         assetName,
+        belongsTo: emitter,
         brand,
         breath,
         chargableWeight,
         costPrice,
+        design,
         dimUnit,
         eanUpc,
         expectedLife,
@@ -528,6 +549,8 @@ function AddAsset({ addItem, editItemId }) {
         length,
         hsnCode,
         maintanencePeriod,
+        manufacturePartCode,
+        materialIdentification,
         manufacturer,
         scrapValue,
         sellPrice,
@@ -542,13 +565,19 @@ function AddAsset({ addItem, editItemId }) {
       };
       Axios.put(`${process.env.REACT_APP_API_URL}/api/master/asset`, formData)
         .then((response) => {
-          console.log("Response:", response.data);
-          toast.success("Asset Updated successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-
-          addItem(false);
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            addItem(false);
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -607,7 +636,6 @@ function AddAsset({ addItem, editItemId }) {
       </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
-          {/* <h1 className="text-xl font-semibold mb-3">Create Asset</h1> */}
           <IoMdClose
             onClick={handleAssetClose}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -725,11 +753,7 @@ function AddAsset({ addItem, editItemId }) {
               type="text"
               value={assetCodeId}
               onChange={handleCategoryChange}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z0-9\s]/g, "");
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
@@ -751,11 +775,7 @@ function AddAsset({ addItem, editItemId }) {
               type="text"
               value={assetName}
               onChange={handleCategoryChange}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
@@ -891,7 +911,7 @@ function AddAsset({ addItem, editItemId }) {
           <div className="col-lg-3 col-md-6">
             <select
               className="form-select form-sz w-full mb-2"
-              // onChange={handleEmitterChange}
+              onChange={handleEmitterChange}
               value={emitter}
             >
               <option value="" disabled>
@@ -984,8 +1004,8 @@ function AddAsset({ addItem, editItemId }) {
             <select
               name="material"
               className="form-select form-sz w-full mb-2"
-              value={material}
-              // onChange={handleUnitChange}
+              value={materialIdentification}
+              onChange={handleMaterialChange}
             >
               <option value="" disabled>
                 Select a Material
@@ -1006,7 +1026,7 @@ function AddAsset({ addItem, editItemId }) {
               name="design"
               className="form-select form-sz w-full mb-2"
               value={design}
-              // onChange={handleUnitChange}
+              onChange={handleDesignChange}
             >
               <option value="" disabled>
                 Select a design
@@ -1028,10 +1048,10 @@ function AddAsset({ addItem, editItemId }) {
             <input
               placeholder=""
               className="input mb-2 input-bordered form-sz w-full"
-              // name="eanUpc"
+              name="manufacturePartCode"
               type="text"
-              // value={eanUpc}
-              // onChange={handleCategoryChange}
+              value={manufacturePartCode}
+              onChange={handleCategoryChange}
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
