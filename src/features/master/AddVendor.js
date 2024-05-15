@@ -18,6 +18,7 @@ import { FaStarOfLife, FaTrash, FaEdit } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -137,6 +138,8 @@ function AddVendor({ addVendors, editVendorId }) {
   const [vendorAddressVO, setVendorAddressVO] = useState([]);
   const [vendorBankDetailsVO, setVendorBankDetailsVO] = useState([]);
   const [venderIdVO, setVenderIdVO] = useState(null);
+  const [venderAddressId, setVenderAddressId] = useState(null);
+  const [venderBankId, setVenderBankId] = useState(null);
   const [editAddressIndex, setEditAddressIndex] = useState(null);
   const [disableCustomerType, setDisableCustomerType] = React.useState(false);
   const [shippingAddresses, setShippingAddresses] = useState([]);
@@ -268,6 +271,7 @@ function AddVendor({ addVendors, editVendorId }) {
     // Check if updatedAddress is null or undefined
     if (!updatedAddress || updatedAddress.id === undefined) {
       // Handle adding a new address
+      updatedAddress.id = 0;
       const newAddressList = [...vendorAddressVO, updatedAddress];
       setVendorAddressVO(newAddressList);
       setNewAddress({
@@ -560,7 +564,7 @@ function AddVendor({ addVendors, editVendorId }) {
           response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.accountNo
         );
         setAccountName(
-          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.accountname
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.accountName
         );
         setBranch(
           response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.branch
@@ -575,6 +579,12 @@ function AddVendor({ addVendors, editVendorId }) {
           response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO
         );
         setVenderIdVO(response.data.paramObjectsMap.vendorVO.id);
+        setVenderAddressId(
+          response.data.paramObjectsMap.vendorVO.vendorAddressVO.id
+        );
+        setVenderBankId(
+          response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.id
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -599,7 +609,7 @@ function AddVendor({ addVendors, editVendorId }) {
         email: "",
         gstNumber: "",
         gstRegistrationStatus: "",
-        id: 0,
+        id: venderAddressId,
         phoneNumber: "",
         pinCode: "",
         state: "",
@@ -683,25 +693,50 @@ function AddVendor({ addVendors, editVendorId }) {
         break;
     }
   };
-  const handleBankInputChange = (event) => {
+  // const handleBankInputChange = (event) => {
+  //   const { name, value } = event.target;
+  //   switch (name) {
+  //     case "accountName":
+  //       setAccountName(value);
+  //       break;
+  //     case "accountNo":
+  //       setAccountNum(value);
+  //       break;
+  //     case "bank":
+  //       setBank(value);
+  //       break;
+  //     case "branch":
+  //       setBranch(value);
+  //       break;
+  //     case "ifscCode":
+  //       setIfscCode(value);
+  //       break;
+  //   }
+  // };
+
+  const handleBankInputChange = (event, index) => {
     const { name, value } = event.target;
+    const updatedVendorBankDetailsVO = [...vendorBankDetailsVO];
     switch (name) {
       case "accountName":
-        setAccountName(value);
+        updatedVendorBankDetailsVO[index].accountName = value;
         break;
       case "accountNo":
-        setAccountNum(value);
+        updatedVendorBankDetailsVO[index].accountNo = value;
         break;
       case "bank":
-        setBank(value);
+        updatedVendorBankDetailsVO[index].bank = value;
         break;
       case "branch":
-        setBranch(value);
+        updatedVendorBankDetailsVO[index].branch = value;
         break;
       case "ifscCode":
-        setIfscCode(value);
+        updatedVendorBankDetailsVO[index].ifscCode = value;
+        break;
+      default:
         break;
     }
+    setVendorBankDetailsVO(updatedVendorBankDetailsVO);
   };
 
   const handleVender = () => {
@@ -724,21 +759,21 @@ function AddVendor({ addVendors, editVendorId }) {
     if (!phoneNumber) {
       errors.phoneNumber = "PhoneNumber is required";
     }
-    if (!bank) {
-      errors.bank = "Bank is required";
-    }
-    if (!accountName) {
-      errors.accountName = "Account Name is required";
-    }
-    if (!accountNo) {
-      errors.accountNo = "Account No is required";
-    }
-    if (!branch) {
-      errors.branch = "Branch is required";
-    }
-    if (!ifscCode) {
-      errors.ifscCode = "Ifsc Code is required";
-    }
+    // if (!bank) {
+    //   errors.bank = "Bank is required";
+    // }
+    // if (!accountName) {
+    //   errors.accountName = "Account Name is required";
+    // }
+    // if (!accountNo) {
+    //   errors.accountNo = "Account No is required";
+    // }
+    // if (!branch) {
+    //   errors.branch = "Branch is required";
+    // }
+    // if (!ifscCode) {
+    //   errors.ifscCode = "Ifsc Code is required";
+    // }
 
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -749,7 +784,7 @@ function AddVendor({ addVendors, editVendorId }) {
         phoneNumber,
         active,
         orgId,
-        id,
+        id: 0,
         venderActivePortal,
         vendorAddressDTO: shippingAddresses,
         vendorBankDetailsDTO: [
@@ -759,7 +794,7 @@ function AddVendor({ addVendors, editVendorId }) {
             bank: bank,
             branch: branch,
             ifscCode: ifscCode,
-            vendorId,
+            id: 0,
           },
         ],
       };
@@ -844,18 +879,12 @@ function AddVendor({ addVendors, editVendorId }) {
         id: venderIdVO,
         venderActivePortal,
         vendorAddressDTO: vendorAddressVO,
-        vendorBankDetailsDTO: vendorBankDetailsVO,
-
-        // [
-        //   {
-        //     accountName: accountName,
-        //     accountNo: accountNo,
-        //     bank: bank,
-        //     branch: branch,
-        //     ifscCode: ifscCode,
-        //   },
-        // ],
       };
+      // Check if vendorBankDetailsVO exists and has length greater than 0
+      if (vendorBankDetailsVO && vendorBankDetailsVO.length > 0) {
+        // Include bank details in formData
+        formData.vendorBankDetailsDTO = vendorBankDetailsVO;
+      }
 
       console.log("test", formData);
       axios
@@ -871,10 +900,13 @@ function AddVendor({ addVendors, editVendorId }) {
           // setBranch("");
           // setIfscCode("");
           // setErrors({});
-          toast.success("Vendor Created successfully", {
+          toast.success("Vendor Updated successfully", {
             autoClose: 2000,
             theme: "colored",
           });
+          setTimeout(() => {
+            addVendors(false);
+          }, 2000);
         })
         .catch((error) => {
           toast.error("Network Error", {
@@ -891,6 +923,7 @@ function AddVendor({ addVendors, editVendorId }) {
 
   return (
     <>
+      <ToastContainer />
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
           {/* <h1 className="text-xl font-semibold mb-3">Vendor Details</h1> */}
@@ -1354,7 +1387,7 @@ function AddVendor({ addVendors, editVendorId }) {
               vendorBankDetailsVO &&
               vendorBankDetailsVO.length > 0 ? (
                 <div className="row">
-                  {vendorBankDetailsVO.map((bank) => (
+                  {vendorBankDetailsVO.map((bank, index) => (
                     <>
                       <div className="col-lg-3 col-md-6 mb-2">
                         <label className="label">
@@ -1375,7 +1408,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           // placeholder="Enter"
                           value={bank.bank}
                           name="bank"
-                          onChange={handleBankInputChange}
+                          onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
                           onInput={(e) => {
                             e.target.value = e.target.value
@@ -1406,7 +1439,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           // placeholder="Enter"
                           value={bank.accountNo}
                           name="accountNo"
-                          onChange={handleBankInputChange}
+                          onChange={(e) => handleBankInputChange(e, index)}
                           onInput={(e) => {
                             e.target.value = e.target.value.replace(/\D/g, "");
                           }}
@@ -1434,14 +1467,14 @@ function AddVendor({ addVendors, editVendorId }) {
                           type="text"
                           className="form-control form-sz"
                           // placeholder="Enter"
-                          value={bank.accountname}
+                          value={bank.accountName}
                           name="accountName"
                           onInput={(e) => {
                             e.target.value = e.target.value
                               .toUpperCase()
                               .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
                           }}
-                          onChange={handleBankInputChange}
+                          onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
                         />
                         {errors.accountName && (
@@ -1467,7 +1500,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           // placeholder="Enter"
                           value={bank.branch}
                           name="branch"
-                          onChange={handleBankInputChange}
+                          onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
                           onInput={(e) => {
                             e.target.value = e.target.value
@@ -1501,7 +1534,7 @@ function AddVendor({ addVendors, editVendorId }) {
                             e.target.value = e.target.value.toUpperCase();
                           }}
                           name="ifscCode"
-                          onChange={handleBankInputChange}
+                          onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
                         />
                         {errors.ifscCode && (

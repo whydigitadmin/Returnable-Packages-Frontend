@@ -5,6 +5,11 @@ import { FaCloudUploadAlt } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { styled } from "@mui/material/styles";
 import { FaStarOfLife } from "react-icons/fa";
+import {
+  stringValidation,
+  stringAndNoValidation,
+  stringAndNoAndSpecialCharValidation,
+} from "../../utils/userInputValidation";
 
 function AddPackage({
   refPsId,
@@ -737,9 +742,7 @@ function AddPackage({
               name="remarks"
               value={remarks}
               onChange={handlePackageChange}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
             />
             {errors.remarks && (
               <div className="error-text">{errors.remarks}</div>

@@ -6,6 +6,11 @@ import Datepicker from "react-tailwindcss-datepicker";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import AddPackage from "./AddPackage";
+import {
+  stringValidation,
+  stringAndNoValidation,
+  stringAndNoAndSpecialCharValidation,
+} from "../../utils/userInputValidation";
 
 function AddPartStudy({
   setRefPsId,
@@ -370,9 +375,7 @@ function AddPartStudy({
               name="partName"
               value={partName}
               onChange={handlePartChange}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
             />
             {errors.partName && (
               <span className="error-text">{errors.partName}</span>
@@ -398,9 +401,7 @@ function AddPartStudy({
               name="partNumber"
               value={partNumber}
               onChange={handlePartChange}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={stringAndNoAndSpecialCharValidation}
             />
             {errors.partNumber && (
               <span className="error-text">{errors.partNumber}</span>
@@ -431,6 +432,7 @@ function AddPartStudy({
                 name="weight"
                 value={weight}
                 onChange={handlePartChange}
+                // onInput={stringAndNoValidation}
               />
               {/* <select
                 style={{ height: 40, fontSize: "0.800rem", width: 60 }}
