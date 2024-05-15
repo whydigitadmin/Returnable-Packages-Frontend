@@ -60,34 +60,43 @@ function Header() {
             <Bars3Icon className="h-5 inline-block w-5" />
           </label>
 
-          {localStorage.getItem("userDetails") === "ROLE_EMITTER" ? (
-            <Link to={"/app/welcomeemitter"}>
-              <img
-                src="/BIN_BEE.png"
-                style={{
-                  width: "150px",
-                  height: "auto",
-                  marginLeft: "6px",
-                }}
-              />
-            </Link>
-          ) : (
-            // <h1
-            //   className="text-2xl font-semibold ml-2"
-            //   // style={{ color: "rgb(51, 156, 109)" }}
-            // >
-            //   {pageTitle}
-            // </h1>
-            <Link to={"/app/welcomeoem"}>
-              <img
-                src="/BIN_BEE.png"
-                style={{
-                  width: "150px",
-                  height: "auto",
-                  marginLeft: "6px",
-                }}
-              />
-            </Link>
+          {localStorage.getItem("userDetails") === "ROLE_EMITTER" && (
+            <>
+              <Link to={"/app/welcomeemitter"}>
+                <img
+                  src="/BIN_BEE.png"
+                  style={{
+                    width: "150px",
+                    height: "auto",
+                    marginLeft: "6px",
+                  }}
+                />
+              </Link>
+            </>
+          )}
+          {localStorage.getItem("userDetails") === "ROLE_OEM" && (
+            <>
+              <Link to={"/app/welcomeoem"}>
+                <img
+                  src="/BIN_BEE.png"
+                  style={{
+                    width: "150px",
+                    height: "auto",
+                    marginLeft: "6px",
+                  }}
+                />
+              </Link>
+            </>
+          )}
+          {localStorage.getItem("userDetails") === "ROLE_USER" && (
+            <>
+              <h1
+                className="text-2xl font-semibold ml-2"
+                // style={{ color: "rgb(51, 156, 109)" }}
+              >
+                {pageTitle}
+              </h1>
+            </>
           )}
         </div>
 
