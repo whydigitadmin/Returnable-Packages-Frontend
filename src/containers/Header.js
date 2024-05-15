@@ -72,12 +72,22 @@ function Header() {
               />
             </Link>
           ) : (
-            <h1
-              className="text-2xl font-semibold ml-2"
-              // style={{ color: "rgb(51, 156, 109)" }}
-            >
-              {pageTitle}
-            </h1>
+            // <h1
+            //   className="text-2xl font-semibold ml-2"
+            //   // style={{ color: "rgb(51, 156, 109)" }}
+            // >
+            //   {pageTitle}
+            // </h1>
+            <Link to={"/app/welcomeoem"}>
+              <img
+                src="/BIN_BEE.png"
+                style={{
+                  width: "150px",
+                  height: "auto",
+                  marginLeft: "6px",
+                }}
+              />
+            </Link>
           )}
         </div>
 

@@ -150,11 +150,11 @@ export const GatheringEmpty = () => {
                 <DesktopDatePicker
                   value={docDate}
                   onChange={(date) => setDocDate(date)}
-                  // slotProps={{
-                  //   textField: { size: "small", clearable: true },
-                  // }}
+                  slotProps={{
+                    textField: { size: "small" },
+                  }}
                   format="DD/MM/YYYY"
-                  // disabled
+                  disabled
                 />
               </LocalizationProvider>
             </div>
@@ -202,7 +202,7 @@ export const GatheringEmpty = () => {
                 className={`form-control form-sz mb-2 ${
                   errors.gatheringKitQty && "border-red-500"
                 }`}
-                placeholder="Outward Kit Qty"
+                // placeholder="Gather Kit Qty"
                 value={gatheringKitQty}
                 onChange={(e) => setGatheringKitQty(e.target.value)}
               />
@@ -219,10 +219,10 @@ export const GatheringEmpty = () => {
                 <table className="w-full">
                   <thead>
                     <tr>
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Action
-                      </th> */}
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                      <th
+                        className="px-2 py-2 bg-blue-500 text-white text-center"
+                        style={{ width: "10%" }}
+                      >
                         S.No
                       </th>
                       <th className="px-2 py-2 bg-blue-500 text-white text-center">
@@ -231,10 +231,16 @@ export const GatheringEmpty = () => {
                       <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         Asset Code
                       </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                      <th
+                        className="px-2 py-2 bg-blue-500 text-white text-center"
+                        style={{ width: "10%" }}
+                      >
                         EXP QTY
                       </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                      <th
+                        className="px-2 py-2 bg-blue-500 text-white text-center"
+                        style={{ width: "10%" }}
+                      >
                         REC QTY
                       </th>
                     </tr>
@@ -242,91 +248,12 @@ export const GatheringEmpty = () => {
                   <tbody>
                     {tableData.map((row, index) => (
                       <tr key={row.id}>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={index + 1}
-                            disabled
-                            style={{ width: "100%" }}
-                          />
+                        <td className="border px-2 py-2 text-center">
+                          {index + 1}
                         </td>
-                        <td className="border px-2 py-2">
-                          {row.asset}
-                          {/* <input
-                            type="text"
-                            value={row.asset}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r, i) =>
-                                  i === index
-                                    ? { ...r, asset: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            className={`form-control form-sz mb-2 ${
-                              errors.asset && "border-red-500"
-                            }`}
-                            style={{ width: "100%" }}
-                          /> */}
-                          {errors.asset && (
-                            <span className="error-text mb-1">
-                              {errors.asset}
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="border px-2 py-2">
-                          {row.assetCode}
-                          {/* <input
-                            type="text"
-                            value={row.assetCode}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r, i) =>
-                                  i === index
-                                    ? { ...r, assetCode: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            className={`form-control form-sz mb-2 ${
-                              errors.assetCode && "border-red-500"
-                            }`}
-                            style={{ width: "100%" }}
-                          /> */}
-                          {errors.assetCode && (
-                            <span className="error-text mb-1">
-                              {errors.assetCode}
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="border px-2 py-2">
-                          {row.expQty}
-                          {/* <input
-                            type="text"
-                            value={row.qty}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r, i) =>
-                                  i === index
-                                    ? { ...r, qty: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            className={`form-control form-sz mb-2 ${
-                              errors.qty && "border-red-500"
-                            }`}
-                            style={{ width: "100%" }}
-                          /> */}
-                          {errors.qty && (
-                            <span className="error-text mb-1">
-                              {errors.qty}
-                            </span>
-                          )}
-                        </td>
+                        <td className="border px-2 py-2">{row.asset}</td>
+                        <td className="border px-2 py-2">{row.assetCode}</td>
+                        <td className="border px-2 py-2">{row.expQty}</td>
                         <td className="border px-2 py-2">
                           <input
                             type="text"
@@ -365,7 +292,7 @@ export const GatheringEmpty = () => {
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               onClick={handleSave}
             >
-              Save
+              Generate Manifeast
             </button>
           </div>
         </div>
