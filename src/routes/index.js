@@ -145,6 +145,12 @@ const EmitterStockLedgerReport = lazy(() =>
   import("../pages/protected/EmitterStockLedgerReport")
 );
 const GatheringEmpty = lazy(() => import("../pages/protected/GatheringEmpty"));
+const RetrivalManifest = lazy(() =>
+  import("../pages/protected/RetrivalManifest")
+);
+const TransporterPickup = lazy(() =>
+  import("../pages/protected/TransporterPickup")
+);
 const routes = [
   {
     path: "/dashboard", // the url
@@ -542,6 +548,14 @@ const routes = [
   {
     path: "/gatheringempty",
     component: GatheringEmpty,
+  },
+  {
+    path: "/retrivalmanifest",
+    component: RetrivalManifest,
+  },
+  {
+    path: "/transporterPickup",
+    component: TransporterPickup,
   },
 ];
 
