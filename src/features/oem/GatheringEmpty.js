@@ -161,7 +161,7 @@ export const GatheringEmpty = () => {
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Kit No
+                  Kit No:
                   <FaStarOfLife className="must" />
                 </span>
               </label>
@@ -170,7 +170,7 @@ export const GatheringEmpty = () => {
               <select
                 name="Select Kit"
                 style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                className="input input-bordered ps-2"
+                className="form-select form-sz"
                 // onChange={handleKitCodeChange}
                 value={kitCode}
               >
@@ -192,13 +192,14 @@ export const GatheringEmpty = () => {
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Gathering Kit Qty
+                  Gathered Kit Qty:
                   {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
             <div className="col-lg-2 col-md-3">
               <input
+                disabled
                 className={`form-control form-sz mb-2 ${
                   errors.gatheringKitQty && "border-red-500"
                 }`}
@@ -292,7 +293,7 @@ export const GatheringEmpty = () => {
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
               onClick={handleSave}
             >
-              Generate Manifeast
+              Generate Manifest
             </button>
           </div>
         </div>
