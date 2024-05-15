@@ -215,75 +215,48 @@ export const GatheringEmpty = () => {
             </div>
           </div>
           <div className="row mt-2">
-            <div className="col-lg-12">
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr>
-                      <th
-                        className="px-2 py-2 bg-blue-500 text-white text-center"
-                        style={{ width: "10%" }}
-                      >
-                        S.No
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Asset
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Asset Code
-                      </th>
-                      <th
-                        className="px-2 py-2 bg-blue-500 text-white text-center"
-                        style={{ width: "10%" }}
-                      >
-                        EXP QTY
-                      </th>
-                      <th
-                        className="px-2 py-2 bg-blue-500 text-white text-center"
-                        style={{ width: "10%" }}
-                      >
-                        REC QTY
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {tableData.map((row, index) => (
-                      <tr key={row.id}>
-                        <td className="border px-2 py-2 text-center">
-                          {index + 1}
-                        </td>
-                        <td className="border px-2 py-2">{row.asset}</td>
-                        <td className="border px-2 py-2">{row.assetCode}</td>
-                        <td className="border px-2 py-2">{row.expQty}</td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.qty}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r, i) =>
-                                  i === index
-                                    ? { ...r, qty: e.target.value }
-                                    : r
-                                )
+            <div className="overflow-x-auto w-full ">
+              <table className="table table-hover w-full">
+                <thead>
+                  <tr>
+                    <th>S.No</th>
+                    <th>Asset</th>
+                    <th>Asset Code</th>
+                    <th>EXP QTY</th>
+                    <th>REC QTY</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tableData.map((row, index) => (
+                    <tr key={row.id}>
+                      <td>{index + 1}</td>
+                      <td>{row.asset}</td>
+                      <td>{row.assetCode}</td>
+                      <td>{row.expQty}</td>
+                      <td>
+                        <input
+                          type="text"
+                          value={row.qty}
+                          onChange={(e) =>
+                            setTableData((prev) =>
+                              prev.map((r, i) =>
+                                i === index ? { ...r, qty: e.target.value } : r
                               )
-                            }
-                            className={`form-control form-sz mb-2 ${
-                              errors.qty && "border-red-500"
-                            }`}
-                            style={{ width: "100%" }}
-                          />
-                          {errors.qty && (
-                            <span className="error-text mb-1">
-                              {errors.qty}
-                            </span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                            )
+                          }
+                          className={`form-control form-sz mb-2 ${
+                            errors.qty && "border-red-500"
+                          }`}
+                          style={{ width: "50px" }}
+                        />
+                        {errors.qty && (
+                          <span className="error-text mb-1">{errors.qty}</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
           {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
