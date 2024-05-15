@@ -4,24 +4,24 @@ import CircleStackIcon from "@heroicons/react/24/outline/CircleStackIcon";
 import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import { useDispatch } from "react-redux";
 import { showNotification } from "../common/headerSlice";
-import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
+import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined";
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import Datepicker from "react-tailwindcss-datepicker";
 import { IoMdClose } from "react-icons/io";
 import { FaStarOfLife } from "react-icons/fa";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import {
   MaterialReactTable,
   createMRTColumnHelper,
   useMaterialReactTable,
-} from 'material-react-table';
-import { Box, Button } from '@mui/material';
-import { mkConfig, generateCsv, download } from 'export-to-csv'; //or use your library of choice here
+} from "material-react-table";
+import { Box, Button } from "@mui/material";
+import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
 import axios from "axios";
 
 const csvConfig = mkConfig({
-  fieldSeparator: ',',
-  decimalSeparator: '.',
+  fieldSeparator: ",",
+  decimalSeparator: ".",
   useKeysAsHeaders: true,
 });
 
@@ -59,7 +59,7 @@ const periodOptions = [
   { name: "Last Week", value: "LAST_WEEK" },
   { name: "This Month", value: "THIS_MONTH" },
   { name: "Last Month", value: "LAST_MONTH" },
-]
+];
 
 function EmitterAllotmentReport() {
   const dispatch = useDispatch();
@@ -69,21 +69,23 @@ function EmitterAllotmentReport() {
   // });
   const [dateValue, setDateValue] = useState({
     startDate: "",
-    endDate: ""
+    endDate: "",
   });
   const [kit, setKit] = useState("");
   const [flow, setFlow] = useState("");
   const [data, setData] = useState([]);
   const [kitList, setKitList] = useState([]);
   const [flowList, setFlowList] = useState([]);
-  const [loginEmitterId, setLoginEmitterId] = React.useState(localStorage.getItem("emitterId"));
+  const [loginEmitterId, setLoginEmitterId] = React.useState(
+    localStorage.getItem("emitterId")
+  );
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [tableView, setTableView] = useState(false);
 
   useEffect(() => {
     handleClearData();
-    getAllFlow()
-    getAllKit()
+    getAllFlow();
+    getAllKit();
   }, []);
   const getAllKit = async () => {
     try {
@@ -91,7 +93,7 @@ function EmitterAllotmentReport() {
         `${process.env.REACT_APP_API_URL}/api/master/getKitDetailsByEmitterId?emitterId=${loginEmitterId}&orgId=${orgId}`
       );
       if (response.status === 200) {
-        const newData = response.data.paramObjectsMap.flow.map(item => ({
+        const newData = response.data.paramObjectsMap.flow.map((item) => ({
           kitcode: item.kitcode,
         }));
         setKitList([...data, ...newData]);
@@ -106,7 +108,7 @@ function EmitterAllotmentReport() {
         `${process.env.REACT_APP_API_URL}/api/master/flow?emitterId=${loginEmitterId}&orgId=${orgId}`
       );
       if (response.status === 200) {
-        const newData = response.data.paramObjectsMap.flowVO.map(item => ({
+        const newData = response.data.paramObjectsMap.flowVO.map((item) => ({
           flowName: item.flowName,
         }));
         setFlowList([...data, ...newData]);
@@ -122,7 +124,7 @@ function EmitterAllotmentReport() {
       );
       if (response.status === 200) {
         const binAllotmentVO = response.data.paramObjectsMap.binAllotmentVO;
-        const newData = binAllotmentVO.map(item => ({
+        const newData = binAllotmentVO.map((item) => ({
           binReqNo: item.binReqNo,
           binReqDate: item.binReqDate,
           docId: item.docId,
@@ -132,7 +134,6 @@ function EmitterAllotmentReport() {
           kitCode: item.kitCode,
           reqKitQty: item.reqKitQty,
           allotkKitQty: item.allotkKitQty,
-
         }));
         setData([...data, ...newData]);
         console.log("The Data from the API is:", data);
@@ -147,16 +148,16 @@ function EmitterAllotmentReport() {
     console.log("newValue:", newValue);
     setDateValue(newValue);
     // updateDashboardPeriod(newValue)
-  }
+  };
   const handleClearData = () => {
     setDateValue({
       startDate: "",
-      endDate: ""
+      endDate: "",
     });
-    setFlow("")
-    setKit("")
-    setTableView(false)
-  }
+    setFlow("");
+    setKit("");
+    setTableView(false);
+  };
   // const updateDashboardPeriod = (newRange) => {
   //   dispatch(
   //     showNotification({
@@ -165,7 +166,6 @@ function EmitterAllotmentReport() {
   //     })
   //   );
   // };
-
 
   const columns = useMemo(
     () => [
@@ -282,48 +282,49 @@ function EmitterAllotmentReport() {
 
   const handleExportData = () => {
     const csv = generateCsv(csvConfig)(data);
-    const currentDate = new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
     });
     const filename = `BinAllotment_${loginEmitterId}_${currentDate}.csv`;
     download({ ...csvConfig, filename })(csv);
   };
 
-
   const table = useMaterialReactTable({
     columns,
     data,
     // enableRowSelection: true,
-    columnFilterDisplayMode: 'popover',
-    paginationDisplayMode: 'pages',
-    positionToolbarAlertBanner: 'bottom',
+    columnFilterDisplayMode: "popover",
+    paginationDisplayMode: "pages",
+    positionToolbarAlertBanner: "bottom",
     renderTopToolbarCustomActions: ({ table }) => (
       <Box
         sx={{
-          display: 'flex',
-          gap: '16px',
-          padding: '8px',
-          flexWrap: 'wrap',
+          display: "flex",
+          gap: "16px",
+          padding: "8px",
+          flexWrap: "wrap",
         }}
       >
-        <button className="btn btn-ghost btn-sm normal-case"
-          onClick={handleExportData}><CloudDownloadOutlinedIcon className="w-4 mr-2" />Download</button>
+        <button
+          className="btn btn-ghost btn-sm normal-case"
+          onClick={handleExportData}
+        >
+          <CloudDownloadOutlinedIcon className="w-4 mr-2" />
+          Download
+        </button>
       </Box>
     ),
   });
-
 
   return (
     <>
       <div className="container-sm">
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="d-flex justify-content-end">
-            <Link to="/app/emitterLanding">
-              <IoMdClose
-                className="cursor-pointer w-8 h-8 mb-3"
-              />
+            <Link to="/app/welcomeemitter">
+              <IoMdClose className="cursor-pointer w-8 h-8 mb-3" />
             </Link>
           </div>
           <div className="row">
@@ -428,14 +429,15 @@ function EmitterAllotmentReport() {
               Clear
             </button>
           </div>
-          {tableView && <>
-            <div className="mt-4">
-              <MaterialReactTable table={table} />
-            </div>
-          </>}
+          {tableView && (
+            <>
+              <div className="mt-4">
+                <MaterialReactTable table={table} />
+              </div>
+            </>
+          )}
         </div>
       </div>
-
     </>
   );
 }

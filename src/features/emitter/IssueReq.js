@@ -812,7 +812,7 @@ function IssueReq() {
           <div className="row p-4">
             <div className="col-md-12">
               <p className="text-2xl flex items-center">
-                <Link to="/app/EmitterLanding">
+                <Link to="/app/welcomeemitter">
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
                 </Link>
                 <span>

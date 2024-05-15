@@ -103,7 +103,7 @@ const BinInwardOem = ({}) => {
         style={{ width: "85%", margin: "auto" }}
       >
         <div className="flex items-center mt-3">
-          <Link to="/app/EmitterLanding" className="mr-4">
+          <Link to="/app/welcomeoem" className="mr-4">
             <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
           </Link>{" "}
           <p className="text-2xl">

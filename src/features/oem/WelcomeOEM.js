@@ -236,7 +236,7 @@ function WelcomeOEM() {
                   </Link>
                 </div>
                 <div className="col-lg-12">
-                  <Link to={"app/gatheringempty"}>
+                  <Link to={"/app/gatheringempty"}>
                     <div className="card bg-base-100 shadow-xl p-3">
                       <div className="d-flex flex-row">
                         <img

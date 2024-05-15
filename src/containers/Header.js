@@ -61,7 +61,7 @@ function Header() {
           </label>
 
           {localStorage.getItem("userDetails") === "ROLE_EMITTER" ? (
-            <Link to={"/app/EmitterLanding"}>
+            <Link to={"/app/welcomeemitter"}>
               <img
                 src="/BIN_BEE.png"
                 style={{

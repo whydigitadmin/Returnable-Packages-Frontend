@@ -60,11 +60,13 @@ function StockAdjustment() {
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
           <div className="row">
-          <p className="ml-5 mt-3 text-2xl"><strong>Stock Report</strong></p>
+            <p className="ml-5 mt-3 text-2xl">
+              <strong>Stock Report</strong>
+            </p>
 
             <div className="col-lg-1">
               <div className="d-flex justify-content-center">
-                <Link to="/app/EmitterLanding">
+                <Link to="/app/welcomeemitter">
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
                 </Link>
               </div>
@@ -76,13 +78,16 @@ function StockAdjustment() {
                     className="text-xl font-semibold w-5 h-5"
                     style={{ marginTop: 11 }}
                   /> */}
-                  <img src="/destination.png" alt="Favorite" 
+                  <img
+                    src="/destination.png"
+                    alt="Favorite"
                     style={{
                       width: "30px",
                       height: "25px",
                       marginRight: "6px",
                       marginTop: "12px",
-                    }}/>
+                    }}
+                  />
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
                     Issued To
                   </h4>

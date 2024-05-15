@@ -197,7 +197,7 @@ export const EmitterOutward = () => {
             </p>
             <div className="col-lg-1">
               <div className="d-flex justify-content-center">
-                <Link to="/app/EmitterLanding">
+                <Link to="/app/welcomeemitter">
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
                 </Link>
               </div>

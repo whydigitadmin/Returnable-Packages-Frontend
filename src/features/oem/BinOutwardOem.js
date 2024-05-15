@@ -107,7 +107,7 @@ function BinOutwardOem({}) {
           <div className="row">
             <div className="col-md-12">
               <p className="text-2xl flex items-center">
-                <Link to="/app/EmitterLanding">
+                <Link to="/app/welcomeoem">
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
                 </Link>
                 <span>

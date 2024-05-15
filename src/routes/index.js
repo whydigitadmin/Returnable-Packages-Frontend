@@ -144,6 +144,7 @@ const EmitterAllotmentReport = lazy(() =>
 const EmitterStockLedgerReport = lazy(() =>
   import("../pages/protected/EmitterStockLedgerReport")
 );
+const GatheringEmpty = lazy(() => import("../pages/protected/GatheringEmpty"));
 const routes = [
   {
     path: "/dashboard", // the url
@@ -537,6 +538,10 @@ const routes = [
   {
     path: "/emitterstockledgerreport",
     component: EmitterStockLedgerReport,
+  },
+  {
+    path: "/gatheringempty",
+    component: GatheringEmpty,
   },
 ];
 
