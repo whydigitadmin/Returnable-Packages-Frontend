@@ -508,6 +508,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   // Then use handleEditBankAddress function similarly to handleEditAddress for customerAddressVO
 
   const handleUpdateShippingAddress = (updatedAddress) => {
+    updatedAddress.id = 0;
+
     // Check if updatedAddress is null or undefined
     if (!updatedAddress || updatedAddress.id === undefined) {
       // Handle adding a new address
@@ -631,6 +633,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   // };
 
   const handleUpdateShippingBankAddress = (updatedBankAddress) => {
+    updatedBankAddress.id = 0;
+
     // Check if updatedBankAddress is null or undefined
     if (!updatedBankAddress || updatedBankAddress.id === undefined) {
       // Handle adding a new address
