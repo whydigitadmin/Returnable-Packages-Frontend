@@ -50,8 +50,9 @@ const BinInwardOem = ({}) => {
       id: 1,
       inwardId: "1000001",
       date: "15-05-2024",
-      kitNo: "10",
-      recKitQty: "30",
+      kitNo: "PLS1220/0524/1002	",
+      allotedQty: "50",
+      recKitQty: "50",
     },
   ]);
 
