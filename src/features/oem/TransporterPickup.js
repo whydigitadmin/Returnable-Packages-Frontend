@@ -219,7 +219,7 @@ const TransporterPickup = ({}) => {
         ) : (
           <>
             <div className="row mt-4">
-              <div className="col-lg-2 col-md-3">
+              {/* <div className="col-lg-2 col-md-3">
                 <label className="label mb-4">
                   <span className="label-text label-font-size text-base-content d-flex flex-row">
                     Doc Id:
@@ -235,7 +235,7 @@ const TransporterPickup = ({}) => {
                   value={docId}
                   onChange={(e) => setDocId(e.target.value)}
                 />
-              </div>
+              </div> */}
               <div className="col-lg-2 col-md-3">
                 <label className="label mb-4">
                   <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -298,9 +298,8 @@ const TransporterPickup = ({}) => {
                   className={`form-control form-sz mb-2 ${
                     errors.receivedKitQty && "border-red-500"
                   }`}
-                  placeholder=""
                   value={loginUserName}
-                  // onChange={(e) => setReceivedKitQty(e.target.value)}
+                  disabled
                 />
               </div>
               <div className="col-lg-2 col-md-3">
