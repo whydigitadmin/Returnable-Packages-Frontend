@@ -25,7 +25,6 @@ const TransporterPickup = ({}) => {
   const [driver, setDriver] = useState("");
   const [driverPhNo, setDriverPhNo] = useState("");
   const [vehicleNo, setVehicleNo] = useState("");
-  const [transporterList, setTransporterList] = useState([]);
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [loginUserName, setLoginUserName] = useState(
@@ -33,6 +32,9 @@ const TransporterPickup = ({}) => {
   );
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
+  const [transporterList, setTransporterList] = useState([
+    { id: 1, name: "Safe Express" },
+  ]);
 
   const [tableData, setTableData] = useState([
     {
@@ -48,8 +50,8 @@ const TransporterPickup = ({}) => {
       id: 1,
       pickId: "1000001",
       date: "15-05-2024",
-      handTo: "StockBranchName",
-      handBy: "Safe Express",
+      handTo: "Safe Express",
+      handBy: loginUserName,
       driver: "Devaraj",
       phNo: "9876543210",
       vehicle: "TN01AB1213",
@@ -268,18 +270,20 @@ const TransporterPickup = ({}) => {
                   name="Select Transporter"
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="form-select form-sz"
-                  // onChange={handleHandoverToChange}
+                  onChange={(e) => {
+                    setHandoverTo(e.target.value);
+                  }}
                   value={handoverTo}
                 >
                   <option value="" selected>
                     Select an Transporter
                   </option>
-                  {/* {transporterList.length > 0 &&
-                  transporterList.map((list) => (
-                    <option key={list.id} value={list.transporterName}>
-                      {list.transporterName}
-                    </option>
-                  ))} */}
+                  {transporterList.length > 0 &&
+                    transporterList.map((list) => (
+                      <option key={list.id} value={list.name}>
+                        {list.name}
+                      </option>
+                    ))}
                 </select>
                 {errors.handoverTo && (
                   <span className="error-text">{errors.handoverTo}</span>

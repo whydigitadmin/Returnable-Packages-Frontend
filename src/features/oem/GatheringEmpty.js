@@ -20,6 +20,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 
 export const GatheringEmpty = () => {
   const [docId, setDocId] = useState("");
@@ -41,9 +49,31 @@ export const GatheringEmpty = () => {
   const [tableData, setTableData] = useState([
     {
       id: 1,
-      asset: "",
-      assetCode: "",
-      qty: "",
+      assetType: "Standard",
+      assetCode: "PLT1213",
+      expQty: "50",
+      emptyQty: "8",
+    },
+    {
+      id: 2,
+      assetType: "Standard",
+      assetCode: "LID1213",
+      expQty: "50",
+      emptyQty: "8",
+    },
+    {
+      id: 3,
+      assetType: "Standard",
+      assetCode: "SW1213",
+      expQty: "50",
+      emptyQty: "8",
+    },
+    {
+      id: 4,
+      assetType: "Customized",
+      assetCode: "IN1213",
+      expQty: "100",
+      emptyQty: "16",
     },
   ]);
   const [ListViewTableData, setListViewTableData] = useState([
@@ -52,8 +82,8 @@ export const GatheringEmpty = () => {
       gatheredId: "1000001",
       gatheredDate: "15-05-2024",
       flow: "PUN-CH",
-      recQty: "10",
-      balQty: "40",
+      recQty: "8",
+      balQty: "42",
     },
   ]);
 
@@ -183,7 +213,7 @@ export const GatheringEmpty = () => {
                     <tr>
                       <th>S.No</th>
                       <th>Gathered ID</th>
-                      <th>Gathered Date</th>
+                      <th>Date</th>
                       <th>Flow</th>
                       <th>REC QTY</th>
                       <th>Bal QTY</th>
@@ -296,28 +326,28 @@ export const GatheringEmpty = () => {
                       <thead>
                         <tr>
                           <th>S.No</th>
-                          <th>Asset</th>
+                          <th>Asset Type</th>
                           <th>Asset Code</th>
                           <th>EXP QTY</th>
-                          <th>REC QTY</th>
+                          <th>EMPTY QTY</th>
                         </tr>
                       </thead>
                       <tbody>
                         {tableData.map((row, index) => (
                           <tr key={row.id}>
                             <td>{index + 1}</td>
-                            <td>{row.asset}</td>
+                            <td>{row.assetType}</td>
                             <td>{row.assetCode}</td>
                             <td>{row.expQty}</td>
                             <td>
                               <input
                                 type="text"
-                                value={row.qty}
+                                value={row.emptyQty}
                                 onChange={(e) =>
                                   setTableData((prev) =>
                                     prev.map((r, i) =>
                                       i === index
-                                        ? { ...r, qty: e.target.value }
+                                        ? { ...r, emptyQty: e.target.value }
                                         : r
                                     )
                                   )
@@ -385,84 +415,31 @@ export const GatheringEmpty = () => {
             </div>
           </DialogTitle>
           <DialogContent className="mt-4">
-            {/* <TableContainer component={Paper}>
-                <Table>
-                  <TableBody>
+            <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Gathered ID</TableCell>
+                    <TableCell>1000001</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Gathered Date</TableCell>
+                    <TableCell>15-05-2024</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Flow</TableCell>
+                    <TableCell>PUN-CH</TableCell>
+                  </TableRow>
+                  {tableData.map((row, index) => (
                     <TableRow>
-                      <TableCell>Gathered ID</TableCell>
-                      <TableCell>1000001</TableCell>
+                      <TableCell>{row.assetType}</TableCell>
+                      <TableCell>{row.assetCode}</TableCell>
+                      <TableCell>{row.emptyQty}</TableCell>
                     </TableRow>
-                    <TableRow>
-                      <TableCell>Gathered Date</TableCell>
-                      <TableCell>15-05-2024</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Flow</TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Pallet</TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Lid</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.address1}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>SideWall</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.city}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Insert</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.state}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Country</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.country}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>PinCode</TableCell>
-                      <TableCell>{}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer> */}
-            <div className="row mt-4">
-              <div className="overflow-x-auto w-full ">
-                <table className="table table-hover w-full">
-                  <thead>
-                    <tr>
-                      <th>S.No</th>
-                      <th>Gathered ID</th>
-                      <th>Gathered Date</th>
-                      <th>Flow</th>
-                      <th>REC QTY</th>
-                      <th>Bal QTY</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ListViewTableData.map((row, index) => (
-                      <tr key={row.id}>
-                        <td>{index + 1}</td>
-                        <td> {row.gatheredId}</td>
-                        <td>{row.gatheredDate}</td>
-                        <td>{row.flow}</td>
-                        <td>{row.recQty}</td>
-                        <td>{row.balQty}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
           </DialogContent>
         </Dialog>
       </div>

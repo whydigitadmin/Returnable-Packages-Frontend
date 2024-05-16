@@ -20,6 +20,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
 
 function BinOutwardOem({}) {
   const [docId, setDocId] = useState("");
@@ -43,9 +51,31 @@ function BinOutwardOem({}) {
   const [tableData, setTableData] = useState([
     {
       id: 1,
-      asset: "",
-      assetCode: "",
-      qty: "",
+      asset: "Pallet",
+      assetCode: "PLT1213",
+      expQty: "50",
+      outQty: "8",
+    },
+    {
+      id: 1,
+      asset: "Lid",
+      assetCode: "LID1213",
+      expQty: "50",
+      outQty: "8",
+    },
+    {
+      id: 1,
+      asset: "SideWall",
+      assetCode: "SW1213",
+      expQty: "50",
+      outQty: "8",
+    },
+    {
+      id: 1,
+      asset: "Insert",
+      assetCode: "IN1213",
+      expQty: "100",
+      outQty: "16",
     },
   ]);
 
@@ -55,8 +85,8 @@ function BinOutwardOem({}) {
       outwardId: "1000001",
       date: "15-05-2024",
       flow: "PUN-CH",
-      outQty: "10",
-      balQty: "40",
+      outQty: "8",
+      balQty: "42",
     },
   ]);
 
@@ -343,7 +373,7 @@ function BinOutwardOem({}) {
                             <th>Asset</th>
                             <th>Asset Code</th>
                             <th>EXP QTY</th>
-                            <th>REC QTY</th>
+                            <th>Out QTY</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -356,12 +386,12 @@ function BinOutwardOem({}) {
                               <td>
                                 <input
                                   type="text"
-                                  value={row.qty}
+                                  value={row.outQty}
                                   onChange={(e) =>
                                     setTableData((prev) =>
                                       prev.map((r, i) =>
                                         i === index
-                                          ? { ...r, qty: e.target.value }
+                                          ? { ...r, outQty: e.target.value }
                                           : r
                                       )
                                     )
@@ -429,78 +459,31 @@ function BinOutwardOem({}) {
             </div>
           </DialogTitle>
           <DialogContent className="mt-3">
-            <div className="row">
-              <div className="overflow-x-auto w-full ">
-                <table className="table table-hover w-full">
-                  <thead>
-                    <tr>
-                      <th>Outward ID</th>
-                      <th>Date</th>
-                      <th>Flow</th>
-                      <th>Out QTY</th>
-                      <th>Bal QTY</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {ListViewTableData.map((row, index) => (
-                      <tr key={row.id}>
-                        <td> {row.outwardId}</td>
-                        <td>{row.date}</td>
-                        <td>{row.flow}</td>
-                        <td>{row.outQty}</td>
-                        <td>{row.balQty}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-            {/* <TableContainer component={Paper}>
+            <TableContainer component={Paper}>
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell>Gathered ID</TableCell>
+                    <TableCell>Outward ID</TableCell>
                     <TableCell>1000001</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>Gathered Date</TableCell>
+                    <TableCell>Date</TableCell>
                     <TableCell>15-05-2024</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Flow</TableCell>
-                    <TableCell></TableCell>
+                    <TableCell>PUN-CH</TableCell>
                   </TableRow>
-                  <TableRow>
-                    <TableCell>Pallet</TableCell>
-                    <TableCell></TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Lid</TableCell>
-                    <TableCell>
-                      {selectedRowData.userAddressVO.address1}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>SideWall</TableCell>
-                    <TableCell>{selectedRowData.userAddressVO.city}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Insert</TableCell>
-                    <TableCell>{selectedRowData.userAddressVO.state}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Country</TableCell>
-                    <TableCell>
-                      {selectedRowData.userAddressVO.country}
-                    </TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>PinCode</TableCell>
-                    <TableCell>{}</TableCell>
-                  </TableRow>
+
+                  {tableData.map((row, index) => (
+                    <TableRow>
+                      <TableCell>{row.assetCode}</TableCell>
+                      <TableCell>{row.outQty}</TableCell>
+                    </TableRow>
+                  ))}
                 </TableBody>
               </Table>
-            </TableContainer> */}
+            </TableContainer>
           </DialogContent>
         </Dialog>
       </div>

@@ -39,8 +39,8 @@ const BinInwardOem = ({}) => {
   const [tableData, setTableData] = useState([
     {
       id: 1,
-      kitNo: "",
-      allotedKitQty: "",
+      kitNo: "PLS1220/0524/1002",
+      allotedKitQty: "50",
       recKitQty: "",
     },
   ]);
@@ -338,7 +338,7 @@ const BinInwardOem = ({}) => {
                                     setTableData((prev) =>
                                       prev.map((r, i) =>
                                         i === index
-                                          ? { ...r, qty: e.target.value }
+                                          ? { ...r, recKitQty: e.target.value }
                                           : r
                                       )
                                     )
