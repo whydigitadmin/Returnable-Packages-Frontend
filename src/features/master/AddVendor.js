@@ -314,7 +314,7 @@ function AddVendor({ addVendors, editVendorId }) {
   };
 
   const handleAddressSubmit = async () => {
-    const addressWithVendorId = { ...newAddress, vendorId: vendorId };
+    const addressWithVendorId = { ...newAddress };
 
     if (isValidAddress()) {
       setErrors1({}); // Clear any previous errors on successful submission
@@ -395,7 +395,7 @@ function AddVendor({ addVendors, editVendorId }) {
   };
 
   const handleAddShippingAddress = () => {
-    const addressWithVendorId = { ...newAddress, vendorId: vendorId };
+    const addressWithVendorId = { ...newAddress, id: 0 };
     setShippingAddresses([...shippingAddresses, addressWithVendorId]);
     setNewAddress({
       gstRegistrationStatus: "",
@@ -803,26 +803,28 @@ function AddVendor({ addVendors, editVendorId }) {
       axios
         .put(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
         .then((response) => {
-          setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
-          console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
-          setAddressShow(true);
-          setErrors({});
-          // setAccountNum("");
-          // setBank("");
-          // setDisplayName("");
-          // setBranch("");
-          // setIfscCode("");
-          // setErrors({});
-          toast.success("Vendor Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-        })
-        .catch((error) => {
-          toast.error("Network Error", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
+            console.log(
+              "id:",
+              response.data.paramObjectsMap.updatedVendorVO.id
+            );
+            setAddressShow(true);
+            setErrors({});
+            setTimeout(() => {
+              addVendors(false);
+            }, 2000);
+          }
         });
     } else {
       // If there are errors, update the state to display them
@@ -890,29 +892,24 @@ function AddVendor({ addVendors, editVendorId }) {
       axios
         .put(`${process.env.REACT_APP_API_URL}/api/master/Vendor`, formData)
         .then((response) => {
-          setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
-          // console.log("id:", response.data.paramObjectsMap.updatedVendorVO.id);
-          setAddressShow(true);
-          setErrors({});
-          // setAccountNum("");
-          // setBank("");
-          // setDisplayName("");
-          // setBranch("");
-          // setIfscCode("");
-          // setErrors({});
-          toast.success("Vendor Updated successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          setTimeout(() => {
-            addVendors(false);
-          }, 2000);
-        })
-        .catch((error) => {
-          toast.error("Network Error", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            setVendorId(response.data.paramObjectsMap.updatedVendorVO.id);
+            setAddressShow(true);
+            setErrors({});
+            setTimeout(() => {
+              addVendors(false);
+            }, 2000);
+          }
         });
     } else {
       // If there are errors, update the state to display them
@@ -1143,6 +1140,156 @@ function AddVendor({ addVendors, editVendorId }) {
               control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
             />
           </div>
+
+          {/* <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Bank
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              type="text"
+              className="form-control form-sz"
+              // placeholder="Enter"
+              value={bank}
+              name="bank"
+              onChange={(e) => handleBankInputChange(e, index)}
+              disabled={isSubmitting}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+              }}
+            />
+            {errors.bank && <div className="error-text">{errors.bank}</div>}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Account No
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              type="text"
+              className="form-control form-sz"
+              // placeholder="Enter"
+              value={accountNo}
+              name="accountNo"
+              onChange={(e) => handleBankInputChange(e, index)}
+              onInput={(e) => {
+                e.target.value = e.target.value.replace(/\D/g, "");
+              }}
+              maxLength={30}
+              disabled={isSubmitting}
+            />
+            {errors.accountNo && (
+              <div className="error-text">{errors.accountNo}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Account Name
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              type="text"
+              className="form-control form-sz"
+              // placeholder="Enter"
+              value={accountName}
+              name="accountName"
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+              }}
+              onChange={(e) => handleBankInputChange(e, index)}
+              disabled={isSubmitting}
+            />
+            {errors.accountName && (
+              <div className="error-text">{errors.accountName}</div>
+            )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Branch
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <input
+              type="text"
+              className="form-control form-sz"
+              // placeholder="Enter"
+              value={branch}
+              name="branch"
+              onChange={(e) => handleBankInputChange(e, index)}
+              disabled={isSubmitting}
+              onInput={(e) => {
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
+              }}
+            />
+            {errors.branch && <div className="error-text">{errors.branch}</div>}
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                IFSC Code
+                <FaStarOfLife className="must" />
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="text"
+              className="form-control form-sz"
+              // placeholder="Enter"
+              value={ifscCode}
+              onInput={(e) => {
+                e.target.value = e.target.value.toUpperCase();
+              }}
+              name="ifscCode"
+              onChange={(e) => handleBankInputChange(e, index)}
+              disabled={isSubmitting}
+            />
+            {errors.ifscCode && (
+              <div className="error-text">{errors.ifscCode}</div>
+            )}
+          </div>
+        </div> */}
         </div>
 
         <>
