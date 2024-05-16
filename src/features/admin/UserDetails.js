@@ -231,9 +231,6 @@ export const UserDetails = () => {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
       },
     ],
     []

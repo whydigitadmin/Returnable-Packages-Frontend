@@ -13,6 +13,7 @@ import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
+import { stringValidation } from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -625,9 +626,7 @@ function OemCreation({ addEmitter, oemEditId }) {
               // placeholder={"Enter"}
               name="firstName"
               value={firstName}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={stringValidation}
               onChange={handleInputChange}
             />
             {errors.firstName && (

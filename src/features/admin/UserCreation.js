@@ -14,6 +14,7 @@ import { IoMdClose } from "react-icons/io";
 import { encryptPassword } from "../user/components/utils";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { stringValidation } from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -588,9 +589,7 @@ function UserCreation({ addUser, userEditId }) {
               // placeholder={"Enter"}
               name="firstName"
               value={firstName}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={stringValidation}
               onChange={handleInputChange}
             />
             {errors.firstName && (
