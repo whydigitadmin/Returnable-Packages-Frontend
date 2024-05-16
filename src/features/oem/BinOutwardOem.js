@@ -12,14 +12,33 @@ import "react-toastify/dist/ReactToastify.css";
 import { IoMdClose } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
 
 function BinOutwardOem({}) {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
+  const [flow, setFlow] = useState("");
   const [kitName, setKitName] = useState("");
   const [outwardKitQty, setOutwardKitQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
+  const [listViewButton, setListViewButton] = useState(false);
+  const [savedRecordView, setSavedRecordView] = useState(false);
+  const [tableView, setTableView] = useState(false);
+
+  const [flowList, setFlowList] = useState([
+    {
+      id: 1,
+      flow: "PUN-CH",
+    },
+  ]);
 
   const [tableData, setTableData] = useState([
     {
@@ -29,6 +48,36 @@ function BinOutwardOem({}) {
       qty: "",
     },
   ]);
+
+  const [ListViewTableData, setListViewTableData] = useState([
+    {
+      id: 1,
+      outwardId: "1000001",
+      date: "15-05-2024",
+      flow: "PUN-CH",
+      outQty: "10",
+      balQty: "40",
+    },
+  ]);
+
+  const handleSavedRecordView = (e) => {
+    setSavedRecordView(true);
+  };
+  const handleSavedRecordViewClose = (e) => {
+    setSavedRecordView(false);
+  };
+
+  const handleFlowChange = (e) => {
+    setFlow(e.target.value);
+    setTableView(true);
+  };
+
+  const handleNew = () => {
+    setFlow("");
+    // setTableData({})
+    setTableView(false);
+    setErrors({});
+  };
 
   const handleSave = () => {
     // Validation
@@ -104,230 +153,356 @@ function BinOutwardOem({}) {
     <>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-4">
-          <div className="row">
-            <div className="col-md-12">
-              <p className="text-2xl flex items-center">
-                <Link to="/app/welcomeoem">
-                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                </Link>
-                <span>
-                  <strong className="ml-4">Bin Outward</strong>
-                </span>
-              </p>
+          <div className="flex items-center">
+            <Link to="/app/welcomeoem">
+              <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+            </Link>
+            <p className="text-2xl">
+              <strong className="ml-4">Bin Outward</strong>
+            </p>
+            <div className="ml-auto">
+              {" "}
+              <button
+                type="button"
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={(e) => {
+                  setListViewButton(!listViewButton);
+                }}
+              >
+                {listViewButton ? "Close" : "View"}
+              </button>
             </div>
           </div>
-
-          <div className="row mt-4">
-            {/* DOC ID FIELD */}
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Doc Id:
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                placeholder="Doc Id"
-                value={docId}
-                onChange={(e) => setDocId(e.target.value)}
-              />
-            </div>
-            {/* DOC DATE FIELD */}
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Doc Date:
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  value={docDate}
-                  onChange={(date) => setDocDate(date)}
-                  slotProps={{
-                    textField: { size: "small", clearable: true },
-                  }}
-                  format="DD/MM/YYYY"
-                  disabled
-                />
-              </LocalizationProvider>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Kit No
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-3">
-              <input
-                className={`form-control form-sz mb-2 ${
-                  errors.kitName && "border-red-500"
-                }`}
-                placeholder="Kit No"
-                value={kitName}
-                onChange={(e) => setKitName(e.target.value)}
-              />
-              {errors.kitName && (
-                <span className="error-text mb-1">{errors.kitName}</span>
+          {listViewButton ? (
+            <>
+              {/* LISTVIEW TABLE */}
+              <div className="row mt-4">
+                <div className="overflow-x-auto w-full ">
+                  <table className="table table-hover w-full">
+                    <thead>
+                      <tr>
+                        <th>S.No</th>
+                        <th>Outward ID</th>
+                        <th>Date</th>
+                        <th>Flow</th>
+                        <th>Out Qty</th>
+                        <th>Bal Qty</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {ListViewTableData.map((row, index) => (
+                        <tr key={row.id}>
+                          <td>{index + 1}</td>
+                          <td>
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleSavedRecordView(row.gatheredId);
+                              }}
+                              style={{ cursor: "pointer", color: "blue" }}
+                            >
+                              {row.outwardId}
+                            </a>
+                          </td>
+                          <td>{row.date}</td>
+                          <td>{row.flow}</td>
+                          <td>{row.outQty}</td>
+                          <td>{row.balQty}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="row mt-4">
+                {/* DOC ID FIELD */}
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Doc Id:
+                      {/* <FaStarOfLife className="must" /> */}
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    placeholder="Doc Id"
+                    value={docId}
+                    onChange={(e) => setDocId(e.target.value)}
+                    disabled
+                  />
+                </div>
+                {/* DOC DATE FIELD */}
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Doc Date:
+                      {/* <FaStarOfLife className="must" /> */}
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      value={docDate}
+                      onChange={(date) => setDocDate(date)}
+                      slotProps={{
+                        textField: { size: "small", clearable: true },
+                      }}
+                      format="DD/MM/YYYY"
+                      disabled
+                    />
+                  </LocalizationProvider>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Flow:
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <select
+                    name="Select Kit"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="form-select form-sz"
+                    onChange={handleFlowChange}
+                    value={flow}
+                  >
+                    <option value="" selected>
+                      Select a Flow
+                    </option>
+                    {flowList.length > 0 &&
+                      flowList.map((list) => (
+                        <option key={list.id} value={list.flow}>
+                          {list.flow}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.flow && (
+                    <span className="error-text">{errors.flow}</span>
+                  )}
+                </div>
+                {/* <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Kit No
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <input
+                    className={`form-control form-sz mb-2 ${
+                      errors.kitName && "border-red-500"
+                    }`}
+                    placeholder="Kit No"
+                    value={kitName}
+                    onChange={(e) => setKitName(e.target.value)}
+                  />
+                  {errors.kitName && (
+                    <span className="error-text mb-1">{errors.kitName}</span>
+                  )}
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Outward Kit Qty
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <input
+                    className={`form-control form-sz mb-2 ${
+                      errors.outwardKitQty && "border-red-500"
+                    }`}
+                    placeholder="Outward Kit Qty"
+                    value={outwardKitQty}
+                    onChange={(e) => setOutwardKitQty(e.target.value)}
+                  />
+                  {errors.outwardKitQty && (
+                    <span className="error-text mb-1">
+                      {errors.outwardKitQty}
+                    </span>
+                  )}
+                </div> */}
+              </div>
+              {tableView && (
+                <>
+                  <div className="row mt-2">
+                    <div className="overflow-x-auto w-full ">
+                      <table className="table table-hover w-full">
+                        <thead>
+                          <tr>
+                            <th>S.No</th>
+                            <th>Asset</th>
+                            <th>Asset Code</th>
+                            <th>EXP QTY</th>
+                            <th>REC QTY</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {tableData.map((row, index) => (
+                            <tr key={row.id}>
+                              <td>{index + 1}</td>
+                              <td>{row.asset}</td>
+                              <td>{row.assetCode}</td>
+                              <td>{row.expQty}</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  value={row.qty}
+                                  onChange={(e) =>
+                                    setTableData((prev) =>
+                                      prev.map((r, i) =>
+                                        i === index
+                                          ? { ...r, qty: e.target.value }
+                                          : r
+                                      )
+                                    )
+                                  }
+                                  className={`form-control form-sz mb-2 ${
+                                    errors.qty && "border-red-500"
+                                  }`}
+                                  style={{ width: "50px" }}
+                                />
+                                {errors.qty && (
+                                  <span className="error-text mb-1">
+                                    {errors.qty}
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
+                </>
               )}
+              <div className="mt-4">
+                <button
+                  type="button"
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  onClick={handleSave}
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  onClick={handleNew}
+                >
+                  Cancel
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+        <ToastContainer />
+        {/* VIEW MODAL */}
+        <Dialog
+          open={savedRecordView}
+          onClose={handleSavedRecordViewClose}
+          maxWidth="sm"
+          fullWidth
+        >
+          <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+            <div className="row">
+              <div className="col-md-11">
+                <Typography variant="h6">Detailed View</Typography>
+              </div>
+              <div className="col-md-1">
+                <IconButton
+                  onClick={handleSavedRecordViewClose}
+                  aria-label="close"
+                >
+                  <CloseIcon />
+                </IconButton>
+              </div>
             </div>
-            {/* PART NAME FIELD */}
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Outward Kit Qty
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-3">
-              <input
-                className={`form-control form-sz mb-2 ${
-                  errors.outwardKitQty && "border-red-500"
-                }`}
-                placeholder="Outward Kit Qty"
-                value={outwardKitQty}
-                onChange={(e) => setOutwardKitQty(e.target.value)}
-              />
-              {errors.outwardKitQty && (
-                <span className="error-text mb-1">{errors.outwardKitQty}</span>
-              )}
-            </div>
-          </div>
-          {/* <div className="row mt-2">
-            <div className="col-lg-12">
-              <div className="overflow-x-auto">
-                <table className="w-full">
+          </DialogTitle>
+          <DialogContent className="mt-3">
+            <div className="row">
+              <div className="overflow-x-auto w-full ">
+                <table className="table table-hover w-full">
                   <thead>
                     <tr>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Action
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        S.No
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Asset
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        Asset Code
-                      </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                        QTY
-                      </th>
+                      <th>Outward ID</th>
+                      <th>Date</th>
+                      <th>Flow</th>
+                      <th>Out QTY</th>
+                      <th>Bal QTY</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {tableData.map((row, index) => (
+                    {ListViewTableData.map((row, index) => (
                       <tr key={row.id}>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={index + 1}
-                            disabled
-                            style={{ width: "100%" }}
-                          />
-                        </td>
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.asset}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r, i) =>
-                                  i === index
-                                    ? { ...r, asset: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            className={`form-control form-sz mb-2 ${
-                              errors.asset && "border-red-500"
-                            }`}
-                            style={{ width: "100%" }}
-                          />
-                          {errors.asset && (
-                            <span className="error-text mb-1">
-                              {errors.asset}
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.assetCode}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r, i) =>
-                                  i === index
-                                    ? { ...r, assetCode: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            className={`form-control form-sz mb-2 ${
-                              errors.assetCode && "border-red-500"
-                            }`}
-                            style={{ width: "100%" }}
-                          />
-                          {errors.assetCode && (
-                            <span className="error-text mb-1">
-                              {errors.assetCode}
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="border px-2 py-2">
-                          <input
-                            type="text"
-                            value={row.qty}
-                            onChange={(e) =>
-                              setTableData((prev) =>
-                                prev.map((r, i) =>
-                                  i === index
-                                    ? { ...r, qty: e.target.value }
-                                    : r
-                                )
-                              )
-                            }
-                            className={`form-control form-sz mb-2 ${
-                              errors.qty && "border-red-500"
-                            }`}
-                            style={{ width: "100%" }}
-                          />
-                          {errors.qty && (
-                            <span className="error-text mb-1">
-                              {errors.qty}
-                            </span>
-                          )}
-                        </td>
+                        <td> {row.outwardId}</td>
+                        <td>{row.date}</td>
+                        <td>{row.flow}</td>
+                        <td>{row.outQty}</td>
+                        <td>{row.balQty}</td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
               </div>
             </div>
-          </div> */}
-          {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
-          <div className="mt-4">
-            <button
-              type="button"
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
-        </div>
-        <ToastContainer />
+            {/* <TableContainer component={Paper}>
+              <Table>
+                <TableBody>
+                  <TableRow>
+                    <TableCell>Gathered ID</TableCell>
+                    <TableCell>1000001</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Gathered Date</TableCell>
+                    <TableCell>15-05-2024</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Flow</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Pallet</TableCell>
+                    <TableCell></TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Lid</TableCell>
+                    <TableCell>
+                      {selectedRowData.userAddressVO.address1}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>SideWall</TableCell>
+                    <TableCell>{selectedRowData.userAddressVO.city}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Insert</TableCell>
+                    <TableCell>{selectedRowData.userAddressVO.state}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Country</TableCell>
+                    <TableCell>
+                      {selectedRowData.userAddressVO.country}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>PinCode</TableCell>
+                    <TableCell>{}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
+            </TableContainer> */}
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );

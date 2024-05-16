@@ -123,18 +123,18 @@ export const RetrivalManifest = () => {
       </div> */}
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-4">
-          <div className="row">
-            <div className="col-md-12">
-              <p className="text-2xl flex items-center">
-                <Link to="/app/welcomeoem">
-                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                </Link>
-                <span>
-                  <strong className="ml-4">Retrieval Manifest</strong>
-                </span>
-              </p>
-            </div>
+          {/* <div className="row"> */}
+          <div className="d-flex flex-row">
+            <Link to="/app/welcomeoem">
+              <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+            </Link>
+            <p className="text-2xl">
+              <strong className="ml-4">
+                Retrieval Manifest <span className="text-sm">Daywise</span>
+              </strong>
+            </p>
           </div>
+          {/* </div> */}
 
           {/* <TitleCard
             title="Retrieval Details"
@@ -146,14 +146,14 @@ export const RetrivalManifest = () => {
             <table className="table table-hover w-full mt-5">
               <thead>
                 <tr>
-                  <th>Asset Code</th>
-                  <th>Asset</th>
-                  <th>Day Opening Stock</th>
-                  <th>Day Empty Stock</th>
-                  <th>Day Retrieval Stock</th>
-                  <th>Day closing Stock</th>
-                  <th>Last Retrieval Date</th>
-                  <th>Download</th>
+                  <th className="text-center">Asset Code</th>
+                  <th className="text-center">Asset</th>
+                  <th className="text-center">Opening</th>
+                  <th className="text-center">Empty</th>
+                  <th className="text-center">Retrieval</th>
+                  <th className="text-center">closing</th>
+                  <th className="text-center">Last Retrieval Date</th>
+                  <th className="text-center">Download</th>
                 </tr>
               </thead>
               <tbody>

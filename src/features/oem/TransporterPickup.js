@@ -9,6 +9,14 @@ import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
 
 const TransporterPickup = ({}) => {
   const [docId, setDocId] = useState("");
@@ -23,6 +31,8 @@ const TransporterPickup = ({}) => {
   const [loginUserName, setLoginUserName] = useState(
     localStorage.getItem("userName")
   );
+  const [listViewButton, setListViewButton] = useState(false);
+  const [savedRecordView, setSavedRecordView] = useState(false);
 
   const [tableData, setTableData] = useState([
     {
@@ -32,6 +42,35 @@ const TransporterPickup = ({}) => {
       receivedQty: "",
     },
   ]);
+
+  const [ListViewTableData, setListViewTableData] = useState([
+    {
+      id: 1,
+      pickId: "1000001",
+      date: "15-05-2024",
+      handTo: "StockBranchName",
+      handBy: "Safe Express",
+      driver: "Devaraj",
+      phNo: "9876543210",
+      vehicle: "TN01AB1213",
+    },
+  ]);
+
+  const handleSavedRecordView = (e) => {
+    setSavedRecordView(true);
+  };
+  const handleSavedRecordViewClose = (e) => {
+    setSavedRecordView(false);
+  };
+
+  const handleNew = () => {
+    setHandoverTo("");
+    setDriver("");
+    setDriverPhNo("");
+    setVehicleNo("");
+    // setTableData({});
+    setErrors({});
+  };
 
   // const handleSave = () => {
   //   // Validation
@@ -116,278 +155,341 @@ const TransporterPickup = ({}) => {
           <p className="text-2xl">
             <strong>Transporter Pickup</strong>
           </p>
+          <div className="ml-auto">
+            {" "}
+            <button
+              type="button"
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              onClick={(e) => {
+                setListViewButton(!listViewButton);
+              }}
+            >
+              {listViewButton ? "Close" : "View"}
+            </button>
+          </div>
         </div>
 
-        <div className="row mt-4">
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Doc Id:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <input
-              className={`form-control form-sz mb-2 ${
-                errors.docId && "border-red-500"
-              }`}
-              placeholder=""
-              value={docId}
-              onChange={(e) => setDocId(e.target.value)}
-            />
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Doc Date:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DesktopDatePicker
-                value={docDate}
-                onChange={(date) => setDocDate(date)}
-                slotProps={{
-                  textField: { size: "small", clearable: true },
-                }}
-                format="DD/MM/YYYY"
-                disabled
-              />
-            </LocalizationProvider>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Handover To:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <select
-              name="Select Transporter"
-              style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-              className="form-select form-sz"
-              // onChange={handleHandoverToChange}
-              value={handoverTo}
-            >
-              <option value="" selected>
-                Select an Transporter
-              </option>
-              {/* {transporterList.length > 0 &&
+        {listViewButton ? (
+          <>
+            <div className="row mt-4">
+              <div className="overflow-x-auto w-full ">
+                <table className="table table-hover w-full">
+                  <thead>
+                    <tr>
+                      <th className="text-center">S.No</th>
+                      <th className="text-center">Pickup ID</th>
+                      <th className="text-center">Date</th>
+                      <th className="text-center">Handover To</th>
+                      <th className="text-center">Handover By</th>
+                      <th className="text-center">Driver</th>
+                      <th className="text-center">Ph No</th>
+                      <th className="text-center">Vehicle</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ListViewTableData.map((row, index) => (
+                      <tr key={row.id}>
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">
+                          {/* <a
+                            href="#"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              handleSavedRecordView(row.gatheredId);
+                            }}
+                            style={{ cursor: "pointer", color: "blue" }}
+                          >
+                            {row.pickId}
+                          </a> */}
+                          {row.pickId}
+                        </td>
+                        <td className="text-center">{row.date}</td>
+                        <td className="text-center">{row.handTo}</td>
+                        <td className="text-center">{row.handBy}</td>
+                        <td className="text-center">{row.driver}</td>
+                        <td className="text-center">{row.phNo}</td>
+                        <td className="text-center">{row.vehicle}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="row mt-4">
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Doc Id:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <input
+                  className={`form-control form-sz mb-2 ${
+                    errors.docId && "border-red-500"
+                  }`}
+                  placeholder=""
+                  value={docId}
+                  onChange={(e) => setDocId(e.target.value)}
+                />
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Doc Date:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDatePicker
+                    value={docDate}
+                    onChange={(date) => setDocDate(date)}
+                    slotProps={{
+                      textField: { size: "small", clearable: true },
+                    }}
+                    format="DD/MM/YYYY"
+                    disabled
+                  />
+                </LocalizationProvider>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Handover To:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <select
+                  name="Select Transporter"
+                  style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                  className="form-select form-sz"
+                  // onChange={handleHandoverToChange}
+                  value={handoverTo}
+                >
+                  <option value="" selected>
+                    Select an Transporter
+                  </option>
+                  {/* {transporterList.length > 0 &&
                   transporterList.map((list) => (
                     <option key={list.id} value={list.transporterName}>
                       {list.transporterName}
                     </option>
                   ))} */}
-            </select>
-            {errors.handoverTo && (
-              <span className="error-text">{errors.handoverTo}</span>
-            )}
-          </div>
+                </select>
+                {errors.handoverTo && (
+                  <span className="error-text">{errors.handoverTo}</span>
+                )}
+              </div>
 
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Handover By:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <input
-              className={`form-control form-sz mb-2 ${
-                errors.receivedKitQty && "border-red-500"
-              }`}
-              placeholder=""
-              value={loginUserName}
-              // onChange={(e) => setReceivedKitQty(e.target.value)}
-            />
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Driver:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <input
-              className={`form-control form-sz mb-2 ${
-                errors.driver && "border-red-500"
-              }`}
-              placeholder=""
-              value={driver}
-              onChange={(e) => setDriver(e.target.value)}
-            />
-            {errors.driver && (
-              <span className="error-text mb-1">{errors.driver}</span>
-            )}
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Driver Ph No:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <input
-              className={`form-control form-sz mb-2 ${
-                errors.driverPhNo && "border-red-500"
-              }`}
-              placeholder=""
-              value={driverPhNo}
-              onChange={(e) => setDriverPhNo(e.target.value)}
-            />
-            {errors.driverPhNo && (
-              <span className="error-text mb-1">{errors.driverPhNo}</span>
-            )}
-          </div>
-          {/* </div> */}
-          <div className="col-lg-2 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Vehicle No:
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-2 col-md-3">
-            <input
-              className={`form-control form-sz mb-2 ${
-                errors.vehicleNo && "border-red-500"
-              }`}
-              placeholder=""
-              value={vehicleNo}
-              onChange={(e) => setVehicleNo(e.target.value)}
-            />
-            {errors.vehicleNo && (
-              <span className="error-text mb-1">{errors.vehicleNo}</span>
-            )}
-          </div>
-        </div>
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Handover By:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <input
+                  className={`form-control form-sz mb-2 ${
+                    errors.receivedKitQty && "border-red-500"
+                  }`}
+                  placeholder=""
+                  value={loginUserName}
+                  // onChange={(e) => setReceivedKitQty(e.target.value)}
+                />
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Driver:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <input
+                  className={`form-control form-sz mb-2 ${
+                    errors.driver && "border-red-500"
+                  }`}
+                  placeholder=""
+                  value={driver}
+                  onChange={(e) => setDriver(e.target.value)}
+                />
+                {errors.driver && (
+                  <span className="error-text mb-1">{errors.driver}</span>
+                )}
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Driver Ph No:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <input
+                  className={`form-control form-sz mb-2 ${
+                    errors.driverPhNo && "border-red-500"
+                  }`}
+                  placeholder=""
+                  value={driverPhNo}
+                  onChange={(e) => setDriverPhNo(e.target.value)}
+                />
+                {errors.driverPhNo && (
+                  <span className="error-text mb-1">{errors.driverPhNo}</span>
+                )}
+              </div>
+              {/* </div> */}
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Vehicle No:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <input
+                  className={`form-control form-sz mb-2 ${
+                    errors.vehicleNo && "border-red-500"
+                  }`}
+                  placeholder=""
+                  value={vehicleNo}
+                  onChange={(e) => setVehicleNo(e.target.value)}
+                />
+                {errors.vehicleNo && (
+                  <span className="error-text mb-1">{errors.vehicleNo}</span>
+                )}
+              </div>
+            </div>
+            <div className="">
+              <button
+                type="button"
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                // onClick={handleSave}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={handleNew}
+              >
+                Cancel
+              </button>
+            </div>
+          </>
+        )}
+      </div>
 
-        {/* <div className="row mt-2">
-          <div className="col-lg-12">
-            <div className="overflow-x-auto">
-              <table className="w-full">
+      <ToastContainer />
+
+      {/* VIEW MODAL */}
+      <Dialog
+        open={savedRecordView}
+        onClose={handleSavedRecordViewClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+          <div className="row">
+            <div className="col-md-11">
+              <Typography variant="h6">Detailed View</Typography>
+            </div>
+            <div className="col-md-1">
+              <IconButton
+                onClick={handleSavedRecordViewClose}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </div>
+        </DialogTitle>
+        <DialogContent className="mt-4">
+          {/* <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Gathered ID</TableCell>
+                      <TableCell>1000001</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Gathered Date</TableCell>
+                      <TableCell>15-05-2024</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Flow</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Pallet</TableCell>
+                      <TableCell></TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Lid</TableCell>
+                      <TableCell>
+                        {selectedRowData.userAddressVO.address1}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>SideWall</TableCell>
+                      <TableCell>
+                        {selectedRowData.userAddressVO.city}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Insert</TableCell>
+                      <TableCell>
+                        {selectedRowData.userAddressVO.state}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Country</TableCell>
+                      <TableCell>
+                        {selectedRowData.userAddressVO.country}
+                      </TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>PinCode</TableCell>
+                      <TableCell>{}</TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer> */}
+          <div className="row mt-4">
+            <div className="overflow-x-auto w-full ">
+              <table className="table table-hover w-full">
                 <thead>
                   <tr>
-                    <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
-
-                    <th className="px-2 py-2 bg-blue-500 text-white">Asset</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Asset Code
-                    </th>
-
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Received Qty
-                    </th>
+                    <th>S.No</th>
+                    <th>Gathered ID</th>
+                    <th>Gathered Date</th>
+                    <th>Flow</th>
+                    <th>REC QTY</th>
+                    <th>Bal QTY</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData.map((row, index) => (
+                  {ListViewTableData.map((row, index) => (
                     <tr key={row.id}>
-                      <td className="border px-2 py-2">
-                        <input
-                          type="text"
-                          value={index + 1}
-                          disabled
-                          style={{ width: "100%" }}
-                        />
-                      </td>
-                      <td className="border px-2 py-2">
-                        <input
-                          type="text"
-                          value={row.asset}
-                          onChange={(e) =>
-                            setTableData((prev) =>
-                              prev.map((r, i) =>
-                                i === index
-                                  ? { ...r, asset: e.target.value }
-                                  : r
-                              )
-                            )
-                          }
-                          className={`form-control form-sz mb-2 ${
-                            errors.asset && "border-red-500"
-                          }`}
-                          style={{ width: "100%" }}
-                        />
-                        {errors.asset && (
-                          <span className="error-text mb-1">
-                            {errors.asset}
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="border px-2 py-2">
-                        <input
-                          type="text"
-                          value={row.assetCode}
-                          onChange={(e) =>
-                            setTableData((prev) =>
-                              prev.map((r, i) =>
-                                i === index
-                                  ? { ...r, assetCode: e.target.value }
-                                  : r
-                              )
-                            )
-                          }
-                          className={`form-control form-sz mb-2 ${
-                            errors.assetCode && "border-red-500"
-                          }`}
-                          style={{ width: "100%" }}
-                        />
-                        {errors.assetCode && (
-                          <span className="error-text mb-1">
-                            {errors.assetCode}
-                          </span>
-                        )}
-                      </td>
-
-                      <td className="border px-2 py-2">
-                        <input
-                          type="text"
-                          value={row.receivedQty}
-                          onChange={(e) =>
-                            setTableData((prev) =>
-                              prev.map((r, i) =>
-                                i === index
-                                  ? { ...r, receivedQty: e.target.value }
-                                  : r
-                              )
-                            )
-                          }
-                          className={`form-control form-sz mb-2 ${
-                            errors.receivedQty && "border-red-500"
-                          }`}
-                          style={{ width: "100%" }}
-                        />
-                        {errors.receivedQty && (
-                          <span className="error-text mb-1">
-                            {errors.receivedQty}
-                          </span>
-                        )}
-                      </td>
+                      <td>{index + 1}</td>
+                      <td> {row.gatheredId}</td>
+                      <td>{row.gatheredDate}</td>
+                      <td>{row.flow}</td>
+                      <td>{row.recQty}</td>
+                      <td>{row.balQty}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
           </div>
-        </div> */}
-
-        <div className="">
-          <button
-            type="button"
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            // onClick={handleSave}
-          >
-            Save
-          </button>
-        </div>
-      </div>
-      <ToastContainer />
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
