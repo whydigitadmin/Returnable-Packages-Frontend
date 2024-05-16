@@ -73,6 +73,9 @@ function AddFlows({ addFlows, editFlowId }) {
   const [destination, setDestination] = useState("");
   const [editDestination, setEditDestination] = useState("");
   const [editFilteredList, setEditFilteredList] = useState([]);
+  const [editFilteredWarehouseList, setEditFilteredWarehouseList] = useState(
+    []
+  );
   const [active, setActive] = useState(true);
   const [id, setId] = useState();
   const [kitNo, setKitName] = useState("");
@@ -99,6 +102,8 @@ function AddFlows({ addFlows, editFlowId }) {
   const [displayName, setDisplayName] = useState("");
   const [receiverName, setReceiverName] = useState("");
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [filterSupplier, setFilterSupplier] = useState([]);
+  const [retrievalWarehouse, setRetrievalWarehouse] = useState("");
 
   const handleCloseSnackbar = (event, reason) => {
     if (reason === "clickaway") {
@@ -119,6 +124,7 @@ function AddFlows({ addFlows, editFlowId }) {
       // handleFileterdCityChange();
     }
   }, []);
+
   const editDestinationList = async (value) => {
     try {
       const response = await Axios.get(
@@ -132,6 +138,30 @@ function AddFlows({ addFlows, editFlowId }) {
         const filteredCity = cityVo.filter((list) => list.cityCode !== value);
         console.log("THE EDIT FILETERED CITY ARE:", filteredCity);
         setEditFilteredList(filteredCity);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const editRetrivalList = async (value) => {
+    try {
+      const response = await Axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+      );
+      // console.log("API Response:", response);
+
+      if (response.status === 200) {
+        console.log("origin:", value);
+        const warehouseLocationVO =
+          response.data.paramObjectsMap.warehouseLocationVO;
+        const filteredWarehouse = warehouseLocationVO.filter(
+          (list) => list.warehouseId !== value
+        );
+        console.log("THE EDIT FILETERED CITY ARE:", filteredWarehouse);
+        setEditFilteredWarehouseList(filteredWarehouse);
       } else {
         console.error("API Error:", response.data);
       }
@@ -214,6 +244,9 @@ function AddFlows({ addFlows, editFlowId }) {
         setKitDTO(response.data.paramObjectsMap.flowVO.flowDetailVO);
         // console.log("kit", response.data.paramObjectsMap.KitVO);
         editDestinationList(response.data.paramObjectsMap.flowVO.orgin);
+        editRetrivalList(
+          response.data.paramObjectsMap.flowVO.warehouseLocation
+        );
       }
       // handleFileterdCityChange();
     } catch (error) {
@@ -340,6 +373,12 @@ function AddFlows({ addFlows, editFlowId }) {
         break;
       case "destination":
         setDestination(value);
+        break;
+      case "warehouseLocationValue":
+        setWarehouseLocationValue(value);
+        break;
+      case "retrievalWarehouse":
+        setRetrievalWarehouse(value);
         break;
     }
   };
@@ -483,7 +522,10 @@ function AddFlows({ addFlows, editFlowId }) {
       const response = await Axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
       );
-      console.log("API Response:", response);
+      console.log(
+        "response.data.paramObjectsMap.cityVO",
+        response.data.paramObjectsMap.cityVO
+      );
 
       if (response.status === 200) {
         setCity(response.data.paramObjectsMap.cityVO);
@@ -624,6 +666,18 @@ function AddFlows({ addFlows, editFlowId }) {
     setOpenConfirmationDialog(false);
     addFlows(false);
   };
+
+  const handleSupplierChange = (e) => {
+    const selectedValue = parseInt(e.target.value);
+    setWarehouseLocationValue(selectedValue);
+    const filterSupplier = warehouseLocationVO.filter(
+      (list) => list.warehouseId !== selectedValue
+    );
+    console.log("THE FILETERED filterSupplier ARE:", filterSupplier);
+    setRetrievalWarehouse("");
+    setFilterSupplier(filterSupplier);
+  };
+
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
@@ -663,6 +717,8 @@ function AddFlows({ addFlows, editFlowId }) {
               <span className="error-text mb-1">{errors.flowName}</span>
             )}
           </div>
+        </div>
+        <div className="row">
           {/* emitter field */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -834,8 +890,9 @@ function AddFlows({ addFlows, editFlowId }) {
           <div className="col-lg-3 col-md-6">
             <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleWarehouseLocationChange}
+              onChange={handleSupplierChange}
               value={warehouseLocationValue}
+              name="warehouseLocationValue"
             >
               <option value="" disabled>
                 Select Supplier Warehouse
@@ -866,21 +923,41 @@ function AddFlows({ addFlows, editFlowId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleWarehouseLocationChange}
-              value={warehouseLocationValue}
-            >
-              <option value="" disabled>
-                Select Retrieval Warehouse
-              </option>
-              {warehouseLocationVO.length > 0 &&
-                warehouseLocationVO.map((list) => (
-                  <option key={list.warehouseId} value={list.warehouseId}>
-                    {list.warehouseLocation}
-                  </option>
-                ))}
-            </select>
+            {editFlowId ? (
+              <select
+                className="form-select form-sz w-full mb-2"
+                onChange={handleInputChange}
+                value={retrievalWarehouse}
+                name="retrievalWarehouse"
+              >
+                <option value="" disabled>
+                  Select Retrieval Warehouse
+                </option>
+                {filterSupplier.length > 0 &&
+                  filterSupplier.map((list) => (
+                    <option key={list.warehouseId} value={list.warehouseId}>
+                      {list.warehouseLocation}
+                    </option>
+                  ))}
+              </select>
+            ) : (
+              <select
+                className="form-select form-sz w-full mb-2"
+                onChange={handleInputChange}
+                value={retrievalWarehouse}
+                name="retrievalWarehouse"
+              >
+                <option value="" disabled>
+                  Select Retrieval Warehouse
+                </option>
+                {filterSupplier.length > 0 &&
+                  filterSupplier.map((list) => (
+                    <option key={list.warehouseId} value={list.warehouseId}>
+                      {list.warehouseLocation}
+                    </option>
+                  ))}
+              </select>
+            )}
             {errors.warehouseLocationValue && (
               <span className="error-text mb-1">
                 {errors.warehouseLocationValue}

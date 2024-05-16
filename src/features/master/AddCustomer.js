@@ -1965,9 +1965,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                       value={newAddress.gstNumber}
                       onChange={(e) => handleAddressInputChange(e, "gstNumber")}
                       className="input input-bordered p-2"
-                      onInput={(e) => {
-                        e.target.value = e.target.value.toUpperCase();
-                      }}
+                      onInput={stringAndNoAndSpecialCharValidation}
                     />
                   </div>
                 </div>
@@ -1995,9 +1993,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   }}
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street1}
-                  onInput={(e) => {
-                    e.target.value = e.target.value.toUpperCase();
-                  }}
+                  onInput={stringAndNoAndSpecialCharValidation}
                   onChange={(e) => handleAddressInputChange(e, "street1")}
                 ></textarea>
                 {errors1.street1 && (
@@ -2020,9 +2016,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   className="form-control label label-text label-font-size text-base-content"
                   value={newAddress.street2}
                   onChange={(e) => handleAddressInputChange(e, "street2")}
-                  onInput={(e) => {
-                    e.target.value = e.target.value.toUpperCase();
-                  }}
+                  onInput={stringAndNoAndSpecialCharValidation}
                 ></textarea>
               </div>
             </div>
@@ -2188,11 +2182,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   }}
                   type={"text"}
                   value={newAddress.contactName}
-                  onInput={(e) => {
-                    e.target.value = e.target.value
-                      .toUpperCase()
-                      .replace(/[^A-Z\s]/g, "");
-                  }}
+                  onInput={stringValidation}
                   onChange={(e) => handleAddressInputChange(e, "contactName")}
                   className="input input-bordered p-2"
                 />
@@ -2246,11 +2236,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   value={newAddress.designation}
                   onChange={(e) => handleAddressInputChange(e, "designation")}
                   className="input input-bordered p-2"
-                  onInput={(e) => {
-                    e.target.value = e.target.value
-                      .toUpperCase()
-                      .replace(/[^A-Z\s]/g, "");
-                  }}
+                  onInput={stringValidation}
                 />
               </div>
             </div>
@@ -2352,11 +2338,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.bank ? "red" : "",
                   }}
                   type={"text"}
-                  onInput={(e) => {
-                    e.target.value = e.target.value
-                      .toUpperCase()
-                      .replace(/[^A-Z\s]/g, "");
-                  }}
+                  onInput={stringValidation}
                   value={newBankAddress.bank}
                   onChange={(e) => handleBankInputChange(e, "bank")}
                   className="input input-bordered p-2"
@@ -2426,11 +2408,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.accountName ? "red" : "",
                   }}
                   type={"text"}
-                  onInput={(e) => {
-                    e.target.value = e.target.value
-                      .toUpperCase()
-                      .replace(/[^A-Z\s]/g, "");
-                  }}
+                  onInput={stringValidation}
                   value={newBankAddress.accountName}
                   onChange={(e) => handleBankInputChange(e, "accountName")}
                   className="input input-bordered p-2"
@@ -2464,11 +2442,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.branch ? "red" : "",
                   }}
                   type={"text"}
-                  onInput={(e) => {
-                    e.target.value = e.target.value
-                      .toUpperCase()
-                      .replace(/[^A-Z\s]/g, "");
-                  }}
+                  onInput={stringValidation}
                   value={newBankAddress.branch}
                   onChange={(e) => handleBankInputChange(e, "branch")}
                   className="input input-bordered p-2"
@@ -2502,9 +2476,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     borderColor: errors2.ifscCode ? "red" : "",
                   }}
                   type={"text"}
-                  onInput={(e) => {
-                    e.target.value = e.target.value.toUpperCase();
-                  }}
+                  onInput={stringAndNoValidation}
                   value={newBankAddress.ifscCode}
                   onChange={(e) => handleBankInputChange(e, "ifscCode")}
                   className="input input-bordered p-2"

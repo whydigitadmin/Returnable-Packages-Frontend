@@ -19,6 +19,11 @@ import { IoMdClose } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import {
+  stringValidation,
+  stringAndNoValidation,
+  stringAndNoAndSpecialCharValidation,
+} from "../../utils/userInputValidation";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -1026,11 +1031,7 @@ function AddVendor({ addVendors, editVendorId }) {
               value={entityLegalName}
               onChange={handleInputChange}
               disabled={isSubmitting}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-              }}
+              onInput={stringValidation}
             />
             {errors.entityLegalName && (
               <span className="error-text">{errors.entityLegalName}</span>
@@ -1057,11 +1058,7 @@ function AddVendor({ addVendors, editVendorId }) {
               value={displyName}
               onChange={handleInputChange}
               disabled={isSubmitting}
-              onInput={(e) => {
-                e.target.value = e.target.value
-                  .toUpperCase()
-                  .replace(/[^A-Z\s]/g, "");
-              }}
+              onInput={stringValidation}
             />
             {errors.displyName && (
               <span className="error-text">{errors.displyName}</span>
@@ -1557,11 +1554,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           name="bank"
                           onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
-                          onInput={(e) => {
-                            e.target.value = e.target.value
-                              .toUpperCase()
-                              .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                          }}
+                          onInput={stringValidation}
                         />
                         {errors.bank && (
                           <div className="error-text">{errors.bank}</div>
@@ -1616,11 +1609,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           // placeholder="Enter"
                           value={bank.accountName}
                           name="accountName"
-                          onInput={(e) => {
-                            e.target.value = e.target.value
-                              .toUpperCase()
-                              .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                          }}
+                          onInput={stringValidation}
                           onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
                         />
@@ -1649,11 +1638,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           name="branch"
                           onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
-                          onInput={(e) => {
-                            e.target.value = e.target.value
-                              .toUpperCase()
-                              .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                          }}
+                          onInput={stringValidation}
                         />
                         {errors.branch && (
                           <div className="error-text">{errors.branch}</div>
@@ -1677,9 +1662,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           className="form-control form-sz"
                           // placeholder="Enter"
                           value={bank.ifscCode}
-                          onInput={(e) => {
-                            e.target.value = e.target.value.toUpperCase();
-                          }}
+                          onInput={stringAndNoAndSpecialCharValidation}
                           name="ifscCode"
                           onChange={(e) => handleBankInputChange(e, index)}
                           disabled={isSubmitting}
@@ -1714,11 +1697,7 @@ function AddVendor({ addVendors, editVendorId }) {
                       name="bank"
                       onChange={handleInputChange}
                       disabled={isSubmitting}
-                      onInput={(e) => {
-                        e.target.value = e.target.value
-                          .toUpperCase()
-                          .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                      }}
+                      onInput={stringValidation}
                     />
                     {errors.bank && (
                       <div className="error-text">{errors.bank}</div>
@@ -1773,11 +1752,7 @@ function AddVendor({ addVendors, editVendorId }) {
                       // placeholder="Enter"
                       value={accountName}
                       name="accountName"
-                      onInput={(e) => {
-                        e.target.value = e.target.value
-                          .toUpperCase()
-                          .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                      }}
+                      onInput={stringValidation}
                       onChange={handleInputChange}
                       disabled={isSubmitting}
                     />
@@ -1806,11 +1781,7 @@ function AddVendor({ addVendors, editVendorId }) {
                       name="branch"
                       onChange={handleInputChange}
                       disabled={isSubmitting}
-                      onInput={(e) => {
-                        e.target.value = e.target.value
-                          .toUpperCase()
-                          .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                      }}
+                      onInput={stringValidation}
                     />
                     {errors.branch && (
                       <div className="error-text">{errors.branch}</div>
@@ -1834,9 +1805,7 @@ function AddVendor({ addVendors, editVendorId }) {
                       className="form-control form-sz"
                       // placeholder="Enter"
                       value={ifscCode}
-                      onInput={(e) => {
-                        e.target.value = e.target.value.toUpperCase();
-                      }}
+                      onInput={stringAndNoAndSpecialCharValidation}
                       name="ifscCode"
                       onChange={handleInputChange}
                       disabled={isSubmitting}
@@ -2179,9 +2148,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           width: "100%",
                         }}
                         value={newAddress.gstNumber}
-                        onInput={(e) => {
-                          e.target.value = e.target.value.toUpperCase();
-                        }}
+                        onInput={stringAndNoAndSpecialCharValidation}
                         onChange={(e) =>
                           handleAddressInputChange(e, "gstNumber")
                         }
@@ -2214,9 +2181,7 @@ function AddVendor({ addVendors, editVendorId }) {
                     className="form-control label label-text label-font-size text-base-content"
                     value={newAddress.street1}
                     onChange={(e) => handleAddressInputChange(e, "street1")}
-                    onInput={(e) => {
-                      e.target.value = e.target.value.toUpperCase();
-                    }}
+                    onInput={stringAndNoAndSpecialCharValidation}
                   ></textarea>
                   {errors1.street1 && (
                     <span style={{ color: "red", fontSize: "12px" }}>
@@ -2237,9 +2202,7 @@ function AddVendor({ addVendors, editVendorId }) {
                     style={{ fontSize: "0.800rem" }}
                     className="form-control label label-text label-font-size text-base-content"
                     value={newAddress.street2}
-                    onInput={(e) => {
-                      e.target.value = e.target.value.toUpperCase();
-                    }}
+                    onInput={stringAndNoAndSpecialCharValidation}
                     onChange={(e) => handleAddressInputChange(e, "street2")}
                   ></textarea>
                 </div>
@@ -2439,11 +2402,7 @@ function AddVendor({ addVendors, editVendorId }) {
                       width: "100%",
                     }}
                     type={"text"}
-                    onInput={(e) => {
-                      e.target.value = e.target.value
-                        .toUpperCase()
-                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                    }}
+                    onInput={stringAndNoAndSpecialCharValidation}
                     value={newAddress.contactName}
                     onChange={(e) => handleAddressInputChange(e, "contactName")}
                     className="input input-bordered p-2"
@@ -2487,11 +2446,7 @@ function AddVendor({ addVendors, editVendorId }) {
                     }}
                     type={"text"}
                     value={newAddress.designation}
-                    onInput={(e) => {
-                      e.target.value = e.target.value
-                        .toUpperCase()
-                        .replace(/[^A-Z\s]/g, ""); // Include \s to allow spaces
-                    }}
+                    onInput={stringAndNoAndSpecialCharValidation}
                     onChange={(e) => handleAddressInputChange(e, "designation")}
                     className="input input-bordered p-2"
                   />
