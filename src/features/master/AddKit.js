@@ -94,18 +94,11 @@ function AddKit({ addItem, kitEditId }) {
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
   useEffect(() => {
-    if (kitEditId) {
-      getKitById();
-      // getKitById()
-      // getAllKitData();
-      console.log("kitEditId", kitEditId);
-    }
-    // getAllAssetType();
-  }, []);
-
-  useEffect(() => {
     getCustomersList();
     getAllAssetType();
+    if (kitEditId) {
+      getKitById();
+    }
   }, [assetCodeList]);
 
   const handleEmitterChange = (event) => {
@@ -137,7 +130,7 @@ function AddKit({ addItem, kitEditId }) {
       setOpenConfirmationDialog(true);
     } else {
       setOpenConfirmationDialog(false);
-      addItem(false); // USER CREATION SCREEN CLOSE AFTER UPDATE
+      addItem(false);
     }
   };
 
@@ -181,8 +174,8 @@ function AddKit({ addItem, kitEditId }) {
     setAssetDesc("");
     setAssetNameList("");
     setAssetCodeList("");
-
-    // setPartQuantity("");
+    setEmitter("");
+    setPartCode("");
     setShowPartQuantity(false);
     setErrors({});
     setSelectedAssetType(false);
@@ -190,61 +183,19 @@ function AddKit({ addItem, kitEditId }) {
     setSelectedCode(false);
   };
 
-  // const getAllKitData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/master/getallkit`
-  //     );
-
-  //     if (response.status === 200) {
-  //       const kits = response.data.paramObjectsMap.KitVO;
-  //       console.log("kits", response.data.paramObjectsMap.KitVO);
-
-  //       const kitCodes = kits.map((kit) => kit);
-  //       // setKitCode(kitCodes);
-  //       console.log("code", kitCodes);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
-  // const handleKitId = (event) => {
-  //   setKitCode(event.target.value);
-  // };
-
-  // const handleKitId = (event) => {
-  //   const { value } = event.target;
-  //   setKitCode(value);
-
-  //   // Check if the entered kit ID already exists
-  //   const kitExists = kitAssetDTO.some((asset) => asset.kitCode === value);
-  //   if (kitExists || kitAssetDTO.some((asset) => asset.kitCode === value)) {
-  //     // Display toast message for existing kit ID
-  //     toast.error("The Kit ID already exists.", {
-  //       position: "top-center",
-  //     });
-  //   } else {
-  //     // Update the kit code state if it doesn't exist
-  //     setKitCode(value);
-  //   }
-  // };
-
   const handleKitId = (event) => {
     const { value } = event.target;
 
-    // Check if the entered kit ID already exists
     console.log("kit", value);
     const kitExists = kitAssetDTO.some((asset) => asset.kitCode === value);
     console.log("kitee", kitExists);
 
     if (kitExists) {
       console.log("test", kitExists);
-      // Display toast message for existing kit ID
       toast.error("The Kit ID already exists.", {
         position: "top-center",
       });
     } else {
-      // Update the kit code state only if it doesn't exist
       setKitCode(value);
     }
   };
@@ -256,13 +207,6 @@ function AddKit({ addItem, kitEditId }) {
     updatedKitAssetDTO[index].quantity = value;
     setKitAssetDTO(updatedKitAssetDTO);
   };
-
-  // const handlePartQuantityEditChange = (event, index) => {
-  //   const { value } = event.target;
-  //   const updatedKitAssetDTO = [...kitAssetDTO];
-  //   updatedKitAssetDTO[index].partQuantity = value;
-  //   setKitAssetDTO(updatedKitAssetDTO);
-  // };
 
   const handleQuantityChange = (event) => {
     setAssetQty(event.target.value);
@@ -279,18 +223,14 @@ function AddKit({ addItem, kitEditId }) {
     setAssetCode("");
     setAssetDesc("");
     setAssetQty("");
-
-    // setSelectedAssetType(true);
-    // // Toggle visibility of part quantity input based on the selected category
-    // setShowPartQuantity(selectedCategory === "CUSTOMIZED");
-    // // Call function to fetch asset names based on the selected category
+    setEmitter("");
+    setPartCode("");
     getAssetNamesByCategory(selectedAssetType);
   };
 
   const handleAssetNameChange = (event) => {
     setAssetName(event.target.value);
     setSelectedName(true);
-    // Call function to fetch asset names based on the selected category
     getAssetPrefixByCategory(event.target.value);
     getAssetCodeByCategory(event.target.value);
   };
@@ -299,31 +239,27 @@ function AddKit({ addItem, kitEditId }) {
     setAssetCode(event.target.value);
     const selectedAssetcode = event.target.value;
 
-    // Find the branch with the selected branch name
     const tempAssetDesc = assetCodeList.find(
       (list) => list.assetCodeId === selectedAssetcode
     );
-
-    // Update the state with the branch code
-    // setBranchCode(tempBranch ? tempBranch.branchcode : "");
-    console.log("THE ASSET DESCRIPTIONS IS:", tempAssetDesc.assetName);
+    console.log("THE ASSET DESCRIPTIONS IS:", tempAssetDesc);
     setAssetDesc(tempAssetDesc.assetName);
-  };
+    setPartCode(tempAssetDesc.manufacturePartCode);
 
-  // const handleAssetCodeChange = (event) => {
-  //   const selectedAssetCodeId = event.target.value;
-  //   setAssetCodeId(selectedAssetCodeId);
-  //   setSelectedCode(true);
-  // };
+    const tempEmitter = emitterCustomersVO.find(
+      (list) => list.id === parseInt(tempAssetDesc.belongsTo)
+    );
+    console.log("Emitter Name is:", tempEmitter.displayName);
+
+    setEmitter(tempEmitter.displayName);
+  };
 
   const handleAssetCodeChange = (event) => {
     const selectedAssetCodeId = event.target.value;
-    // Check if the selected code already exists
     const codeExists = kitAssetDTO.some(
       (asset) => asset.assetCodeId === selectedAssetCodeId
     );
     if (codeExists) {
-      // Display toast message for code already exists
       toast.error("The Asset code already exists.", {
         autoClose: 2000,
         theme: "colored",
@@ -345,9 +281,6 @@ function AddKit({ addItem, kitEditId }) {
         const assetTypes = response.data.paramObjectsMap.assetCategoryVO;
         setAssetTypeList(assetTypes);
         console.log("type", assetTypes);
-        // if (assetTypes.length > 0) {
-        //   setAssetType(assetTypes[0].assetCategory);
-        // }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -368,8 +301,6 @@ function AddKit({ addItem, kitEditId }) {
       );
       console.log("Response from API:", response.data);
       if (response.status === 200) {
-        // const assetGroupVO = response.data.paramObjectsMap.assetGroupVO;
-        // console.log("THE ASSETGROUPVO FROM API IS:", response.data.paramObjectsMap.assetGroupVO)
         setAssetNameList(response.data.paramObjectsMap.assetGroupVO.category);
       }
     } catch (error) {
@@ -455,7 +386,6 @@ function AddKit({ addItem, kitEditId }) {
         quantity: assetQty,
         belongsTo: emitter,
         manufacturePartCode: partCode,
-        // partQuantity,
       };
       setKitAssetDTO([...kitAssetDTO, newAssetDetails]);
       handleAssetClose();
@@ -608,15 +538,14 @@ function AddKit({ addItem, kitEditId }) {
 
   const handleToggleEdit = (index) => {
     const updatedKitAssets = [...kitAssetDTO];
-    updatedKitAssets[index].isEditable = true; // Set isEditable to true for the clicked row
-    setKitAssetDTO(updatedKitAssets); // Update the state
+    updatedKitAssets[index].isEditable = true;
+    setKitAssetDTO(updatedKitAssets);
   };
 
   const handleSaveRow = (index) => {
     const updatedKitAssets = [...kitAssetDTO];
-    updatedKitAssets[index].isEditable = false; // Set isEditable to false for the clicked row
-    setKitAssetDTO(updatedKitAssets); // Update the state
-    // You may also want to handle saving the changes to the backend here
+    updatedKitAssets[index].isEditable = false;
+    setKitAssetDTO(updatedKitAssets);
   };
 
   const handleSwitchChange = (event) => {
@@ -630,7 +559,6 @@ function AddKit({ addItem, kitEditId }) {
 
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end mb-2">
-          {/* <IoMdClose onClick={handleItem} className="cursor-pointer w-8 h-8" /> */}
           <IoMdClose
             onClick={handleUserCreationClose}
             className="cursor-pointer w-8 h-8"
@@ -793,7 +721,6 @@ function AddKit({ addItem, kitEditId }) {
                 <tbody>
                   {kitAssetDTO.map((asset, index) => (
                     <tr key={index}>
-                      {/* <td className="">{asset.assetType}</td> */}
                       <td className="">{asset.assetType}</td>
                       <td className="">{asset.assetCategory}</td>
                       <td className="">{asset.assetCodeId}</td>
@@ -814,27 +741,6 @@ function AddKit({ addItem, kitEditId }) {
                           asset.quantity
                         )}
                       </td>
-                      {/* <td className="">
-                        {asset.isEditable ? (
-                          <input
-                            type="number"
-                            value={asset.partQuantity}
-                            onChange={(e) =>
-                              handlePartQuantityEditChange(e, index)
-                            }
-                            className="form-control"
-                            style={{
-                              width: "100px",
-                              padding: "6px",
-                              textAlign: "center",
-                            }}
-                          />
-                        ) : (
-                          asset.partQuantity
-                        )}
-                      </td> */}
-                      {/* <div className="d-flex">
-                        <div className="col-4 text-center"> */}
                       <td>
                         <div className="row">
                           <div className="col-md-2">
@@ -842,33 +748,22 @@ function AddKit({ addItem, kitEditId }) {
                               <FaSave
                                 onClick={() => handleSaveRow(index)}
                                 className="cursor-pointer w-6 h-6"
-                                // style={{ marginLeft: 10 }}
                               />
                             ) : (
                               <FaEdit
                                 onClick={() => handleToggleEdit(index)}
                                 className="cursor-pointer w-6 h-6"
-                                // style={{ marginLeft: 10 }}
                               />
                             )}
                           </div>
-
-                          {/* <br /> */}
-                          {/* </td> */}
-                          {/* </div> */}
-                          {/* <div className="col-8 "> */}
-                          {/* <td> */}
                           <div className="col-md-2">
                             <FaTrash
                               onClick={() => handleDeleteRow(index)}
                               className="cursor-pointer w-6 h-6"
-                              // style={{ marginLeft: 10 }}
                             />
                           </div>
                         </div>
                       </td>
-                      {/* </div> */}
-                      {/* </div> */}
                     </tr>
                   ))}
                 </tbody>
@@ -1036,7 +931,6 @@ function AddKit({ addItem, kitEditId }) {
                   name=""
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="input input-bordered ps-2"
-                  // onChange={(e) => { setAssetCode(e.target.value) }}
                   onChange={handleAssetCodeNewChange}
                   value={assetCode}
                 >
@@ -1062,25 +956,16 @@ function AddKit({ addItem, kitEditId }) {
                     }
                   >
                     Belongs to
-                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
               </div>
               <div className="col-lg-3 col-md-6">
-                <select
-                  className="form-select form-sz w-full mb-2"
+                <input
+                  className="form-control form-sz"
                   onChange={handleEmitterChange}
                   value={emitter}
                   disabled
-                >
-                  <option value="" disabled></option>
-                  {emitterCustomersVO.length > 0 &&
-                    emitterCustomersVO.map((list) => (
-                      <option key={list.id} value={list.id}>
-                        {list.displayName}
-                      </option>
-                    ))}
-                </select>
+                />
                 {errors.emitter && (
                   <span className="error-text mb-1">{errors.emitter}</span>
                 )}
@@ -1093,25 +978,16 @@ function AddKit({ addItem, kitEditId }) {
                     }
                   >
                     Manufacture Part Code
-                    {/* <FaStarOfLife className="must" /> */}
                   </span>
                 </label>
               </div>
               <div className="col-lg-3 col-md-6">
-                <select
-                  className="form-select form-sz w-full"
+                <input
+                  className="form-control form-sz"
                   onChange={handlePartCode}
                   value={partCode}
                   disabled
-                >
-                  <option value="" disabled></option>
-                  {/* {partStudyNameVO.length > 0 &&
-                partStudyNameVO.map((list) => (
-                  <option key={list.id} value={list}>
-                    {list}
-                  </option>
-                ))} */}
-                </select>
+                />
                 {errors.partName && (
                   <span className="error-text mb-1">{errors.partName}</span>
                 )}
@@ -1170,7 +1046,6 @@ function AddKit({ addItem, kitEditId }) {
           </DialogContentText>
         </DialogContent>
         <DialogActions className="mb-2 me-2">
-          {/* <Button onClick={handleAssetClose}>Cancel</Button> */}
           <Button
             component="label"
             variant="contained"
@@ -1180,7 +1055,6 @@ function AddKit({ addItem, kitEditId }) {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* CLOSE CONFIRMATION MODAL */}
       <Dialog open={openConfirmationDialog}>
         <DialogContent>
