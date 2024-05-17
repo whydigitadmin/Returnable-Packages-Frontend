@@ -1184,6 +1184,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     console.log("SELECTED DOC FILES IS:", selectedDocFiles);
   };
 
+  const handleSwitchChange = (event) => {
+    setActive(event.target.checked);
+    console.log("THE CHECKED STATUS IS:", event.target.checked);
+  };
+
   return (
     <>
       <div>
@@ -1416,7 +1421,13 @@ function AddCustomer({ addcustomer, editCustomerId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <FormControlLabel
               disabled={isSubmitting}
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  onChange={handleSwitchChange}
+                  defaultChecked
+                />
+              }
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2">

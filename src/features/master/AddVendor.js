@@ -923,6 +923,11 @@ function AddVendor({ addVendors, editVendorId }) {
     }
   };
 
+  const handleSwitchChange = (event) => {
+    setActive(event.target.checked);
+    console.log("THE CHECKED STATUS IS:", event.target.checked);
+  };
+
   return (
     <>
       <ToastContainer />
@@ -1134,7 +1139,13 @@ function AddVendor({ addVendors, editVendorId }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  onChange={handleSwitchChange}
+                  defaultChecked
+                />
+              }
             />
           </div>
 

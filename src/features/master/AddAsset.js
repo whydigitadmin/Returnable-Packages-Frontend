@@ -636,6 +636,10 @@ function AddAsset({ addItem, editItemId }) {
     setOpenConfirmationDialog(false);
     addItem(false);
   };
+  const handleSwitchChange = (event) => {
+    setActive(event.target.checked);
+    console.log("THE CHECKED STATUS IS:", event.target.checked);
+  };
 
   return (
     <>
@@ -848,7 +852,13 @@ function AddAsset({ addItem, editItemId }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  onChange={handleSwitchChange}
+                  defaultChecked
+                />
+              }
             />
           </div>
         </div>

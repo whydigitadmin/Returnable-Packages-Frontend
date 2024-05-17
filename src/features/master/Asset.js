@@ -224,65 +224,9 @@ function Asset() {
           align: "center",
         },
       },
-      {
-        accessorKey: "length",
-        header: "Length",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "breath",
-        header: "Breath",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-
-      {
-        accessorKey: "height",
-        header: "Height",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "weight",
-        header: "Weight",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "expectedLife",
-        header: "Expected Life",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
       // {
-      //   accessorKey: "active",
-      //   header: "Active",
+      //   accessorKey: "length",
+      //   header: "Length",
       //   size: 50,
       //   muiTableHeadCellProps: {
       //     align: "center",
@@ -291,6 +235,62 @@ function Asset() {
       //     align: "center",
       //   },
       // },
+      // {
+      //   accessorKey: "breath",
+      //   header: "Breath",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+
+      // {
+      //   accessorKey: "height",
+      //   header: "Height",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "weight",
+      //   header: "Weight",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      // {
+      //   accessorKey: "expectedLife",
+      //   header: "Expected Life",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
+      {
+        accessorKey: "active",
+        header: "Active",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
     ],
     []
   );

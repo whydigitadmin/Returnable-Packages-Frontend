@@ -197,6 +197,16 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
     if (!assetName) {
       errors.assetName = "Name is required";
     }
+    // const formData = {
+    //   assetType: assetCategory,
+    //   category: assetName,
+    //   categoryCode: assetCodeId,
+    //   active,
+    //   orgId: orgId,
+    //   createdby: loginUserName,
+    //   modifiedby: loginUserName,
+    // };
+    // console.log("DATA TO SAVE API IS:", formData);
     if (Object.keys(errors).length === 0) {
       const formData = {
         assetType: assetCategory,
@@ -516,18 +526,14 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            {/* <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
-            /> */}
             <FormControlLabel
               control={
-                <Switch
-                  checked={active}
+                <IOSSwitch
+                  sx={{ m: 1 }}
                   onChange={handleSwitchChange}
-                  // defaultChecked
+                  defaultChecked
                 />
               }
-              label="Active"
             />
           </div>
           <div className="col-lg-3 col-md-6 mb-2"></div>

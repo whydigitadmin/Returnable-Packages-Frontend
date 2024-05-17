@@ -677,6 +677,10 @@ function AddFlows({ addFlows, editFlowId }) {
     setRetrievalWarehouse("");
     setFilterSupplier(filterSupplier);
   };
+  const handleSwitchChange = (event) => {
+    setActive(event.target.checked);
+    console.log("THE CHECKED STATUS IS:", event.target.checked);
+  };
 
   return (
     <>
@@ -978,7 +982,13 @@ function AddFlows({ addFlows, editFlowId }) {
           </div>
           <div className="col-lg-3 col-md-6">
             <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  onChange={handleSwitchChange}
+                  defaultChecked
+                />
+              }
             />
           </div>
         </div>
