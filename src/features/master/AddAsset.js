@@ -92,7 +92,7 @@ function AddAsset({ addItem, editItemId }) {
   const [expectedTrips, setExpectedTrips] = useState("");
   const [hsnCode, setHsnCode] = useState("");
   const [id, setId] = useState("");
-  const [maintanencePeriod, setMaintanencePeriod] = useState("");
+  const [maintanencePeriod, setMaintanencePeriod] = useState();
   const [manufacturePartCode, setManufacturePartCode] = useState("");
   const [materialIdentification, setMaterialIdentification] = useState("");
   const [manufacturer, setManufacturer] = useState("");
@@ -192,11 +192,19 @@ function AddAsset({ addItem, editItemId }) {
         setAssetName(response.data.paramObjectsMap.assetVO.assetName);
         setLength(response.data.paramObjectsMap.assetVO.length);
         setBreath(response.data.paramObjectsMap.assetVO.breath);
+        setEmitter(response.data.paramObjectsMap.assetVO.belongsTo);
+        setDesign(response.data.paramObjectsMap.assetVO.design);
         setChargableWeight(
           response.data.paramObjectsMap.assetVO.chargableWeight
         );
         setHeight(response.data.paramObjectsMap.assetVO.height);
         setEanUpc(response.data.paramObjectsMap.assetVO.eanUpc);
+        setMaterialIdentification(
+          response.data.paramObjectsMap.assetVO.materialIdentification
+        );
+        setManufacturePartCode(
+          response.data.paramObjectsMap.assetVO.manufacturePartCode
+        );
         setWeight(response.data.paramObjectsMap.assetVO.weight);
         setValue(response.data.paramObjectsMap.assetVO.chargableWeight);
         setExpectedLife(response.data.paramObjectsMap.assetVO.expectedLife);
