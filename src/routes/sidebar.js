@@ -597,158 +597,160 @@ const routes = [
     ],
   },
 
-  {
-    path: "", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/outwardAdmin.png"
-        alt="Outward"
-        style={{ width: "30px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "12px" }}>Asset Outward</span>,
-    submenu: [
-      {
-        path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
-        icon: (
-          <img
-            src="/emptyRetrieval.png"
-            alt="EmptyRetrievalManifest"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Asset Outward</span>,
-      },
-    ],
-  },
-  {
-    path: "", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/docTypeH.png"
-        alt="docType"
-        style={{ width: "30px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "12px" }}>Document Type</span>,
-    submenu: [
-      {
-        path: "/app/DocumentType", //no url needed as this has submenu
-        icon: (
-          <img
-            src="/docType.png"
-            alt="DocumentType"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Document Type</span>,
-      },
-    ],
-  },
-  {
-    path: "", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/servicesH.png"
-        alt="Services"
-        style={{ width: "32px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "12px" }}>Services</span>,
-    submenu: [
-      {
-        path: "/app/Services", //no url needed as this has submenu
-        icon: (
-          <img
-            src="/services.png"
-            alt="Services"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Services</span>,
-      },
-      {
-        path: "/app/Terms", //no url needed as this has submenu
-        icon: (
-          <img
-            src="https://cdn-icons-png.flaticon.com/128/4497/4497103.png"
-            alt="Services"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Terms</span>,
-      },
-      {
-        path: "/app/PoOrder", //no url needed as this has submenu
-        icon: (
-          <img
-            src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
-            alt="Services"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Purchase Order Old</span>,
-      },
+  //             TEMPORARY HIDE
 
-      {
-        path: "/app/poddetails", //no url needed as this has submenu
-        icon: (
-          <img
-            src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
-            alt="Services"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">POD Details</span>,
-      },
-      {
-        path: "/app/proofofdispatchdetails", //no url needed as this has submenu
-        icon: (
-          <img
-            src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
-            alt="Services"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Proof of Dispatch Details</span>,
-      },
-      {
-        path: "/app/Pdf", //no url needed as this has submenu
-        icon: (
-          <img
-            src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
-            alt="Services"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="ml-1">Purchase Order</span>,
-      },
-    ],
-  },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/outwardAdmin.png"
+  //       alt="Outward"
+  //       style={{ width: "30px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span style={{ marginLeft: "12px" }}>Asset Outward</span>,
+  //   submenu: [
+  //     {
+  //       path: "/app/EmptyRetrievalManifest", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="/emptyRetrieval.png"
+  //           alt="EmptyRetrievalManifest"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Asset Outward</span>,
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/docTypeH.png"
+  //       alt="docType"
+  //       style={{ width: "30px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span style={{ marginLeft: "12px" }}>Document Type</span>,
+  //   submenu: [
+  //     {
+  //       path: "/app/DocumentType", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="/docType.png"
+  //           alt="DocumentType"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Document Type</span>,
+  //     },
+  //   ],
+  // },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/servicesH.png"
+  //       alt="Services"
+  //       style={{ width: "32px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span style={{ marginLeft: "12px" }}>Services</span>,
+  //   submenu: [
+  //     {
+  //       path: "/app/Services", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="/services.png"
+  //           alt="Services"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Services</span>,
+  //     },
+  //     {
+  //       path: "/app/Terms", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="https://cdn-icons-png.flaticon.com/128/4497/4497103.png"
+  //           alt="Services"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Terms</span>,
+  //     },
+  //     {
+  //       path: "/app/PoOrder", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
+  //           alt="Services"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Purchase Order Old</span>,
+  //     },
 
-  {
-    path: "/app/KitDistributionReport", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/report.png"
-        alt="KitDistributionReport"
-        style={{ width: "29px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "6px" }}>Kit Distribution Report</span>,
-  },
+  //     {
+  //       path: "/app/poddetails", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
+  //           alt="Services"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">POD Details</span>,
+  //     },
+  //     {
+  //       path: "/app/proofofdispatchdetails", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
+  //           alt="Services"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Proof of Dispatch Details</span>,
+  //     },
+  //     {
+  //       path: "/app/Pdf", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="https://cdn-icons-png.flaticon.com/128/10112/10112454.png"
+  //           alt="Services"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="ml-1">Purchase Order</span>,
+  //     },
+  //   ],
+  // },
+
+  // {
+  //   path: "/app/KitDistributionReport", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/report.png"
+  //       alt="KitDistributionReport"
+  //       style={{ width: "29px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span style={{ marginLeft: "6px" }}>Kit Distribution Report</span>,
+  // },
   // {
   //   path: "", //no url needed as this has submenu
   //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component
@@ -819,71 +821,71 @@ const routes = [
   //   name: "Tickets",
   // },
 
-  {
-    path: "", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/accounting.png"
-        alt="Accounting"
-        style={{ width: "29px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "14px" }}>Accounting</span>,
-    submenu: [
-      {
-        path: "/app/expenses", //no url needed as this has submenu
-        icon: (
-          <img
-            src="/expenses.png"
-            alt="Expenses"
-            style={{ width: "33px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="">Expenses</span>,
-      },
-      {
-        path: "/app/ChargeCode", //no url needed as this has submenu
-        icon: (
-          <img
-            src="/expenses.png"
-            alt="Expenses"
-            style={{ width: "33px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="">Charge Code</span>,
-      },
-    ],
-  },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/accounting.png"
+  //       alt="Accounting"
+  //       style={{ width: "29px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span style={{ marginLeft: "14px" }}>Accounting</span>,
+  //   submenu: [
+  //     {
+  //       path: "/app/expenses", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="/expenses.png"
+  //           alt="Expenses"
+  //           style={{ width: "33px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="">Expenses</span>,
+  //     },
+  //     {
+  //       path: "/app/ChargeCode", //no url needed as this has submenu
+  //       icon: (
+  //         <img
+  //           src="/expenses.png"
+  //           alt="Expenses"
+  //           style={{ width: "33px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="">Charge Code</span>,
+  //     },
+  //   ],
+  // },
 
-  {
-    path: "", //no url needed as this has submenu
-    icon: (
-      <img
-        src="/lifecycle.png"
-        alt="LifecycleManagement"
-        style={{ width: "32px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span style={{ marginLeft: "8px" }}>Lifecycle Management</span>,
-    submenu: [
-      {
-        path: "/app/audit",
-        icon: (
-          <img
-            src="/audit.png"
-            alt="Audit"
-            style={{ width: "30px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span className="">Audit</span>,
-      },
-    ],
-  },
+  // {
+  //   path: "", //no url needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="/lifecycle.png"
+  //       alt="LifecycleManagement"
+  //       style={{ width: "32px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span style={{ marginLeft: "8px" }}>Lifecycle Management</span>,
+  //   submenu: [
+  //     {
+  //       path: "/app/audit",
+  //       icon: (
+  //         <img
+  //           src="/audit.png"
+  //           alt="Audit"
+  //           style={{ width: "30px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span className="">Audit</span>,
+  //     },
+  //   ],
+  // },
   // {
   //   path: "", //no url needed as this has submenu
   //   icon: <DocumentDuplicateIcon className={`${iconClasses} inline`} />, // icon component

@@ -12,6 +12,7 @@ import axios from "axios";
 import JsBarcode from "jsbarcode";
 import QRCodeLib from "qrcode";
 import QRCode from "qrcode.react";
+import dayjs from "dayjs";
 import React, { useEffect, useState } from "react";
 import ReactBarcode from "react-barcode";
 import { FaStarOfLife } from "react-icons/fa";
@@ -70,12 +71,14 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
+const currentDate = dayjs();
+
 export const AsstTagging = () => {
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [assetList, setAssetList] = React.useState([]);
   const [assetName, setAssetName] = React.useState([]);
-  const [toDate, setToDate] = useState(null);
+  const [toDate, setToDate] = useState(currentDate);
   const [showBarcodeScannerDialog, setShowBarcodeScannerDialog] =
     useState(false);
   const [showQRCodeScannerDialog, setShowQRCodeScannerDialog] = useState(false);
@@ -92,6 +95,7 @@ export const AsstTagging = () => {
   const [seqFrom, setSeqFrom] = useState("");
   const [seqTo, setSeqTo] = useState("");
   const [generateFlag, setGenerateFlag] = useState(false);
+  const [showTable, setShowTable] = useState(false);
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
@@ -155,6 +159,9 @@ export const AsstTagging = () => {
     if (!assetCode) {
       errors.assetCode = "Asset Code is required";
     }
+    if (!assetCategory) {
+      errors.assetCategory = "Asset Category is required";
+    }
     if (!assetName || !assetName.trim()) {
       errors.assetName = "Asset Name is required";
     }
@@ -167,19 +174,20 @@ export const AsstTagging = () => {
     if (Object.keys(errors).length === 0) {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&endno=${seqTo}&startno=${seqFrom}`
+          `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&category=${assetCategory}&endno=${seqTo}&startno=${seqFrom}`
         );
 
         if (response.status === 200) {
           const tagcodes = response.data.paramObjectsMap.tagcode;
           setGenerateFlag(true);
+          setShowTable(true);
           setErrors({});
           if (Array.isArray(tagcodes)) {
             setTagCodeList(tagcodes);
           } else {
             setTagCodeList([]);
           }
-          console.log("Test", tagcodes);
+          console.log("tagcodes", tagcodes);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -315,6 +323,7 @@ export const AsstTagging = () => {
         const taggingDetailsDTO = tagCodeList.map((item) => ({
           asset: item.Asset,
           assetCode: item.AssetCode,
+          category: item.category,
           tagCode: item.TagCode,
           rfId: item.RFIDCode,
         }));
@@ -333,29 +342,37 @@ export const AsstTagging = () => {
           createdBy: userDetail.firstName,
         };
 
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_URL}/api/master/assettagging`,
-          formData
-        );
-
-        console.log("Response:", response.data);
-        setDocId("");
-        setToDate(null);
-        setAssetCode("");
-        setAssetName("");
-        setSeqFrom("");
-        setSeqTo("");
-        // Clear table fields
-        setTagCodeList([]);
-
-        // Reset assetName state to an empty string or any default value
-        setAssetName("");
-
-        setErrors({});
-        toast.success("Asset tagging successfully", {
-          autoClose: 2000,
-          theme: "colored",
-        });
+        axios
+          .post(
+            `${process.env.REACT_APP_API_URL}/api/master/assettagging`,
+            formData
+          )
+          .then((response) => {
+            if (response.data.statusFlag === "Error") {
+              toast.error(response.data.paramObjectsMap.errorMessage, {
+                autoClose: 2000,
+                theme: "colored",
+              });
+            } else {
+              console.log("Response:", response.data);
+              toast.success(response.data.paramObjectsMap.message, {
+                autoClose: 2000,
+                theme: "colored",
+              });
+              setDocId("");
+              setToDate(currentDate);
+              setAssetCode("");
+              setAssetName("");
+              setSeqFrom("");
+              setSeqTo("");
+              setAssetCategory("");
+              setTagCodeList([]);
+              setAssetName("");
+              setShowTable(false);
+              setGenerateFlag(false);
+              setErrors({});
+            }
+          });
       } catch (error) {
         console.error("Error:", error);
       }
@@ -367,11 +384,12 @@ export const AsstTagging = () => {
   const handleCancelAsset = () => {
     // Clear all input fields
     setDocId("");
-    setToDate(null);
+    setToDate(currentDate);
     setAssetCode("");
     setAssetName("");
     setSeqFrom("");
     setSeqTo("");
+    setAssetCategory("");
     // Clear table fields
     setTagCodeList([]);
     // Clear selected rows
@@ -562,7 +580,7 @@ export const AsstTagging = () => {
         </div>
 
         {/* ASSET CATEGORY FIELD */}
-        <div className="col-lg-3 col-md-3 mb-2">
+        <div className="col-lg-3 col-md-3 mb-4">
           <span
             className={
               "label-text label-font-size text-base-content d-flex flex-row p-1"
@@ -572,7 +590,7 @@ export const AsstTagging = () => {
             <FaStarOfLife className="must" />
           </span>
         </div>
-        <div className="col-lg-3 col-md-3 mb-2">
+        <div className="col-lg-3 col-md-3 mb-4">
           <select
             name="Select Category"
             style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
@@ -596,8 +614,8 @@ export const AsstTagging = () => {
         </div>
 
         {/* Asset Code */}
-        <div className="col-lg-3 col-md-3">
-          <label className="label mb-1">
+        <div className="col-lg-3 col-md-3 mb-4">
+          <label className="label">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
               Asset Code
               <FaStarOfLife className="must" />
@@ -626,7 +644,7 @@ export const AsstTagging = () => {
         <div className="col-lg-3 col-md-4">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              Asset <FaStarOfLife className="must" /> &nbsp;
+              Asset Desc
             </span>
           </label>
         </div>
@@ -635,6 +653,7 @@ export const AsstTagging = () => {
             className="form-control form-sz"
             type="text"
             name="assetName"
+            disabled
             value={assetName} // Set the value of the input field to the asset name state
             readOnly // Make the input field read-only to prevent manual editing
           />
@@ -683,7 +702,7 @@ export const AsstTagging = () => {
       </div>
 
       <div className="d-flex flex-row mt-3">
-        {generateFlag && (
+        {generateFlag ? (
           <div>
             <button
               type="button"
@@ -700,8 +719,7 @@ export const AsstTagging = () => {
               Cancel
             </button>
           </div>
-        )}
-        {!generateFlag && (
+        ) : (
           <button
             type="button"
             onClick={handleGenerateTagcode}
@@ -732,127 +750,136 @@ export const AsstTagging = () => {
           </button>
         </div>
       </div> */}
-
-      <div
-        className="row mt-2"
-        style={{ overflowX: "auto", maxHeight: "400px" }}
-      >
-        <div className="col-lg-12">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr>
-                  <th className="px-2 py-2 bg-blue-500 text-white">
-                    Asset Code
-                  </th>
-                  <th className="px-2 py-2 bg-blue-500 text-white">Asset</th>
-                  <th className="px-2 py-2 bg-blue-500 text-white">Tag Code</th>
-                  <th className="px-2 py-2 bg-blue-500 text-white">
-                    <input
-                      type="checkbox"
-                      style={{ cursor: "pointer" }}
-                      checked={
-                        selectedBarcodeRows.length === tagCodeList.length
-                      }
-                      onChange={(e) => handleSelectAllBarcode(e.target.checked)}
-                    />
-                  </th>
-                  <th className="px-2 py-2 bg-blue-500 text-white">
-                    <span className="ml-2">Bar Code</span>
-                    <span className="ml-2">
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() =>
-                          handlePrint(selectedBarcodeRows, "Barcode")
-                        }
-                      >
-                        <MdPrint style={{ fontSize: "20px" }} />
-                      </button>
-                    </span>
-                  </th>
-                  <th className="px-2 py-2 bg-blue-500 text-white">
-                    <input
-                      type="checkbox"
-                      style={{ cursor: "pointer" }}
-                      checked={selectedQRCodeRows.length === tagCodeList.length}
-                      onChange={(e) => handleSelectAllQRCode(e.target.checked)}
-                    />
-                  </th>
-                  <th className="px-2 py-2 bg-blue-500 text-white">
-                    <span className="ml-2">QR Code</span>
-                    <span className="ml-2">
-                      <button
-                        className="btn btn-secondary btn-sm"
-                        onClick={() =>
-                          handlePrint(selectedQRCodeRows, "QR Code")
-                        }
-                      >
-                        <MdPrint style={{ fontSize: "20px" }} />
-                      </button>
-                    </span>
-                  </th>
-                  <th className="px-2 py-2 bg-blue-500 text-white">
-                    RFID Code
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {tagCodeList.map((item, index) => (
-                  <tr key={index}>
-                    <td className="px-2 py-2">{item.AssetCode}</td>
-                    <td className="px-2 py-2">{item.Asset}</td>
-                    <td className="px-2 py-2">{item.TagCode}</td>
-                    <td className="px-2 py-2">
+      {showTable && (
+        <div
+          className="row mt-4"
+          style={{ overflowX: "auto", maxHeight: "400px" }}
+        >
+          <div className="col-lg-12">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr>
+                    <th className="px-2 py-2 bg-blue-500 text-white">Asset</th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">
+                      Asset Code
+                    </th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">
+                      Tag Code
+                    </th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">
                       <input
                         type="checkbox"
                         style={{ cursor: "pointer" }}
-                        checked={selectedBarcodeRows.includes(index)}
-                        onChange={() => handleSelectBarcodeRow(index)}
-                      />
-                    </td>
-                    <td className="px-2 py-2">
-                      <Button
-                        onClick={() =>
-                          handleOpenBarcodeScannerDialog(item.TagCode)
+                        checked={
+                          selectedBarcodeRows.length === tagCodeList.length
                         }
-                      >
-                        <span className="ml-2">Scan Barcode</span>
-                      </Button>
-                    </td>
-                    <td className="px-2 py-2">
-                      <input
-                        type="checkbox"
-                        style={{ cursor: "pointer" }}
-                        checked={selectedQRCodeRows.includes(index)}
-                        onChange={() => handleSelectQRCodeRow(index)}
-                      />
-                    </td>
-                    <td className="px-2 py-2">
-                      <Button
-                        onClick={() =>
-                          handleOpenQRCodeScannerDialog(item.TagCode)
-                        }
-                      >
-                        <span className="ml-2">Scan QR Code</span>
-                      </Button>
-                    </td>
-                    <td className="px-2 py-2">
-                      <input
-                        type="text"
-                        value={item.RFIDCode}
                         onChange={(e) =>
-                          handleRFIDCodeChange(e.target.value, index)
+                          handleSelectAllBarcode(e.target.checked)
                         }
-                        className="px-2 py-1 border rounded"
                       />
-                    </td>
+                    </th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">
+                      <span className="ml-2">Bar Code</span>
+                      <span className="ml-2">
+                        <button
+                          className="btn btn-secondary btn-sm"
+                          onClick={() =>
+                            handlePrint(selectedBarcodeRows, "Barcode")
+                          }
+                        >
+                          <MdPrint style={{ fontSize: "20px" }} />
+                        </button>
+                      </span>
+                    </th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">
+                      <input
+                        type="checkbox"
+                        style={{ cursor: "pointer" }}
+                        checked={
+                          selectedQRCodeRows.length === tagCodeList.length
+                        }
+                        onChange={(e) =>
+                          handleSelectAllQRCode(e.target.checked)
+                        }
+                      />
+                    </th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">
+                      <span className="ml-2">QR Code</span>
+                      <span className="ml-2">
+                        <button
+                          className="btn btn-secondary btn-sm"
+                          onClick={() =>
+                            handlePrint(selectedQRCodeRows, "QR Code")
+                          }
+                        >
+                          <MdPrint style={{ fontSize: "20px" }} />
+                        </button>
+                      </span>
+                    </th>
+                    <th className="px-2 py-2 bg-blue-500 text-white">
+                      RFID Code
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {tagCodeList.map((item, index) => (
+                    <tr key={index}>
+                      <td className="px-2 py-2">{item.category}</td>
+                      <td className="px-2 py-2">{item.AssetCode}</td>
+                      <td className="px-2 py-2">{item.TagCode}</td>
+                      <td className="px-2 py-2">
+                        <input
+                          type="checkbox"
+                          style={{ cursor: "pointer" }}
+                          checked={selectedBarcodeRows.includes(index)}
+                          onChange={() => handleSelectBarcodeRow(index)}
+                        />
+                      </td>
+                      <td className="px-2 py-2">
+                        <Button
+                          onClick={() =>
+                            handleOpenBarcodeScannerDialog(item.TagCode)
+                          }
+                        >
+                          <span className="ml-2">Scan Barcode</span>
+                        </Button>
+                      </td>
+                      <td className="px-2 py-2">
+                        <input
+                          type="checkbox"
+                          style={{ cursor: "pointer" }}
+                          checked={selectedQRCodeRows.includes(index)}
+                          onChange={() => handleSelectQRCodeRow(index)}
+                        />
+                      </td>
+                      <td className="px-2 py-2">
+                        <Button
+                          onClick={() =>
+                            handleOpenQRCodeScannerDialog(item.TagCode)
+                          }
+                        >
+                          <span className="ml-2">Scan QR Code</span>
+                        </Button>
+                      </td>
+                      <td className="px-2 py-2">
+                        <input
+                          type="text"
+                          value={item.RFIDCode}
+                          onChange={(e) =>
+                            handleRFIDCodeChange(e.target.value, index)
+                          }
+                          className="px-2 py-1 border rounded"
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      )}
       {/* Barcode Scanner Dialogue */}
       <Dialog
         open={showBarcodeScannerDialog}

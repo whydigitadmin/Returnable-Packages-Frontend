@@ -36,6 +36,7 @@ function AssetStockReport() {
           stockBranch: item.stockBranch,
           asset: item.asset,
           assetCode: item.assetCode,
+          category: item.category,
           qty: item.qty,
         }));
         setData([...data, ...newData]);
@@ -51,7 +52,7 @@ function AssetStockReport() {
       {
         accessorKey: "stockBranch",
         header: "Stock Branch",
-        size: 50,
+        size: 40,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -60,9 +61,9 @@ function AssetStockReport() {
         },
       },
       {
-        accessorKey: "asset",
-        header: "Asset",
-        size: 50,
+        accessorKey: "category",
+        header: "Category",
+        size: 40,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -73,7 +74,18 @@ function AssetStockReport() {
       {
         accessorKey: "assetCode",
         header: "Asset Code",
-        size: 50,
+        size: 40,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "asset",
+        header: "Asset",
+        size: 40,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -84,7 +96,7 @@ function AssetStockReport() {
       {
         accessorKey: "qty",
         header: "Quantity",
-        size: 50,
+        size: 40,
         muiTableHeadCellProps: {
           align: "center",
         },

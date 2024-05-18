@@ -112,7 +112,7 @@ export const UserDetails = () => {
       if (response.status === 200) {
         setData(
           response.data.paramObjectsMap.userVO.filter(
-            (user) => user.role === "ROLE_USER" || user.role === "ROLE_ADMIN"
+            (user) => user.role === "ROLE_USER"
           )
         );
         console.log(

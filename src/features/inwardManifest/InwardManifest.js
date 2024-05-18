@@ -160,7 +160,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
           serialNumber: ++serialNumberCounter,
         }));
         setAssetTaggingDetails(assetsWithSerialNumber);
-        setShowTable(false);
+        setShowTable(true);
         console.log("serialNumber:", assetsWithSerialNumber);
       }
     } catch (error) {

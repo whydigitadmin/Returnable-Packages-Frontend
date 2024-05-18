@@ -121,7 +121,7 @@ function BinOutward() {
         const kitDataArray =
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
             id: kit.id,
-            kitName: kit.kitName,
+            kitNo: kit.kitNo,
           }));
 
         setKitData([...kitDataArray]);
@@ -354,8 +354,8 @@ function BinOutward() {
                 </option>
                 {kitData &&
                   kitData.map((kit) => (
-                    <option key={kit.id} value={kit.kitName}>
-                      {kit.kitName}
+                    <option key={kit.id} value={kit.kitNo}>
+                      {kit.kitNo}
                     </option>
                   ))}
               </select>

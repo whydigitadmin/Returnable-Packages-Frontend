@@ -221,9 +221,6 @@ function Customer() {
         muiTableBodyCellProps: {
           align: "center",
         },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
       },
     ],
     []
@@ -240,7 +237,7 @@ function Customer() {
   const getCustomerData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/customers?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/allCustomers?orgId=${orgId}`
       );
 
       if (response.status === 200) {

@@ -903,8 +903,7 @@ function IssueReq() {
             <div className="col-md-1 mt-4">
               <label>
                 <b>
-                  {" "}
-                  Date <span style={{ color: "red" }}>*</span>
+                  Demand Date <span style={{ color: "red" }}>*</span>
                 </b>
               </label>
             </div>
@@ -1297,9 +1296,10 @@ function IssueReq() {
                                 <th>Req No</th>
                                 <th>Req Date</th>
                                 <th>Demand Date</th>
-                                <th>Flow Name</th>
+                                <th>PART</th>
+                                <th>PART QTY</th>
                                 <th>Kit No</th>
-                                <th>QTY</th>
+                                <th>KIT QTY</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -1368,17 +1368,19 @@ function IssueReq() {
                                                   issueRequest.demandDate
                                                 ).format("DD-MM-YY")}
                                               </td>
-                                              <td
+                                              {/* <td
                                                 rowSpan={
                                                   issueRequest.issueItemVO
                                                     .length
                                                 }
                                               >
                                                 {issueRequest.flowName}
-                                              </td>
+                                              </td> */}
                                             </>
                                           )}
                                           {/* Render data for each item */}
+                                          <td>{item.partName}</td>
+                                          <td>{item.partQty}</td>
                                           <td>{item.kitName}</td>
                                           <td>{item.kitQty}</td>
                                         </tr>
@@ -1443,17 +1445,19 @@ function IssueReq() {
                                                   issueRequest.demandDate
                                                 ).format("DD-MM-YY")}
                                               </td>
-                                              <td
+                                              {/* <td
                                                 rowSpan={
                                                   issueRequest.issueItemVO
                                                     .length
                                                 }
                                               >
                                                 {issueRequest.flowName}
-                                              </td>
+                                              </td> */}
                                             </>
                                           )}
                                           {/* Render data for each item */}
+                                          <td>{item.partName}</td>
+                                          <td>{item.partQty}</td>
                                           <td>{item.kitName}</td>
                                           <td>{item.kitQty}</td>
                                         </tr>
