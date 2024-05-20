@@ -321,6 +321,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   };
 
   const isValidAddress = () => {
+    if (!newAddress) {
+      return false; // If newAddress is undefined, address is not valid
+    }
     return (
       newAddress.gstRegistrationStatus.trim() !== "" &&
       newAddress.street1.trim() !== "" &&
@@ -410,7 +413,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   };
 
   const handleAddressSubmit = async () => {
-    const addressWithCustomerId = { ...newAddress, customerId: customerId };
+    const addressWithCustomerId = { ...newAddress };
 
     if (isValidAddress()) {
       setErrors1({}); // Clear any previous errors on successful submission
@@ -508,10 +511,10 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   // Then use handleEditBankAddress function similarly to handleEditAddress for customerAddressVO
 
   const handleUpdateShippingAddress = (updatedAddress) => {
-    updatedAddress.id = 0;
-
     // Check if updatedAddress is null or undefined
     if (!updatedAddress || updatedAddress.id === undefined) {
+      updatedAddress.id = 0;
+
       // Handle adding a new address
       const newAddressList = [...customerAddressVO, updatedAddress];
       setCustomerAddressVO(newAddressList);
@@ -633,10 +636,10 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   // };
 
   const handleUpdateShippingBankAddress = (updatedBankAddress) => {
-    updatedBankAddress.id = 0;
-
     // Check if updatedBankAddress is null or undefined
     if (!updatedBankAddress || updatedBankAddress.id === undefined) {
+      updatedBankAddress.id = 0;
+
       // Handle adding a new address
       const newBankAddressList = [...customerBankAddressVO, updatedBankAddress];
       setCustomerBankAddressVO(newBankAddressList);
@@ -682,7 +685,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   };
 
   const handleBankSubmit = async () => {
-    const bankWithCustomerId = { ...newBankAddress, customerId: customerId };
+    const bankWithCustomerId = { ...newBankAddress };
 
     if (isValidBankAddress()) {
       setErrors2({}); // Clear any previous errors on successful submission
