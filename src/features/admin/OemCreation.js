@@ -89,6 +89,14 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [oemData, setOemData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
+  useEffect(() => {
+    console.log("value", selectedFlows);
+    getCustomersList();
+    {
+      oemEditId && getOemById();
+    }
+  }, [selectedFlows]);
+
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
   };
@@ -139,14 +147,8 @@ function OemCreation({ addEmitter, oemEditId }) {
       console.error("Error fetching data:", error);
     }
   };
-  // const handleFlowSelection = (flow) => {
-  //   setSelectedFlow(flow);
-  // };
-
-  // const notify = () => toast("User Created Successfully");
 
   function isValidEmail(email) {
-    // Regular expression for email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email);
   }
@@ -281,7 +283,6 @@ function OemCreation({ addEmitter, oemEditId }) {
     }
     const hashedPassword = encryptPassword(password);
 
-    // Update userData with the hashed password
     const userPayload = {
       accessRightsRoleId: 0,
       accessFlowId: selectedFlows,
@@ -290,19 +291,19 @@ function OemCreation({ addEmitter, oemEditId }) {
       emitterId: emitter,
       firstName: firstName,
       lastName: "",
-      orgId: orgId, // You may need to provide a default value
+      orgId: orgId,
       role: role,
       pno: phone,
       userAddressDTO: {
         address1: address,
-        address2: "", // You may need to provide a default value
+        address2: "",
         city: city,
         country: country,
         location: city,
         pin: pincode,
         state: state,
       },
-      userName: email || "", // You may need to provide a default value
+      userName: email || "",
     };
 
     const userDataWithHashedPassword = {
@@ -311,7 +312,6 @@ function OemCreation({ addEmitter, oemEditId }) {
     };
 
     if (Object.keys(errors).length === 0) {
-      // Valid data, perform API call or other actions
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/auth/createUser`,
@@ -382,19 +382,19 @@ function OemCreation({ addEmitter, oemEditId }) {
       email: email,
       emitterId: 0,
       firstName: firstName,
-      orgId: orgId, // You may need to provide a default value
+      orgId: orgId,
       role: role,
       pno: phone,
       userAddressDTO: {
         address1: address,
-        address2: "", // You may need to provide a default value
+        address2: "",
         country: country,
         location: city,
         pin: pincode,
         state: state,
       },
       userName: email,
-      userId: oemEditId, // You may need to provide a default value
+      userId: oemEditId,
     };
 
     console.log("OEM Payload:", userPayload);
@@ -414,13 +414,7 @@ function OemCreation({ addEmitter, oemEditId }) {
 
     console.log("Update Payload is:", userPayload);
 
-    // const userDataWithHashedPassword = {
-    //   ...userPayload,
-    //   password: hashedPassword,
-    // };
-
     if (Object.keys(errors).length === 0) {
-      // Valid data, perform API call or other actions
       axios
         .put(
           `${process.env.REACT_APP_API_URL}/api/auth/updateUser`,
@@ -447,21 +441,6 @@ function OemCreation({ addEmitter, oemEditId }) {
     }
   };
 
-  // const handleFlowSelection = (flow, isChecked) => {
-  //   setSelectedFlows((prevWarehouse) => {
-  //     if (isChecked && !prevWarehouse.includes(flow)) {
-  //       // Add warehouseLocation to the array if it's not already present
-  //       return [...prevWarehouse, flow];
-  //     } else if (!isChecked) {
-  //       // Remove warehouseLocation from the array
-  //       return prevWarehouse.filter((wh) => wh !== flow);
-  //     }
-
-  //     // Return the unchanged array if isChecked is true and warehouseLocation is already present
-  //     return prevWarehouse;
-  //   });
-  // };
-
   const handleFlowSelection = (flow, isChecked) => {
     setSelectedFlows((prevWarehouse) => {
       if (isChecked && !prevWarehouse.includes(flow)) {
@@ -476,14 +455,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       return prevWarehouse;
     });
   };
-
-  useEffect(() => {
-    console.log("value", selectedFlows);
-    getCustomersList();
-    {
-      oemEditId && getOemById();
-    }
-  }, [selectedFlows]); // This will be triggered whenever selectedFlows changes
 
   // GET USER DETAILS
   const getOemById = async () => {
@@ -508,15 +479,14 @@ function OemCreation({ addEmitter, oemEditId }) {
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
         setPhone(response.data.paramObjectsMap.userVO.pno);
         getEmitterFlow(response.data.paramObjectsMap.userVO.customersVO.id);
+        if (response.data.paramObjectsMap.userVO.active === "In-Active") {
+          setActive(false);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
-  // const handleEmitterCreationClose = () => {
-  //   addEmitter(false);
-  // };
 
   // CLOSE BUTTON WITH CONFIRMATION
   const handleEmitterCreationClose = () => {
@@ -544,6 +514,10 @@ function OemCreation({ addEmitter, oemEditId }) {
   const handleConfirmationYes = () => {
     setOpenConfirmationDialog(false);
     addEmitter(false);
+  };
+  const handleSwitchChange = (event) => {
+    setActive(event.target.checked);
+    console.log("THE CHECKED STATUS IS:", event.target.checked);
   };
 
   return (
@@ -852,7 +826,14 @@ function OemCreation({ addEmitter, oemEditId }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  onChange={handleSwitchChange}
+                  // defaultChecked
+                  checked={active}
+                />
+              }
             />
           </div>
         </div>

@@ -391,6 +391,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
         setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
         setPhone(response.data.paramObjectsMap.userVO.pno);
+        if (response.data.paramObjectsMap.userVO.active === "In-Active") {
+          setActive(false);
+        }
         getEmitterFlow(response.data.paramObjectsMap.userVO.customersVO.id);
       }
     } catch (error) {
@@ -851,7 +854,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={handleSwitchChange}
-                  defaultChecked
+                  checked={active}
                 />
               }
             />

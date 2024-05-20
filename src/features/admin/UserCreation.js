@@ -151,6 +151,9 @@ function UserCreation({ addUser, userEditId }) {
         // Set warehouse data
         const userWarehouses = userData.accessWarehouse || [];
         setWarehouse(userWarehouses);
+        if (response.data.paramObjectsMap.userVO.active === "In-Active") {
+          setActive(false);
+        }
         // setDisabledWarehouseIds(userWarehouses); // Uncomment if needed
       }
     } catch (error) {
@@ -203,12 +206,12 @@ function UserCreation({ addUser, userEditId }) {
       email: email,
       emitterId: 0,
       firstName: firstName,
-      orgId: orgId, // You may need to provide a default value
+      orgId: orgId,
       role: role,
       pno: phone,
       userAddressDTO: {
         address1: address,
-        address2: "", // You may need to provide a default value
+        address2: "",
         country: country,
         location: "Location",
         pin: pincode,
@@ -216,7 +219,7 @@ function UserCreation({ addUser, userEditId }) {
         city: city,
       },
       userName: email,
-      userId: userEditId, // You may need to provide a default value
+      userId: userEditId,
     };
 
     const token = localStorage.getItem("token");
@@ -560,6 +563,11 @@ function UserCreation({ addUser, userEditId }) {
     addUser(false);
   };
 
+  const handleSwitchChange = (event) => {
+    setActive(event.target.checked);
+    console.log("THE CHECKED STATUS IS:", event.target.checked);
+  };
+
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
@@ -835,7 +843,13 @@ function UserCreation({ addUser, userEditId }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  checked={active}
+                  onChange={handleSwitchChange}
+                />
+              }
             />
           </div>
         </div>

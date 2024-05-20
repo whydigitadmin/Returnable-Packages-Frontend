@@ -168,7 +168,7 @@ const BinInwardOem = ({}) => {
                   <table className="table table-hover w-full">
                     <thead>
                       <tr>
-                        <th>S.No</th>
+                        {/* <th>S.No</th> */}
                         <th>Inward ID</th>
                         <th>Date</th>
                         <th>Kit No</th>
@@ -178,7 +178,7 @@ const BinInwardOem = ({}) => {
                     <tbody>
                       {ListViewTableData.map((row, index) => (
                         <tr key={row.id}>
-                          <td>{index + 1}</td>
+                          {/* <td>{index + 1}</td> */}
                           <td>
                             <a
                               href="#"
@@ -315,50 +315,55 @@ const BinInwardOem = ({}) => {
               {tableView && (
                 <>
                   <div className="row mt-2">
-                    <div className="overflow-x-auto w-full ">
-                      <table className="table table-hover w-full">
-                        <thead>
-                          <tr>
-                            <th>S.No</th>
-                            <th>Kit No</th>
-                            <th>Alloted Qty</th>
-                            <th>REC QTY</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {tableData.map((row, index) => (
-                            <tr key={row.id}>
-                              <td>{index + 1}</td>
-                              <td>{row.kitNo}</td>
-                              <td>{row.allotedKitQty}</td>
-                              <td>
-                                <input
-                                  type="text"
-                                  value={row.recKitQty}
-                                  onChange={(e) =>
-                                    setTableData((prev) =>
-                                      prev.map((r, i) =>
-                                        i === index
-                                          ? { ...r, recKitQty: e.target.value }
-                                          : r
-                                      )
-                                    )
-                                  }
-                                  className={`form-control form-sz mb-2 ${
-                                    errors.qty && "border-red-500"
-                                  }`}
-                                  style={{ width: "50px" }}
-                                />
-                                {errors.qty && (
-                                  <span className="error-text mb-1">
-                                    {errors.qty}
-                                  </span>
-                                )}
-                              </td>
+                    <div className="col-lg-6 col-md-12 col-sm-12">
+                      <div className="overflow-x-auto w-full ">
+                        <table className="table table-hover w-full">
+                          <thead>
+                            <tr>
+                              {/* <th>S.No</th> */}
+                              <th>Kit No</th>
+                              <th>Alloted Qty</th>
+                              <th>REC QTY</th>
                             </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                          </thead>
+                          <tbody>
+                            {tableData.map((row, index) => (
+                              <tr key={row.id}>
+                                {/* <td>{index + 1}</td> */}
+                                <td>{row.kitNo}</td>
+                                <td>{row.allotedKitQty}</td>
+                                <td>
+                                  <input
+                                    type="text"
+                                    value={row.recKitQty}
+                                    onChange={(e) =>
+                                      setTableData((prev) =>
+                                        prev.map((r, i) =>
+                                          i === index
+                                            ? {
+                                                ...r,
+                                                recKitQty: e.target.value,
+                                              }
+                                            : r
+                                        )
+                                      )
+                                    }
+                                    className={`form-control form-sz mb-2 ${
+                                      errors.qty && "border-red-500"
+                                    }`}
+                                    style={{ width: "50px" }}
+                                  />
+                                  {errors.qty && (
+                                    <span className="error-text mb-1">
+                                      {errors.qty}
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
                   {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
