@@ -285,6 +285,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
           response.data.paramObjectsMap.customersVO.customersAddressVO
         );
         setCustomerType(response.data.paramObjectsMap.customersVO.customerType);
+        if (response.data.paramObjectsMap.customersVO.active === "In-Active") {
+          setActive(false);
+        }
         setCustomerCode(response.data.paramObjectsMap.customersVO.customerCode);
         setEntityLegalName(
           response.data.paramObjectsMap.customersVO.entityLegalName
@@ -1428,7 +1431,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   onChange={handleSwitchChange}
-                  defaultChecked
+                  checked={active}
                 />
               }
             />

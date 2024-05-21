@@ -118,6 +118,8 @@ function AddAsset({ addItem, editItemId }) {
   const handleAssetTypeChange = (event) => {
     const selectedCategory = event.target.value;
     setAssetType(selectedCategory);
+    setCategory("");
+    setCategoryCode("");
     setAssetTypeSelected(true);
     getAssetNamesByCategory(selectedCategory);
   };
@@ -194,6 +196,9 @@ function AddAsset({ addItem, editItemId }) {
         setBreath(response.data.paramObjectsMap.assetVO.breath);
         setEmitter(response.data.paramObjectsMap.assetVO.belongsTo);
         setDesign(response.data.paramObjectsMap.assetVO.design);
+        if (response.data.paramObjectsMap.assetVO.active === "In-Active") {
+          setActive(false);
+        }
         setChargableWeight(
           response.data.paramObjectsMap.assetVO.chargableWeight
         );
@@ -584,7 +589,9 @@ function AddAsset({ addItem, editItemId }) {
               autoClose: 2000,
               theme: "colored",
             });
-            addItem(false);
+            setTimeout(() => {
+              addItem(false);
+            }, 3000);
           }
         })
         .catch((error) => {
@@ -671,7 +678,7 @@ function AddAsset({ addItem, editItemId }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAssetTypeChange}
               value={assetType}
-              disabled={assetTypeSelected}
+              // disabled={assetTypeSelected}
             >
               <option value="" disabled>
                 Select an Type
@@ -701,7 +708,7 @@ function AddAsset({ addItem, editItemId }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAssetCategoryChange}
               value={category}
-              disabled={categorySelected}
+              // disabled={categorySelected}
             >
               <option value="" disabled>
                 Select a Category
@@ -855,8 +862,11 @@ function AddAsset({ addItem, editItemId }) {
               control={
                 <IOSSwitch
                   sx={{ m: 1 }}
-                  onChange={handleSwitchChange}
-                  defaultChecked
+                  // onChange={handleSwitchChange}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
+                  checked={active}
                 />
               }
             />
