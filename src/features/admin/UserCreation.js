@@ -292,7 +292,7 @@ function UserCreation({ addUser, userEditId }) {
     } else if (pincode.length < 6) {
       errors.pincode = "Pincode must be 6 Digit";
     }
-    if (!warehouse) {
+    if (warehouse.length === 0) {
       errors.warehouse = "Warehouse is required";
     }
 
@@ -345,15 +345,20 @@ function UserCreation({ addUser, userEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("User saved successfully!", response.data);
-          toast.success("User saved successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          setTimeout(() => {
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            handleNew();
             addUser(false);
-          }, 3000);
-          handleNew();
+          }
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
@@ -398,9 +403,9 @@ function UserCreation({ addUser, userEditId }) {
     } else if (pincode.length < 6) {
       errors.pincode = "Pincode must be 6 Digit";
     }
-    // if (!warehouse) {
-    //   errors.warehouse = "Warehouse is required";
-    // }
+    if (warehouse.length === 0) {
+      errors.warehouse = "Warehouse is required";
+    }
     const userPayload = {
       accessRightsRoleId: 2,
       accessWarehouse: warehouse,
@@ -435,18 +440,9 @@ function UserCreation({ addUser, userEditId }) {
         Authorization: `Bearer ${token}`,
       };
     }
-
     const hashedPassword = encryptPassword(password);
-
     console.log("Update Payload is:", userPayload);
-
-    // const userDataWithHashedPassword = {
-    //   ...userPayload,
-    //   password: hashedPassword,
-    // };
-
     if (Object.keys(errors).length === 0) {
-      // Valid data, perform API call or other actions
       axios
         .put(
           `${process.env.REACT_APP_API_URL}/api/auth/updateUser`,
@@ -454,15 +450,19 @@ function UserCreation({ addUser, userEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("User Updated successfully!", response.data);
-          // toast.success("User updated successfully!");
-          toast.success("User updated successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          setTimeout(() => {
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
             addUser(false);
-          }, 3000); // Adjust the delay time as needed
+          }
         })
         .catch((error) => {
           console.error("Error saving user:", error.message);
@@ -762,9 +762,9 @@ function UserCreation({ addUser, userEditId }) {
             >
               Assign Warehouse
             </button>
-            {/* {errors.warehouse && (
+            {errors.warehouse && (
               <span className="error-text">{errors.warehouse}</span>
-            )} */}
+            )}
           </div>
           {/* ACTIVE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
