@@ -168,13 +168,14 @@ export const AsstTagging = () => {
     if (!seqFrom || !seqFrom.trim()) {
       errors.seqFrom = "Seq From is required";
     }
-    if (!seqTo || !seqTo.trim()) {
-      errors.seqTo = "Seq To is required";
-    }
+    // if (!seqTo || !seqTo.trim()) {
+    //   errors.seqTo = "Seq To is required";
+    // }
     if (Object.keys(errors).length === 0) {
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&category=${assetCategory}&endno=${seqTo}&startno=${seqFrom}`
+          // `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&category=${assetCategory}&endno=${seqTo}&startno=${seqFrom}`
+          `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&category=${assetCategory}&endno=${seqTo}`
         );
 
         if (response.status === 200) {

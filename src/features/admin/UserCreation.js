@@ -85,8 +85,8 @@ function UserCreation({ addUser, userEditId }) {
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [userData, setUserData] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [disabledWarehouseIds, setDisabledWarehouseIds] = useState([]);
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [a, setA] = useState(["1000000026", "1000000025"]);
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -101,34 +101,6 @@ function UserCreation({ addUser, userEditId }) {
     }
     getWarehouseLocationList();
   }, []);
-
-  // GET USER DETAILS
-  // const getUserById = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/auth/user/${userEditId}`
-  //     );
-
-  //     if (response.status === 200) {
-  //       setUserData(response.data.paramObjectsMap.userVO);
-  //       console.log("Edit User Details", response.data.paramObjectsMap.userVO);
-  //       setFirstName(response.data.paramObjectsMap.userVO.firstName);
-  //       setEmail(response.data.paramObjectsMap.userVO.email);
-  //       setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
-  //       setCity(response.data.paramObjectsMap.userVO.userAddressVO.city);
-  //       setState(response.data.paramObjectsMap.userVO.userAddressVO.state);
-  //       setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
-  //       setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
-  //       setPhone(response.data.paramObjectsMap.userVO.pno);
-  //       setDisabledWarehouseIds(
-  //         response.data.paramObjectsMap.userVO.accessWarehouse
-  //       );
-  //       setWarehouse(response.data.paramObjectsMap.userVO.accessWarehouse);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
 
   const getUserById = async () => {
     try {
@@ -148,16 +120,247 @@ function UserCreation({ addUser, userEditId }) {
         setCountry(userData.userAddressVO.country);
         setPincode(userData.userAddressVO.pin);
         setPhone(userData.pno);
-        // Set warehouse data
-        const userWarehouses = userData.accessWarehouse || [];
-        setWarehouse(userWarehouses);
+        // const userWarehouses = userData.accessWarehouse || [];
+        setWarehouse(userData.accessWarehouse);
         if (response.data.paramObjectsMap.userVO.active === "In-Active") {
           setActive(false);
         }
-        // setDisabledWarehouseIds(userWarehouses); // Uncomment if needed
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+    }
+  };
+
+  const getWarehouseLocationList = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
+        console.log(
+          "WarehouseLocation",
+          response.data.paramObjectsMap.WarehouseLocation
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleLocationChange = (warehouseId, isChecked) => {
+    console.log("Clicked:", warehouseId, isChecked);
+
+    setWarehouse((prevWarehouse) => {
+      console.log("Previous Warehouse State:", prevWarehouse);
+
+      if (!Array.isArray(prevWarehouse)) {
+        console.error("warehouse state is not an array:", prevWarehouse);
+        return prevWarehouse;
+      }
+
+      if (isChecked) {
+        const updatedWarehouse = [...prevWarehouse, warehouseId];
+        console.log("Updated Warehouse State (Added):", updatedWarehouse);
+        return updatedWarehouse;
+      } else {
+        const updatedWarehouse = prevWarehouse.filter(
+          (id) => id !== warehouseId
+        );
+        console.log("Updated Warehouse State (Removed):", updatedWarehouse);
+        return updatedWarehouse;
+      }
+    });
+  };
+
+  function isValidEmail(email) {
+    // Regular expression for email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    let filteredValue = value;
+
+    const allowedCharactersRegex = /^[a-zA-Z\s\-]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (
+      name === "firstName" ||
+      name === "city" ||
+      name === "state" ||
+      name === "country"
+    ) {
+      if (!allowedCharactersRegex.test(value)) {
+        filteredValue = value.replace(/[^a-zA-Z\s\-]+/g, "");
+      }
+    } else if (name === "phone") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 10);
+    } else if (name === "pincode") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 6);
+    } else if (name === "email") {
+      if (!emailRegex.test(value)) {
+        filteredValue = value.replace(/[^\w\s@.-]+/g, "");
+      }
+    }
+
+    switch (name) {
+      case "firstName":
+        setFirstName(filteredValue);
+
+        break;
+      case "email":
+        setEmail(filteredValue);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      case "address":
+        setAddress(value);
+        break;
+      case "city":
+        setCity(filteredValue);
+        break;
+      case "state":
+        setState(filteredValue);
+        break;
+      case "country":
+        setCountry(filteredValue);
+        break;
+      case "pincode":
+        setPincode(filteredValue);
+        break;
+      case "phone":
+        setPhone(filteredValue);
+        break;
+    }
+  };
+
+  const handleNew = () => {
+    setFirstName("");
+    setEmail("");
+    setPassword("");
+    setAddress("");
+    setCity("");
+    setState("");
+    setCountry("");
+    setPincode("");
+    setPhone("");
+    setActive(true);
+    setRole("ROLE_USER");
+    setWarehouse({});
+    setErrors({});
+  };
+
+  // USER CREATE
+  const handleUserCreation = () => {
+    const errors = {};
+    if (!firstName) {
+      errors.firstName = "First Name is required";
+    }
+    if (!email) {
+      errors.email = "Email is required";
+    } else if (!isValidEmail(email)) {
+      errors.email = "Invalid email format";
+    }
+
+    if (!phone) {
+      errors.phone = "Phone is required";
+    } else if (phone.length < 10) {
+      errors.phone = "Phone number must be 10 Digit";
+    }
+
+    if (!password) {
+      errors.password = "Password is required";
+    }
+    if (!address) {
+      errors.address = "Address is required";
+    }
+    if (!city) {
+      errors.city = "City is required";
+    }
+    if (!state) {
+      errors.state = "State is required";
+    }
+    if (!country) {
+      errors.country = "Country is required";
+    }
+    if (!pincode) {
+      errors.pincode = "Pincode is required";
+    } else if (pincode.length < 6) {
+      errors.pincode = "Pincode must be 6 Digit";
+    }
+    if (!warehouse) {
+      errors.warehouse = "Warehouse is required";
+    }
+
+    const token = localStorage.getItem("token");
+    let headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers = {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
+    const hashedPassword = encryptPassword(password);
+    const userPayload = {
+      accessRightsRoleId: 2,
+      accessWarehouse: warehouse,
+      active: active,
+      email: email,
+      emitterId: 0,
+      firstName: firstName,
+      orgId: orgId,
+      role: role,
+      pno: phone,
+      userAddressDTO: {
+        address1: address,
+        address2: "",
+        city: city,
+        country: country,
+        location: city,
+        pin: pincode,
+        state: state,
+      },
+      userName: email || "",
+    };
+
+    const userDataWithHashedPassword = {
+      ...userPayload,
+      password: hashedPassword,
+    };
+
+    console.log("THE PAYLOAD TO SAVE DATA IS:", userDataWithHashedPassword);
+
+    if (Object.keys(errors).length === 0) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/auth/createUser`,
+          userDataWithHashedPassword,
+          { headers }
+        )
+        .then((response) => {
+          console.log("User saved successfully!", response.data);
+          toast.success("User saved successfully!", {
+            autoClose: 2000,
+            theme: "colored",
+          });
+          setTimeout(() => {
+            addUser(false);
+          }, 3000);
+          handleNew();
+        })
+        .catch((error) => {
+          console.error("Error saving user:", error.message);
+          toast.error("Error saving user: " + error.message);
+        });
+    } else {
+      setErrors(errors);
     }
   };
 
@@ -270,271 +473,6 @@ function UserCreation({ addUser, userEditId }) {
     }
   };
 
-  const getWarehouseLocationList = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
-      );
-
-      if (response.status === 200) {
-        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
-        console.log(
-          "WarehouseLocation",
-          response.data.paramObjectsMap.WarehouseLocation
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  // const handleLocationChange = (warehouselocation, isChecked) => {
-  //   setWarehouse((prevWarehouse) => {
-  //     if (isChecked && !prevWarehouse.includes(warehouselocation)) {
-  //       // Add warehouseId to the array if it's not already present
-  //       return [...prevWarehouse, warehouselocation];
-  //     } else if (!isChecked) {
-  //       // Remove warehouseId from the array
-  //       return prevWarehouse.filter((id) => id !== warehouselocation);
-  //     }
-
-  //     // Return the unchanged array if isChecked is true and warehouseId is already present
-  //     return prevWarehouse;
-  //   });
-  // };
-
-  // const handleLocationChange = (warehouselocation, isChecked) => {
-  //   setWarehouse((prevWarehouse) => {
-  //     console.log("Previous Warehouse:", prevWarehouse);
-  //     if (
-  //       Array.isArray(prevWarehouse) &&
-  //       isChecked &&
-  //       !prevWarehouse.includes(warehouselocation)
-  //     ) {
-  //       // Add warehouseId to the array if it's not already present
-  //       return [...prevWarehouse, warehouselocation];
-  //     } else if (Array.isArray(prevWarehouse) && !isChecked) {
-  //       // Remove warehouseId from the array
-  //       return prevWarehouse.filter((id) => id !== warehouselocation);
-  //     }
-  //     // Return the unchanged array if isChecked is true and warehouseId is already present
-  //     return prevWarehouse;
-  //   });
-  // };
-
-  const handleLocationChange = (warehouselocation, isChecked) => {
-    setWarehouse((prevWarehouse) => {
-      console.log("Previous Warehouse:", prevWarehouse);
-      if (
-        Array.isArray(prevWarehouse) &&
-        isChecked &&
-        !prevWarehouse.includes(warehouselocation)
-      ) {
-        // Add warehouseId to the array if it's not already present
-        return [...prevWarehouse, warehouselocation];
-      } else if (Array.isArray(prevWarehouse) && !isChecked) {
-        // Remove warehouseId from the array
-        return prevWarehouse.filter((id) => id !== warehouselocation);
-      }
-      // Return the unchanged array if isChecked is true and warehouseId is already present
-      return prevWarehouse;
-    });
-  };
-
-  // In the Assign Warehouse DialogContent
-
-  function isValidEmail(email) {
-    // Regular expression for email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    let filteredValue = value;
-
-    const allowedCharactersRegex = /^[a-zA-Z\s\-]+$/;
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-    if (
-      name === "firstName" ||
-      name === "city" ||
-      name === "state" ||
-      name === "country"
-    ) {
-      if (!allowedCharactersRegex.test(value)) {
-        filteredValue = value.replace(/[^a-zA-Z\s\-]+/g, "");
-      }
-    } else if (name === "phone") {
-      filteredValue = value.replace(/\D/g, "").slice(0, 10);
-    } else if (name === "pincode") {
-      filteredValue = value.replace(/\D/g, "").slice(0, 6);
-    } else if (name === "email") {
-      if (!emailRegex.test(value)) {
-        filteredValue = value.replace(/[^\w\s@.-]+/g, "");
-      }
-    }
-
-    switch (name) {
-      case "firstName":
-        setFirstName(filteredValue);
-
-        break;
-      case "email":
-        setEmail(filteredValue);
-        break;
-      case "password":
-        setPassword(value);
-        break;
-      case "address":
-        setAddress(value);
-        break;
-      case "city":
-        setCity(filteredValue);
-        break;
-      case "state":
-        setState(filteredValue);
-        break;
-      case "country":
-        setCountry(filteredValue);
-        break;
-      case "pincode":
-        setPincode(filteredValue);
-        break;
-      case "phone":
-        setPhone(filteredValue);
-        break;
-    }
-  };
-
-  const handleNew = () => {
-    setFirstName("");
-    setEmail("");
-    setPassword("");
-    setAddress("");
-    setCity("");
-    setState("");
-    setCountry("");
-    setPincode("");
-    setPhone("");
-    setActive(true);
-    setRole("ROLE_USER");
-    setWarehouse({});
-    setErrors({});
-    // notify();
-  };
-
-  // USER CREATE
-  const handleUserCreation = () => {
-    const errors = {};
-    if (!firstName) {
-      errors.firstName = "First Name is required";
-    }
-    if (!email) {
-      errors.email = "Email is required";
-    } else if (!isValidEmail(email)) {
-      errors.email = "Invalid email format";
-    }
-
-    if (!phone) {
-      errors.phone = "Phone is required";
-    } else if (phone.length < 10) {
-      errors.phone = "Phone number must be 10 Digit";
-    }
-
-    if (!password) {
-      errors.password = "Password is required";
-    }
-    if (!address) {
-      errors.address = "Address is required";
-    }
-    if (!city) {
-      errors.city = "City is required";
-    }
-    if (!state) {
-      errors.state = "State is required";
-    }
-    if (!country) {
-      errors.country = "Country is required";
-    }
-    if (!pincode) {
-      errors.pincode = "Pincode is required";
-    } else if (pincode.length < 6) {
-      errors.pincode = "Pincode must be 6 Digit";
-    }
-    if (!warehouse) {
-      errors.warehouse = "Warehouse is required";
-    }
-
-    const token = localStorage.getItem("token");
-    let headers = {
-      "Content-Type": "application/json",
-    };
-
-    if (token) {
-      headers = {
-        ...headers,
-        Authorization: `Bearer ${token}`,
-      };
-    }
-    const hashedPassword = encryptPassword(password);
-
-    // Update userData with the hashed password
-
-    const userPayload = {
-      accessRightsRoleId: 2,
-      accessWarehouse: warehouse,
-      // accessaddId: 0,
-      active: active,
-      email: email,
-      emitterId: 0,
-      firstName: firstName,
-      orgId: orgId, // You may need to provide a default value
-      role: role,
-      pno: phone,
-      userAddressDTO: {
-        address1: address,
-        address2: "", // You may need to provide a default value
-        city: city,
-        country: country,
-        location: city,
-        pin: pincode,
-        state: state,
-      },
-      userName: email || "", // You may need to provide a default value
-    };
-
-    const userDataWithHashedPassword = {
-      ...userPayload,
-      password: hashedPassword,
-    };
-
-    if (Object.keys(errors).length === 0) {
-      // Valid data, perform API call or other actions
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/api/auth/createUser`,
-          userDataWithHashedPassword,
-          { headers }
-        )
-        .then((response) => {
-          console.log("User saved successfully!", response.data);
-          // toast.success("User saved successfully!");
-          toast.success("User saved successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          handleNew();
-        })
-        .catch((error) => {
-          console.error("Error saving user:", error.message);
-          toast.error("Error saving user: " + error.message);
-        });
-    } else {
-      setErrors(errors);
-    }
-  };
-
   // CLOSE BUTTON WITH CONFIRMATION
   const handleUserCreationClose = () => {
     if (
@@ -563,11 +501,6 @@ function UserCreation({ addUser, userEditId }) {
     addUser(false);
   };
 
-  const handleSwitchChange = (event) => {
-    setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
-  };
-
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
@@ -578,6 +511,7 @@ function UserCreation({ addUser, userEditId }) {
           />
         </div>
         <div className="row">
+          {/* NAME FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -590,11 +524,9 @@ function UserCreation({ addUser, userEditId }) {
               </span>
             </label>
           </div>
-
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              // placeholder={"Enter"}
               name="firstName"
               value={firstName}
               onInput={stringValidation}
@@ -604,7 +536,7 @@ function UserCreation({ addUser, userEditId }) {
               <span className="error-text">{errors.firstName}</span>
             )}
           </div>
-
+          {/* EMAIL FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -620,7 +552,6 @@ function UserCreation({ addUser, userEditId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              // placeholder={"Enter"}
               name="email"
               value={email}
               onChange={handleInputChange}
@@ -628,7 +559,6 @@ function UserCreation({ addUser, userEditId }) {
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
-
           {/* PASSWORD FIELD */}
           {!userEditId && (
             <>
@@ -648,7 +578,6 @@ function UserCreation({ addUser, userEditId }) {
                 <input
                   className="form-control form-sz mb-2"
                   type={"password"}
-                  // placeholder={"Enter"}
                   name="password"
                   value={password}
                   onChange={handleInputChange}
@@ -659,7 +588,7 @@ function UserCreation({ addUser, userEditId }) {
               </div>
             </>
           )}
-
+          {/* ADDRESS FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -675,7 +604,6 @@ function UserCreation({ addUser, userEditId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              // placeholder={"Enter"}
               name="address"
               value={address}
               onInput={(e) => {
@@ -687,6 +615,7 @@ function UserCreation({ addUser, userEditId }) {
               <span className="error-text">{errors.address}</span>
             )}
           </div>
+          {/* CITY FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -702,7 +631,6 @@ function UserCreation({ addUser, userEditId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              // placeholder={"Enter"}
               name="city"
               value={city}
               onInput={(e) => {
@@ -712,6 +640,7 @@ function UserCreation({ addUser, userEditId }) {
             />
             {errors.city && <span className="error-text">{errors.city}</span>}
           </div>
+          {/* STATE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -737,6 +666,7 @@ function UserCreation({ addUser, userEditId }) {
             />
             {errors.state && <span className="error-text">{errors.state}</span>}
           </div>
+          {/* COUNTRY FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -764,6 +694,7 @@ function UserCreation({ addUser, userEditId }) {
               <span className="error-text">{errors.country}</span>
             )}
           </div>
+          {/* PINCODE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -779,7 +710,6 @@ function UserCreation({ addUser, userEditId }) {
           <div className="col-lg-3 col-md-6 mb-2">
             <input
               className="form-control form-sz mb-2"
-              // placeholder={"Enter"}
               name="pincode"
               value={pincode}
               onChange={handleInputChange}
@@ -788,6 +718,7 @@ function UserCreation({ addUser, userEditId }) {
               <span className="error-text">{errors.pincode}</span>
             )}
           </div>
+          {/* PHONE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -804,7 +735,6 @@ function UserCreation({ addUser, userEditId }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              // placeholder={"Enter"}
               name="phone"
               value={phone}
               max={10}
@@ -812,7 +742,7 @@ function UserCreation({ addUser, userEditId }) {
             />
             {errors.phone && <span className="error-text">{errors.phone}</span>}
           </div>
-
+          {/* WAREHOUSE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
@@ -832,8 +762,11 @@ function UserCreation({ addUser, userEditId }) {
             >
               Assign Warehouse
             </button>
+            {/* {errors.warehouse && (
+              <span className="error-text">{errors.warehouse}</span>
+            )} */}
           </div>
-
+          {/* ACTIVE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
@@ -847,7 +780,9 @@ function UserCreation({ addUser, userEditId }) {
                 <IOSSwitch
                   sx={{ m: 1 }}
                   checked={active}
-                  onChange={handleSwitchChange}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
                 />
               }
             />
@@ -901,9 +836,8 @@ function UserCreation({ addUser, userEditId }) {
           <DialogContentText className="d-flex flex-column">
             <div className="row mb-3">
               <div className="col-lg-12 col-md-12">
-                {warehouseLocationVO ? (
+                {warehouseLocationVO.length > 0 ? (
                   <div>
-                    {" "}
                     {warehouseLocationVO.map((location) => (
                       <div className="form-check" key={location.warehouseId}>
                         <input
@@ -911,13 +845,7 @@ function UserCreation({ addUser, userEditId }) {
                           type="checkbox"
                           id={location.warehouseId}
                           value={location.warehouseId}
-                          // checked={warehouse.includes(location.warehouseId)}
                           checked={
-                            Array.isArray(warehouse) &&
-                            warehouse.includes(location.warehouseId)
-                          }
-                          disabled={
-                            userEditId && // Check if it's edit time
                             Array.isArray(warehouse) &&
                             warehouse.includes(location.warehouseId)
                           }
@@ -928,7 +856,6 @@ function UserCreation({ addUser, userEditId }) {
                             )
                           }
                         />
-
                         <label
                           className="form-check-label"
                           htmlFor={location.warehouseId}
@@ -940,7 +867,7 @@ function UserCreation({ addUser, userEditId }) {
                   </div>
                 ) : (
                   <div>
-                    <center>Flow Not Available!</center>{" "}
+                    <center>Flow Not Available!</center>
                   </div>
                 )}
               </div>
@@ -954,7 +881,6 @@ function UserCreation({ addUser, userEditId }) {
           </Button>
         </DialogActions>
       </Dialog>
-
       {/* CLOSE CONFIRMATION MODAL */}
       <Dialog open={openConfirmationDialog}>
         <DialogContent>
@@ -965,7 +891,6 @@ function UserCreation({ addUser, userEditId }) {
           <Button onClick={handleConfirmationYes}>Yes</Button>
         </DialogActions>
       </Dialog>
-      {/* {openConfirmationDialog && (<CloseConfirmation open={openConfirmationDialog} close={handleConfirmationYes} no={handleConfirmationClose} />)} */}
     </>
   );
 }
