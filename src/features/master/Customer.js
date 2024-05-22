@@ -32,35 +32,6 @@ import { MdGroups } from "react-icons/md";
 import AddCustomer from "./AddCustomer";
 import DashBoardComponent from "./DashBoardComponent";
 
-const statsData = [
-  {
-    title: "All Customers",
-    value: "0",
-    icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active Customer",
-    value: "0",
-    icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    // title: "So Value",
-    title: "--",
-    value: "0",
-    icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    // title: "Invoice Value",
-    title: "--",
-    value: "0",
-    icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-];
-
 function Customer() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
@@ -70,6 +41,32 @@ function Customer() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [statsData, setStatsData] = useState([
+    {
+      title: "All Customers",
+      value: "0",
+      icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "Active Customer",
+      value: "0",
+      icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "--",
+      value: "0",
+      icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "--",
+      value: "0",
+      icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+  ]);
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -142,31 +139,20 @@ function Customer() {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "id",
-      //   header: "Sr No",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "first",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "first",
-      //   },
-      // },
-      // {
-      //   accessorKey: "customerType",
-      //   header: "Customer Type",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      //   Cell: ({ cell }) => {
-      //     return cell.row.original.customerType === 0 ? "Emitter" : "Receiver";
-      //   },
-      // },
+      {
+        accessorKey: "customerType",
+        header: "Customer Type",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+        Cell: ({ cell }) => {
+          return cell.row.original.customerType === 0 ? "Emitter" : "Receiver";
+        },
+      },
       {
         accessorKey: "displayName",
         header: "Display Name",
@@ -241,7 +227,42 @@ function Customer() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.customersVO.reverse());
+        const allCustomers = response.data.paramObjectsMap.customersVO;
+        setData(allCustomers.reverse());
+        const totalCustomers = allCustomers.length;
+        const activeCustomers = allCustomers.filter(
+          (customer) => customer.active === "Active"
+        ).length;
+        const inActiveCustomers = allCustomers.filter(
+          (customer) => customer.active === "In-Active"
+        ).length;
+
+        setStatsData([
+          {
+            title: "All Customers",
+            value: totalCustomers.toString(),
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active Customers",
+            value: activeCustomers.toString(),
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "In-Active Customers",
+            value: inActiveCustomers.toString(),
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -388,14 +409,14 @@ function Customer() {
                   <TableContainer component={Paper}>
                     <Table>
                       <TableBody>
-                        {/* <TableRow>
-                          <TableCell>Sr No</TableCell>
-                          <TableCell>{selectedRowData.id}</TableCell>
-                        </TableRow>
                         <TableRow>
                           <TableCell>Customer Type</TableCell>
-                          <TableCell>{selectedRowData.customerType}</TableCell>
-                        </TableRow> */}
+                          <TableCell>
+                            {selectedRowData.customerType === 0
+                              ? "Emitter"
+                              : "Receiver"}
+                          </TableCell>
+                        </TableRow>
                         <TableRow>
                           <TableCell>Display Name</TableCell>
                           <TableCell>{selectedRowData.displayName}</TableCell>
