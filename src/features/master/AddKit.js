@@ -91,6 +91,9 @@ function AddKit({ addItem, kitEditId }) {
   const [assetCodeList, setAssetCodeList] = useState([]);
   const [kitDesc, setKitDesc] = useState("");
   const [active, setActive] = React.useState(true);
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
 
   useEffect(() => {
@@ -154,6 +157,9 @@ function AddKit({ addItem, kitEditId }) {
         setKitDesc(response.data.paramObjectsMap.KitVO.kitDesc);
         setPartQuantity(response.data.paramObjectsMap.KitVO.partQty);
         setKitAssetDTO(response.data.paramObjectsMap.KitVO.kitAssetVO);
+        if (response.data.paramObjectsMap.KitVO.active === "In-Active") {
+          setActive(false);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -414,9 +420,11 @@ function AddKit({ addItem, kitEditId }) {
         const kitData = {
           kitNo: kitCode,
           kitDesc,
+          active,
           partQuantity,
           kitAssetDTO,
           orgId,
+          createdBy: userName,
         };
         const response = await axios.post(
           `${process.env.REACT_APP_API_URL}/api/master/createkit`,
@@ -480,6 +488,8 @@ function AddKit({ addItem, kitEditId }) {
           partQuantity,
           kitAssetDTO,
           orgId,
+          active,
+          createdBy: userName,
         };
         const response = await axios.put(
           `${process.env.REACT_APP_API_URL}/api/master/updateKit`,
@@ -546,11 +556,6 @@ function AddKit({ addItem, kitEditId }) {
     const updatedKitAssets = [...kitAssetDTO];
     updatedKitAssets[index].isEditable = false;
     setKitAssetDTO(updatedKitAssets);
-  };
-
-  const handleSwitchChange = (event) => {
-    setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
   };
 
   return (
@@ -658,8 +663,10 @@ function AddKit({ addItem, kitEditId }) {
                   control={
                     <IOSSwitch
                       sx={{ m: 1 }}
-                      onChange={handleSwitchChange}
-                      defaultChecked
+                      checked={active}
+                      onChange={(e) => {
+                        setActive(e.target.checked);
+                      }}
                     />
                   }
                 />

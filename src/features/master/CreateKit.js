@@ -10,7 +10,7 @@ import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { FaBoxes, FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegObjectGroup } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
@@ -23,33 +23,6 @@ import { LuTimerReset } from "react-icons/lu";
 import AddKit from "./AddKit";
 import DashBoardComponent from "./DashBoardComponent";
 
-const statsData = [
-  {
-    title: "Total Kits",
-    value: "0",
-    icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "Active Kits",
-    value: "0",
-    icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "-",
-    value: "0",
-    icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "-",
-    value: "0",
-    icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
-
 function CreateKit() {
   const [open, setOpen] = React.useState(false);
   const [openNew, setOpenNew] = React.useState(false);
@@ -61,6 +34,33 @@ function CreateKit() {
   const [kitCode, setKitCode] = React.useState(null);
   const [editKit, setEditKit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = React.useState(null);
+
+  const [statsData, setStatsData] = useState([
+    {
+      title: "Total Kits",
+      value: "0",
+      icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "Active Kits",
+      value: "0",
+      icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "-",
+      value: "0",
+      icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "-",
+      value: "0",
+      icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+  ]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -127,6 +127,39 @@ function CreateKit() {
         setKitCode(kitCodes);
         console.log("code", kitCodes);
         console.log("Updated data inside getAllKitData:", kitsWithSerialNumber);
+
+        const totalKits = kits.length;
+        const activeKits = kits.filter((kit) => kit.active === "Active").length;
+        const inActiveKits = kits.filter(
+          (kit) => kit.active === "In-Active"
+        ).length;
+
+        setStatsData([
+          {
+            title: "Total Kits",
+            value: totalKits.toString(),
+            icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "Active Kits",
+            value: activeKits.toString(),
+            icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "In-Active Kits",
+            value: inActiveKits.toString(),
+            icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "-",
+            value: "0",
+            icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
