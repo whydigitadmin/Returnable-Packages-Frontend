@@ -32,33 +32,6 @@ import { MdGroups } from "react-icons/md";
 import AddVendor from "./AddVendor";
 import DashBoardComponent from "./DashBoardComponent";
 
-const statsData = [
-  {
-    title: "No of Vendor",
-    value: "0",
-    icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active Vendor",
-    value: "0",
-    icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "Average PO Per Vendor",
-    value: "0",
-    icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "Idle Vendors",
-    value: "0",
-    icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-];
-
 function Vendors() {
   const [open, setOpen] = React.useState(false);
   const [addVendors, setAddVendors] = React.useState(false);
@@ -68,6 +41,32 @@ function Vendors() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [statsData, setStatsData] = useState([
+    {
+      title: "No of Vendors",
+      value: "0",
+      icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "Active Vendors",
+      value: "0",
+      icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "Average PO Per Vendor",
+      value: "0",
+      icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "Idle Vendors",
+      value: "0",
+      icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+  ]);
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -140,20 +139,9 @@ function Vendors() {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "id",
-      //   header: "Sr No",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "first",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "first",
-      //   },
-      // },
       {
-        accessorKey: "displyName",
-        header: "Vendor Display Name",
+        accessorKey: "venderType",
+        header: "Vendor Type",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -163,8 +151,8 @@ function Vendors() {
         },
       },
       {
-        accessorKey: "venderType",
-        header: "Vendor Type",
+        accessorKey: "displyName",
+        header: "Vendor Display Name",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -226,6 +214,42 @@ function Vendors() {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.vendorVO.reverse());
+        const allVendors = response.data.paramObjectsMap.vendorVO;
+        setData(allVendors.reverse());
+        const totalVendors = allVendors.length;
+        const activeVendors = allVendors.filter(
+          (vendor) => vendor.active === "Active"
+        ).length;
+        const inActiveVendors = allVendors.filter(
+          (vendor) => vendor.active === "In-Active"
+        ).length;
+        setStatsData([
+          {
+            title: "No of Vendors",
+            value: totalVendors.toString(),
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active Vendors",
+            value: activeVendors.toString(),
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            // title: "Average PO Per Vendor",
+            title: "In-Active Vendors",
+            value: inActiveVendors.toString(),
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "Idle Vendors",
+            value: "0",
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -590,6 +590,9 @@ function AddVendor({ addVendors, editVendorId }) {
         setVenderBankId(
           response.data.paramObjectsMap.vendorVO.vendorBankDetailsVO.id
         );
+        if (response.data.paramObjectsMap.vendorVO.active === "In-Active") {
+          setActive(false);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -923,11 +926,6 @@ function AddVendor({ addVendors, editVendorId }) {
     }
   };
 
-  const handleSwitchChange = (event) => {
-    setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
-  };
-
   return (
     <>
       <ToastContainer />
@@ -1142,8 +1140,10 @@ function AddVendor({ addVendors, editVendorId }) {
               control={
                 <IOSSwitch
                   sx={{ m: 1 }}
-                  onChange={handleSwitchChange}
-                  defaultChecked
+                  checked={active}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
                 />
               }
             />
