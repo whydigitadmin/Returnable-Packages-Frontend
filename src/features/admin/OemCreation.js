@@ -88,14 +88,70 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [selectedFlows, setSelectedFlows] = useState([]);
   const [oemData, setOemData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [countryList, setCountryList] = useState([]);
+  const [stateList, setStateList] = useState([]);
+  const [cityList, setCityList] = useState([]);
 
   useEffect(() => {
+    getCountryData();
+    getStateData();
+    getCityData();
     console.log("value", selectedFlows);
     getCustomersList();
     {
       oemEditId && getOemById();
     }
-  }, [selectedFlows]);
+  }, [selectedFlows, country, state]);
+
+  const getCountryData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCountryList(response.data.paramObjectsMap.countryVO);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getStateData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?country=${country}&orgId=${orgId}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setStateList(response.data.paramObjectsMap.stateVO);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const getCityData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city/getByStateAndCountry?country=${country}&orgId=${orgId}&state=${state}`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setCityList(response.data.paramObjectsMap.cityVO);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleShippingClickOpen = () => {
     setOpenShippingModal(true);
@@ -689,34 +745,39 @@ function OemCreation({ addEmitter, oemEditId }) {
               <span className="error-text">{errors.address}</span>
             )}
           </div>
+
+          {/* COUNTRY FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
-              <span
-                className={
-                  "label-text label-font-size text-base-content d-flex flex-row"
-                }
-              >
-                City
-                <FaStarOfLife className="must" />
-              </span>
+            <label className="label label-text label-font-size text-base-content">
+              Country
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"text"}
-              // placeholder={"Enter"}
-              name="city"
-              value={city}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
+            <select
+              className="form-select form-sz w-full mb-2"
+              name="country"
+              value={country}
+              onChange={(e) => {
+                setCountry(e.target.value);
               }}
-              onChange={handleInputChange}
-            />
-            {errors.city && <span className="error-text">{errors.city}</span>}
+            >
+              <option value="" disabled>
+                Select country
+              </option>
+              {countryList.length > 0 &&
+                countryList.map((list) => (
+                  <option key={list.id} value={list.country}>
+                    {list.country}
+                  </option>
+                ))}
+            </select>
+            {errors.country && (
+              <span className="error-text">{errors.country}</span>
+            )}
           </div>
+          {/* STATE FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
+            <label className="label mb-1">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -728,47 +789,57 @@ function OemCreation({ addEmitter, oemEditId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"text"}
-              // placeholder={"Enter"}
-              name="state"
+            <select
+              className="form-select form-sz w-full"
+              onChange={(e) => setState(e.target.value)}
               value={state}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
-              onChange={handleInputChange}
-            />
+              name="state"
+            >
+              <option value="" disabled>
+                Select state
+              </option>
+              {stateList.length > 0 &&
+                stateList.map((list) => (
+                  <option key={list.id} value={list.stateName}>
+                    {list.stateName}
+                  </option>
+                ))}
+            </select>
             {errors.state && <span className="error-text">{errors.state}</span>}
           </div>
+          {/* CITY FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label">
+            <label className="label mb-1">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Country
+                City
                 <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
-            <input
-              className="form-control form-sz mb-2"
-              type={"text"}
-              // placeholder={"Enter"}
-              name="country"
-              value={country}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
-              onChange={handleInputChange}
-            />
-            {errors.country && (
-              <span className="error-text">{errors.country}</span>
-            )}
+            <select
+              className="form-select form-sz w-full mb-2"
+              onChange={(e) => setCity(e.target.value)}
+              value={city}
+              name="city"
+            >
+              <option value="" disabled>
+                Select city
+              </option>
+              {cityList.length > 0 &&
+                cityList.map((list, index) => (
+                  <option key={index} value={list.cityName}>
+                    {list.cityName}
+                  </option>
+                ))}
+            </select>
+            {errors.city && <span className="error-text">{errors.city}</span>}
           </div>
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
