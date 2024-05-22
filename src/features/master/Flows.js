@@ -34,35 +34,6 @@ import DashBoardComponent from "./DashBoardComponent";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 
-const statsData = [
-  {
-    title: "Static Flows",
-    value: "0",
-    icon: <MdMapsHomeWork className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "Transit Flows",
-    value: "0",
-    icon: <FaTruck className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    // title: "Unique Item/Item group",
-    title: "--",
-    value: "0",
-    icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    // title: "Cycle Time",
-    title: "--",
-    value: "0",
-    icon: <LuTimerReset className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-];
-
 function Flows() {
   const [open, setOpen] = React.useState(false);
   const [addFlows, setAddFlows] = React.useState(false);
@@ -72,6 +43,42 @@ function Flows() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState("");
   const [createModalOpenView, setCreateModalOpenView] = useState(false);
+  const [statsData, setStatsData] = useState([
+    {
+      title: "Static Flows",
+      value: "0",
+      icon: <MdMapsHomeWork className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "Transit Flows",
+      value: "0",
+      icon: <FaTruck className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      // title: "Unique Item/Item group",
+      title: "All Flows",
+      value: "0",
+      icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      // title: "Cycle Time",
+      title: "Active Flows",
+      value: "0",
+      icon: <LuTimerReset className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    // {
+    //   // title: "Cycle Time",
+    //   title: "In-Active Flows",
+    //   value: "0",
+    //   icon: <LuTimerReset className="w-5 h-5 text-white dashicon-sm" />,
+    //   description: "",
+    // },
+  ]);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -82,7 +89,8 @@ function Flows() {
 
   const handleBack = () => {
     setAddFlows(false);
-    getFlowData();
+    // getFlowData();
+    getCustomerData();
     setEditFlow(false);
   };
 
@@ -90,23 +98,23 @@ function Flows() {
     setOpen(false);
   };
 
-  useEffect(() => {
-    getFlowData();
-  }, []);
+  // useEffect(() => {
+  //   getFlowData();
+  // }, []);
 
-  const getFlowData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow`
-      );
+  // const getFlowData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/flow`
+  //     );
 
-      if (response.status === 200) {
-        setData(response.data.paramObjectsMap.flowVO);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  //     if (response.status === 200) {
+  //       setData(response.data.paramObjectsMap.flowVO);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const handleVisibilityClick = (rowData) => {
     setSelectedRowData(rowData);
@@ -269,6 +277,69 @@ function Flows() {
     data,
     columns,
   });
+
+  useEffect(() => {
+    getCustomerData();
+  }, []);
+
+  const getCustomerData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow`
+      );
+
+      if (response.status === 200) {
+        const allFlows = response.data.paramObjectsMap.flowVO;
+        setData(allFlows.reverse());
+        const totalFlows = allFlows.length;
+        console.log("flowsT", totalFlows);
+        const activeFlows = allFlows.filter(
+          (flows) => flows.active === "Active"
+        ).length;
+        console.log("flowsActive", activeFlows);
+        const inActiveFlows = allFlows.filter(
+          (flows) => flows.active === "In-Active"
+        ).length;
+        console.log("flowsIn-Active", inActiveFlows);
+
+        setStatsData([
+          {
+            title: "Static Flows",
+            // value: totalCustomers.toString(),
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Transit Flows",
+            // value: totalCustomers.toString(),
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "All Flows",
+            value: totalFlows,
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active Flows",
+            value: activeFlows,
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          // {
+          //   title: "In-Active Flows",
+          //   value: inActiveFlows.toString(),
+          //   icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+          //   description: "",
+          // },
+        ]);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   return (
     <>
       {/* {addFlows ? (

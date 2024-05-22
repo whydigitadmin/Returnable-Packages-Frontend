@@ -72,6 +72,7 @@ function AddFlows({ addFlows, editFlowId }) {
   const [origin, setOrigin] = useState("");
   const [destination, setDestination] = useState("");
   const [editDestination, setEditDestination] = useState("");
+  const [editRetrival, setEditRetrival] = useState("");
   const [editFilteredList, setEditFilteredList] = useState([]);
   const [editFilteredWarehouseList, setEditFilteredWarehouseList] = useState(
     []
@@ -94,6 +95,7 @@ function AddFlows({ addFlows, editFlowId }) {
   );
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [warehouseLocationValue, setWarehouseLocationValue] = useState("");
+  const [warehouseLocationId, setWarehouseLocationId] = useState("");
   const [openKitModal, setOpenKitModal] = React.useState(false);
   const [kitDTO, setKitDTO] = useState([]);
   const [city, setCity] = React.useState("");
@@ -149,18 +151,19 @@ function AddFlows({ addFlows, editFlowId }) {
   const editRetrivalList = async (value) => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+        // `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
       );
-      // console.log("API Response:", response);
+      console.log("API Response:", response);
 
       if (response.status === 200) {
-        console.log("origin:", value);
+        console.log("editRetrivalList:", value);
         const warehouseLocationVO =
-          response.data.paramObjectsMap.warehouseLocationVO;
+          response.data.paramObjectsMap.WarehouseLocation;
         const filteredWarehouse = warehouseLocationVO.filter(
           (list) => list.warehouseId !== value
         );
-        console.log("THE EDIT FILETERED CITY ARE:", filteredWarehouse);
+        console.log("THE EDIT Retrivel FILETERED CITY ARE:", filteredWarehouse);
         setEditFilteredWarehouseList(filteredWarehouse);
       } else {
         console.error("API Error:", response.data);
@@ -233,20 +236,32 @@ function AddFlows({ addFlows, editFlowId }) {
           response.data.paramObjectsMap.flowVO
         );
         // handleFileterdCityChange();
+        setId(response.data.paramObjectsMap.flowVO.id);
         setFlowName(response.data.paramObjectsMap.flowVO.flowName);
         setEmitter(response.data.paramObjectsMap.flowVO.emitterId);
         setReceiver(response.data.paramObjectsMap.flowVO.receiverId);
+        setRetrievalWarehouse(
+          response.data.paramObjectsMap.flowVO.retrievalWarehouseId
+        );
         setOrigin(response.data.paramObjectsMap.flowVO.orgin);
         setEditDestination(response.data.paramObjectsMap.flowVO.destination);
+        setEditRetrival(
+          response.data.paramObjectsMap.flowVO.retrievalWarehouseId
+        );
+
         setWarehouseLocationValue(
-          response.data.paramObjectsMap.flowVO.warehouseLocation
+          response.data.paramObjectsMap.flowVO.warehouseId
         );
         setKitDTO(response.data.paramObjectsMap.flowVO.flowDetailVO);
         // console.log("kit", response.data.paramObjectsMap.KitVO);
         editDestinationList(response.data.paramObjectsMap.flowVO.orgin);
-        editRetrivalList(
-          response.data.paramObjectsMap.flowVO.warehouseLocation
+        editRetrivalList(response.data.paramObjectsMap.flowVO.warehouseId);
+        setWarehouseLocationId(
+          response.data.paramObjectsMap.flowVO.warehouseId
         );
+        if (response.data.paramObjectsMap.flowVO.active === "In-Active") {
+          setActive(false);
+        }
       }
       // handleFileterdCityChange();
     } catch (error) {
@@ -394,6 +409,9 @@ function AddFlows({ addFlows, editFlowId }) {
   const handleEditDestinationChange = (e) => {
     setEditDestination(e.target.value);
   };
+  const handleEditRetrivelChange = (e) => {
+    setEditRetrival(e.target.value);
+  };
   // SAVE API
   const handleSave = () => {
     const errors = {};
@@ -432,6 +450,8 @@ function AddFlows({ addFlows, editFlowId }) {
         modifiedby: userName,
         warehouseId: warehouseLocationValue,
         // warehouseLocation: warehouseLocationValue,
+        // retrievalWarehouseLocation: retrievalWarehouse,
+        retrievalWarehouseId: retrievalWarehouse,
         flowDetailDTO: kitDTO,
       };
 
@@ -478,8 +498,8 @@ function AddFlows({ addFlows, editFlowId }) {
     if (!origin) {
       errors.origin = "origin is required";
     }
-    if (!destination) {
-      errors.destination = "Destination is required";
+    if (!editDestination) {
+      errors.editDestination = "Destination is required";
     }
     if (!warehouseLocationValue) {
       errors.warehouseLocationValue = "Warehouse Location is required";
@@ -489,25 +509,52 @@ function AddFlows({ addFlows, editFlowId }) {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        id,
+        id: id,
         orgId,
         flowName,
         emitterId: emitter,
         receiverId: receiver,
         orgin: origin,
-        destination,
+        destination: editDestination,
         active,
         createdby: userName,
         modifiedby: userName,
         warehouseId: warehouseLocationValue,
         // warehouseLocation: warehouseLocationValue,
+        // retrievalWarehouseLocation: editRetrival,
+        retrievalWarehouseId: editRetrival,
         flowDetailDTO: kitDTO,
       };
 
-      Axios.post(`${process.env.REACT_APP_API_URL}/api/master/flow`, formData)
+      Axios.put(`${process.env.REACT_APP_API_URL}/api/master/flow`, formData)
+        //     .then((response) => {
+        //       console.log("Response:", response.data);
+        //       addFlows(true);
+        //     })
+        //     .catch((error) => {
+        //       console.error("Error:", error);
+        //     });
+        // } else {
+        //   setErrors(errors);
+        // }
         .then((response) => {
-          console.log("Response:", response.data);
-          addFlows(true);
+          if (response.data.status === "Error") {
+            console.error("Error creating kit:", response.data.paramObjectsMap);
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+
+            setTimeout(() => {
+              addFlows(true);
+            }, 3000);
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -669,6 +716,7 @@ function AddFlows({ addFlows, editFlowId }) {
 
   const handleSupplierChange = (e) => {
     const selectedValue = parseInt(e.target.value);
+    console.log("selected", selectedValue);
     setWarehouseLocationValue(selectedValue);
     const filterSupplier = warehouseLocationVO.filter(
       (list) => list.warehouseId !== selectedValue
@@ -676,10 +724,6 @@ function AddFlows({ addFlows, editFlowId }) {
     console.log("THE FILETERED filterSupplier ARE:", filterSupplier);
     setRetrievalWarehouse("");
     setFilterSupplier(filterSupplier);
-  };
-  const handleSwitchChange = (event) => {
-    setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
   };
 
   return (
@@ -840,42 +884,51 @@ function AddFlows({ addFlows, editFlowId }) {
           </div>
           <div className="col-lg-3 col-md-6">
             {editFlowId ? (
-              <select
-                className="form-select form-sz w-full mb-2"
-                onChange={handleEditDestinationChange}
-                value={editDestination}
-                name="destination"
-              >
-                <option value="" disabled>
-                  Select an destination
-                </option>
-                {editFilteredList.length > 0 &&
-                  editFilteredList.map((list) => (
-                    <option key={list.id} value={list.cityCode}>
-                      {list.cityName}
-                    </option>
-                  ))}
-              </select>
+              <>
+                <select
+                  className="form-select form-sz w-full mb-2"
+                  onChange={handleEditDestinationChange}
+                  value={editDestination}
+                  name="destination"
+                >
+                  <option value="" disabled>
+                    Select an destination
+                  </option>
+                  {editFilteredList.length > 0 &&
+                    editFilteredList.map((list) => (
+                      <option key={list.id} value={list.cityCode}>
+                        {list.cityName}
+                      </option>
+                    ))}
+                </select>
+                {errors.editDestination && (
+                  <span className="error-text mb-1">
+                    {errors.editDestination}
+                  </span>
+                )}
+              </>
             ) : (
-              <select
-                className="form-select form-sz w-full mb-2"
-                onChange={handleInputChange}
-                value={destination}
-                name="destination"
-              >
-                <option value="" disabled>
-                  Select an destination
-                </option>
-                {filteredCity.length > 0 &&
-                  filteredCity.map((list) => (
-                    <option key={list.id} value={list.cityCode}>
-                      {list.cityName}
-                    </option>
-                  ))}
-              </select>
-            )}
-            {errors.destination && (
-              <span className="error-text mb-1">{errors.destination}</span>
+              <>
+                <select
+                  className="form-select form-sz w-full mb-2"
+                  onChange={handleInputChange}
+                  value={destination}
+                  name="destination"
+                >
+                  <option value="" disabled>
+                    Select an destination
+                  </option>
+                  {filteredCity.length > 0 &&
+                    filteredCity.map((list) => (
+                      <option key={list.id} value={list.cityCode}>
+                        {list.cityName}
+                      </option>
+                    ))}
+                </select>
+                {errors.destination && (
+                  <span className="error-text mb-1">{errors.destination}</span>
+                )}
+              </>
             )}
           </div>
           {/* active field */}
@@ -930,15 +983,15 @@ function AddFlows({ addFlows, editFlowId }) {
             {editFlowId ? (
               <select
                 className="form-select form-sz w-full mb-2"
-                onChange={handleInputChange}
-                value={retrievalWarehouse}
+                onChange={handleEditRetrivelChange}
+                value={editRetrival}
                 name="retrievalWarehouse"
               >
                 <option value="" disabled>
                   Select Retrieval Warehouse
                 </option>
-                {filterSupplier.length > 0 &&
-                  filterSupplier.map((list) => (
+                {editFilteredWarehouseList.length > 0 &&
+                  editFilteredWarehouseList.map((list) => (
                     <option key={list.warehouseId} value={list.warehouseId}>
                       {list.warehouseLocation}
                     </option>
@@ -962,9 +1015,9 @@ function AddFlows({ addFlows, editFlowId }) {
                   ))}
               </select>
             )}
-            {errors.warehouseLocationValue && (
+            {errors.retrievalWarehouse && (
               <span className="error-text mb-1">
-                {errors.warehouseLocationValue}
+                {errors.retrievalWarehouse}
               </span>
             )}
           </div>
@@ -985,8 +1038,10 @@ function AddFlows({ addFlows, editFlowId }) {
               control={
                 <IOSSwitch
                   sx={{ m: 1 }}
-                  onChange={handleSwitchChange}
-                  defaultChecked
+                  checked={active}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
                 />
               }
             />
@@ -1069,7 +1124,7 @@ function AddFlows({ addFlows, editFlowId }) {
               <button
                 type="button"
                 className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                // onClick={handleUpdte}
+                onClick={handleUpdte}
               >
                 Update
               </button>
