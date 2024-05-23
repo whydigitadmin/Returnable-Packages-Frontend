@@ -19,6 +19,7 @@ import { FaStarOfLife } from "react-icons/fa";
 import { MdPrint } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { IoMdClose } from "react-icons/io";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -71,9 +72,8 @@ const IOSSwitch = styled((props) => (
   },
 }));
 
-const currentDate = dayjs();
-
-export const AsstTagging = () => {
+export function AsstTagging({ addTagging, viewId }) {
+  const currentDate = dayjs().format("YYYY-MM-DD");
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [assetList, setAssetList] = React.useState([]);
@@ -85,12 +85,13 @@ export const AsstTagging = () => {
   const [selectedBarcode, setSelectedBarcode] = useState("");
   const [selectedQRCode, setSelectedQRCode] = useState("");
   const [tagCodeList, setTagCodeList] = useState([]);
+  const [viewTagCodeList, setViewTagCodeList] = useState([]);
   const [assetValue, setAssetValue] = useState(""); // Example of defining assetValue state
   const [assetCodeValue, setAssetCodeValue] = useState(""); // Example of defining assetCodeValue state
   const [endNoValue, setEndNoValue] = useState(""); // Example of defining endNoValue state
   const [startNoValue, setStartNoValue] = useState(""); // Example of defining startNoValue state
-  const [docId, setDocId] = useState(""); // State for docId
-  const [docDate, setDocDate] = useState(null); // State for docDate
+  const [docId, setDocId] = useState("");
+  const [docDate, setDocDate] = useState("");
   const [assetCode, setAssetCode] = useState("");
   const [seqFrom, setSeqFrom] = useState("");
   const [seqTo, setSeqTo] = useState("");
@@ -133,20 +134,48 @@ export const AsstTagging = () => {
     handleCloseQRCodeScannerDialog();
   };
 
-  useEffect(() => {
-    getAllTagCode(assetValue, assetCodeValue, endNoValue, startNoValue);
-    getAllAssetCode();
-    getAllAssetCategory();
-  }, [assetValue, assetCodeValue, endNoValue, startNoValue]);
+  useEffect(
+    () => {
+      // getAllTagCode(assetValue, assetCodeValue, endNoValue, startNoValue);
+      // getAllAssetCode();
+      getAllAssetCategory();
+      console.log("VIEW ID IS:", viewId);
+    },
+    []
+    // [assetValue, assetCodeValue, endNoValue, startNoValue]
+  );
 
   useEffect(() => {
-    console.log("Asset List:", assetList);
-    console.log("Asset Name:", assetName);
-  }, [assetList, assetName]);
+    if (viewId) {
+      getAllAssetTaggingByViewId();
+      setShowTable(true);
+    } else {
+      getAssetDocid();
+    }
+  }, []);
 
-  useEffect(() => {
-    getAssetDocid();
-  });
+  const getAllAssetTaggingByViewId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAssetTagById?id=${viewId}`
+      );
+
+      if (response.status === 200) {
+        console.log(response.data.paramObjectsMap.assetTaggingVO);
+        setDocId(response.data.paramObjectsMap.assetTaggingVO.docid);
+        setDocDate(response.data.paramObjectsMap.assetTaggingVO.docDate);
+        setAssetCategory(response.data.paramObjectsMap.assetTaggingVO.category);
+        setAssetCode(response.data.paramObjectsMap.assetTaggingVO.assetCode);
+        setAssetName(response.data.paramObjectsMap.assetTaggingVO.asset);
+        setSeqTo(response.data.paramObjectsMap.assetTaggingVO.seqTo);
+        setViewTagCodeList(
+          response.data.paramObjectsMap.assetTaggingVO.taggingDetails
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getAllTagCode = async () => {
     const errors = {};
@@ -165,9 +194,9 @@ export const AsstTagging = () => {
     if (!assetName || !assetName.trim()) {
       errors.assetName = "Asset Name is required";
     }
-    if (!seqFrom || !seqFrom.trim()) {
-      errors.seqFrom = "Seq From is required";
-    }
+    // if (!seqFrom || !seqFrom.trim()) {
+    //   errors.seqFrom = "Seq From is required";
+    // }
     // if (!seqTo || !seqTo.trim()) {
     //   errors.seqTo = "Seq To is required";
     // }
@@ -274,6 +303,8 @@ export const AsstTagging = () => {
   const handleAssetCategoryChange = (event) => {
     setAssetCategory(event.target.value);
     getAssetCodeByCategory(event.target.value);
+    setAssetCode("");
+    setAssetName("");
   };
 
   const handleChangeAssetCode = (e) => {
@@ -282,10 +313,10 @@ export const AsstTagging = () => {
       (asset) => asset.assetCodeId === selectedCode
     );
     if (selectedAsset) {
-      setAssetCode(selectedAsset.assetCodeId); // Set assetCode
-      setAssetName(selectedAsset.assetName); // Set assetName
+      setAssetCode(selectedAsset.assetCodeId);
+      setAssetName(selectedAsset.assetName);
     } else {
-      setAssetCode(""); // Set assetCode to an empty string if no option is selected
+      setAssetCode("");
     }
   };
 
@@ -304,9 +335,9 @@ export const AsstTagging = () => {
     if (!assetName || !assetName.trim()) {
       errors.assetName = "Asset Name is required";
     }
-    if (!seqFrom || !seqFrom.trim()) {
-      errors.seqFrom = "Seq From is required";
-    }
+    // if (!seqFrom || !seqFrom.trim()) {
+    //   errors.seqFrom = "Seq From is required";
+    // }
     if (!seqTo || !seqTo.trim()) {
       errors.seqTo = "Seq To is required";
     }
@@ -332,11 +363,11 @@ export const AsstTagging = () => {
         // Now proceed to save the data
         const formData = {
           docId: docId,
-          docDate: toDate,
+          docDate: currentDate,
           category: assetCategory,
           assetCode: assetCode,
           asset: assetName,
-          seqFrom: seqFrom,
+          // seqFrom: seqFrom,
           seqTo: seqTo,
           taggingDetailsDTO: taggingDetailsDTO,
           orgId: userDetail.orgId,
@@ -360,18 +391,10 @@ export const AsstTagging = () => {
                 autoClose: 2000,
                 theme: "colored",
               });
-              setDocId("");
-              setToDate(currentDate);
-              setAssetCode("");
-              setAssetName("");
-              setSeqFrom("");
-              setSeqTo("");
-              setAssetCategory("");
-              setTagCodeList([]);
-              setAssetName("");
-              setShowTable(false);
-              setGenerateFlag(false);
-              setErrors({});
+              setTimeout(() => {
+                handleCancelAsset();
+                addTagging(false);
+              }, 3000);
             }
           });
       } catch (error) {
@@ -393,6 +416,7 @@ export const AsstTagging = () => {
     setAssetCategory("");
     // Clear table fields
     setTagCodeList([]);
+    setViewTagCodeList([]);
     // Clear selected rows
     setSelectedBarcodeRows([]);
     setSelectedQRCodeRows([]);
@@ -429,6 +453,19 @@ export const AsstTagging = () => {
     }
   };
 
+  // Function to handle selecting all rows in barcode table
+  const handleViewSelectAllBarcode = (checked) => {
+    if (checked) {
+      const allRows = Array.from(
+        { length: viewTagCodeList.length },
+        (_, index) => index
+      );
+      setSelectedBarcodeRows(allRows);
+    } else {
+      setSelectedBarcodeRows([]);
+    }
+  };
+
   // Function to handle selecting individual row in QR code table
   const handleSelectQRCodeRow = (index) => {
     if (selectedQRCodeRows.includes(index)) {
@@ -445,6 +482,18 @@ export const AsstTagging = () => {
     if (checked) {
       const allRows = Array.from(
         { length: tagCodeList.length },
+        (_, index) => index
+      );
+      setSelectedQRCodeRows(allRows);
+    } else {
+      setSelectedQRCodeRows([]);
+    }
+  };
+  // Function to handle selecting all rows in QR code table
+  const handleViewSelectAllQRCode = (checked) => {
+    if (checked) {
+      const allRows = Array.from(
+        { length: viewTagCodeList.length },
         (_, index) => index
       );
       setSelectedQRCodeRows(allRows);
@@ -511,6 +560,64 @@ export const AsstTagging = () => {
     printWindow.print();
     printWindow.close();
   };
+  const handleViewPrint = async (selectedRows, type) => {
+    const selectedItems = viewTagCodeList.filter((_, index) =>
+      selectedRows.includes(index)
+    );
+
+    const printWindow = window.open("", "_blank");
+
+    let content = `
+        <html>
+            <head>
+                <title>Print ${type}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    .scanner-image { max-width: 100px; max-height: 100px; }
+                </style>
+            </head>
+            <body>
+                <h2>Print ${type}</h2>
+    `;
+
+    selectedItems.forEach((item) => {
+      content += `
+            <div>
+                <img class="scanner-image" src="${
+                  item.ScannerImage
+                }" alt="Scanner Image" />
+                <p>${type} for ${item.tagCode}:</p>
+                <canvas id="${type.toLowerCase()}-${item.tagCode}"></canvas>
+            </div>
+        `;
+    });
+
+    content += `
+            </body>
+        </html>
+    `;
+
+    printWindow.document.write(content);
+
+    selectedItems.forEach(async (item) => {
+      const canvas = printWindow.document.getElementById(
+        `${type.toLowerCase()}-${item.tagCode}`
+      );
+      if (type === "Barcode") {
+        JsBarcode(canvas, item.tagCode);
+      } else {
+        try {
+          await generateQRCode(canvas, item.tagCode);
+        } catch (error) {
+          console.error("Failed to generate QR code:", error);
+        }
+      }
+    });
+
+    printWindow.document.close();
+    printWindow.print();
+    printWindow.close();
+  };
 
   const generateQRCode = async (canvas, text) => {
     try {
@@ -531,10 +638,20 @@ export const AsstTagging = () => {
     });
   };
 
+  const handleAssetTaggingClose = () => {
+    addTagging(false);
+  };
+
   return (
     <div className="card w-full p-6 bg-base-100 shadow-xl">
       <div>
         <ToastContainer />
+      </div>
+      <div className="flex justify-content-end">
+        <IoMdClose
+          onClick={handleAssetTaggingClose}
+          className="cursor-pointer w-8 h-8 mb-3"
+        />
       </div>
       <div className="row">
         {/* Doc Id */}
@@ -564,20 +681,14 @@ export const AsstTagging = () => {
             </span>
           </label>
         </div>
-        <div className="col-lg-3 col-md-3">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DesktopDatePicker
-              value={toDate}
-              onChange={(date) => setToDate(date)}
-              slotProps={{
-                textField: { size: "small", clearable: true },
-              }}
-              format="DD/MM/YYYY"
-            />
-          </LocalizationProvider>
-          {errors.toDate && (
-            <span className="error-text mb-1">{errors.toDate}</span>
-          )}
+        <div className="col-lg-3 col-md-4">
+          <input
+            className="form-control form-sz"
+            type="text"
+            name="assetName"
+            disabled
+            value={viewId ? docDate : currentDate}
+          />
         </div>
 
         {/* ASSET CATEGORY FIELD */}
@@ -598,6 +709,7 @@ export const AsstTagging = () => {
             className="input input-bordered ps-2"
             onChange={handleAssetCategoryChange}
             value={assetCategory}
+            disabled={viewId ? true : false}
           >
             <option value="" selected>
               Select an Asset Category
@@ -627,7 +739,8 @@ export const AsstTagging = () => {
           <select
             className="form-select form-sz w-full mb-2"
             value={assetCode}
-            onChange={handleChangeAssetCode} // Call handleChangeAssetCode on change
+            onChange={handleChangeAssetCode}
+            disabled={viewId ? true : false}
           >
             <option value="">Select code</option>
             {assetList.map((code) => (
@@ -655,8 +768,8 @@ export const AsstTagging = () => {
             type="text"
             name="assetName"
             disabled
-            value={assetName} // Set the value of the input field to the asset name state
-            readOnly // Make the input field read-only to prevent manual editing
+            value={assetName}
+            readOnly
           />
           {errors.assetName && (
             <span className="error-text">{errors.assetName}</span>
@@ -664,7 +777,7 @@ export const AsstTagging = () => {
         </div>
 
         {/* Seq From */}
-        <div className="col-lg-3 col-md-3">
+        {/* <div className="col-lg-3 col-md-3">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
               Seq From <FaStarOfLife className="must" /> &nbsp;
@@ -681,13 +794,13 @@ export const AsstTagging = () => {
           {errors.seqFrom && (
             <span className="error-text">{errors.seqFrom}</span>
           )}
-        </div>
+        </div> */}
 
         {/* Seq To */}
         <div className="col-lg-3 col-md-3">
           <label className="label mb-4">
             <span className="label-text label-font-size text-base-content d-flex flex-row">
-              Seq To <FaStarOfLife className="must" /> &nbsp;
+              Qty <FaStarOfLife className="must" /> &nbsp;
             </span>
           </label>
         </div>
@@ -697,12 +810,45 @@ export const AsstTagging = () => {
             type="text"
             value={seqTo}
             onChange={(e) => setSeqTo(e.target.value)}
+            disabled={viewId ? true : false}
           />
           {errors.seqTo && <span className="error-text">{errors.seqTo}</span>}
         </div>
       </div>
 
-      <div className="d-flex flex-row mt-3">
+      {!viewId && (
+        <>
+          <div className="d-flex flex-row mt-3">
+            {generateFlag ? (
+              <div>
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Save
+                </button>
+                <button
+                  type="button"
+                  onClick={handleCancelAsset}
+                  className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                >
+                  Cancel
+                </button>
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={handleGenerateTagcode}
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Generate Tagcode
+              </button>
+            )}
+          </div>
+        </>
+      )}
+      {/* <div className="d-flex flex-row mt-3">
         {generateFlag ? (
           <div>
             <button
@@ -729,7 +875,7 @@ export const AsstTagging = () => {
             Generate Tagcode
           </button>
         )}
-      </div>
+      </div> */}
       {/* <div className="d-flex flex-row mt-4">
 
       </div> */}
@@ -758,125 +904,250 @@ export const AsstTagging = () => {
         >
           <div className="col-lg-12">
             <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    <th className="px-2 py-2 bg-blue-500 text-white">Asset</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Asset Code
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Tag Code
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      <input
-                        type="checkbox"
-                        style={{ cursor: "pointer" }}
-                        checked={
-                          selectedBarcodeRows.length === tagCodeList.length
-                        }
-                        onChange={(e) =>
-                          handleSelectAllBarcode(e.target.checked)
-                        }
-                      />
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      <span className="ml-2">Bar Code</span>
-                      <span className="ml-2">
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() =>
-                            handlePrint(selectedBarcodeRows, "Barcode")
-                          }
-                        >
-                          <MdPrint style={{ fontSize: "20px" }} />
-                        </button>
-                      </span>
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      <input
-                        type="checkbox"
-                        style={{ cursor: "pointer" }}
-                        checked={
-                          selectedQRCodeRows.length === tagCodeList.length
-                        }
-                        onChange={(e) =>
-                          handleSelectAllQRCode(e.target.checked)
-                        }
-                      />
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      <span className="ml-2">QR Code</span>
-                      <span className="ml-2">
-                        <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() =>
-                            handlePrint(selectedQRCodeRows, "QR Code")
-                          }
-                        >
-                          <MdPrint style={{ fontSize: "20px" }} />
-                        </button>
-                      </span>
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      RFID Code
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tagCodeList.map((item, index) => (
-                    <tr key={index}>
-                      <td className="px-2 py-2">{item.category}</td>
-                      <td className="px-2 py-2">{item.AssetCode}</td>
-                      <td className="px-2 py-2">{item.TagCode}</td>
-                      <td className="px-2 py-2">
-                        <input
-                          type="checkbox"
-                          style={{ cursor: "pointer" }}
-                          checked={selectedBarcodeRows.includes(index)}
-                          onChange={() => handleSelectBarcodeRow(index)}
-                        />
-                      </td>
-                      <td className="px-2 py-2">
-                        <Button
-                          onClick={() =>
-                            handleOpenBarcodeScannerDialog(item.TagCode)
-                          }
-                        >
-                          <span className="ml-2">Scan Barcode</span>
-                        </Button>
-                      </td>
-                      <td className="px-2 py-2">
-                        <input
-                          type="checkbox"
-                          style={{ cursor: "pointer" }}
-                          checked={selectedQRCodeRows.includes(index)}
-                          onChange={() => handleSelectQRCodeRow(index)}
-                        />
-                      </td>
-                      <td className="px-2 py-2">
-                        <Button
-                          onClick={() =>
-                            handleOpenQRCodeScannerDialog(item.TagCode)
-                          }
-                        >
-                          <span className="ml-2">Scan QR Code</span>
-                        </Button>
-                      </td>
-                      <td className="px-2 py-2">
-                        <input
-                          type="text"
-                          value={item.RFIDCode}
-                          onChange={(e) =>
-                            handleRFIDCodeChange(e.target.value, index)
-                          }
-                          className="px-2 py-1 border rounded"
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {viewId ? (
+                <>
+                  <table className="w-full">
+                    <thead>
+                      <tr>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Asset
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Asset Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Tag Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <input
+                            type="checkbox"
+                            style={{ cursor: "pointer" }}
+                            checked={
+                              selectedBarcodeRows.length ===
+                              viewTagCodeList.length
+                            }
+                            onChange={(e) =>
+                              handleViewSelectAllBarcode(e.target.checked)
+                            }
+                          />
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <span className="ml-2">Bar Code</span>
+                          <span className="ml-2">
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() =>
+                                handleViewPrint(selectedBarcodeRows, "Barcode")
+                              }
+                            >
+                              <MdPrint style={{ fontSize: "20px" }} />
+                            </button>
+                          </span>
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <input
+                            type="checkbox"
+                            style={{ cursor: "pointer" }}
+                            checked={
+                              selectedQRCodeRows.length ===
+                              viewTagCodeList.length
+                            }
+                            onChange={(e) =>
+                              handleViewSelectAllQRCode(e.target.checked)
+                            }
+                          />
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <span className="ml-2">QR Code</span>
+                          <span className="ml-2">
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() =>
+                                handleViewPrint(selectedQRCodeRows, "QR Code")
+                              }
+                            >
+                              <MdPrint style={{ fontSize: "20px" }} />
+                            </button>
+                          </span>
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          RFID Code
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {viewTagCodeList.map((item, index) => (
+                        <tr key={index}>
+                          <td className="px-2 py-2">{item.category}</td>
+                          <td className="px-2 py-2">{item.assetCode}</td>
+                          <td className="px-2 py-2">{item.tagCode}</td>
+                          {/* SELECT ALL BARCODE CHECKBOX FIELD */}
+                          <td className="px-2 py-2">
+                            <input
+                              type="checkbox"
+                              style={{ cursor: "pointer" }}
+                              checked={selectedBarcodeRows.includes(index)}
+                              onChange={() => handleSelectBarcodeRow(index)}
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <Button
+                              onClick={() =>
+                                handleOpenBarcodeScannerDialog(item.tagCode)
+                              }
+                            >
+                              <span className="ml-2">Scan Barcode</span>
+                            </Button>
+                          </td>
+                          {/* SELECT ALL QRCODE CHECKBOX FIELD */}
+                          <td className="px-2 py-2">
+                            <input
+                              type="checkbox"
+                              style={{ cursor: "pointer" }}
+                              checked={selectedQRCodeRows.includes(index)}
+                              onChange={() => handleSelectQRCodeRow(index)}
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <Button
+                              onClick={() =>
+                                handleOpenQRCodeScannerDialog(item.tagCode)
+                              }
+                            >
+                              <span className="ml-2">Scan QR Code</span>
+                            </Button>
+                          </td>
+                          <td className="px-2 py-2">{item.rfId}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              ) : (
+                <>
+                  <table className="w-full">
+                    <thead>
+                      <tr>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Asset
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Asset Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Tag Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <input
+                            type="checkbox"
+                            style={{ cursor: "pointer" }}
+                            checked={
+                              selectedBarcodeRows.length === tagCodeList.length
+                            }
+                            onChange={(e) =>
+                              handleSelectAllBarcode(e.target.checked)
+                            }
+                          />
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <span className="ml-2">Bar Code</span>
+                          <span className="ml-2">
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() =>
+                                handlePrint(selectedBarcodeRows, "Barcode")
+                              }
+                            >
+                              <MdPrint style={{ fontSize: "20px" }} />
+                            </button>
+                          </span>
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <input
+                            type="checkbox"
+                            style={{ cursor: "pointer" }}
+                            checked={
+                              selectedQRCodeRows.length === tagCodeList.length
+                            }
+                            onChange={(e) =>
+                              handleSelectAllQRCode(e.target.checked)
+                            }
+                          />
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          <span className="ml-2">QR Code</span>
+                          <span className="ml-2">
+                            <button
+                              className="btn btn-secondary btn-sm"
+                              onClick={() =>
+                                handlePrint(selectedQRCodeRows, "QR Code")
+                              }
+                            >
+                              <MdPrint style={{ fontSize: "20px" }} />
+                            </button>
+                          </span>
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          RFID Code
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tagCodeList.map((item, index) => (
+                        <tr key={index}>
+                          <td className="px-2 py-2">{item.category}</td>
+                          <td className="px-2 py-2">{item.AssetCode}</td>
+                          <td className="px-2 py-2">{item.TagCode}</td>
+                          <td className="px-2 py-2">
+                            <input
+                              type="checkbox"
+                              style={{ cursor: "pointer" }}
+                              checked={selectedBarcodeRows.includes(index)}
+                              onChange={() => handleSelectBarcodeRow(index)}
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <Button
+                              onClick={() =>
+                                handleOpenBarcodeScannerDialog(item.TagCode)
+                              }
+                            >
+                              <span className="ml-2">Scan Barcode</span>
+                            </Button>
+                          </td>
+                          <td className="px-2 py-2">
+                            <input
+                              type="checkbox"
+                              style={{ cursor: "pointer" }}
+                              checked={selectedQRCodeRows.includes(index)}
+                              onChange={() => handleSelectQRCodeRow(index)}
+                            />
+                          </td>
+                          <td className="px-2 py-2">
+                            <Button
+                              onClick={() =>
+                                handleOpenQRCodeScannerDialog(item.TagCode)
+                              }
+                            >
+                              <span className="ml-2">Scan QR Code</span>
+                            </Button>
+                          </td>
+                          <td className="px-2 py-2">
+                            <input
+                              type="text"
+                              value={item.RFIDCode}
+                              onChange={(e) =>
+                                handleRFIDCodeChange(e.target.value, index)
+                              }
+                              className="px-2 py-1 border rounded"
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -924,4 +1195,6 @@ export const AsstTagging = () => {
       </Dialog>
     </div>
   );
-};
+}
+
+export default AsstTagging;

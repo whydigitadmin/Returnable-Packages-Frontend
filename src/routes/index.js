@@ -109,7 +109,10 @@ const EmptyRetrievalManifest = lazy(() =>
 const DocumentType = lazy(() => import("../pages/protected/DocumentType"));
 const Services = lazy(() => import("../pages/protected/Services"));
 const ChargeCode = lazy(() => import("../pages/protected/ChargeCode"));
-const AsstTagging = lazy(() => import("../pages/protected/AsstTagging"));
+// const AsstTagging = lazy(() => import("../pages/protected/AsstTagging"));
+const AssetTaggingDetails = lazy(() =>
+  import("../pages/protected/AssetTaggingDetails")
+);
 const StockBranch = lazy(() => import("../pages/protected/StockBranch"));
 const CityMaster = lazy(() => import("../pages/protected/CityMaster"));
 const State = lazy(() => import("../pages/protected/State"));
@@ -501,9 +504,13 @@ const routes = [
     path: "/ChargeCode",
     component: ChargeCode,
   },
+  // {
+  //   path: "/AsstTagging",
+  //   component: AsstTagging,
+  // },
   {
-    path: "/AsstTagging",
-    component: AsstTagging,
+    path: "/assetTaggingDetails",
+    component: AssetTaggingDetails,
   },
   {
     path: "/StockBranch",

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import { AsstTagging } from "../../features/asstTagging/AsstTagging";
+import AssetTaggingDetails from "../../features/asstTagging/AssetTaggingDetails";
 
 function InternalPage() {
   const dispatch = useDispatch();
@@ -10,7 +10,7 @@ function InternalPage() {
     dispatch(setPageTitle({ title: "Asset Tagging" }));
   }, []);
 
-  return <AsstTagging />;
+  return <AssetTaggingDetails />;
 }
 
 export default InternalPage;

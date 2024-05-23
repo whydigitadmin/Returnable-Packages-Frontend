@@ -371,11 +371,11 @@ const routes = [
         name: <span className="">Kit Card</span>,
       },
       {
-        path: "/app/AsstTagging", //no url needed as this has submenu
+        path: "/app/assetTaggingDetails",
         icon: (
           <img
             src="/report.png"
-            alt="AsstTagging"
+            alt="AssetTagging"
             style={{ width: "29px", height: "auto" }}
             className={`${iconClasses} inline`}
           />
