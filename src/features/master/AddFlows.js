@@ -95,24 +95,15 @@ function AddFlows({ addFlows, editFlowId }) {
   );
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [warehouseLocationValue, setWarehouseLocationValue] = useState("");
-  const [warehouseLocationId, setWarehouseLocationId] = useState("");
   const [openKitModal, setOpenKitModal] = React.useState(false);
   const [kitDTO, setKitDTO] = useState([]);
   const [city, setCity] = React.useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [filteredCity, setFilteredCity] = useState([]);
   const [displayName, setDisplayName] = useState("");
   const [receiverName, setReceiverName] = useState("");
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [filterSupplier, setFilterSupplier] = useState([]);
   const [retrievalWarehouse, setRetrievalWarehouse] = useState("");
-
-  const handleCloseSnackbar = (event, reason) => {
-    if (reason === "clickaway") {
-      return;
-    }
-    setErrorMessage(""); // Clear the error message
-  };
 
   useEffect(() => {
     getCustomersList();
@@ -132,7 +123,6 @@ function AddFlows({ addFlows, editFlowId }) {
       const response = await Axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
       );
-      // console.log("API Response:", response);
 
       if (response.status === 200) {
         console.log("origin:", value);
@@ -151,7 +141,6 @@ function AddFlows({ addFlows, editFlowId }) {
   const editRetrivalList = async (value) => {
     try {
       const response = await Axios.get(
-        // `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
         `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
       );
       console.log("API Response:", response);
@@ -253,17 +242,12 @@ function AddFlows({ addFlows, editFlowId }) {
           response.data.paramObjectsMap.flowVO.warehouseId
         );
         setKitDTO(response.data.paramObjectsMap.flowVO.flowDetailVO);
-        // console.log("kit", response.data.paramObjectsMap.KitVO);
         editDestinationList(response.data.paramObjectsMap.flowVO.orgin);
         editRetrivalList(response.data.paramObjectsMap.flowVO.warehouseId);
-        setWarehouseLocationId(
-          response.data.paramObjectsMap.flowVO.warehouseId
-        );
         if (response.data.paramObjectsMap.flowVO.active === "In-Active") {
           setActive(false);
         }
       }
-      // handleFileterdCityChange();
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -365,7 +349,6 @@ function AddFlows({ addFlows, editFlowId }) {
     try {
       const response = await Axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/getallkit?orgId=${orgId}`
-        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup?orgId=${orgId}`,
       );
 
       if (response.status === 200) {
@@ -449,8 +432,6 @@ function AddFlows({ addFlows, editFlowId }) {
         createdby: userName,
         modifiedby: userName,
         warehouseId: warehouseLocationValue,
-        // warehouseLocation: warehouseLocationValue,
-        // retrievalWarehouseLocation: retrievalWarehouse,
         retrievalWarehouseId: retrievalWarehouse,
         flowDetailDTO: kitDTO,
       };
@@ -484,7 +465,7 @@ function AddFlows({ addFlows, editFlowId }) {
   };
 
   // UPDATE API
-  const handleUpdte = () => {
+  const handleUpdate = () => {
     const errors = {};
     if (!flowName) {
       errors.flowName = "Flow name is required";
@@ -520,23 +501,11 @@ function AddFlows({ addFlows, editFlowId }) {
         createdby: userName,
         modifiedby: userName,
         warehouseId: warehouseLocationValue,
-        // warehouseLocation: warehouseLocationValue,
-        // retrievalWarehouseLocation: editRetrival,
         retrievalWarehouseId: editRetrival,
         flowDetailDTO: kitDTO,
       };
 
       Axios.put(`${process.env.REACT_APP_API_URL}/api/master/flow`, formData)
-        //     .then((response) => {
-        //       console.log("Response:", response.data);
-        //       addFlows(true);
-        //     })
-        //     .catch((error) => {
-        //       console.error("Error:", error);
-        //     });
-        // } else {
-        //   setErrors(errors);
-        // }
         .then((response) => {
           if (response.data.status === "Error") {
             console.error("Error creating kit:", response.data.paramObjectsMap);
@@ -732,7 +701,6 @@ function AddFlows({ addFlows, editFlowId }) {
         <div className="d-flex justify-content-between">
           <h1 className="text-xl font-semibold mb-3">Master Flow Details</h1>
           <IoMdClose
-            // onClick={handleFlows}
             onClick={handleAddFlowClose}
             className="cursor-pointer w-8 h-8 mb-3"
           />
@@ -1046,39 +1014,39 @@ function AddFlows({ addFlows, editFlowId }) {
               }
             />
           </div>
-        </div>
-        {/* ADD KIT BUTTON */}
-        <div className="d-flex justify-content-between">
-          <div className="ml-auto">
-            <button
-              className="btn btn-ghost btn-lg text-sm col-xs-1"
-              style={{ color: "blue" }}
-              onClick={handleKitOpen}
-              disabled={emitter === ""}
-            >
-              <img
-                src="/new.png"
-                alt="new-icon"
-                title="new"
-                style={{
-                  width: 30,
-                  height: 30,
-                  margin: "auto",
-                  hover: "pointer",
-                }}
-              />
-              <span
-                className="text-form text-base"
-                style={{ marginLeft: "10px" }}
+          <div className="col-lg-6 col-md-12">
+            <div className="float-right">
+              <button
+                className="btn btn-ghost btn-lg text-sm col-xs-1"
+                style={{ color: "blue" }}
+                onClick={handleKitOpen}
+                disabled={emitter === ""}
               >
-                Kit
-              </span>
-            </button>
-            {errors.kitDTO && (
-              <span className="error-text mb-1">{errors.kitDTO}</span>
-            )}
+                <img
+                  src="/new.png"
+                  alt="new-icon"
+                  title="new"
+                  style={{
+                    width: 30,
+                    height: 30,
+                    margin: "auto",
+                    hover: "pointer",
+                  }}
+                />
+                <span
+                  className="text-form text-base"
+                  style={{ marginLeft: "10px" }}
+                >
+                  Kit
+                </span>
+              </button>
+              {errors.kitDTO && (
+                <span className="error-text mb-1">{errors.kitDTO}</span>
+              )}
+            </div>
           </div>
         </div>
+        {/* ADD KIT BUTTON */}
         {kitDTO.length > 0 && (
           <div
             className="w-full p-3 bg-base-100 shadow-xl mt-2"
@@ -1124,7 +1092,7 @@ function AddFlows({ addFlows, editFlowId }) {
               <button
                 type="button"
                 className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                onClick={handleUpdte}
+                onClick={handleUpdate}
               >
                 Update
               </button>
