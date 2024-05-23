@@ -500,9 +500,11 @@ function IssueReq() {
     setPartFields(newFields);
     qtyInputRef.current.focus();
 
-    const kitQty = partData[index].partQty; // Example kit quantity
-
+    const kitQty = selectedPart.partQty;
+    console.log("asdfda", e.target.value);
+    console.log("kit qty testing", kitQty);
     const calculatedKitQty = Math.floor(e.target.value / kitQty);
+
     setKitQtyy(calculatedKitQty);
   };
 
@@ -614,25 +616,13 @@ function IssueReq() {
     }
   };
 
-  // const handlePartNoChange = (e, index) => {
-  //   setPartFields((prevFields) => {
-  //     const newFields = [...prevFields];
-  //     newFields[index].partNo = e.target.value;
-  //     // newFields[index].partName = e.target.value;
-  //     console.log("Updated PartttttttFields:", newFields); // Log the updated state
-  //     return newFields;
-  //   });
-  // };
-
   const handlePartNoChange = (e, index) => {
     const selectedPartNo = e.target.value;
-
-    const selectedPartName = e.target.value;
-    const part = partData.find((part) => part.partName === selectedPartName);
-    setSelectedPart(part);
-    console.log("SELECTED PART FROM DROPDOWN IS:", part);
-
-    // Check if the selected part number already exists
+    // Find the selected part
+    const selectedPart = partData.find(
+      (part) => part.partName === selectedPartNo
+    );
+    // Check for duplicate part numbers
     const isDuplicate = partFields.some(
       (field, i) => index !== i && field.partNo === selectedPartNo
     );
@@ -647,24 +637,14 @@ function IssueReq() {
       setPartFields((prevFields) => {
         const newFields = [...prevFields];
         newFields[index].partNo = selectedPartNo;
+        newFields[index].qty = "";
         return newFields;
       });
+      setSelectedPart(selectedPart);
+      setKitQtyy("");
+      console.log("SELECTED PART FROM DROPDOWN IS:", selectedPart);
     }
   };
-
-  // const handlePartNoChange = (e, index) => {
-  //   const { name, value } = e.target;
-
-  //   setPartFields((prevFields) => {
-  //     const newFields = [...prevFields];
-  //     newFields[index] = {
-  //       ...newFields[index],
-  //       [name]: value,
-  //     };
-  //     console.log("Updated PartFields:", newFields); // Log the updated state
-  //     return newFields;
-  //   });
-  // };
 
   const getPartImageByNumber = (partNo) => {
     switch (partNo) {
