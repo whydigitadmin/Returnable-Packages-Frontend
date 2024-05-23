@@ -16,14 +16,13 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
+import { FaBoxOpen, FaCloudUploadAlt, FaUser } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import DashBoardComponent from "../master/DashBoardComponent";
 import UserCreation from "./UserCreation";
-
 import {
   Paper,
   Table,
@@ -32,34 +31,8 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-
-const statsData = [
-  {
-    title: "No of Users",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active Users",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "InActive Users",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
+import { FaDatabase } from "react-icons/fa6";
+import { MdGroups } from "react-icons/md";
 
 export const UserDetails = () => {
   const [addUser, setAddUser] = React.useState(false);
@@ -72,6 +45,33 @@ export const UserDetails = () => {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [statsData, setStatsData] = useState([
+    {
+      title: "No of Users",
+      value: "0",
+      icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "Active Users",
+      value: "0",
+      icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "InActive Users",
+      value: "0",
+      icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      // title: "Average Transaction",
+      title: "--",
+      value: "0",
+      icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+  ]);
 
   const handleViewClickOpen = () => {
     setOpenView(true);
@@ -115,11 +115,42 @@ export const UserDetails = () => {
             (user) => user.role === "ROLE_USER"
           )
         );
-        console.log(
-          response.data.paramObjectsMap.userVO.filter(
-            (user) => user.role === "ROLE_USER"
-          )
+        const allUsers = response.data.paramObjectsMap.userVO.filter(
+          (user) => user.role === "ROLE_USER"
         );
+        const totalUsers = allUsers.length;
+        const activeUsers = allUsers.filter(
+          (customer) => customer.active === "Active"
+        ).length;
+        const inActiveUsers = allUsers.filter(
+          (customer) => customer.active === "In-Active"
+        ).length;
+        setStatsData([
+          {
+            title: "All Users",
+            value: totalUsers.toString(),
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active Users",
+            value: activeUsers.toString(),
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "In-Active Users",
+            value: inActiveUsers.toString(),
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
