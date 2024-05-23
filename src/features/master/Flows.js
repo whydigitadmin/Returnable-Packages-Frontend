@@ -18,6 +18,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import { styled } from "@mui/material/styles";
+import { MdGroups } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 import axios from "axios";
 import {
   MaterialReactTable,

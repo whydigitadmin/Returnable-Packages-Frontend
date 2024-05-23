@@ -135,6 +135,9 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
         setAssetCategory(response.data.paramObjectsMap.assetGroupVO.assetType);
         setAssetName(response.data.paramObjectsMap.assetGroupVO.category);
         setAssetCodeId(response.data.paramObjectsMap.assetGroupVO.categoryCode);
+        if (response.data.paramObjectsMap.assetGroupVO.active === "In-Active") {
+          setActive(false);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -222,24 +225,30 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
         formData
       )
         .then((response) => {
-          console.log("Response:", response.data);
-          setAssetName("");
-          setLength("");
-          setHeight("");
-          setBreath("");
-          setDimUnit("");
-          setId("");
-          setAssetCodeId("");
-          setAssetTypeList([]);
-
-          // addItemSpecification(true);
-          toast.success("Specification Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          setTimeout(() => {
-            handleConfirmationYes();
-          }, 2000); // Adjust the delay time as needed
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            console.log("Response:", response.data);
+            setAssetName("");
+            setLength("");
+            setHeight("");
+            setBreath("");
+            setDimUnit("");
+            setId("");
+            setAssetCodeId("");
+            setAssetTypeList([]);
+            setTimeout(() => {
+              handleConfirmationYes();
+            }, 2000);
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -336,11 +345,6 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
   const handleConfirmationYes = () => {
     setOpenConfirmationDialog(false);
     addItemSpecification(true);
-  };
-
-  const handleSwitchChange = (event) => {
-    setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
   };
 
   return (
@@ -530,8 +534,10 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
               control={
                 <IOSSwitch
                   sx={{ m: 1 }}
-                  onChange={handleSwitchChange}
-                  defaultChecked
+                  checked={active}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
                 />
               }
             />

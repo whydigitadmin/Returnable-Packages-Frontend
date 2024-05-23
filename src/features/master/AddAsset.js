@@ -591,7 +591,7 @@ function AddAsset({ addItem, editItemId }) {
             });
             setTimeout(() => {
               addItem(false);
-            }, 3000);
+            }, 2000);
           }
         })
         .catch((error) => {
@@ -642,10 +642,6 @@ function AddAsset({ addItem, editItemId }) {
   const handleConfirmationYes = () => {
     setOpenConfirmationDialog(false);
     addItem(false);
-  };
-  const handleSwitchChange = (event) => {
-    setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
   };
 
   return (
@@ -862,7 +858,6 @@ function AddAsset({ addItem, editItemId }) {
               control={
                 <IOSSwitch
                   sx={{ m: 1 }}
-                  // onChange={handleSwitchChange}
                   onChange={(e) => {
                     setActive(e.target.checked);
                   }}
