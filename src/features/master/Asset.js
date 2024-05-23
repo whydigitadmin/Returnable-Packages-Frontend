@@ -27,38 +27,12 @@ import {
 import React, { useEffect, useMemo, useState } from "react";
 import { FaBox, FaCloudUploadAlt } from "react-icons/fa";
 import { FaRegObjectGroup } from "react-icons/fa6";
+import { FaDatabase } from "react-icons/fa6";
 import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { LuTimerReset } from "react-icons/lu";
 import DashBoardComponent from "./DashBoardComponent";
 import AddAsset from "./AddAsset";
-
-const statsData = [
-  {
-    title: "Total Assets",
-    value: "0",
-    icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "Active Assets",
-    value: "0",
-    icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "Asset Categories",
-    value: "0",
-    icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "-",
-    value: "0",
-    icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
 
 function Asset() {
   const [open, setOpen] = React.useState(false);
@@ -68,6 +42,32 @@ function Asset() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [statsData, setStatsData] = useState([
+    {
+      title: "Total Assets",
+      value: "0",
+      icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "Active Assets",
+      value: "0",
+      icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "Asset Categories",
+      value: "0",
+      icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "-",
+      value: "0",
+      icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+  ]);
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -112,7 +112,42 @@ function Asset() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.assetVO.reverse());
+        const allAssets = response.data.paramObjectsMap.assetVO;
+        setData(allAssets.reverse());
+        const totalAsset = allAssets.length;
+        const activeAsset = allAssets.filter(
+          (asset) => asset.active === "Active"
+        ).length;
+        const inActiveAsset = allAssets.filter(
+          (asset) => asset.active === "In-Active"
+        ).length;
+        setStatsData([
+          {
+            title: "Total Assets",
+            value: totalAsset.toString(),
+            icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "Active Assets",
+            value: activeAsset.toString(),
+            icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            // title: "Average Transaction",
+            title: "In-Active Assets",
+            value: inActiveAsset.toString(),
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "Asset Categories",
+            value: "0",
+            icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -224,62 +259,6 @@ function Asset() {
           align: "center",
         },
       },
-      // {
-      //   accessorKey: "length",
-      //   header: "Length",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-      // {
-      //   accessorKey: "breath",
-      //   header: "Breath",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-
-      // {
-      //   accessorKey: "height",
-      //   header: "Height",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-      // {
-      //   accessorKey: "weight",
-      //   header: "Weight",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
-      // {
-      //   accessorKey: "expectedLife",
-      //   header: "Expected Life",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
       {
         accessorKey: "active",
         header: "Active",
@@ -437,6 +416,10 @@ function Asset() {
                     <Table>
                       <TableBody>
                         <TableRow>
+                          <TableCell>Status</TableCell>
+                          <TableCell>{selectedRowData.active}</TableCell>
+                        </TableRow>
+                        <TableRow>
                           <TableCell>Type</TableCell>
                           <TableCell>{selectedRowData.assetType}</TableCell>
                         </TableRow>
@@ -449,7 +432,7 @@ function Asset() {
                           <TableCell>{selectedRowData.categoryCode}</TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell>Code</TableCell>
+                          <TableCell>Asset Code</TableCell>
                           <TableCell>{selectedRowData.assetCodeId}</TableCell>
                         </TableRow>
                         <TableRow>
@@ -471,10 +454,6 @@ function Asset() {
                         <TableRow>
                           <TableCell>Weight</TableCell>
                           <TableCell>{selectedRowData.weight}</TableCell>
-                        </TableRow>
-                        <TableRow>
-                          <TableCell>Expected Life</TableCell>
-                          <TableCell>{selectedRowData.expectedLife}</TableCell>
                         </TableRow>
                       </TableBody>
                     </Table>

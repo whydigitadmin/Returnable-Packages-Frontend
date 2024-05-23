@@ -391,8 +391,8 @@ function Vendors() {
               <Table>
                 <TableBody>
                   <TableRow>
-                    <TableCell>Sr No</TableCell>
-                    <TableCell>{selectedRowData.id}</TableCell>
+                    <TableCell>Status</TableCell>
+                    <TableCell>{selectedRowData.active}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Vendor Display Name</TableCell>

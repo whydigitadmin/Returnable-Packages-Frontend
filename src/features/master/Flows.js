@@ -101,7 +101,6 @@ function Flows() {
 
   const handleVisibilityClick = (rowData) => {
     setSelectedRowData(rowData);
-    console.log("rowData", rowData);
     setCreateModalOpenView(true);
   };
 
@@ -111,7 +110,6 @@ function Flows() {
   };
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
-    console.log("THE EDIT ROW ID IS:", row.original.id);
     setEditFlow(true);
   };
 
@@ -178,7 +176,18 @@ function Flows() {
       },
       {
         accessorKey: "warehouseLocation",
-        header: "Warehouse",
+        header: "Supplier Warehouse",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "retrievalWarehouseLocation",
+        header: "Retrieval Warehouse",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -264,15 +273,12 @@ function Flows() {
         const allFlows = response.data.paramObjectsMap.flowVO;
         setData(allFlows.reverse());
         const totalFlows = allFlows.length;
-        console.log("flowsT", totalFlows);
         const activeFlows = allFlows.filter(
           (flows) => flows.active === "Active"
         ).length;
-        console.log("flowsActive", activeFlows);
         const inActiveFlows = allFlows.filter(
           (flows) => flows.active === "In-Active"
         ).length;
-        console.log("flowsIn-Active", inActiveFlows);
 
         setStatsData([
           {
@@ -465,6 +471,10 @@ function Flows() {
             <TableContainer component={Paper}>
               <Table>
                 <TableBody>
+                  <TableRow>
+                    <TableCell>Status</TableCell>
+                    <TableCell>{selectedRowData.active}</TableCell>
+                  </TableRow>
                   <TableRow>
                     <TableCell>Flow Name</TableCell>
                     <TableCell>{selectedRowData.flowName}</TableCell>
