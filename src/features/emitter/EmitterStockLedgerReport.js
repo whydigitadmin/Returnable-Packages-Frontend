@@ -19,6 +19,7 @@ import { Box, Button } from "@mui/material";
 import FileDownloadIcon from "@mui/icons-material/FileDownload";
 import { mkConfig, generateCsv, download } from "export-to-csv";
 import axios from "axios";
+import { FaArrowCircleLeft } from "react-icons/fa";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -239,15 +240,23 @@ function EmitterStockLedgerReport() {
   return (
     <>
       <div className="container-sm">
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="d-flex justify-content-end">
-            <Link to="/app/welcomeemitter">
-              <IoMdClose className="cursor-pointer w-8 h-8 mb-3" />
-            </Link>
-          </div>
+        <div className="card bg-base-100 shadow-xl p-4">
           <div className="row">
+            <div className="col-md-12">
+              <p className="text-2xl flex items-center">
+                <Link to="/app/welcomeemitter">
+                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                </Link>
+                <span>
+                  <strong className="ml-4">Stock Ledger</strong>
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div className="row mt-4">
             {/* DATE FIELD */}
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-2 col-md-4">
               <label className="label">
                 <span
                   className={

@@ -59,18 +59,32 @@ function StockAdjustment() {
     <>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl">
+          <div className="row p-4">
+            <div className="col-md-12">
+              <p className="text-2xl flex items-center">
+                <Link to="/app/welcomeemitter">
+                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                </Link>
+                <span>
+                  <strong className="ml-4">Stock Report</strong>
+                </span>
+              </p>
+            </div>
+          </div>
           <div className="row">
-            <p className="ml-5 mt-3 text-2xl">
+            {/* <p className="ml-5 mt-3 text-2xl">
               <strong>Stock Report</strong>
-            </p>
+            </p> */}
 
-            <div className="col-lg-1">
+            {/* <div className="col-lg-1">
               <div className="d-flex justify-content-center">
                 <Link to="/app/welcomeemitter">
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
                 </Link>
               </div>
-            </div>
+            </div> */}
+            <div className="col-lg-1"></div>
+
             <div className="col-lg-6 card bg-base-100 shadow-sm ms-4 mt-3 me-2">
               <div className="p-1">
                 <div className="d-flex flex-row">

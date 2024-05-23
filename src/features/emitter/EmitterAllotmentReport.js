@@ -10,6 +10,7 @@ import Datepicker from "react-tailwindcss-datepicker";
 import { IoMdClose } from "react-icons/io";
 import { FaStarOfLife } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { FaArrowCircleLeft } from "react-icons/fa";
 import {
   MaterialReactTable,
   createMRTColumnHelper,
@@ -321,15 +322,23 @@ function EmitterAllotmentReport() {
   return (
     <>
       <div className="container-sm">
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div className="d-flex justify-content-end">
-            <Link to="/app/welcomeemitter">
-              <IoMdClose className="cursor-pointer w-8 h-8 mb-3" />
-            </Link>
-          </div>
+        <div className="card bg-base-100 shadow-xl p-4">
           <div className="row">
+            <div className="col-md-12">
+              <p className="text-2xl flex items-center">
+                <Link to="/app/welcomeemitter">
+                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                </Link>
+                <span>
+                  <strong className="ml-4">Allotment Report</strong>
+                </span>
+              </p>
+            </div>
+          </div>
+
+          <div className="row mt-4">
             {/* DATE FIELD */}
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-2 col-md-4">
               <label className="label">
                 <span
                   className={
@@ -341,7 +350,7 @@ function EmitterAllotmentReport() {
                 </span>
               </label>
             </div>
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-2 col-md-4">
               <Datepicker
                 containerClassName="datesize"
                 value={dateValue}
@@ -355,7 +364,7 @@ function EmitterAllotmentReport() {
               />
             </div>
             {/* KIT FIELD */}
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-2 col-md-4">
               <label className="label">
                 <span
                   className={
@@ -366,7 +375,7 @@ function EmitterAllotmentReport() {
                 </span>
               </label>
             </div>
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-2 col-md-4">
               <select
                 className="form-select form-sz w-full mb-2"
                 onChange={(e) => setKit(e.target.value)}
@@ -384,7 +393,7 @@ function EmitterAllotmentReport() {
               </select>
             </div>
             {/* FLOW FIELD */}
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-2 col-md-4">
               <label className="label">
                 <span
                   className={
@@ -395,7 +404,7 @@ function EmitterAllotmentReport() {
                 </span>
               </label>
             </div>
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-2 col-md-4">
               <select
                 className="form-select form-sz w-full mb-2"
                 onChange={(e) => setFlow(e.target.value)}
