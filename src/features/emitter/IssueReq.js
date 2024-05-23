@@ -415,11 +415,15 @@ function IssueReq() {
 
       if (response.status === 200) {
         setKitNames(response.data.paramObjectsMap.flowVO.flowDetailVO);
+        console.log(
+          "RESPONSE FOR TAKE KITQQQQQQQQQQQQQ",
+          response.data.paramObjectsMap.flowVO.flowDetailVO
+        );
 
         const kitDataArray =
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
             id: kit.id,
-            kitName: kit.kitName,
+            kitName: kit.kitNo,
             partName: kit.partName,
           }));
 
@@ -431,7 +435,8 @@ function IssueReq() {
             id: part.id,
             partName: part.partNumber,
             partValue: part.partName,
-            kitName: part.kitName,
+            kitName: part.kitNo,
+
             partQty: part.partQty,
             // partNo:part.partNo
           }));
@@ -625,6 +630,7 @@ function IssueReq() {
     const selectedPartName = e.target.value;
     const part = partData.find((part) => part.partName === selectedPartName);
     setSelectedPart(part);
+    console.log("SELECTED PART FROM DROPDOWN IS:", part);
 
     // Check if the selected part number already exists
     const isDuplicate = partFields.some(
@@ -1244,7 +1250,8 @@ function IssueReq() {
                               <CardContent>
                                 {selectedPart && (
                                   <Typography variant="outlined">
-                                    Kit: {selectedPart.kitName}
+                                    Kit: {selectedPart.kitName} <br />
+                                    Parts per Kit: {selectedPart.partQty}
                                   </Typography>
                                 )}
                                 <br />
