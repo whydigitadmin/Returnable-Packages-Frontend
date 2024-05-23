@@ -33,33 +33,7 @@ import { TbWeight } from "react-icons/tb";
 import AddWarehouse from "./AddWarehouse";
 import DashBoardComponent from "./DashBoardComponent";
 
-const statsData = [
-  {
-    title: "No of warehouse",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active warehouse",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Low stock warehouses",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
+const statsData = [];
 
 function Warehouse() {
   const [open, setOpen] = React.useState(false);
@@ -69,6 +43,33 @@ function Warehouse() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [statsData, setStatsData] = useState([
+    {
+      title: "No of warehouse",
+      value: "0",
+      icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "Active warehouse",
+      value: "0",
+      icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      // title: "Average Transaction",
+      title: "Active warehouse",
+      value: "0",
+      icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+    {
+      title: "Low stock warehouses",
+      value: "0",
+      icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
+      description: "",
+    },
+  ]);
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.warehouseId);
@@ -115,7 +116,42 @@ function Warehouse() {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.WarehouseVO.reverse());
+        const allWarehouse = response.data.paramObjectsMap.WarehouseVO;
+        setData(allWarehouse.reverse());
+        const totalWarehouse = allWarehouse.length;
+        const activeWarehouse = allWarehouse.filter(
+          (warehouse) => warehouse.active === "Active"
+        ).length;
+        const inActiveWarehouse = allWarehouse.filter(
+          (warehouse) => warehouse.active === "In-Active"
+        ).length;
+        setStatsData([
+          {
+            title: "No of warehouse",
+            value: totalWarehouse.toString(),
+            icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active warehouse",
+            value: activeWarehouse.toString(),
+            icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            // title: "Average Transaction",
+            title: "In-Active warehouse",
+            value: inActiveWarehouse.toString(),
+            icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Low stock warehouses",
+            value: "0",
+            icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -175,20 +211,20 @@ function Warehouse() {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "warehouseId",
-      //   header: "Warehouse Code",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
       {
         accessorKey: "warehouseLocation",
         header: "Warehouse Name",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "stockBranch",
+        header: "Stock Branch",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -230,17 +266,6 @@ function Warehouse() {
           align: "center",
         },
       },
-      // {
-      //   accessorKey: "address",
-      //   header: "Address",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      // },
       {
         accessorKey: "pincode",
         header: "Pincode",
@@ -424,14 +449,18 @@ function Warehouse() {
                     <Table>
                       <TableBody>
                         <TableRow>
-                          <TableCell>Warehouse Code</TableCell>
-                          <TableCell>{selectedRowData.warehouseId}</TableCell>
+                          <TableCell>Status</TableCell>
+                          <TableCell>{selectedRowData.active}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>Warehouse Name</TableCell>
                           <TableCell>
                             {selectedRowData.warehouseLocation}
                           </TableCell>
+                        </TableRow>
+                        <TableRow>
+                          <TableCell>Stock Branch</TableCell>
+                          <TableCell>{selectedRowData.stockBranch}</TableCell>
                         </TableRow>
                         <TableRow>
                           <TableCell>Country</TableCell>
@@ -457,10 +486,6 @@ function Warehouse() {
                           <TableCell>Gst</TableCell>
                           <TableCell>{selectedRowData.gst}</TableCell>
                         </TableRow>
-                        {/* <TableRow>
-                        <TableCell>Active</TableCell>
-                        <TableCell>{selectedRowData.active}</TableCell>
-                      </TableRow> */}
                       </TableBody>
                     </Table>
                   </TableContainer>

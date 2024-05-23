@@ -16,17 +16,6 @@ import {
   stringAndNoAndSpecialCharValidation,
 } from "../../utils/userInputValidation";
 
-const ITEM_HEIGHT = 35;
-const ITEM_PADDING_TOP = 5;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
-
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
 ))(({ theme }) => ({
@@ -79,7 +68,6 @@ const IOSSwitch = styled((props) => (
 }));
 
 function AddWarehouse({ addWarehouse, editWarehouseId }) {
-  const [personName, setPersonName] = React.useState([]);
   const [code, setCode] = useState();
   const [unit, setUnit] = useState("");
   const [name, setName] = useState("");
@@ -98,6 +86,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
   const [stock, setStock] = useState("");
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [id, setId] = useState("");
 
@@ -112,18 +103,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     whiteSpace: "nowrap",
     width: 1,
   });
-
-  const warehouseOptions = ["Chennai", "Bangalore"];
-
-  const handleChangeChip = (event) => {
-    const {
-      target: { value },
-    } = event;
-    setPersonName(
-      // On autofill we get a stringified value.
-      typeof value === "string" ? value.split(",") : value
-    );
-  };
 
   useEffect(() => {
     getStockBranch();
@@ -147,10 +126,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
 
       if (response.status === 200) {
         setCountryData(response.data.paramObjectsMap.countryVO);
-        //console.log(response.data.paramObjectsMap.countryVO)
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -167,10 +143,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
 
       if (response.status === 200) {
         setStateData(response.data.paramObjectsMap.stateVO);
-        //console.log(response.data.paramObjectsMap.countryVO)
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -187,10 +160,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
 
       if (response.status === 200) {
         setCityData(response.data.paramObjectsMap.cityVO);
-        //console.log(response.data.paramObjectsMap.countryVO)
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -209,11 +179,8 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         const branchData = response.data.paramObjectsMap.branch;
         if (Array.isArray(branchData)) {
           setStockBranch(branchData);
-        } else {
-          // Handle the case where branchData is not an array
         }
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -228,7 +195,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       );
 
       if (response.status === 200) {
-        // setUserData(response.data.paramObjectsMap.userVO);
         console.log(
           "Edit User Details",
           response.data.paramObjectsMap.warehouse
@@ -244,16 +210,15 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         setCountry(response.data.paramObjectsMap.warehouse.country);
         setPincode(response.data.paramObjectsMap.warehouse.pincode);
         setGst(response.data.paramObjectsMap.warehouse.gst);
-        setStockBranch(response.data.paramObjectsMap.warehouse.stockBranch);
+        setStock(response.data.paramObjectsMap.warehouse.stockBranch);
+        if (response.data.paramObjectsMap.warehouse.active === "In-Active") {
+          setActive(false);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-
-  // const handleCloseWarehouse = () => {
-  //   addWarehouse(false);
-  // };
 
   // ALL INPUT FIELD CHANGE EVENTS
   const handleInputChange = (event) => {
@@ -301,7 +266,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       errors.name = "Warehouse Name is required";
     }
     if (!locationName) {
-      errors.locationName = "Location Name Name is required";
+      errors.locationName = "Location Name is required";
     }
     if (!code) {
       errors.code = "Code is required";
@@ -342,19 +307,28 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         orgId,
         active,
         stockBranch: stock,
+        createdBy: userName,
+        warehouseId: 0,
       };
       Axios.put(
         `${process.env.REACT_APP_API_URL}/api/warehouse/updateCreateWarehouse`,
         formData
       )
         .then((response) => {
-          toast.success("Warehouse Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          setTimeout(() => {
-            addWarehouse(true);
-          }, 2000); // Adjust the delay time as needed
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            toast.success("Warehouse created successfully", {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            setTimeout(() => {
+              addWarehouse(true);
+            }, 2000);
+          }
         })
         .catch((error) => {
           toast.error("Warehouse Creation failed", {
@@ -368,7 +342,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
           }
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -399,7 +372,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        warehouseId: id,
+        warehouseId: editWarehouseId,
         orgId,
         warehouseLocation: name,
         locationName,
@@ -419,13 +392,20 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         formData
       )
         .then((response) => {
-          toast.success("Warehouse Updated successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          setTimeout(() => {
-            addWarehouse(false);
-          }, 2000); // Adjust the delay time as needed
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            setTimeout(() => {
+              addWarehouse(false);
+            }, 2000);
+          }
         })
         .catch((error) => {
           toast.error("Warehouse Updation failed", {
@@ -434,7 +414,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
           });
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -476,7 +455,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       </div>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="d-flex justify-content-end">
-          {/* <h1 className="text-xl font-semibold mb-3">Warehouse Details</h1> */}
           <IoMdClose
             onClick={handleCloseWarehouse}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -555,6 +533,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onInput={codeFieldValidation}
               name="name"
               value={name}
+              disabled={editWarehouseId ? true : false}
               onChange={handleInputChange}
             />
             {errors.name && <span className="error-text">{errors.name}</span>}
@@ -801,7 +780,15 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <FormControlLabel
-              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  checked={active}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
+                />
+              }
             />
           </div>
         </div>
@@ -812,7 +799,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onClick={handleUpdateWarehouse}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
-              update
+              Update
             </button>
           </div>
         ) : (
