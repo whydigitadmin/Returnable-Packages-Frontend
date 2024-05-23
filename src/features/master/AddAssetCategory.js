@@ -297,29 +297,30 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
         formData
       )
         .then((response) => {
-          console.log("Response:", response.data);
-          addItemSpecification(false);
-          // addItemSpecification(true);
-          toast.success("Specification Updated successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          setTimeout(() => {
-            handleConfirmationYes();
-          }, 2000);
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            console.log("Response:", response.data);
+            setTimeout(() => {
+              handleConfirmationYes();
+            }, 2000);
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
-
-  // const handleCloseAddItemSpecification = () => {
-  //   addItemSpecification(true);
-  // };
 
   // CLOSE BUTTON WITH CONFIRMATION
   const handleCloseAddItemSpecification = () => {

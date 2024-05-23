@@ -91,7 +91,6 @@ function Flows() {
 
   const handleBack = () => {
     setAddFlows(false);
-    // getFlowData();
     getCustomerData();
     setEditFlow(false);
   };
@@ -99,24 +98,6 @@ function Flows() {
   const handleClose = () => {
     setOpen(false);
   };
-
-  // useEffect(() => {
-  //   getFlowData();
-  // }, []);
-
-  // const getFlowData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/master/flow`
-  //     );
-
-  //     if (response.status === 200) {
-  //       setData(response.data.paramObjectsMap.flowVO);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
 
   const handleVisibilityClick = (rowData) => {
     setSelectedRowData(rowData);
@@ -147,17 +128,6 @@ function Flows() {
   });
   const columns = useMemo(
     () => [
-      // {
-      //   accessorKey: "id",
-      //   header: "Sr No",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "first",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "first",
-      //   },
-      // },
       {
         accessorKey: "actions",
         header: "Actions",
@@ -307,13 +277,13 @@ function Flows() {
         setStatsData([
           {
             title: "Static Flows",
-            // value: totalCustomers.toString(),
+            value: "0",
             icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
           {
             title: "Transit Flows",
-            // value: totalCustomers.toString(),
+            value: "0",
             icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
@@ -344,9 +314,6 @@ function Flows() {
 
   return (
     <>
-      {/* {addFlows ? (
-        <AddFlows addFlows={handleBack} />
-      ) : ( */}
       {(addFlows && <AddFlows addFlows={handleBack} />) ||
         (editFlow && (
           <AddFlows addFlows={handleBack} editFlowId={selectedRowId} />
@@ -478,44 +445,6 @@ function Flows() {
                 </Button>
               </DialogActions>
             </Dialog>
-
-            {/* <Dialog
-            open={Boolean(selectedRowData)}
-            onClose={() => setSelectedRowData(null)}
-          >
-            <DialogTitle>Row Data Details</DialogTitle>
-            <DialogContent>
-              {selectedRowData && (
-                <TableContainer>
-                  <Table>
-                    <TableHead>
-                      <TableRow>
-                        <TableCell>
-                          <strong>Title</strong>
-                        </TableCell>
-                        <TableCell>
-                          <strong>Value</strong>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {Object.entries(selectedRowData).map(([key, value]) => (
-                        <TableRow key={key}>
-                          <TableCell>{key}</TableCell>
-                          <TableCell>
-                            {typeof value === "object"
-                              ? JSON.stringify(value)
-                              : value}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              )}
-            </DialogContent>
-            <Button onClick={() => setSelectedRowData(null)}>Close</Button>
-          </Dialog> */}
           </div>
         )}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -557,8 +486,14 @@ function Flows() {
                     <TableCell>{selectedRowData.destination}</TableCell>
                   </TableRow>
                   <TableRow>
-                    <TableCell>Warehouse Handling Location</TableCell>
+                    <TableCell>Supplier Warehouse</TableCell>
                     <TableCell>{selectedRowData.warehouseLocation}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Retrieval Warehouse</TableCell>
+                    <TableCell>
+                      {selectedRowData.retrievalWarehouseLocation}
+                    </TableCell>
                   </TableRow>
                 </TableBody>
               </Table>
