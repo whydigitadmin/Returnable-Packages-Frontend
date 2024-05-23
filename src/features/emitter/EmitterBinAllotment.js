@@ -599,46 +599,75 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   //     }
   // };
 
-  const handleAllotedQtyChange = async (e) => {
-    if (e.key === "Tab" || e.key === "Enter") {
-      e.preventDefault(); // Prevent the default behavior of the key press (Tab or Enter)
-
-      const inputValue = parseInt(alotQty + e.key, 10); // Parse the input value as an integer with the new key pressed
-      if (!isNaN(inputValue) && inputValue <= minQty) {
-        setAlotQty(inputValue.toString());
-
-        if (e.key === "Tab") {
-          try {
-            const response = await axios.get(
-              `${process.env.REACT_APP_API_URL}/api/master/getRandomStockAssetDetails?branchCode=${stockFrom}&kitCode=${reqKitName}&qty=${inputValue}`
-            );
-            if (response.status === 200) {
-              console.log(
-                "API Response:",
-                response.data.paramObjectsMap.StockDetails
-              );
-              const viewTableData =
-                response.data.paramObjectsMap.StockDetails.map(
-                  (row, index) => ({
-                    id: index + 1,
-                    assetId: row.tagCode,
-                    rfId: row.rfId,
-                    asset: row.asset,
-                    assetCode: row.assetCode,
-                    qty: 1,
-                  })
-                );
-              setTableData(viewTableData);
-            } else {
-              console.error("API Error:", response.data);
-            }
-          } catch (error) {
-            console.error("Error fetching data:", error);
-          }
-        }
+  const handleAllotedQtyChange = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getRandomStockAssetDetails?branchCode=${stockFrom}&kitCode=${reqKitName}&qty=${alotQty}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "API Response:",
+          response.data.paramObjectsMap.StockDetails
+        );
+        const viewTableData = response.data.paramObjectsMap.StockDetails.map(
+          (row, index) => ({
+            id: index + 1,
+            assetId: row.tagCode,
+            rfId: row.rfId,
+            asset: row.asset,
+            assetCode: row.assetCode,
+            qty: 1,
+          })
+        );
+        setTableData(viewTableData);
+      } else {
+        console.error("API Error:", response.data);
       }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
+
+  // const handleAllotedQtyChange = async (e) => {
+  //   if (e.key === "Tab" || e.key === "Enter") {
+  //     e.preventDefault(); // Prevent the default behavior of the key press (Tab or Enter)
+
+  //     const inputValue = parseInt(alotQty + e.key, 10); // Parse the input value as an integer with the new key pressed
+  //     if (!isNaN(inputValue) && inputValue <= minQty) {
+  //       setAlotQty(inputValue.toString());
+
+  //       if (e.key === "Tab") {
+  //         try {
+  //           const response = await axios.get(
+  //             `${process.env.REACT_APP_API_URL}/api/master/getRandomStockAssetDetails?branchCode=${stockFrom}&kitCode=${reqKitName}&qty=${inputValue}`
+  //           );
+  //           if (response.status === 200) {
+  //             console.log(
+  //               "API Response:",
+  //               response.data.paramObjectsMap.StockDetails
+  //             );
+  //             const viewTableData =
+  //               response.data.paramObjectsMap.StockDetails.map(
+  //                 (row, index) => ({
+  //                   id: index + 1,
+  //                   assetId: row.tagCode,
+  //                   rfId: row.rfId,
+  //                   asset: row.asset,
+  //                   assetCode: row.assetCode,
+  //                   qty: 1,
+  //                 })
+  //               );
+  //             setTableData(viewTableData);
+  //           } else {
+  //             console.error("API Error:", response.data);
+  //           }
+  //         } catch (error) {
+  //           console.error("Error fetching data:", error);
+  //         }
+  //       }
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -989,10 +1018,19 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                   setAlotQty("");
                 }
               }}
-              onKeyDown={(e) => handleAllotedQtyChange(e)}
+              // onKeyDown={(e) => handleAllotedQtyChange(e)}
               disabled={viewId ? true : false}
             />
           </div>
+        </div>
+        <div className="mt-4">
+          <button
+            type="button"
+            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+            onClick={handleAllotedQtyChange}
+          >
+            Check
+          </button>
         </div>
         {/* {!selectedRowId && (
                             <>
@@ -1101,7 +1139,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                             <div className="error-text mt-2">{errors.tableData}</div>
                         )} */}
 
-        <div className="row mt-2">
+        <div className="row mt-4">
           <div className="col-lg-12">
             <div className="overflow-x-auto">
               <table className="w-full">
