@@ -36,19 +36,19 @@ import {
 
 const statsData = [
   {
-    title: "No of Users",
+    title: "Pending Requests",
     value: "0",
     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
     description: "",
   },
   {
-    title: "Active Users",
+    title: "--",
     value: "0",
     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
     description: "",
   },
   {
-    title: "InActive Users",
+    title: "--",
     value: "0",
     icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
     description: "",
@@ -72,18 +72,19 @@ export const BinAllotmentDetails = () => {
   const [allotedBinData, setAllotedBinData] = React.useState([]);
   const [userAddressData, setUserAddressData] = React.useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
-  const [loginUserId, setLoginUserId] = React.useState(localStorage.getItem("userId"));
+  const [loginUserId, setLoginUserId] = React.useState(
+    localStorage.getItem("userId")
+  );
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [viewAllotedBins, setViewAllotedBins] = useState(false);
   const [allotedBinTableView, setAllotedBinTableView] = useState(false);
-  const [visibleCard, setVisibleCard] = useState(false)
+  const [visibleCard, setVisibleCard] = useState(false);
 
   const handleViewAllotedBins = () => {
-    setViewAllotedBins(true)
-    setAllotedBinTableView(true)
-  }
-
+    setViewAllotedBins(true);
+    setAllotedBinTableView(true);
+  };
 
   const handleViewClickOpen = () => {
     setOpenView(true);
@@ -109,8 +110,8 @@ export const BinAllotmentDetails = () => {
     setAddBinAllotment(false);
     setEditBinRequest(false);
     getAllBinRequest();
-    setAllotedBinTableView(false)
-    setViewAllotedBins(false)
+    setAllotedBinTableView(false);
+    setViewAllotedBins(false);
   };
 
   useEffect(() => {
@@ -125,8 +126,11 @@ export const BinAllotmentDetails = () => {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.issueRequestVO)
-        console.log("Response from API is:", response.data.paramObjectsMap.issueRequestVO);
+        setData(response.data.paramObjectsMap.issueRequestVO);
+        console.log(
+          "Response from API is:",
+          response.data.paramObjectsMap.issueRequestVO
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -138,7 +142,6 @@ export const BinAllotmentDetails = () => {
     setSelectedRowId(row.original.reqNo);
     console.log("Real state of selected row id is:", selectedRowId);
     setEditBinRequest(true);
-
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -291,9 +294,14 @@ export const BinAllotmentDetails = () => {
 
   return (
     <>
-      {(viewAllotedBins && <AllotedBinsTable viewAllotedTable={handleBack} />) ||
+      {(viewAllotedBins && (
+        <AllotedBinsTable viewAllotedTable={handleBack} />
+      )) ||
         (editBinRequest && (
-          <EmitterBinAllotment addBinAllotment={handleBack} editBinRequestId={selectedRowId} />
+          <EmitterBinAllotment
+            addBinAllotment={handleBack}
+            editBinRequestId={selectedRowId}
+          />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             {/* DASHBOARD COMPONENT */}
@@ -306,7 +314,9 @@ export const BinAllotmentDetails = () => {
             {/* ALLOTED BINS BUTTON */}
             <div className="">
               <div className="flex justify-content-between mt-4 w-full">
-                <h1 className="text-xl font-semibold mt-3">Pending Allotment List</h1>
+                <h1 className="text-xl font-semibold mt-3">
+                  Pending Allotment List
+                </h1>
 
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
@@ -337,9 +347,6 @@ export const BinAllotmentDetails = () => {
             <div className="mt-2">
               <MaterialReactTable table={table} />
             </div>
-
-
-
           </div>
         )}
     </>

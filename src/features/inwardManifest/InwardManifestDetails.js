@@ -33,34 +33,6 @@ import {
   TableRow,
 } from "@mui/material";
 
-const statsData = [
-  {
-    title: "No of Users",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active Users",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "InActive Users",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
-
 export const InwardManifestDetails = () => {
   const [addInwardManifeast, setAddInwardManifeast] = React.useState(false);
   // const [editUser, setEditUser] = React.useState(false);
@@ -73,8 +45,6 @@ export const InwardManifestDetails = () => {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [viewAssetInward, setViewAssetInward] = useState(false);
-
-
 
   const handleViewClickOpen = () => {
     setOpenView(true);
@@ -100,7 +70,7 @@ export const InwardManifestDetails = () => {
     setAddInwardManifeast(false);
     // setEditUser(false);
     getAllInwardManifestData();
-    setViewAssetInward(false)
+    setViewAssetInward(false);
   };
 
   useEffect(() => {
@@ -126,7 +96,7 @@ export const InwardManifestDetails = () => {
     setSelectedRowData(row.original);
     setSelectedRowId(row.original.docId);
     console.log("setSelectedRowId", row.original.docId);
-    setViewAssetInward(true)
+    setViewAssetInward(true);
   };
 
   // const handleEditRow = (row) => {
@@ -223,22 +193,14 @@ export const InwardManifestDetails = () => {
     []
   );
 
-
-
-
-
-
-
-
-
   const table = useMaterialReactTable({
     data,
     columns,
   });
 
-  const handleSaveRowEdits = () => { };
+  const handleSaveRowEdits = () => {};
 
-  const handleCancelRowEdits = () => { };
+  const handleCancelRowEdits = () => {};
 
   const handleEdit = (rowData) => {
     // Implement your logic to handle the edit action for the specific row
@@ -252,23 +214,20 @@ export const InwardManifestDetails = () => {
 
   return (
     <>
-      {(addInwardManifeast && <InwardManifest addInwardManifeast={handleBack} />) ||
+      {(addInwardManifeast && (
+        <InwardManifest addInwardManifeast={handleBack} />
+      )) ||
         (viewAssetInward && (
-          <InwardManifest addInwardManifeast={handleBack} viewAssetInwardId={selectedRowId} />
+          <InwardManifest
+            addInwardManifeast={handleBack}
+            viewAssetInwardId={selectedRowId}
+          />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
-            {/* DASHBOARD COMPONENT */}
-            <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-              {statsData.map((d, k) => {
-                return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-              })}
-            </div>
-
             {/* BULK UPLOAD AND ADD NEW BUTTON */}
             <div className="">
               {/* <div className="flex justify-between mt-4"> */}
-              <div className="flex justify-end mt-4 w-full">
-
+              <div className="flex justify-end w-full">
                 {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

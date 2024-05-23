@@ -32,34 +32,6 @@ import {
 } from "@mui/material";
 import { AsstTagging } from "./AsstTagging";
 
-const statsData = [
-  {
-    title: "No of Users",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active Users",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "InActive Users",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
-
 export const AssetTaggingDetails = () => {
   const [addTagging, setAddTagging] = React.useState(false);
   const [viewTagging, setViewTagging] = React.useState(false);
@@ -162,7 +134,7 @@ export const AssetTaggingDetails = () => {
       },
       {
         accessorKey: "assetCode",
-        header: "assetCode",
+        header: "Asset Code",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -210,16 +182,9 @@ export const AssetTaggingDetails = () => {
           <AsstTagging addTagging={handleBack} viewId={selectedRowId} />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
-            {/* DASHBOARD COMPONENT */}
-            <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-              {statsData.map((d, k) => {
-                return <DashBoardComponent key={k} {...d} colorIndex={k} />;
-              })}
-            </div>
-
             {/* ADD NEW BUTTON */}
             <div className="">
-              <div className="flex justify-content-end mt-4">
+              <div className="flex justify-content-end">
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

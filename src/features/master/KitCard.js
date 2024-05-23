@@ -141,16 +141,18 @@ export const KitCard = () => {
             </button>
           </div>
         </div>
-        <div className="d-flex flex-row">
-          <label className="label">
-            <span className="label-text label-font-size text-base-content d-flex flex-row">
-              Part Quantity:
+        {kitData && (
+          <div className="d-flex flex-row">
+            <label className="label">
+              <span className="label-text label-font-size text-base-content d-flex flex-row">
+                Part Quantity:
+              </span>
+            </label>
+            <span className="dark:text-slate-300 text-left font-semibold mt-2 ms-1">
+              {kitData.partQty}
             </span>
-          </label>
-          <span className="dark:text-slate-300 text-left font-semibold mt-2 ms-1">
-            {kitData.partQty}
-          </span>
-        </div>
+          </div>
+        )}
         <div>
           {kitData && (
             <div className="overflow-x-auto w-full mt-4">
