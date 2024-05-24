@@ -45,6 +45,7 @@ function Flows() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState("");
   const [createModalOpenView, setCreateModalOpenView] = useState(false);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [statsData, setStatsData] = useState([
     {
       title: "Static Flows",
@@ -266,7 +267,7 @@ function Flows() {
   const getCustomerData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow`
+        `${process.env.REACT_APP_API_URL}/api/master/flow?orgId=${orgId}`
       );
 
       if (response.status === 200) {

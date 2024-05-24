@@ -43,6 +43,7 @@ function Warehouse() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [statsData, setStatsData] = useState([
     {
       title: "No of warehouse",
@@ -112,7 +113,7 @@ function Warehouse() {
   const getWarehouseData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/view`
+        `${process.env.REACT_APP_API_URL}/api/warehouse/view?orgId=${orgId}`
       );
 
       if (response.status === 200) {
