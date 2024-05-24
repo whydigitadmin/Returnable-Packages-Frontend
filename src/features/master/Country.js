@@ -1,19 +1,71 @@
 import { Box } from "@mui/material";
-
 import EditIcon from "@mui/icons-material/Edit";
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import Tooltip from "@mui/material/Tooltip";
-//import DashBoardComponent from "./DashBoardComponent";
 import IconButton from "@mui/material/IconButton";
 import axios from "axios";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   codeFieldValidation,
   stringValidation,
 } from "../../utils/userInputValidation";
+
+const IOSSwitch = styled((props) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 42,
+  height: 26,
+  padding: 0,
+  "& .MuiSwitch-switchBase": {
+    padding: 0,
+    margin: 2,
+    transitionDuration: "300ms",
+    "&.Mui-checked": {
+      transform: "translateX(16px)",
+      color: "#fff",
+      "& + .MuiSwitch-track": {
+        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#0d6ef",
+        opacity: 1,
+        border: 0,
+      },
+      "&.Mui-disabled + .MuiSwitch-track": {
+        opacity: 0.5,
+      },
+    },
+    "&.Mui-focusVisible .MuiSwitch-thumb": {
+      color: "#33cf4d",
+      border: "6px solid #fff",
+    },
+    "&.Mui-disabled .MuiSwitch-thumb": {
+      color:
+        theme.palette.mode === "light"
+          ? theme.palette.grey[100]
+          : theme.palette.grey[600],
+    },
+    "&.Mui-disabled + .MuiSwitch-track": {
+      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxSizing: "border-box",
+    width: 22,
+    height: 22,
+  },
+  "& .MuiSwitch-track": {
+    borderRadius: 26 / 2,
+    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
+    opacity: 1,
+    transition: theme.transitions.create(["background-color"], {
+      duration: 500,
+    }),
+  },
+}));
 
 export const Country = () => {
   const [open, setOpen] = React.useState(false);
@@ -23,29 +75,26 @@ export const Country = () => {
   const [country, setCountry] = useState("");
   const [code, setCode] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [userDetail, setUserDetail] = useState(
-    JSON.parse(localStorage.getItem("userDto"))
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
   );
   const [errors, setErrors] = useState({});
+  const [active, setActive] = useState(true);
   const [openView, setOpenView] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  //   const [edit, setEdit] = React.useState(false);
 
   const handleViewClose = () => {
     setOpenView(false);
   };
 
-  //   const handleViewRow = (row) => {
-  //     setSelectedRowData(row.original);
-  //     console.log("setSelectedRowData", row.original);
-  //   };
-
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
     setCountry(row.original.country);
     setCode(row.original.countryCode);
-    console.log("Selected row id:", row.original.id);
+    if (row.original.active === "In-Active") {
+      setActive(false);
+    }
   };
 
   useEffect(() => {
@@ -57,15 +106,10 @@ export const Country = () => {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/country`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.countryVO);
         setTableData(response.data.paramObjectsMap.countryVO);
-        //console.log(response.data.paramObjectsMap.countryVO)
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -87,7 +131,6 @@ export const Country = () => {
   };
 
   const handleCountry = () => {
-    console.log("test");
     const errors = {};
     if (!country) {
       errors.country = "Country Name is required";
@@ -100,9 +143,9 @@ export const Country = () => {
         country: country,
         countryCode: code,
         orgId,
-        createdBy: userDetail.firstName,
-        modifiedBy: userDetail.firstName,
-        active: true,
+        createdBy: userName,
+        modifiedBy: userName,
+        active,
         cancel: false,
       };
       console.log("test1", formData);
@@ -127,7 +170,6 @@ export const Country = () => {
           console.error("Error:", error);
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -193,7 +235,6 @@ export const Country = () => {
   };
 
   const handleUpdateCountry = () => {
-    console.log("test");
     const errors = {};
     if (!country) {
       errors.country = "Country Name is required";
@@ -206,21 +247,18 @@ export const Country = () => {
         country: country,
         countryCode: code,
         orgId,
-        createdBy: userDetail.firstName,
-        modifiedBy: userDetail.firstName,
-        active: true,
+        createdBy: userName,
+        modifiedBy: userName,
+        active,
         cancel: false,
         id: selectedRowId,
       };
-      console.log("test1", formData);
       axios
         .put(
           `${process.env.REACT_APP_API_URL}/api/basicMaster/country`,
           formData
         )
         .then((response) => {
-          console.log("Response:", response.data);
-
           getCountryData();
           setCountry("");
           setCode("");
@@ -236,7 +274,6 @@ export const Country = () => {
           toast.error("Country Updated Failed");
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -280,17 +317,6 @@ export const Country = () => {
           </div>
         ),
       },
-      //   {
-      //     accessorKey: "id",
-      //     header: "ID",
-      //     size: 50,
-      //     muiTableHeadCellProps: {
-      //       align: "first",
-      //     },
-      //     muiTableBodyCellProps: {
-      //       align: "first",
-      //     },
-      //   },
       {
         accessorKey: "country",
         header: "Country",
@@ -333,7 +359,6 @@ export const Country = () => {
       <div>
         <ToastContainer />
       </div>
-      {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         {/* <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
             {statsData.map((d, k) => {
@@ -342,7 +367,7 @@ export const Country = () => {
           </div> */}
 
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label">
               <span
                 className={
@@ -371,7 +396,7 @@ export const Country = () => {
             )}
           </div>
 
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label">
               <span
                 className={
@@ -396,6 +421,26 @@ export const Country = () => {
               className="input input-bordered p-2"
             />
             {errors.code && <div className="error-text">{errors.code}</div>}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Active
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 ms-1">
+            <FormControlLabel
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  checked={active}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
+                />
+              }
+            />
           </div>
           {selectedRowId ? (
             <div className="d-flex flex-row mt-3">

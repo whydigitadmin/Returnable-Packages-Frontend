@@ -262,7 +262,7 @@ function AssetCategory() {
       },
       {
         accessorKey: "category",
-        header: "Asset",
+        header: "Category",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

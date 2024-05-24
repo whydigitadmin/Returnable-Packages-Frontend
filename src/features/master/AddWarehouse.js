@@ -385,6 +385,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         country,
         gst,
         active,
+        createdBy: userName,
         stockBranch: stock,
       };
       Axios.put(
