@@ -12,6 +12,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -31,7 +32,6 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NewPartStudy from "./NewPartStudy";
-import EditIcon from "@mui/icons-material/Edit";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
@@ -75,6 +75,7 @@ const statsData = [
 function Partstudy() {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
+  const [editPartStudy, setEditPartStudy] = React.useState(false);
   const [data, setData] = React.useState([]);
   const [value, setValue] = React.useState(0);
   const [tableData, setTableData] = useState([]);
@@ -82,6 +83,7 @@ function Partstudy() {
   const [packagingData, setPackagingData] = useState(null);
   const [logisticsData, setLogisticsData] = useState(null);
   const [stockData, setStockData] = useState(null);
+  const [selectedRowId, setSelectedRowId] = useState("");
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -97,6 +99,7 @@ function Partstudy() {
 
   const handleBack = () => {
     setAdd(false);
+    setEditPartStudy(false);
     getAllBasicDetail();
   };
 
@@ -134,9 +137,14 @@ function Partstudy() {
         enableColumnOrdering: false,
         enableEditing: false,
         Cell: ({ row }) => (
-          <IconButton onClick={() => handleViewRow(row)}>
-            <VisibilityIcon />
-          </IconButton>
+          <div>
+            <IconButton onClick={() => handleViewRow(row)}>
+              <VisibilityIcon />
+            </IconButton>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+          </div>
         ),
       },
       {
@@ -201,42 +209,51 @@ function Partstudy() {
     setOpen(true);
   };
 
+  const handleEditRow = (row) => {
+    setSelectedRowId(row.original.refPsId);
+    setEditPartStudy(true);
+    console.log("THE SELECTED ROW ID IS:", row.original.refPsId);
+  };
+
   return (
     <>
-      {add ? (
-        <NewPartStudy />
-      ) : (
-        <>
-          <div className="card w-full p-6 bg-base-100 shadow-xl">
-            <div className="d-flex justify-content-end mb-2">
-              <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
-                style={{ color: "blue" }}
-                onClick={handleAddOpen}
-              >
-                <img
-                  src="/new.png"
-                  alt="new-icon"
-                  title="new"
-                  style={{
-                    width: 30,
-                    height: 30,
-                    margin: "auto",
-                    hover: "pointer",
-                  }}
-                />
-                <span
-                  className="text-form text-base"
-                  style={{ marginLeft: "10px" }}
+      {/* {(add && <NewPartStudy />) !!
+      (editPartStudy && (<NewPartStudy />)) !! ( */}
+      {(add && <NewPartStudy addPS={handleBack} />) ||
+        (editPartStudy && (
+          <NewPartStudy addPS={handleBack} editPSId={selectedRowId} />
+        )) || (
+          <>
+            <div className="card w-full p-6 bg-base-100 shadow-xl">
+              <div className="d-flex justify-content-end mb-2">
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={handleAddOpen}
                 >
-                  Part Study
-                </span>
-              </button>
+                  <img
+                    src="/new.png"
+                    alt="new-icon"
+                    title="new"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    Part Study
+                  </span>
+                </button>
+              </div>
+              <MaterialReactTable table={table} />
             </div>
-            <MaterialReactTable table={table} />
-          </div>
-        </>
-      )}
+          </>
+        )}
 
       {/* Modal to display selected row data */}
       <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>

@@ -19,8 +19,9 @@ import Checkbox from "@mui/material/Checkbox";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import SelectPartStudy from "./SelectPartStudy";
+import { IoMdClose } from "react-icons/io";
 
-function NewPartStudy() {
+function NewPartStudy({ addPS, editPSId }) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
   const [add, setAdd] = React.useState(false);
@@ -44,6 +45,9 @@ function NewPartStudy() {
 
   useEffect(() => {
     // getStockDetails();
+    {
+      editPSId && handlePs();
+    }
   }, []);
 
   const handleBack = () => {
@@ -226,9 +230,19 @@ function NewPartStudy() {
   //     columns,
   //   });
 
+  const handlePartStudyClose = () => {
+    addPS(false);
+  };
+
   return (
     <>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
+        <div className="d-flex justify-content-end">
+          <IoMdClose
+            onClick={handlePartStudyClose}
+            className="cursor-pointer w-8 h-8"
+          />
+        </div>
         {/* <div className="border rounded w-50 mb-3"> */}
         <div className="d-flex justify-content-center mb-3">
           <FormGroup className="d-flex flex-row my-2">
@@ -367,6 +381,7 @@ function NewPartStudy() {
                 handleNext={handleNext}
                 setRefPsId={setRefPsId}
                 setEmitter={setEmitter}
+                editPSId={editPSId}
               />
             </CustomTabPanel>
             <CustomTabPanel value={value} index={1}>

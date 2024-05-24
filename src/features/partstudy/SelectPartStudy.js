@@ -6,7 +6,13 @@ import Datepicker from "react-tailwindcss-datepicker";
 import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 
-function SelectPartStudy({ setRefPsId, setEmitter, handleBack, handleNext }) {
+function SelectPartStudy({
+  setRefPsId,
+  setEmitter,
+  handleBack,
+  handleNext,
+  editPSId,
+}) {
   const currentDate = new Date();
   //   const [refPsId, setRefPsId] = useState();
   const [partStudyId, setPartStudyId] = useState("");
@@ -35,6 +41,9 @@ function SelectPartStudy({ setRefPsId, setEmitter, handleBack, handleNext }) {
 
   const handleEmitterChange = (event) => {
     setEmitterId(event.target.value);
+    setPartStudyId("");
+    setPartName("");
+    setPartNumber("");
     getPartStudyId(event.target.value);
   };
   const handlePsIdChange = (event) => {
@@ -44,7 +53,29 @@ function SelectPartStudy({ setRefPsId, setEmitter, handleBack, handleNext }) {
 
   useEffect(() => {
     getCustomersList();
+    {
+      editPSId && getPartStudyDetailsById();
+    }
+    console.log("EDIT ID CAME TO SelectPartStudy COMPONENT:", editPSId);
   }, []);
+
+  const getPartStudyDetailsById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails/${editPSId}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "THE EMITTERID IN SELECTPARTSTUDY IS:",
+          response.data.paramObjectsMap.basicDetailVO.emitterId
+        );
+        setEmitterId(response.data.paramObjectsMap.basicDetailVO.emitterId);
+        getPartStudyId(response.data.paramObjectsMap.basicDetailVO.emitterId);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getCustomersList = async () => {
     try {
@@ -74,6 +105,11 @@ function SelectPartStudy({ setRefPsId, setEmitter, handleBack, handleNext }) {
       );
       if (response.status === 200) {
         setPartStudyIdVO(
+          response.data.paramObjectsMap.basicDetailVO.partStudyId
+        );
+
+        console.log(
+          "SET PART STUDY ID VO IS:",
           response.data.paramObjectsMap.basicDetailVO.partStudyId
         );
       }
@@ -143,6 +179,7 @@ function SelectPartStudy({ setRefPsId, setEmitter, handleBack, handleNext }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleEmitterChange}
               value={emitterId}
+              disabled={editPSId ? true : false}
             >
               <option value="" disabled>
                 Select an Emitter
@@ -176,6 +213,7 @@ function SelectPartStudy({ setRefPsId, setEmitter, handleBack, handleNext }) {
               className="input mb-2 w-full input-bordered ps-2"
               onChange={handlePsIdChange}
               value={partStudyId}
+              // disabled={editPSId ? true : false}
             >
               <option value="" disabled>
                 Select a Part Study Id

@@ -94,6 +94,7 @@ function AddPartStudy({
   };
 
   useEffect(() => {
+    console.log("THE REF PS ID IS:", refPsId);
     if (refPsId) {
       fetchPartStudyDetails(refPsId);
     }
