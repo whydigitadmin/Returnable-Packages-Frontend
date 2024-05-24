@@ -1,9 +1,7 @@
 import { Box } from "@mui/material";
-
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-//import DashBoardComponent from "./DashBoardComponent";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -21,12 +19,66 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
   codeFieldValidation,
   stringValidation,
 } from "../../utils/userInputValidation";
+
+const IOSSwitch = styled((props) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 42,
+  height: 26,
+  padding: 0,
+  "& .MuiSwitch-switchBase": {
+    padding: 0,
+    margin: 2,
+    transitionDuration: "300ms",
+    "&.Mui-checked": {
+      transform: "translateX(16px)",
+      color: "#fff",
+      "& + .MuiSwitch-track": {
+        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#0d6ef",
+        opacity: 1,
+        border: 0,
+      },
+      "&.Mui-disabled + .MuiSwitch-track": {
+        opacity: 0.5,
+      },
+    },
+    "&.Mui-focusVisible .MuiSwitch-thumb": {
+      color: "#33cf4d",
+      border: "6px solid #fff",
+    },
+    "&.Mui-disabled .MuiSwitch-thumb": {
+      color:
+        theme.palette.mode === "light"
+          ? theme.palette.grey[100]
+          : theme.palette.grey[600],
+    },
+    "&.Mui-disabled + .MuiSwitch-track": {
+      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxSizing: "border-box",
+    width: 22,
+    height: 22,
+  },
+  "& .MuiSwitch-track": {
+    borderRadius: 26 / 2,
+    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
+    opacity: 1,
+    transition: theme.transitions.create(["background-color"], {
+      duration: 500,
+    }),
+  },
+}));
 
 export const State = () => {
   const [open, setOpen] = React.useState(false);
@@ -38,9 +90,10 @@ export const State = () => {
   const [country, setCountry] = useState("");
   const [code, setCode] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [userDetail, setUserDetail] = useState(
-    JSON.parse(localStorage.getItem("userDto"))
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
   );
+  const [active, setActive] = useState(true);
   const [errors, setErrors] = useState({});
   const [openView, setOpenView] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
@@ -56,6 +109,9 @@ export const State = () => {
     setCode(row.original.stateCode);
     setStateNo(row.original.stateNo);
     setCountry(row.original.country);
+    if (row.original.active === "In-Active") {
+      setActive(false);
+    }
   };
 
   const handleViewClose = () => {
@@ -136,10 +192,18 @@ export const State = () => {
   };
 
   const handleState = () => {
-    console.log("test");
     const errors = {};
     if (!state) {
       errors.state = "State Name is required";
+    }
+    if (!code) {
+      errors.code = "Code is required";
+    }
+    if (!stateNo) {
+      errors.stateNo = "State No is required";
+    }
+    if (!country) {
+      errors.country = "Country is required";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -147,13 +211,12 @@ export const State = () => {
         stateCode: code,
         stateNo: stateNo,
         orgId,
-        createdBy: userDetail.firstName,
-        modifiedBy: userDetail.firstName,
-        active: true,
+        createdBy: userName,
+        modifiedBy: userName,
+        active,
         cancel: false,
         country: country,
       };
-      console.log("test1", formData);
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/basicMaster/state`,
@@ -190,8 +253,9 @@ export const State = () => {
       stateNo: stateNo,
       id: selectedRowId,
       orgId: orgId,
-      modifiedBy: userDetail.firstName,
-      active: true,
+      createdBy: userName,
+      modifiedBy: userName,
+      active,
       cancel: false,
       country: country,
     };
@@ -207,7 +271,7 @@ export const State = () => {
         setCode("");
         setStateNo("");
         setCountry("");
-        toast.success("State Updation successfully", {
+        toast.success("State Updated successfully", {
           autoClose: 2000,
           theme: "colored",
         });
@@ -315,7 +379,7 @@ export const State = () => {
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row">
           {/* STATE CODE FIELD */}
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label">
               <span
                 className={
@@ -341,7 +405,7 @@ export const State = () => {
             {errors.code && <div className="error-text">{errors.code}</div>}
           </div>
           {/* STATE CODE FIELD */}
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label">
               <span
                 className={
@@ -430,6 +494,26 @@ export const State = () => {
             {errors.country && (
               <span className="error-text">{errors.country}</span>
             )}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Active
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 ms-1">
+            <FormControlLabel
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  checked={active}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
+                />
+              }
+            />
           </div>
           {edit ? (
             <div className="d-flex flex-row mt-3">

@@ -74,28 +74,12 @@ export const StockBranch = () => {
   const [branchCode, setBranchCode] = useState("");
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [data, setData] = React.useState([]);
-  const [userDetail, setUserDetail] = useState(
-    JSON.parse(localStorage.getItem("userDto"))
+  const [active, setActive] = useState(true);
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
   );
-
-  const handleStockChange = (event) => {
-    const { name, value } = event.target;
-    let formatedCode = value.replace(/[^a-zA-Z0-9-\/\\]/g, "");
-    let formatedBranch = value.replace(/[^a-zA-Z]/g, "");
-    switch (name) {
-      case "branch":
-        setBranch(formatedBranch.toUpperCase());
-        break;
-      case "code":
-        setBranchCode(formatedCode.toUpperCase());
-        break;
-      default:
-        break;
-    }
-  };
 
   useEffect(() => {
     getAllStockbranch();
@@ -109,7 +93,6 @@ export const StockBranch = () => {
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.branch);
-        console.log("Test", response.data.paramObjectsMap.branch);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -127,11 +110,11 @@ export const StockBranch = () => {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        active: true,
+        active,
         orgId,
         branchCode,
         branch,
-        createdby: userDetail.firstName,
+        createdby: userName,
       };
       axios
         .post(
@@ -139,7 +122,6 @@ export const StockBranch = () => {
           formData
         )
         .then((response) => {
-          console.log("Response:", response.data);
           setBranch("");
           setBranchCode("");
           setErrors({});
@@ -168,11 +150,11 @@ export const StockBranch = () => {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
-        active: true,
+        active,
         id: selectedRowId,
         branchCode,
         branch,
-        createdby: userDetail.firstName,
+        createdby: userName,
       };
       axios
         .put(
@@ -180,7 +162,6 @@ export const StockBranch = () => {
           formData
         )
         .then((response) => {
-          console.log("Response:", response.data);
           setBranch("");
           setBranchCode("");
           setErrors({});
@@ -205,19 +186,10 @@ export const StockBranch = () => {
     setSelectedRowId(row.original.id);
     setBranch(row.original.branch);
     setBranchCode(row.original.branchCode);
+    if (row.original.branchCode.active === "In-Active") {
+      setActive(false);
+    }
   };
-
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
 
   const columns = useMemo(
     () => [
@@ -363,12 +335,20 @@ export const StockBranch = () => {
         </div>
         <div className="col-lg-2 col-md-6 mb-2">
           <FormControlLabel
-            control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            control={
+              <IOSSwitch
+                sx={{ m: 1 }}
+                checked={active}
+                onChange={(e) => {
+                  setActive(e.target.checked);
+                }}
+              />
+            }
           />
         </div>
       </div>
       {selectedRowId ? (
-        <div className="d-flex flex-row mt-3">
+        <div className="d-flex flex-row">
           <button
             type="button"
             onClick={handleUpdate}

@@ -1,9 +1,7 @@
 import { Box } from "@mui/material";
-
 import { MaterialReactTable } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-//import DashBoardComponent from "./DashBoardComponent";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import {
@@ -20,6 +18,9 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -28,6 +29,57 @@ import {
   stringValidation,
 } from "../../utils/userInputValidation";
 
+const IOSSwitch = styled((props) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 42,
+  height: 26,
+  padding: 0,
+  "& .MuiSwitch-switchBase": {
+    padding: 0,
+    margin: 2,
+    transitionDuration: "300ms",
+    "&.Mui-checked": {
+      transform: "translateX(16px)",
+      color: "#fff",
+      "& + .MuiSwitch-track": {
+        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#0d6ef",
+        opacity: 1,
+        border: 0,
+      },
+      "&.Mui-disabled + .MuiSwitch-track": {
+        opacity: 0.5,
+      },
+    },
+    "&.Mui-focusVisible .MuiSwitch-thumb": {
+      color: "#33cf4d",
+      border: "6px solid #fff",
+    },
+    "&.Mui-disabled .MuiSwitch-thumb": {
+      color:
+        theme.palette.mode === "light"
+          ? theme.palette.grey[100]
+          : theme.palette.grey[600],
+    },
+    "&.Mui-disabled + .MuiSwitch-track": {
+      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxSizing: "border-box",
+    width: 22,
+    height: 22,
+  },
+  "& .MuiSwitch-track": {
+    borderRadius: 26 / 2,
+    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
+    opacity: 1,
+    transition: theme.transitions.create(["background-color"], {
+      duration: 500,
+    }),
+  },
+}));
+
 export const CityMaster = () => {
   const [open, setOpen] = React.useState(false);
   const [add, setAdd] = React.useState(false);
@@ -35,9 +87,10 @@ export const CityMaster = () => {
   const [tableData, setTableData] = useState([]);
   const [city, setCity] = useState("");
   const [code, setCode] = useState("");
+  const [active, setActive] = useState(true);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [userDetail, setUserDetail] = useState(
-    JSON.parse(localStorage.getItem("userDto"))
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
   );
   const [errors, setErrors] = useState({});
   const [openView, setOpenView] = useState(false);
@@ -57,7 +110,9 @@ export const CityMaster = () => {
     setState(row.original.state);
     setCity(row.original.cityName);
     setCode(row.original.cityCode);
-    // console.log("Selected row id:", row.original.cityid);
+    if (row.original.active === "In-Active") {
+      setActive(false);
+    }
   };
 
   const handleViewClose = () => {
@@ -88,10 +143,7 @@ export const CityMaster = () => {
 
       if (response.status === 200) {
         setCountryData(response.data.paramObjectsMap.countryVO);
-        //console.log(response.data.paramObjectsMap.countryVO)
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -108,10 +160,7 @@ export const CityMaster = () => {
 
       if (response.status === 200) {
         setStateData(response.data.paramObjectsMap.stateVO);
-        //console.log(response.data.paramObjectsMap.countryVO)
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -129,9 +178,7 @@ export const CityMaster = () => {
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.cityVO.reverse());
         setTableData(response.data.paramObjectsMap.cityVO.reverse());
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -186,9 +233,9 @@ export const CityMaster = () => {
         cityName: city,
         cityCode: code,
         orgId,
-        createdBy: userDetail.firstName,
-        modifiedBy: userDetail.firstName,
-        active: true,
+        createdBy: userName,
+        modifiedBy: userName,
+        active,
         cancel: false,
         country: country,
         state: state,
@@ -212,7 +259,6 @@ export const CityMaster = () => {
           console.error("Error:", error);
         });
     } else {
-      // If there are errors, update the state to display them
       setErrors(errors);
     }
   };
@@ -225,8 +271,9 @@ export const CityMaster = () => {
       cityCode: code,
       cityid: selectedRowId,
       orgId: orgId,
-      modifiedBy: userDetail.firstName,
-      active: true,
+      createdBy: userName,
+      modifiedBy: userName,
+      active,
       cancel: false,
       country: country,
       state: state,
@@ -294,17 +341,6 @@ export const CityMaster = () => {
           </div>
         ),
       },
-      // {
-      //   accessorKey: "cityid",
-      //   header: "ID",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "first",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "first",
-      //   },
-      // },
       {
         accessorKey: "cityName",
         header: "City",
@@ -344,7 +380,6 @@ export const CityMaster = () => {
 
   return (
     <>
-      {/* <h1 className="text-xl font-semibold mb-4 ms-4">Unit Details</h1> */}
       <div>
         <ToastContainer />
       </div>
@@ -468,6 +503,26 @@ export const CityMaster = () => {
               className="input input-bordered p-2"
             />
             {errors.code && <div className="error-text">{errors.code}</div>}
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Active
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 ms-1">
+            <FormControlLabel
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  checked={active}
+                  onChange={(e) => {
+                    setActive(e.target.checked);
+                  }}
+                />
+              }
+            />
           </div>
           {edit ? (
             <div className="d-flex flex-row mt-3">
