@@ -10,6 +10,7 @@ import {
   stringAndNoValidation,
   stringAndNoAndSpecialCharValidation,
 } from "../../utils/userInputValidation";
+import axios from "axios";
 
 function AddPackage({
   refPsId,
@@ -47,6 +48,16 @@ function AddPackage({
   const [emitterStudyId, setEmitterStudyId] = useState(emitter);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
+  const [selectedPartImgFiles, setSelectedPartImgFiles] = useState([]);
+  const [partImgUploadedFiles, setPartImgUploadedFiles] = useState([]);
+  const [selectedExPackFiles, setSelectedExPackFiles] = useState([]);
+  const [exPartUploadedFiles, setExPartUploadedFiles] = useState([]);
+  const [selectedDrawing, setSelectedDrawing] = useState([]);
+  const [drawingUploaded, setDrawingUploaded] = useState([]);
+  const [selectedDrawingApproval, setSelectedDrawingApproval] = useState([]);
+  const [drawingApprovalUpload, setDrawingApprovalUpload] = useState([]);
+  const [selectedACCImg, setSelectedACCImg] = useState([]);
+  const [accImgUpload, setACCImgUpload] = React.useState([]);
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -216,6 +227,8 @@ function AddPackage({
       )
         .then((response) => {
           console.log("Response:", response.data);
+          handleAllImgUpload();
+
           handleNext();
           // addPackage(false);
         })
@@ -225,6 +238,140 @@ function AddPackage({
     } else {
       setErrors(errors);
     }
+  };
+
+  const handleAllImgUpload = () => {
+    handlePartImgSave();
+    handleExPackagingImgSave();
+    handlePartDrawingSave();
+    handleApprovedPackagingImgSave();
+    handleApprovedCommercialContrachImgSave();
+  };
+  const handlePartImgSave = () => {
+    const formData = new FormData();
+    for (let i = 0; i < partImgUploadedFiles.length; i++) {
+      formData.append("file", partImgUploadedFiles[i]);
+    }
+    console.log("THE PARTIMAGE IS :", formData);
+    // formData.append("legName", entityLegalName);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadPartImage?id=${refPsId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((uploadResponse) => {
+        console.log("File Upload Response:", uploadResponse.data);
+      })
+      .catch((uploadError) => {
+        console.error("File Upload Error:", uploadError);
+      });
+  };
+
+  const handleExPackagingImgSave = () => {
+    const formData = new FormData();
+    for (let i = 0; i < exPartUploadedFiles.length; i++) {
+      formData.append("file", exPartUploadedFiles[i]);
+    }
+    console.log("THE PARTIMAGE IS :", formData);
+    // formData.append("legName", entityLegalName);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadExPackageImage?id=${refPsId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((uploadResponse) => {
+        console.log("File Upload Response:", uploadResponse.data);
+      })
+      .catch((uploadError) => {
+        console.error("File Upload Error:", uploadError);
+      });
+  };
+  const handlePartDrawingSave = () => {
+    const formData = new FormData();
+    for (let i = 0; i < drawingUploaded.length; i++) {
+      formData.append("file", drawingUploaded[i]);
+    }
+    console.log("THE PARTIMAGE IS :", formData);
+    // formData.append("legName", entityLegalName);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadPartDrawing?id=${refPsId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((uploadResponse) => {
+        console.log("File Upload Response:", uploadResponse.data);
+      })
+      .catch((uploadError) => {
+        console.error("File Upload Error:", uploadError);
+      });
+  };
+  const handleApprovedPackagingImgSave = () => {
+    const formData = new FormData();
+    for (let i = 0; i < drawingApprovalUpload.length; i++) {
+      formData.append("file", drawingApprovalUpload[i]);
+    }
+    console.log("THE PARTIMAGE IS :", formData);
+    // formData.append("legName", entityLegalName);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadApprovedTechnicalDrawing?id=${refPsId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((uploadResponse) => {
+        console.log("File Upload Response:", uploadResponse.data);
+      })
+      .catch((uploadError) => {
+        console.error("File Upload Error:", uploadError);
+      });
+  };
+  const handleApprovedCommercialContrachImgSave = () => {
+    const formData = new FormData();
+    for (let i = 0; i < accImgUpload.length; i++) {
+      formData.append("file", accImgUpload[i]);
+    }
+    console.log("THE PARTIMAGE IS :", formData);
+    // formData.append("legName", entityLegalName);
+
+    axios
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadApprovedCommercialImage?id=${refPsId}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
+      .then((uploadResponse) => {
+        console.log("File Upload Response:", uploadResponse.data);
+      })
+      .catch((uploadError) => {
+        console.error("File Upload Error:", uploadError);
+      });
   };
 
   useEffect(() => {
@@ -320,6 +467,56 @@ function AddPackage({
 
   const handleClosePackage = () => {
     // addPackage(false);
+  };
+
+  const handlePartImgFileUpload = (files) => {
+    console.log("Test");
+    setPartImgUploadedFiles(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+    const fileNames = Array.from(files).map((file) => file.name);
+    setSelectedPartImgFiles(fileNames);
+  };
+
+  const handleExPartFileUpload = (files) => {
+    console.log("Test");
+    setExPartUploadedFiles(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+    const fileNames = Array.from(files).map((file) => file.name);
+    setSelectedExPackFiles(fileNames);
+  };
+
+  const handleDrawingFileUpload = (files) => {
+    console.log("Test");
+    setDrawingUploaded(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+    const fileNames = Array.from(files).map((file) => file.name);
+    setSelectedDrawing(fileNames);
+  };
+
+  const handleDrawingApprovalFileUpload = (files) => {
+    console.log("Test");
+    setDrawingApprovalUpload(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+    const fileNames = Array.from(files).map((file) => file.name);
+    setSelectedDrawingApproval(fileNames);
+  };
+
+  const handleACCImgFileUpload = (files) => {
+    console.log("Test");
+    setACCImgUpload(files);
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+    }
+    const fileNames = Array.from(files).map((file) => file.name);
+    setSelectedACCImg(fileNames);
   };
 
   return (
@@ -760,16 +957,34 @@ function AddPackage({
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form mb-2"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="file"
+              id="file-input"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => handlePartImgFileUpload(e.target.files)}
+            />
+            <label htmlFor="file-input">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<FaCloudUploadAlt />}
+              >
+                Upload files
+              </Button>
+            </label>
+            <br />
+            {/* Display the selected file names */}
+            {selectedPartImgFiles &&
+              selectedPartImgFiles.map((fileName, index) => (
+                <div style={{ font: "10px" }} key={index}>
+                  {fileName}
+                </div>
+              ))}
+            {errors.uploadError && (
+              <span className="error-text mb-1">{errors.uploadFiles}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -782,16 +997,35 @@ function AddPackage({
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form mb-2"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
+
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="file"
+              id="file-input1"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => handleExPartFileUpload(e.target.files)}
+            />
+            <label htmlFor="file-input1">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<FaCloudUploadAlt />}
+              >
+                Upload files
+              </Button>
+            </label>
+            <br />
+            {/* Display the selected file names */}
+            {selectedExPackFiles &&
+              selectedExPackFiles.map((fileName, index) => (
+                <div style={{ font: "10px" }} key={index}>
+                  {fileName}
+                </div>
+              ))}
+            {errors.uploadError && (
+              <span className="error-text mb-1">{errors.uploadFiles}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -804,18 +1038,33 @@ function AddPackage({
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form mb-2"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
-            {errors.partDrawing && (
-              <div className="error-text">{errors.partDrawing}</div>
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="file"
+              id="file-input2"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => handleDrawingFileUpload(e.target.files)}
+            />
+            <label htmlFor="file-input2">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<FaCloudUploadAlt />}
+              >
+                Upload files
+              </Button>
+            </label>
+            <br />
+            {/* Display the selected file names */}
+            {selectedDrawing &&
+              selectedDrawing.map((fileName, index) => (
+                <div style={{ font: "10px" }} key={index}>
+                  {fileName}
+                </div>
+              ))}
+            {errors.uploadError && (
+              <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -829,20 +1078,33 @@ function AddPackage({
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form mb-2"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
-            {errors.approvedPackingTechnicalDrawing && (
-              <div className="error-text">
-                {errors.approvedPackingTechnicalDrawing}
-              </div>
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="file"
+              id="file-input3"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => handleDrawingApprovalFileUpload(e.target.files)}
+            />
+            <label htmlFor="file-input3">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<FaCloudUploadAlt />}
+              >
+                Upload files
+              </Button>
+            </label>
+            <br />
+            {/* Display the selected file names */}
+            {selectedDrawingApproval &&
+              selectedDrawingApproval.map((fileName, index) => (
+                <div style={{ font: "10px" }} key={index}>
+                  {fileName}
+                </div>
+              ))}
+            {errors.uploadError && (
+              <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -856,20 +1118,33 @@ function AddPackage({
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
-            <Button
-              component="label"
-              variant="contained"
-              className="text-form mb-2"
-              startIcon={<FaCloudUploadAlt />}
-            >
-              Upload file
-              <VisuallyHiddenInput type="file" />
-            </Button>
-            {errors.approvedCommercialContract && (
-              <div className="error-text">
-                {errors.approvedCommercialContract}
-              </div>
+          <div className="col-lg-3 col-md-6">
+            <input
+              type="file"
+              id="file-input4"
+              multiple
+              style={{ display: "none" }}
+              onChange={(e) => handleACCImgFileUpload(e.target.files)}
+            />
+            <label htmlFor="file-input4">
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<FaCloudUploadAlt />}
+              >
+                Upload files
+              </Button>
+            </label>
+            <br />
+            {/* Display the selected file names */}
+            {selectedACCImg &&
+              selectedACCImg.map((fileName, index) => (
+                <div style={{ font: "10px" }} key={index}>
+                  {fileName}
+                </div>
+              ))}
+            {errors.uploadError && (
+              <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
           </div>
         </div>

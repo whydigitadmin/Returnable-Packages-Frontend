@@ -148,6 +148,17 @@ function Partstudy() {
         ),
       },
       {
+        accessorKey: "emitterDisplayName",
+        header: "Emitter",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
         accessorKey: "partStudyDate",
         header: "Part Study Date",
         size: 50,
@@ -217,8 +228,6 @@ function Partstudy() {
 
   return (
     <>
-      {/* {(add && <NewPartStudy />) !!
-      (editPartStudy && (<NewPartStudy />)) !! ( */}
       {(add && <NewPartStudy addPS={handleBack} />) ||
         (editPartStudy && (
           <NewPartStudy addPS={handleBack} editPSId={selectedRowId} />

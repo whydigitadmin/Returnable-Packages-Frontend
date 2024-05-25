@@ -52,6 +52,8 @@ function SelectPartStudy({
   };
 
   useEffect(() => {
+    getPartStudyId(emitterId);
+    getPartStudyName(partStudyId);
     getCustomersList();
     {
       editPSId && getPartStudyDetailsById();
@@ -70,7 +72,10 @@ function SelectPartStudy({
           response.data.paramObjectsMap.basicDetailVO.emitterId
         );
         setEmitterId(response.data.paramObjectsMap.basicDetailVO.emitterId);
+        setPartStudyId(editPSId);
         getPartStudyId(response.data.paramObjectsMap.basicDetailVO.emitterId);
+        // getPartStudyId(editPSId);
+        getPartStudyName(editPSId);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
