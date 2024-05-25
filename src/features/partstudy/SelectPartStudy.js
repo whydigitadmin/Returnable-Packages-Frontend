@@ -218,7 +218,7 @@ function SelectPartStudy({
               className="input mb-2 w-full input-bordered ps-2"
               onChange={handlePsIdChange}
               value={partStudyId}
-              // disabled={editPSId ? true : false}
+              disabled={editPSId ? true : false}
             >
               <option value="" disabled>
                 Select a Part Study Id
