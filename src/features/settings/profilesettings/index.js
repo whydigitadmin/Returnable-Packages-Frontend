@@ -7,6 +7,7 @@ import { styled } from "@mui/material/styles";
 import { useDispatch, useSelector } from "react-redux";
 import TitleCard from "../../../components/Cards/TitleCard";
 import { showNotification } from "../../common/headerSlice";
+import { FaArrowCircleLeft, FaStarOfLife } from "react-icons/fa";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
@@ -20,6 +21,8 @@ import { Link } from "react-router-dom";
 
 function ProfileSettings() {
   const [openModal, setOpenModal] = React.useState(false);
+  const [name, setName] = useState(localStorage.getItem("userName"));
+  const [role, setRole] = useState(localStorage.getItem("userDetails"));
   const dispatch = useDispatch();
 
   const handleClickOpen = () => {
@@ -52,8 +55,100 @@ function ProfileSettings() {
 
   return (
     <>
-      <TitleCard title="Organizational Profile" topMargin="mt-2">
-        <div className="row mb-4">
+      <div>
+        {(role === "ROLE_USER" || role === "ROLE_ADMIN") && (
+          <div className="card p-6 bg-base-100 shadow-xl">
+            <div className="row">
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    User ID:
+                    {/* <FaStarOfLife className="must" /> */}
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type="text"
+                  value={name}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-6 col-md-12 mb-2"></div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <label className="label">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Role:
+                    {/* <FaStarOfLife className="must" /> */}
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6 mb-2">
+                <input
+                  className="form-control form-sz mb-2"
+                  type="text"
+                  value={role}
+                  disabled
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {role === "ROLE_EMITTER" && (
+          <div className="container-sm">
+            <div className="card p-6 bg-emitter shadow-xl">
+              <div className="row">
+                <div className="d-flex flex-row mb-3">
+                  <Link to="/app/welcomeemitter">
+                    <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                  </Link>
+                  <p className="ms-2 text-2xl">
+                    <strong>My Profile</strong>
+                  </p>
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <label className="label">
+                    <span className="label-text label-font-size text-emitter d-flex flex-row">
+                      User ID:
+                      {/* <FaStarOfLife className="must" /> */}
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <input
+                    className="form-control form-sz mb-2"
+                    type="text"
+                    value={name}
+                    disabled
+                  />
+                </div>
+                <div className="col-lg-6 col-md-12 mb-2"></div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <label className="label">
+                    <span className="label-text label-font-size text-emitter d-flex flex-row">
+                      Role:
+                      {/* <FaStarOfLife className="must" /> */}
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-3 col-md-6 mb-2">
+                  <input
+                    className="form-control form-sz mb-2"
+                    type="text"
+                    value={role}
+                    disabled
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* <TitleCard title="My Profile" topMargin="mt-2">
+      <div className="row mb-4">
           <div className="col-lg-3 col-md-6">
             <label className="label label-text label-font-size text-base-content">
               Organization Logo:
@@ -369,7 +464,7 @@ function ProfileSettings() {
             </Button>
           </DialogActions>
         </Dialog>
-        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <InputText labelTitle="Name" defaultValue="Alex" updateFormValue={updateFormValue}/>
                     <InputText labelTitle="Email Id" defaultValue="alex@dashwind.com" updateFormValue={updateFormValue}/>
                     <InputText labelTitle="Title" defaultValue="UI/UX Designer" updateFormValue={updateFormValue}/>
@@ -384,8 +479,8 @@ function ProfileSettings() {
                     <ToogleInput updateType="syncData" labelTitle="Sync Data" defaultValue={true} updateFormValue={updateFormValue}/>
                 </div>
 
-                <div className="mt-16"><button className="btn btn-primary float-right" onClick={() => updateProfile()}>Update</button></div> */}
-      </TitleCard>
+                <div className="mt-16"><button className="btn btn-primary float-right" onClick={() => updateProfile()}>Update</button></div> 
+      </TitleCard>*/}
     </>
   );
 }
