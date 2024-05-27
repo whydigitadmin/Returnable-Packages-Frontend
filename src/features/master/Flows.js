@@ -61,7 +61,7 @@ function Flows() {
     },
     {
       // title: "Unique Item/Item group",
-      title: "All Flows",
+      title: "Total Flows",
       value: "0",
       icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
       description: "",
@@ -283,6 +283,18 @@ function Flows() {
 
         setStatsData([
           {
+            title: "Total Flows",
+            value: totalFlows,
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active Flows",
+            value: activeFlows,
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
             title: "Static Flows",
             value: "0",
             icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
@@ -292,18 +304,6 @@ function Flows() {
             title: "Transit Flows",
             value: "0",
             icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
-            description: "",
-          },
-          {
-            title: "All Flows",
-            value: totalFlows,
-            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
-            description: "",
-          },
-          {
-            title: "Active Flows",
-            value: activeFlows,
-            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
             description: "",
           },
           // {
