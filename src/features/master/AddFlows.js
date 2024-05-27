@@ -82,8 +82,8 @@ function AddFlows({ addFlows, editFlowId }) {
   const [kitNo, setKitName] = useState("");
   const [kitDesc, setKitDesc] = useState("");
   const [partName, setPartName] = useState("");
-  const [partNumber, setPartNumber] = useState(null);
-  const [partStudyNameVO, setPartStudyNameVO] = useState([]);
+  const [partNumber, setPartNumber] = useState("");
+  const [partStudyNumberVO, setPartStudyNumberVO] = useState([]);
   const [cycleTime, setCycleTime] = useState(null);
   const [errors, setErrors] = useState("");
   const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
@@ -109,12 +109,9 @@ function AddFlows({ addFlows, editFlowId }) {
     getCustomersList();
     getAllKitData();
     getWarehouseLocationList();
-    getStateData(); // city data api
-    console.log("THE CITY FIELD VALIE IS:", city);
+    getStateData();
     {
       editFlowId && getFlowById();
-      // editFlowId && editDestinationList();
-      // handleFileterdCityChange();
     }
   }, []);
 
@@ -125,10 +122,8 @@ function AddFlows({ addFlows, editFlowId }) {
       );
 
       if (response.status === 200) {
-        console.log("origin:", value);
         const cityVo = response.data.paramObjectsMap.cityVO;
         const filteredCity = cityVo.filter((list) => list.cityCode !== value);
-        console.log("THE EDIT FILETERED CITY ARE:", filteredCity);
         setEditFilteredList(filteredCity);
       } else {
         console.error("API Error:", response.data);
@@ -143,15 +138,12 @@ function AddFlows({ addFlows, editFlowId }) {
       const response = await Axios.get(
         `${process.env.REACT_APP_API_URL}/api/warehouse/activeWarehouse?orgId=${orgId}`
       );
-      console.log("API Response:", response);
 
       if (response.status === 200) {
-        console.log("editRetrivalList:", value);
         const warehouseLocationVO = response.data.paramObjectsMap.WarehouseVO;
         const filteredWarehouse = warehouseLocationVO.filter(
           (list) => list.warehouseId !== value
         );
-        console.log("THE EDIT Retrivel FILETERED CITY ARE:", filteredWarehouse);
         setEditFilteredWarehouseList(filteredWarehouse);
       } else {
         console.error("API Error:", response.data);
@@ -162,15 +154,9 @@ function AddFlows({ addFlows, editFlowId }) {
   };
 
   useEffect(() => {
-    console.log("Selected emitter ID:", emitter);
-    console.log("emitterCustomersVO:", emitterCustomersVO);
-
-    // Use the latest state value of emitterCustomersVO
     const selectedEmitter = emitterCustomersVO.find(
       (item) => parseInt(item.id) === parseInt(emitter)
     );
-
-    console.log("Selected emitter:", selectedEmitter);
 
     if (selectedEmitter) {
       setDisplayName(selectedEmitter.displayName);
@@ -181,8 +167,6 @@ function AddFlows({ addFlows, editFlowId }) {
     const selectedReceiver = receiverCustomersVO.find(
       (item) => parseInt(item.id) === parseInt(receiver)
     );
-
-    console.log("Selected emitter:", selectedEmitter);
 
     if (selectedReceiver) {
       setReceiverName(selectedReceiver.displayName);
@@ -196,8 +180,6 @@ function AddFlows({ addFlows, editFlowId }) {
     const generateFlowName = () => {
       // Check if all values are available
 
-      console.log("Testtt", emitter, origin, destination);
-      console.log("EmitterName", displayName);
       if (emitter && origin && destination && receiver) {
         const firstTwoEmitter = displayName.substring(0, 2).toUpperCase();
         const firstTwoOrigin = origin.substring(0, 3).toUpperCase();
@@ -208,7 +190,6 @@ function AddFlows({ addFlows, editFlowId }) {
       }
     };
 
-    // Call the function when emitter, origin, or destination changes
     generateFlowName();
   }, [displayName, origin, destination, receiverName]);
 
@@ -219,11 +200,6 @@ function AddFlows({ addFlows, editFlowId }) {
       );
 
       if (response.status === 200) {
-        console.log(
-          "GET FLOW BY ID API RESPONSE:",
-          response.data.paramObjectsMap.flowVO
-        );
-        // handleFileterdCityChange();
         setId(response.data.paramObjectsMap.flowVO.id);
         setFlowName(response.data.paramObjectsMap.flowVO.flowName);
         setEmitter(response.data.paramObjectsMap.flowVO.emitterId);
@@ -260,12 +236,11 @@ function AddFlows({ addFlows, editFlowId }) {
     const selectedEmitterId = event.target.value;
     setEmitter(selectedEmitterId);
 
-    // Fetch part study ID
-    getPartStudyId(selectedEmitterId); // Assuming this function fetches the part study ID
+    getPartStudyId(selectedEmitterId);
   };
 
-  const handlePartName = (event) => {
-    setPartName(event.target.value);
+  const handlePartNumber = (event) => {
+    setPartNumber(event.target.value);
     getPartStudyNo(event.target.value);
   };
   const handleReceiverChange = (event) => {
@@ -291,15 +266,15 @@ function AddFlows({ addFlows, editFlowId }) {
         }
       );
       if (response.status === 200) {
-        setPartStudyNameVO(
-          response.data.paramObjectsMap.basicDetailVO.partName
+        setPartStudyNumberVO(
+          response.data.paramObjectsMap.basicDetailVO.partNumber
         );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  const getPartStudyNo = async (partName) => {
+  const getPartStudyNo = async (partNumber) => {
     try {
       const response = await Axios.get(
         `${process.env.REACT_APP_API_URL}/api/partStudy/searchPartStudyById`,
@@ -307,14 +282,12 @@ function AddFlows({ addFlows, editFlowId }) {
           params: {
             orgId: orgId,
             emitterId: emitter,
-            partName: partName,
+            partNumber: partNumber,
           },
         }
       );
       if (response.status === 200) {
-        setPartNumber(
-          response.data.paramObjectsMap.basicDetailVO.partNumber[0]
-        );
+        setPartName(response.data.paramObjectsMap.basicDetailVO.partName[0]);
         const totalCycleTime =
           response.data.paramObjectsMap.basicDetailVO.basicDetailVO[0]
             .stockDetailVO.totalCycleTime;
@@ -352,7 +325,6 @@ function AddFlows({ addFlows, editFlowId }) {
 
       if (response.status === 200) {
         setGetKit(response.data.paramObjectsMap.KitVO);
-        console.log("kit", response.data.paramObjectsMap.KitVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -384,7 +356,6 @@ function AddFlows({ addFlows, editFlowId }) {
     const selectedValue = e.target.value;
     setOrigin(selectedValue);
     const filteredCity = city.filter((list) => list.cityCode !== selectedValue);
-    console.log("THE FILETERED CITY ARE:", filteredCity);
     setDestination("");
     setFilteredCity(filteredCity);
   };
@@ -397,9 +368,9 @@ function AddFlows({ addFlows, editFlowId }) {
   // SAVE API
   const handleSave = () => {
     const errors = {};
-    if (!flowName) {
-      errors.flowName = "Flow name is required";
-    }
+    // if (!flowName) {
+    //   errors.flowName = "Flow name is required";
+    // }
     if (!emitter) {
       errors.emitter = "Emitter is required";
     }
@@ -407,13 +378,16 @@ function AddFlows({ addFlows, editFlowId }) {
       errors.receiver = "Receiver is required";
     }
     if (!origin) {
-      errors.origin = "origin is required";
+      errors.origin = "Origin is required";
     }
     if (!destination) {
       errors.destination = "Destination is required";
     }
     if (!warehouseLocationValue) {
-      errors.warehouseLocationValue = "Warehouse Location is required";
+      errors.warehouseLocationValue = "Supplier warehouse is required";
+    }
+    if (!retrievalWarehouse) {
+      errors.retrievalWarehouse = "Retrieval warehouse is required";
     }
     if (kitDTO.length === 0) {
       errors.kitDTO = "Please add at least one Kit detail";
@@ -428,7 +402,7 @@ function AddFlows({ addFlows, editFlowId }) {
         orgin: origin,
         destination,
         active,
-        createdby: userName,
+        createdBy: userName,
         modifiedby: userName,
         warehouseId: warehouseLocationValue,
         retrievalWarehouseId: retrievalWarehouse,
@@ -444,7 +418,6 @@ function AddFlows({ addFlows, editFlowId }) {
               theme: "colored",
             });
           } else {
-            console.log("Response:", response.data);
             toast.success(response.data.paramObjectsMap.message, {
               autoClose: 2000,
               theme: "colored",
@@ -466,9 +439,9 @@ function AddFlows({ addFlows, editFlowId }) {
   // UPDATE API
   const handleUpdate = () => {
     const errors = {};
-    if (!flowName) {
-      errors.flowName = "Flow name is required";
-    }
+    // if (!flowName) {
+    //   errors.flowName = "Flow name is required";
+    // }
     if (!emitter) {
       errors.emitter = "Emitter is required";
     }
@@ -476,13 +449,16 @@ function AddFlows({ addFlows, editFlowId }) {
       errors.receiver = "Receiver is required";
     }
     if (!origin) {
-      errors.origin = "origin is required";
+      errors.origin = "Origin is required";
     }
     if (!editDestination) {
       errors.editDestination = "Destination is required";
     }
     if (!warehouseLocationValue) {
-      errors.warehouseLocationValue = "Warehouse Location is required";
+      errors.warehouseLocationValue = "Supplier Warehouse is required";
+    }
+    if (!retrievalWarehouse) {
+      errors.retrievalWarehouse = "Retrieval warehouse is required";
     }
     if (kitDTO.length === 0) {
       errors.kitDTO = "Please add at least one Kit detail";
@@ -497,7 +473,7 @@ function AddFlows({ addFlows, editFlowId }) {
         orgin: origin,
         destination: editDestination,
         active,
-        createdby: userName,
+        createdBy: userName,
         modifiedby: userName,
         warehouseId: warehouseLocationValue,
         retrievalWarehouseId: editRetrival,
@@ -513,7 +489,6 @@ function AddFlows({ addFlows, editFlowId }) {
               theme: "colored",
             });
           } else {
-            console.log("Response:", response.data);
             toast.success(response.data.paramObjectsMap.message, {
               autoClose: 2000,
               theme: "colored",
@@ -537,10 +512,6 @@ function AddFlows({ addFlows, editFlowId }) {
       const response = await Axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
       );
-      console.log(
-        "response.data.paramObjectsMap.cityVO",
-        response.data.paramObjectsMap.cityVO
-      );
 
       if (response.status === 200) {
         setCity(response.data.paramObjectsMap.cityVO);
@@ -560,10 +531,6 @@ function AddFlows({ addFlows, editFlowId }) {
 
       if (response.status === 200) {
         setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseVO);
-        console.log(
-          "WarehouseLocation",
-          response.data.paramObjectsMap.WarehouseLocation
-        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -577,7 +544,6 @@ function AddFlows({ addFlows, editFlowId }) {
 
       if (response.status === 200) {
         setKitDesc(response.data.paramObjectsMap.KitVO.kitDesc);
-        console.log("kitDesc", response.data.paramObjectsMap.KitVO.kitDesc);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -684,12 +650,10 @@ function AddFlows({ addFlows, editFlowId }) {
 
   const handleSupplierChange = (e) => {
     const selectedValue = parseInt(e.target.value);
-    console.log("selected", selectedValue);
     setWarehouseLocationValue(selectedValue);
     const filterSupplier = warehouseLocationVO.filter(
       (list) => list.warehouseId !== selectedValue
     );
-    console.log("THE FILETERED filterSupplier ARE:", filterSupplier);
     setRetrievalWarehouse("");
     setFilterSupplier(filterSupplier);
   };
@@ -1014,7 +978,7 @@ function AddFlows({ addFlows, editFlowId }) {
             />
           </div>
           <div className="col-lg-6 col-md-12">
-            <div className="float-right">
+            <div className="d-flex justify-content-end mt-1">
               <button
                 className="btn btn-ghost btn-lg text-sm col-xs-1"
                 style={{ color: "blue" }}
@@ -1039,6 +1003,8 @@ function AddFlows({ addFlows, editFlowId }) {
                   Kit
                 </span>
               </button>
+            </div>
+            <div className="d-flex justify-content-end">
               {errors.kitDTO && (
                 <span className="error-text mb-1">{errors.kitDTO}</span>
               )}
@@ -1155,7 +1121,7 @@ function AddFlows({ addFlows, editFlowId }) {
                   value={kitNo}
                   onChange={handleSelectKitName}
                 >
-                  <option value="">Select a kit</option>
+                  <option value="">Select a Kit</option>
                   {getkit.map((kitId) => (
                     <option key={kitId.id} value={kitId.kitNo}>
                       {kitId.kitNo}
@@ -1174,7 +1140,7 @@ function AddFlows({ addFlows, editFlowId }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Part Name
+                    Part Number
                     <FaStarOfLife className="must" />
                   </span>
                 </label>
@@ -1182,21 +1148,21 @@ function AddFlows({ addFlows, editFlowId }) {
               <div className="col-lg-3 col-md-6">
                 <select
                   className="form-select form-sz w-full"
-                  onChange={handlePartName}
-                  value={partName}
+                  onChange={handlePartNumber}
+                  value={partNumber}
                 >
                   <option value="" disabled>
-                    Select a part name
+                    Select a Part Number
                   </option>
-                  {partStudyNameVO.length > 0 &&
-                    partStudyNameVO.map((list) => (
+                  {partStudyNumberVO.length > 0 &&
+                    partStudyNumberVO.map((list) => (
                       <option key={list.id} value={list}>
                         {list}
                       </option>
                     ))}
                 </select>
-                {errors.partName && (
-                  <span className="error-text mb-1">{errors.partName}</span>
+                {errors.partNumber && (
+                  <span className="error-text mb-1">{errors.partNumber}</span>
                 )}
               </div>
               {/* part no field */}
@@ -1226,7 +1192,7 @@ function AddFlows({ addFlows, editFlowId }) {
                       "label-text label-font-size text-base-content d-flex flex-row"
                     }
                   >
-                    Part Number
+                    Part Name
                     <FaStarOfLife className="must" />
                   </span>
                 </label>
@@ -1235,7 +1201,7 @@ function AddFlows({ addFlows, editFlowId }) {
                 <input
                   className="form-control form-sz mb-2"
                   disabled
-                  value={partNumber}
+                  value={partName}
                 />
               </div>
               {/* cycle Time field */}

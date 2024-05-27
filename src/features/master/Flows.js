@@ -100,14 +100,13 @@ function Flows() {
     setOpen(false);
   };
 
-  const handleVisibilityClick = (rowData) => {
-    setSelectedRowData(rowData);
-    setCreateModalOpenView(true);
+  const handleVisibilityClose = () => {
+    setCreateModalOpenView(false);
   };
 
   const handleViewRow = (row) => {
     setSelectedRowData(row.original);
-    setOpen(true);
+    setCreateModalOpenView(true);
   };
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -382,27 +381,7 @@ function Flows() {
               </div>
             </div>
             <div className="mt-4">
-              <MaterialReactTable
-                table={table}
-                displayColumnDefOptions={{
-                  "mrt-row-actions": {
-                    muiTableHeadCellProps: {
-                      align: "center",
-                    },
-                    size: 120,
-                  },
-                }}
-                renderRowActions={({ row, table }) => (
-                  <Tooltip arrow placement="left" title="Operate">
-                    <IconButton
-                      color="error"
-                      onClick={() => handleVisibilityClick(row.original)}
-                    >
-                      <VisibilityIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-              />
+              <MaterialReactTable table={table} />
             </div>
             <Dialog
               fullWidth={true}
@@ -454,14 +433,19 @@ function Flows() {
             </Dialog>
           </div>
         )}
-      <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
+      <Dialog
+        open={createModalOpenView}
+        onClose={handleVisibilityClose}
+        maxWidth="sm"
+        fullWidth
+      >
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
           <div className="row">
             <div className="col-md-11">
               <Typography variant="h6">Flow Details</Typography>
             </div>
             <div className="col-md-1">
-              <IconButton onClick={handleClose} aria-label="close">
+              <IconButton onClick={handleVisibilityClose} aria-label="close">
                 <CloseIcon />
               </IconButton>
             </div>
@@ -512,7 +496,7 @@ function Flows() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={handleVisibilityClose} color="primary">
             Close
           </Button>
         </DialogActions>
