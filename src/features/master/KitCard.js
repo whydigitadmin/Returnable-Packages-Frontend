@@ -6,6 +6,7 @@ export const KitCard = () => {
   const [kitCode, setKitCode] = useState("");
   const [errors, setErrors] = useState({});
   const [kitData, setKitData] = useState(null);
+  const [emitterData, setEmitterData] = useState([]);
   const [kitVO, setKitVO] = useState([]);
   const [hoveredImage, setHoveredImage] = useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
@@ -82,6 +83,17 @@ export const KitCard = () => {
       .catch((error) => {
         console.error("Error:", error);
       });
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/api/master/getEmitterAndReceiverByKitNo?kitNo=${kitCode}`
+      )
+      .then((response) => {
+        setEmitterData(response.data.paramObjectsMap.emitterDetails);
+        console.log("emitter", response.data.paramObjectsMap.emitterDetails);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
   };
 
   return (
@@ -154,8 +166,32 @@ export const KitCard = () => {
           </div>
         )}
         <div>
+          {emitterData.length > 0 && (
+            <div className="overflow-x-auto w-full mt-2">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th>Emitter</th>
+                    <th>Receiver</th>
+                    <th>Flow</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {emitterData.map((kit) => {
+                    return (
+                      <tr key={kit.id}>
+                        <td>{kit.emitter}</td>
+                        <td>{kit.receiver}</td>
+                        <td>{kit.flow}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
           {kitData && (
-            <div className="overflow-x-auto w-full mt-4">
+            <div className="overflow-x-auto w-full mt-2">
               <table className="table w-full">
                 <thead>
                   <tr>

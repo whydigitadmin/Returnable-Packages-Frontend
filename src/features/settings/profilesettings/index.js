@@ -96,14 +96,20 @@ function ProfileSettings() {
           </div>
         )}
 
-        {role === "ROLE_EMITTER" && (
+        {(role === "ROLE_EMITTER" || role === "ROLE_OEM") && (
           <div className="container-sm">
             <div className="card p-6 bg-emitter shadow-xl">
               <div className="row">
                 <div className="d-flex flex-row mb-3">
-                  <Link to="/app/welcomeemitter">
-                    <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                  </Link>
+                  {role === "ROLE_EMITTER" ? (
+                    <Link to="/app/welcomeemitter">
+                      <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                    </Link>
+                  ) : (
+                    <Link to="/app/welcomeoem">
+                      <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                    </Link>
+                  )}
                   <p className="ms-2 text-2xl">
                     <strong>My Profile</strong>
                   </p>
