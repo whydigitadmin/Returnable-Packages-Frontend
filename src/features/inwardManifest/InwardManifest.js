@@ -299,7 +299,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const getStockBranch = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/ActivestockbranchByOrgId?orgId=${orgId}`
       );
       console.log("API Response:", response);
 

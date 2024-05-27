@@ -176,28 +176,6 @@ function Flows() {
         },
       },
       {
-        accessorKey: "warehouseLocation",
-        header: "Supplier Warehouse",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "retrievalWarehouseLocation",
-        header: "Retrieval Warehouse",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
         accessorKey: "emitter",
         header: "Emitter",
         size: 50,
@@ -211,6 +189,28 @@ function Flows() {
       {
         accessorKey: "receiver",
         header: "Receiver",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "warehouseLocation",
+        header: "Supplier Warehouse",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "retrievalWarehouseLocation",
+        header: "Retrieval Warehouse",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

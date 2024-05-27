@@ -186,7 +186,7 @@ export const StockBranch = () => {
     setSelectedRowId(row.original.id);
     setBranch(row.original.branch);
     setBranchCode(row.original.branchCode);
-    if (row.original.branchCode.active === "In-Active") {
+    if (row.original.active === "In-Active") {
       setActive(false);
     }
   };
