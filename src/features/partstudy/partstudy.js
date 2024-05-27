@@ -191,6 +191,17 @@ function Partstudy() {
           align: "center",
         },
       },
+      {
+        accessorKey: "active",
+        header: "Active",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
     ],
     []
   );
@@ -328,6 +339,10 @@ function Partstudy() {
                       <TableRow>
                         <TableCell>Lowest Volume</TableCell>
                         <TableCell>{basicData.lowestVolume}</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell>Active</TableCell>
+                        <TableCell>{basicData.active}</TableCell>
                       </TableRow>
                     </TableBody>
                   </Table>

@@ -165,6 +165,11 @@ function AddPartStudy({
       if (response.status === 200) {
         console.log("basicDetailVO", response.data);
         const basicDetailVO = response.data.paramObjectsMap.basicDetailVO;
+        if (
+          response.data.paramObjectsMap.basicDetailVO.active === "In-Active"
+        ) {
+          setActive(false);
+        }
         setPartStudyId(basicDetailVO.refPsId);
         setEmitterId(basicDetailVO.emitterId);
         setPartName(basicDetailVO.partName);
@@ -237,6 +242,7 @@ function AddPartStudy({
         partVolume,
         // refPsId,
         weight,
+        active,
       };
       Axios.post(
         `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails`,
@@ -312,7 +318,7 @@ function AddPartStudy({
         partVolume,
         // refPsId,
         weight,
-        // active,
+        active,
       };
       Axios.put(
         `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails`,
