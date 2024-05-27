@@ -80,7 +80,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   const [role, setRole] = React.useState("ROLE_EMITTER");
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
-  const [emitter, setEmitter] = useState(null);
+  const [emitter, setEmitter] = useState("");
   const [flow, setFlow] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
@@ -112,7 +112,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   const getEmitterFlow = async (emitter) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow`,
+        `${process.env.REACT_APP_API_URL}/api/master/activeflow`,
         {
           params: {
             orgId: orgId,
@@ -123,7 +123,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       if (response.status === 200) {
         setFlow(response.data.paramObjectsMap.flowVO);
         setSelectedFlow(null); // Reset selected flow
-        console.log("flow", response.data.paramObjectsMap.flowVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -140,16 +139,10 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           response.data.paramObjectsMap.customersVO.emitterCustomersVO
         );
       }
-      console.log("Test", emitterCustomersVO);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
-  // const handleFlowSelection = (flow) => {
-  //   setSelectedFlow(flow);
-  // };
-
-  // const notify = () => toast("User Created Successfully");
 
   function isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -233,7 +226,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     setOrgId(localStorage.getItem("orgId"));
     setSelectedFlow(null);
     setSelectedFlows([]);
-    // notify();
   };
 
   const handleUserCreation = () => {
@@ -285,7 +277,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     }
     const hashedPassword = encryptPassword(password);
 
-    // Update userData with the hashed password
     const userPayload = {
       accessRightsRoleId: 2,
       // accessWarehouse: warehouse,
@@ -316,7 +307,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     };
 
     if (Object.keys(errors).length === 0) {
-      // Valid data, perform API call or other actions
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/auth/createUser`,
@@ -336,7 +326,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           toast.error("Failed to create emitter. Please try again.");
         });
     } else {
-      // Set errors state to display validation errors
       setErrors(errors);
     }
   };
@@ -344,14 +333,10 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   const handleFlowSelection = (flow, isChecked) => {
     setSelectedFlows((prevWarehouse) => {
       if (isChecked && !prevWarehouse.includes(flow)) {
-        // Add warehouseLocation to the array if it's not already present
         return [...prevWarehouse, flow];
       } else if (!isChecked) {
-        // Remove warehouseLocation from the array
         return prevWarehouse.filter((wh) => wh !== flow);
       }
-
-      // Return the unchanged array if isChecked is true and warehouseLocation is already present
       return prevWarehouse;
     });
   };
@@ -360,11 +345,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     getCountryData();
     getStateData();
     getCityData();
-
     if (emitterEditId) {
       getEmitterById();
     }
-    console.log("value", selectedFlows);
     getCustomersList();
   }, [selectedFlows, country, state]);
 
@@ -373,8 +356,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setCountryList(response.data.paramObjectsMap.countryVO);
       } else {
@@ -390,8 +371,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?country=${country}&orgId=${orgId}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setStateList(response.data.paramObjectsMap.stateVO);
       } else {
@@ -406,8 +385,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/city/getByStateAndCountry?country=${country}&orgId=${orgId}&state=${state}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setCityList(response.data.paramObjectsMap.cityVO);
       } else {
@@ -427,16 +404,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
 
       if (response.status === 200) {
         setEmitterData(response.data.paramObjectsMap.userVO);
-        console.log(
-          "Edit Emitter Details",
-          response.data.paramObjectsMap.userVO
-        );
         setEmitter(response.data.paramObjectsMap.userVO.customersVO.id);
-
-        console.log(
-          "emitter",
-          response.data.paramObjectsMap.userVO.customersVO.displayName
-        );
         setFirstName(response.data.paramObjectsMap.userVO.firstName);
         setEmail(response.data.paramObjectsMap.userVO.email);
         setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
@@ -535,11 +503,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
 
     console.log("Update Payload is:", userPayload);
 
-    // const userDataWithHashedPassword = {
-    //   ...userPayload,
-    //   password: hashedPassword,
-    // };
-
     if (Object.keys(errors).length === 0) {
       axios
         .put(
@@ -600,7 +563,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <ToastContainer />
         <div className="d-flex justify-content-end">
-          {/* <h1 className="text-xl font-semibold mb-3">User Details</h1> */}
           <IoMdClose
             onClick={handleEmitterCreationClose}
             className="cursor-pointer w-8 h-8 mb-3"

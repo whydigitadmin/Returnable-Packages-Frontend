@@ -108,8 +108,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setCountryList(response.data.paramObjectsMap.countryVO);
       } else {
@@ -125,8 +123,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?country=${country}&orgId=${orgId}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setStateList(response.data.paramObjectsMap.stateVO);
       } else {
@@ -141,8 +137,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/city/getByStateAndCountry?country=${country}&orgId=${orgId}&state=${state}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setCityList(response.data.paramObjectsMap.cityVO);
       } else {
@@ -168,7 +162,7 @@ function OemCreation({ addEmitter, oemEditId }) {
   const getEmitterFlow = async (emitter) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow`,
+        `${process.env.REACT_APP_API_URL}/api/master/activeflow`,
         {
           params: {
             orgId: orgId,
@@ -179,7 +173,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       if (response.status === 200) {
         setFlow(response.data.paramObjectsMap.flowVO);
         setSelectedFlow(null); // Reset selected flow
-        console.log("flow", response.data.paramObjectsMap.flowVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -197,8 +190,6 @@ function OemCreation({ addEmitter, oemEditId }) {
           response.data.paramObjectsMap.customersVO.emitterCustomersVO
         );
       }
-
-      console.log("Test", emitterCustomersVO);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -375,7 +366,6 @@ function OemCreation({ addEmitter, oemEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("OEM saved successfully!", response.data);
           toast.success("OEM saved successfully!", {
             autoClose: 2000,
             theme: "colored",
@@ -383,11 +373,9 @@ function OemCreation({ addEmitter, oemEditId }) {
           handleNew();
         })
         .catch((error) => {
-          console.error("Error saving OEM:", error.message);
           toast.error("Failed to save OEM. Please try again.");
         });
     } else {
-      // Set errors state to display validation errors
       setErrors(errors);
     }
   };
@@ -521,10 +509,6 @@ function OemCreation({ addEmitter, oemEditId }) {
 
       if (response.status === 200) {
         setOemData(response.data.paramObjectsMap.userVO);
-        console.log(
-          "Edit OEM USER Details",
-          response.data.paramObjectsMap.userVO
-        );
         setEmitter(response.data.paramObjectsMap.userVO.customersVO.id);
         setFirstName(response.data.paramObjectsMap.userVO.firstName);
         setEmail(response.data.paramObjectsMap.userVO.email);

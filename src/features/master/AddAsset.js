@@ -171,7 +171,6 @@ function AddAsset({ addItem, editItemId }) {
   useEffect(() => {
     getCustomersList();
     getAllAssetCategory();
-    getWarehouseLocationList();
     editItemId && getAssetNamesByCategory();
     getPOList();
     editItemId && getItemByAssetCode();
@@ -222,20 +221,6 @@ function AddAsset({ addItem, editItemId }) {
         setCostPrice(response.data.paramObjectsMap.assetVO.costPrice);
         setSellPrice(response.data.paramObjectsMap.assetVO.sellPrice);
         setScrapValue(response.data.paramObjectsMap.assetVO.scrapValue);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getWarehouseLocationList = async () => {
-    try {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
-      );
-
-      if (response.status === 200) {
-        // setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

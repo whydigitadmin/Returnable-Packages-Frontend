@@ -141,14 +141,13 @@ function AddFlows({ addFlows, editFlowId }) {
   const editRetrivalList = async (value) => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/warehouse/activeWarehouse?orgId=${orgId}`
       );
       console.log("API Response:", response);
 
       if (response.status === 200) {
         console.log("editRetrivalList:", value);
-        const warehouseLocationVO =
-          response.data.paramObjectsMap.WarehouseLocation;
+        const warehouseLocationVO = response.data.paramObjectsMap.WarehouseVO;
         const filteredWarehouse = warehouseLocationVO.filter(
           (list) => list.warehouseId !== value
         );
@@ -348,7 +347,7 @@ function AddFlows({ addFlows, editFlowId }) {
   const getAllKitData = async () => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getallkit?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getallActivekit?orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -556,11 +555,11 @@ function AddFlows({ addFlows, editFlowId }) {
   const getWarehouseLocationList = async () => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/warehouse/activeWarehouse?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
+        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseVO);
         console.log(
           "WarehouseLocation",
           response.data.paramObjectsMap.WarehouseLocation

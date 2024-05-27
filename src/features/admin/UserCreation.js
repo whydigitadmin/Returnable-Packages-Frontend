@@ -189,15 +189,11 @@ function UserCreation({ addUser, userEditId }) {
   const getWarehouseLocationList = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/getWarehouseLocationByOrgID?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/warehouse/activeWarehouse?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseLocation);
-        console.log(
-          "WarehouseLocation",
-          response.data.paramObjectsMap.WarehouseLocation
-        );
+        setWarehouseLocationVO(response.data.paramObjectsMap.WarehouseVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
