@@ -22,15 +22,13 @@ function BinOutward() {
   const [receiver, setReceiver] = useState("");
   const [destination, setDestination] = useState("");
   const [outwardKitQty, setOutwardKitQty] = useState("");
+  const [avlQty, setAvlQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [emitterId, setEmitterId] = React.useState(
     localStorage.getItem("emitterId")
   );
-  const [userName, setUserName] = useState("");
-  const [userDetail, setUserDetail] = useState(
-    JSON.parse(localStorage.getItem("userDto"))
-  );
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [displayName, setDisplayName] = useState(
     localStorage.getItem("displayName")
   );
@@ -47,7 +45,6 @@ function BinOutward() {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByBinOutward`
       );
-      console.log("API Response:", response);
 
       if (response.status === 200) {
         setDocId(response.data.paramObjectsMap.binOutwardDocId);
@@ -69,7 +66,9 @@ function BinOutward() {
   };
 
   const handleSelectedKit = (event) => {
-    setKit(event.target.value);
+    const kitQty = event.target.value;
+    setKit(kitQty);
+    getAvailableKitQtyByEmitter(kitQty);
   };
 
   const getAddressById = async () => {
@@ -86,7 +85,7 @@ function BinOutward() {
           )
           .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
-        setUserName(userDetail.firstName);
+        // setUserName(userDetail.firstName);
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -103,7 +102,6 @@ function BinOutward() {
         setReceiver(response.data.paramObjectsMap.flowVO.receiver);
         setDestination(response.data.paramObjectsMap.flowVO.destination);
         setOrgin(response.data.paramObjectsMap.flowVO.orgin);
-        console.log("receiverInfo", response.data.paramObjectsMap.flowVO);
         // setReceiverData([...receiverInfo]);
       }
     } catch (error) {
@@ -139,7 +137,20 @@ function BinOutward() {
 
       if (response.status === 200) {
         setTableData(response.data.paramObjectsMap.kitAssetVO);
-        console.log("kitAssetVO", response.data.paramObjectsMap.kitAssetVO);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
+  };
+
+  const getAvailableKitQtyByEmitter = async (kitQty) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAvailableKitQtyByEmitter?emitterId=${emitterId}&flowId=${flow}&kitId=${kitQty}&orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setAvlQty(response.data.paramObjectsMap.avlKitQty[0].kitAvailQty);
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -148,8 +159,20 @@ function BinOutward() {
 
   const handleKitQty = (event) => {
     const qty = event.target.value;
-    setOutwardKitQty(qty);
-    getkitAssetDetailsByKitId(qty);
+
+    if (qty === "" || (parseInt(qty, 10) <= avlQty && parseInt(qty, 10) >= 0)) {
+      setOutwardKitQty(qty);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        outwardKitQty: "",
+      }));
+      getkitAssetDetailsByKitId(qty);
+    } else {
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        outwardKitQty: "Outward Kit Qty cannot exceed Available Kit Qty",
+      }));
+    }
   };
 
   const handleSave = () => {
@@ -191,10 +214,10 @@ function BinOutward() {
           requestData
         )
         .then((response) => {
-          console.log("Response for BIN OUTWARD:", response.data);
           setFlow("");
           setReceiver("");
           setKit("");
+          setAvlQty("");
           setDestination("");
           setOutwardKitQty("");
           setErrors("");
@@ -364,6 +387,20 @@ function BinOutward() {
               )}
             </div>
             {/* PART NAME FIELD */}
+            <div className="col-lg-2 col-md-4">
+              <label className="label mb-4">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Available Kit Qty
+                </span>
+              </label>
+            </div>
+            <div className="col-lg-2 col-md-4">
+              <input
+                className="form-control form-sz mb-2"
+                disabled
+                value={avlQty}
+              />
+            </div>
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
