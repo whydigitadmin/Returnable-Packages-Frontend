@@ -166,30 +166,6 @@ export const KitCard = () => {
           </div>
         )}
         <div>
-          {emitterData.length > 0 && (
-            <div className="overflow-x-auto w-full mt-2">
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th>Emitter</th>
-                    <th>Receiver</th>
-                    <th>Flow</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {emitterData.map((kit) => {
-                    return (
-                      <tr key={kit.id}>
-                        <td>{kit.emitter}</td>
-                        <td>{kit.receiver}</td>
-                        <td>{kit.flow}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          )}
           {kitData && (
             <div className="overflow-x-auto w-full mt-2">
               <table className="table w-full">
@@ -232,6 +208,30 @@ export const KitCard = () => {
                         <td>{asset.assetCategory}</td>
                         <td>{asset.assetCodeId}</td>
                         <td>{asset.quantity}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {emitterData.length > 0 && (
+            <div className="overflow-x-auto w-full mt-2">
+              <table className="table w-full">
+                <thead>
+                  <tr>
+                    <th>Emitter</th>
+                    <th>Receiver</th>
+                    <th>Flow</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {emitterData.map((kit) => {
+                    return (
+                      <tr key={kit.id}>
+                        <td>{kit.emitter}</td>
+                        <td>{kit.receiver}</td>
+                        <td>{kit.flow}</td>
                       </tr>
                     );
                   })}
