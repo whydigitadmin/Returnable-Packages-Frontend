@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -27,23 +27,30 @@ const BinInwardOem = ({}) => {
   const [invDate, setInvDate] = useState(null);
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
+  const [allotedId, setAllotedId] = useState([]);
   const [tableView, setTableView] = useState(false);
+  const [loginUserId, setLoginUserId] = useState(
+    localStorage.getItem("userId")
+  );
+  const [loginUserName, setLoginUserName] = useState(
+    localStorage.getItem("userName")
+  );
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
 
   const [errors, setErrors] = useState({});
-  const [flowList, setFlowList] = useState([
-    {
-      id: 1,
-      flow: "PUN-CH",
-    },
-  ]);
+  const [flowList, setFlowList] = useState([]);
+  const [emitterOutwardList, setEmitterOutwardList] = useState([]);
+
   const [tableData, setTableData] = useState([
     {
-      id: 1,
-      kitNo: "PLS1220/0524/1002",
-      allotedKitQty: "50",
+      allotedId: "",
+      allotedDate: "",
+      kitNo: "",
+      allotedKitQty: "",
       recKitQty: "",
     },
   ]);
+  const [assetList, setAssetList] = useState([]);
 
   const [ListViewTableData, setListViewTableData] = useState([
     {
@@ -56,16 +63,117 @@ const BinInwardOem = ({}) => {
     },
   ]);
 
-  const handleFlowChange = (e) => {
-    setFlow(e.target.value);
-    setTableView(true);
+  useEffect(() => {
+    getFlowByUserId();
+  }, []);
+
+  const getFlowByUserId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getFlowByUserId?orgId=${orgId}&userId=${loginUserId}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "FLOW LIST FROM API's ARE",
+          response.data.paramObjectsMap.flowDetails.map((l) => l.flow)
+        );
+        setFlowList(response.data.paramObjectsMap.flowDetails);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
+
   const handleSavedRecordView = (e) => {
     setSavedRecordView(true);
   };
   const handleSavedRecordViewClose = (e) => {
     setSavedRecordView(false);
   };
+
+  const handleFlowChange = (e) => {
+    setFlow(e.target.value);
+    getEmitterOutwardDetailsByFlowId(e.target.value);
+  };
+  const handleInvDateChange = (newDate) => {
+    const originalDateString = newDate;
+    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+    setInvDate(formattedDate);
+  };
+
+  const handleAllotedIdChange = (e) => {
+    setAllotedId(e.target.value);
+
+    const selectedAllotData = emitterOutwardList.filter(
+      (l) => l.docId === e.target.value
+    );
+    console.log("THE SELECTED ALLOTED ID IS:", selectedAllotData);
+
+    setTableView(true);
+
+    if (Array.isArray(selectedAllotData) && selectedAllotData.length > 0) {
+      setTableData(
+        selectedAllotData.map((l) => ({
+          kitNo: l.kitNo,
+          allotedId: l.docId,
+          allotedDate: l.docDate,
+          allotedKitQty: l.outwardKitQty,
+        }))
+      );
+    } else {
+      setTableData([]);
+    }
+  };
+
+  const getEmitterOutwardDetailsByFlowId = async (selectedFlowId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getOutwardDetailsByFlow?flowId=${selectedFlowId}&orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "FLOW LIST FROM API's ARE",
+          response.data.paramObjectsMap.outwardDe
+        );
+        console.log(
+          "THE EMITTEROUTWARDLIST IS:",
+          response.data.paramObjectsMap.outwardDe
+        );
+
+        setEmitterOutwardList(response.data.paramObjectsMap.outwardDe);
+      }
+    } catch (error) {}
+  };
+
+  const handleRecKitQtyChange = async (e, kitNo) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getkitAssetDetailsByKitId?kitCode=${kitNo}&quantity=${e.target.value}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "ASSET DETAILS ARE:",
+          response.data.paramObjectsMap.kitAssetVO
+        );
+        const viewTableData = response.data.paramObjectsMap.kitAssetVO.map(
+          (row, index) => ({
+            id: index + 1,
+            assetCode: row.assetCode,
+            assetCategory: row.assetCategory,
+            assetName: row.asset,
+            qty: row.qty,
+          })
+        );
+        console.log("THE ASSET LIST IS:", viewTableData);
+        setAssetList(viewTableData);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleNew = () => {
     setTableView(false);
     setFlow("");
@@ -81,59 +189,74 @@ const BinInwardOem = ({}) => {
     if (!invNo.trim()) {
       errors.invNo = "Invoice No is required";
     }
-    if (!invDate.trim()) {
-      errors.invDate = "Flow is required";
-    }
-    tableData.forEach((row) => {
-      if (!row.asset.trim()) {
-        errors.asset = "Asset is required";
-      }
-      if (!row.assetCode.trim()) {
-        errors.assetCode = "Asset Code is required";
-      }
-    });
-
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-      return;
-    }
+    // if (!invDate.trim()) {
+    //   errors.invDate = "Flow is required";
+    // }
+    // tableData.forEach((row) => {
+    //   if (!row.recKitQty.trim()) {
+    //     errors.recKitQty = "Asset is required";
+    //   }
+    // });
 
     const formData = {
       docDate: docDate.format("YYYY-MM-DD"),
       flow: flow,
-      invNo: invNo,
-      invDate: invDate,
-      oemBinInwardDetails: tableData.map((row) => ({
-        asset: row.asset,
+      outwardDocId: allotedId,
+      grnNo: invNo,
+      grnDate: invDate,
+      kitNo: tableData.map((row) => row.kitNo).join(", "),
+      recievedKitQty: tableData.map((row) => row.recKitQty).join(", "),
+      oemBinInwardDetails: assetList.map((row) => ({
+        asset: row.assetName,
         assetCode: row.assetCode,
-        receivedQty: parseInt(row.receivedQty),
+        recievedQty: row.qty,
       })),
-      orgId: 0,
+      orgId: orgId,
+      createdBy: loginUserName,
+    };
+    console.log("THE DATA TO SAVE IS:", formData);
+    const token = localStorage.getItem("token");
+    let headers = {
+      "Content-Type": "application/json",
     };
 
-    axios
-      .post("/api/oem/oemBinInward", formData)
-      .then((response) => {
-        console.log("Response:", response.data);
-        toast.success("Bin inward saved successfully!");
-        setDocId("");
-        setDocDate(dayjs());
-        setTableData([
-          {
-            id: 1,
-            asset: "",
-            assetCode: "",
-            receivedQty: "",
-          },
-        ]);
-        setErrors({});
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error:", error);
-        // Optionally, show an error message
-        toast.error("Failed to save bin inward.");
-      });
+    if (token) {
+      headers = {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
+
+    if (Object.keys(errors).length === 0) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/oem/oemBinInward`,
+          formData,
+          { headers }
+        )
+        .then((response) => {
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            // handleNew();
+            // addUser(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error saving user:", error.message);
+          toast.error("Error saving user: " + error.message);
+        });
+    } else {
+      setErrors(errors);
+    }
   };
 
   return (
@@ -262,9 +385,42 @@ const BinInwardOem = ({}) => {
                       Select a Flow
                     </option>
                     {flowList.length > 0 &&
-                      flowList.map((list) => (
-                        <option key={list.id} value={list.flow}>
+                      flowList.map((list, index) => (
+                        <option key={list.flowId} value={list.flowId}>
                           {list.flow}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.flow && (
+                    <span className="error-text">{errors.flow}</span>
+                  )}
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Alloted Id:
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <select
+                    name="Select Kit"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="form-select form-sz"
+                    onChange={handleAllotedIdChange}
+                    value={allotedId}
+                  >
+                    <option value="" selected>
+                      Select a Doc Id
+                    </option>
+                    {emitterOutwardList.length > 0 &&
+                      emitterOutwardList.map((outwardList, index) => (
+                        <option
+                          key={outwardList.index}
+                          value={outwardList.docId}
+                        >
+                          {outwardList.docId}
                         </option>
                       ))}
                   </select>
@@ -303,7 +459,7 @@ const BinInwardOem = ({}) => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
                       value={invDate}
-                      onChange={(date) => setDocDate(date)}
+                      onChange={handleInvDateChange}
                       slotProps={{
                         textField: { size: "small" },
                       }}
@@ -321,6 +477,8 @@ const BinInwardOem = ({}) => {
                           <thead>
                             <tr>
                               {/* <th>S.No</th> */}
+                              <th>Alloted Id</th>
+                              <th>Alloted Date</th>
                               <th>Kit No</th>
                               <th>Alloted Qty</th>
                               <th>REC QTY</th>
@@ -330,10 +488,12 @@ const BinInwardOem = ({}) => {
                             {tableData.map((row, index) => (
                               <tr key={row.id}>
                                 {/* <td>{index + 1}</td> */}
+                                <td>{row.allotedId}</td>
+                                <td>{row.allotedDate}</td>
                                 <td>{row.kitNo}</td>
                                 <td>{row.allotedKitQty}</td>
                                 <td>
-                                  <input
+                                  {/* <input
                                     type="text"
                                     value={row.recKitQty}
                                     onChange={(e) =>
@@ -347,12 +507,32 @@ const BinInwardOem = ({}) => {
                                             : r
                                         )
                                       )
+                                      // handleRecKitQtyChange(e)
                                     }
-                                    className={`form-control form-sz mb-2 ${
-                                      errors.qty && "border-red-500"
-                                    }`}
-                                    style={{ width: "50px" }}
+                                    
+                                  /> */}
+                                  <input
+                                    type="text"
+                                    value={row.recKitQty}
+                                    onChange={(e) => {
+                                      setTableData((prev) =>
+                                        prev.map((r, i) =>
+                                          i === index
+                                            ? {
+                                                ...r,
+                                                recKitQty: e.target.value,
+                                              }
+                                            : r
+                                        )
+                                      );
+                                      setTimeout(
+                                        () =>
+                                          handleRecKitQtyChange(e, row.kitNo),
+                                        2000
+                                      );
+                                    }}
                                   />
+
                                   {errors.qty && (
                                     <span className="error-text mb-1">
                                       {errors.qty}
