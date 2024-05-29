@@ -42,6 +42,7 @@ import {
   TableCell,
   TableContainer,
   TableRow,
+  Tooltip,
   Paper,
 } from "@mui/material";
 
@@ -141,9 +142,24 @@ function Partstudy() {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
+            <Tooltip
+              title={
+                row.original.eflag
+                  ? "Editing is disabled for this Part Study"
+                  : ""
+              }
+              arrow
+              disableHoverListener={!row.original.eflag}
+            >
+              <span>
+                <IconButton
+                  onClick={() => handleEditRow(row)}
+                  disabled={row.original.eflag}
+                >
+                  <EditIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
           </div>
         ),
       },

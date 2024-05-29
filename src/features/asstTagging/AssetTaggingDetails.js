@@ -110,17 +110,17 @@ export const AssetTaggingDetails = () => {
           </div>
         ),
       },
-      {
-        accessorKey: "docid",
-        header: "Doc ID",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+      // {
+      //   accessorKey: "docid",
+      //   header: "Doc ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
         accessorKey: "category",
         header: "Category",
@@ -135,6 +135,17 @@ export const AssetTaggingDetails = () => {
       {
         accessorKey: "assetCode",
         header: "Asset Code",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "asset",
+        header: "Asset Desc",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

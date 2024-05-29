@@ -145,9 +145,20 @@ export const InwardManifestDetails = () => {
           </div>
         ),
       },
+      // {
+      //   accessorKey: "docId",
+      //   header: "Doc ID",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      // },
       {
-        accessorKey: "docId",
-        header: "DocId",
+        accessorKey: "category",
+        header: "Category",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -157,8 +168,8 @@ export const InwardManifestDetails = () => {
         },
       },
       {
-        accessorKey: "docDate",
-        header: "DocDate",
+        accessorKey: "assetCode",
+        header: "Asset Code",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -181,6 +192,17 @@ export const InwardManifestDetails = () => {
       {
         accessorKey: "stockBranch",
         header: "To",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "qty",
+        header: "Qty",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

@@ -148,6 +148,7 @@ export function AsstTagging({ addTagging, viewId }) {
   useEffect(() => {
     if (viewId) {
       getAllAssetTaggingByViewId();
+      getAssetCodeByCategory(assetCategory);
       setShowTable(true);
     } else {
       getAssetDocid();
