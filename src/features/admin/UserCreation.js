@@ -85,6 +85,9 @@ function UserCreation({ addUser, userEditId }) {
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [userData, setUserData] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [countryList, setCountryList] = useState([]);
   const [stateList, setStateList] = useState([]);
@@ -363,6 +366,7 @@ function UserCreation({ addUser, userEditId }) {
       accessRightsRoleId: 2,
       accessWarehouse: warehouse,
       active: active,
+      createdBy: userName,
       email: email,
       emitterId: 0,
       firstName: firstName,
@@ -462,6 +466,7 @@ function UserCreation({ addUser, userEditId }) {
       accessWarehouse: warehouse,
       // accessaddId: 0,
       active: active,
+      createdBy: userName,
       email: email,
       emitterId: 0,
       firstName: firstName,

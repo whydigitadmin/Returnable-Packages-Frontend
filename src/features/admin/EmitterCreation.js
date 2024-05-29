@@ -84,6 +84,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   const [flow, setFlow] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
   const [emitterData, setEmitterData] = useState({});
@@ -285,6 +288,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       active: active,
       email: email,
       emitterId: emitter,
+      createdBy: userName,
       firstName: firstName,
       orgId: orgId, // You may need to provide a default value
       role: role,
@@ -331,13 +335,25 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   };
 
   const handleFlowSelection = (flow, isChecked) => {
-    setSelectedFlows((prevWarehouse) => {
-      if (isChecked && !prevWarehouse.includes(flow)) {
-        return [...prevWarehouse, flow];
-      } else if (!isChecked) {
-        return prevWarehouse.filter((wh) => wh !== flow);
+    console.log("Clicked:", flow, isChecked);
+
+    setSelectedFlows((prevFlow) => {
+      console.log("Previous flow State:", prevFlow);
+
+      if (!Array.isArray(prevFlow)) {
+        console.error("flow state is not an array:", prevFlow);
+        return prevFlow;
       }
-      return prevWarehouse;
+
+      if (isChecked) {
+        const updatedFlow = [...prevFlow, flow];
+        console.log("Updated flow State (Added):", updatedFlow);
+        return updatedFlow;
+      } else {
+        const updatedFlow = prevFlow.filter((id) => id !== flow);
+        console.log("Updated flow State (Removed):", updatedFlow);
+        return updatedFlow;
+      }
     });
   };
 
@@ -349,7 +365,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       getEmitterById();
     }
     getCustomersList();
-  }, [selectedFlows, country, state]);
+  }, [country, state]);
 
   const getCountryData = async () => {
     try {
@@ -413,6 +429,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
         setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
         setPhone(response.data.paramObjectsMap.userVO.pno);
+        setSelectedFlows(response.data.paramObjectsMap.userVO.accessFlowId);
         if (response.data.paramObjectsMap.userVO.active === "In-Active") {
           setActive(false);
         }
@@ -470,6 +487,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       // accessaddId: 0,
       accessFlowId: selectedFlows,
       active: active,
+      createdBy: userName,
       email: email,
       emitterId: 0,
       firstName: firstName,
@@ -938,19 +956,25 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
             <div className="col-lg-12 col-md-12">
               {flow.length > 0 ? (
                 <div>
-                  {" "}
                   {flow.map((flowItem) => (
-                    <div key={flowItem.id} className="mb-2">
+                    <div className="form-check mb-2" key={flowItem.id}>
                       <input
                         type="checkbox"
-                        checked={selectedFlows.includes(flowItem.id)}
+                        className="form-check-input"
+                        id={flowItem.id}
+                        value={flowItem.id}
+                        checked={
+                          Array.isArray(selectedFlows) &&
+                          selectedFlows.includes(flowItem.id)
+                        }
                         onChange={(e) =>
                           handleFlowSelection(flowItem.id, e.target.checked)
                         }
-                        id={flowItem.id}
-                        value={flowItem.id}
-                      />{" "}
-                      <label className="form-check-label" htmlFor={flowItem.id}>
+                      />
+                      <label
+                        className="form-check-label ms-1"
+                        htmlFor={flowItem.id}
+                      >
                         {flowItem.flowName}
                       </label>
                     </div>
@@ -958,14 +982,14 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
                 </div>
               ) : (
                 <div>
-                  <center>Flow Not Available!</center>{" "}
+                  <center>Flow Not Available!</center>
                 </div>
               )}
             </div>
           </div>
         </DialogContent>
 
-        <DialogActions className="mb-2 me-2">
+        <DialogActions>
           <Button onClick={handleShippingClickClose}>OK</Button>
           {selectedFlow && <Button variant="contained">Submit</Button>}
         </DialogActions>

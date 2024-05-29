@@ -84,6 +84,9 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [flow, setFlow] = useState([]);
   const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
   const [oemData, setOemData] = useState({});
@@ -96,12 +99,11 @@ function OemCreation({ addEmitter, oemEditId }) {
     getCountryData();
     getStateData();
     getCityData();
-    console.log("value", selectedFlows);
     getCustomersList();
     {
       oemEditId && getOemById();
     }
-  }, [selectedFlows, country, state]);
+  }, [country, state]);
 
   const getCountryData = async () => {
     try {
@@ -334,6 +336,7 @@ function OemCreation({ addEmitter, oemEditId }) {
       accessRightsRoleId: 0,
       accessFlowId: selectedFlows,
       active: active,
+      createdBy: userName,
       email: email,
       emitterId: emitter,
       firstName: firstName,
@@ -423,6 +426,7 @@ function OemCreation({ addEmitter, oemEditId }) {
       // accessWarehouse: warehouse,
       // accessaddId: 0,
       active: active,
+      createdBy: userName,
       email: email,
       emitterId: 0,
       firstName: firstName,
@@ -486,17 +490,25 @@ function OemCreation({ addEmitter, oemEditId }) {
   };
 
   const handleFlowSelection = (flow, isChecked) => {
-    setSelectedFlows((prevWarehouse) => {
-      if (isChecked && !prevWarehouse.includes(flow)) {
-        // Add warehouseLocation to the array if it's not already present
-        return [...prevWarehouse, flow];
-      } else if (!isChecked) {
-        // Remove warehouseLocation from the array
-        return prevWarehouse.filter((wh) => wh !== flow);
+    console.log("Clicked:", flow, isChecked);
+
+    setSelectedFlows((prevFlow) => {
+      console.log("Previous flow State:", prevFlow);
+
+      if (!Array.isArray(prevFlow)) {
+        console.error("flow state is not an array:", prevFlow);
+        return prevFlow;
       }
 
-      // Return the unchanged array if isChecked is true and warehouseLocation is already present
-      return prevWarehouse;
+      if (isChecked) {
+        const updatedFlow = [...prevFlow, flow];
+        console.log("Updated flow State (Added):", updatedFlow);
+        return updatedFlow;
+      } else {
+        const updatedFlow = prevFlow.filter((id) => id !== flow);
+        console.log("Updated flow State (Removed):", updatedFlow);
+        return updatedFlow;
+      }
     });
   };
 
@@ -518,6 +530,7 @@ function OemCreation({ addEmitter, oemEditId }) {
         setCountry(response.data.paramObjectsMap.userVO.userAddressVO.country);
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
         setPhone(response.data.paramObjectsMap.userVO.pno);
+        setSelectedFlows(response.data.paramObjectsMap.userVO.accessFlowId);
         getEmitterFlow(response.data.paramObjectsMap.userVO.customersVO.id);
         if (response.data.paramObjectsMap.userVO.active === "In-Active") {
           setActive(false);
@@ -940,17 +953,24 @@ function OemCreation({ addEmitter, oemEditId }) {
               {flow.length > 0 ? (
                 <div>
                   {flow.map((flowItem) => (
-                    <div key={flowItem.id} className="mb-2">
+                    <div className="form-check mb-2" key={flowItem.id}>
                       <input
                         type="checkbox"
-                        checked={selectedFlows.includes(flowItem.id)}
+                        className="form-check-input"
+                        id={flowItem.id}
+                        value={flowItem.id}
+                        checked={
+                          Array.isArray(selectedFlows) &&
+                          selectedFlows.includes(flowItem.id)
+                        }
                         onChange={(e) =>
                           handleFlowSelection(flowItem.id, e.target.checked)
                         }
-                        id={flowItem.id}
-                        value={flowItem.id}
-                      />{" "}
-                      <label className="form-check-label" htmlFor={flowItem.id}>
+                      />
+                      <label
+                        className="form-check-label ms-1"
+                        htmlFor={flowItem.id}
+                      >
                         {flowItem.flowName}
                       </label>
                     </div>
