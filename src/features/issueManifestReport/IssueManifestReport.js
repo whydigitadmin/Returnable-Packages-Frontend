@@ -2,14 +2,15 @@ import React, { useRef, useEffect, useState } from "react";
 import { MdPrint } from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
 import axios from "axios";
+import { IoMdClose } from "react-icons/io";
 
-export const IssueManifestReport = ({ docId }) => {
+export const IssueManifestReport = ({ goBack, docId }) => {
   const componentRef = useRef();
-  const [headerData, setHeaderData] = useState([])
-  const [gridData, setGridData] = useState([])
+  const [headerData, setHeaderData] = useState([]);
+  const [gridData, setGridData] = useState([]);
 
   useEffect(() => {
-    getHeaderDetailsByDocId()
+    getHeaderDetailsByDocId();
   }, []);
 
   const getHeaderDetailsByDocId = async () => {
@@ -20,7 +21,10 @@ export const IssueManifestReport = ({ docId }) => {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        console.log("API Response:", response.data.paramObjectsMap.HeaderDetails[0]);
+        console.log(
+          "API Response:",
+          response.data.paramObjectsMap.HeaderDetails[0]
+        );
         setHeaderData(response.data.paramObjectsMap.HeaderDetails[0]);
         try {
           const response = await axios.get(
@@ -30,7 +34,10 @@ export const IssueManifestReport = ({ docId }) => {
           console.log("API Response:", response);
 
           if (response.status === 200) {
-            console.log("API Response for Grid:", response.data.paramObjectsMap.allotDetails);
+            console.log(
+              "API Response for Grid:",
+              response.data.paramObjectsMap.allotDetails
+            );
             setGridData(response.data.paramObjectsMap.allotDetails);
           } else {
             console.error("API Error:", response.data);
@@ -49,6 +56,10 @@ export const IssueManifestReport = ({ docId }) => {
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
   });
+
+  const handleReportClose = () => {
+    goBack(false);
+  };
 
   return (
     <div>
@@ -127,50 +138,73 @@ export const IssueManifestReport = ({ docId }) => {
         `}
       </style>
       {/* PRINT BUTTON */}
-      <div className="text-right mr-5">
-        <button
-          className="btn btn-primary"
-          onClick={handlePrint}
-          style={{
-            padding: "10px 20px",
-            fontSize: "16px",
-            marginBottom: "20px",
-          }}
-        >
-          <MdPrint style={{ fontSize: "20px" }} />
-        </button>
+
+      <div className="d-flex justify-content-end">
+        <div className="mr-5">
+          <button
+            className="btn btn-primary"
+            onClick={handlePrint}
+            style={{
+              padding: "10px 20px",
+              fontSize: "16px",
+              marginBottom: "20px",
+            }}
+          >
+            <MdPrint style={{ fontSize: "20px" }} />
+          </button>
+        </div>
+
+        <div className="mt-2">
+          <IoMdClose
+            onClick={handleReportClose}
+            className="cursor-pointer w-8 h-8 mb-3"
+          />
+        </div>
       </div>
 
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-5" ref={componentRef}>
           {/* HEADINGS */}
-          <div className="row">
-            <div className="col-md-12 text-center">
+          {/* <div className="row">
+            <div className="col-md-2 text-center">
+              <img
+                src="/AI_Packs.png"
+                alt="Your Image"
+                style={{ width: "100px", marginTop: "20px" }}
+              />
+            </div>
+            <div className="col-md-10 text-center">
               <h1 className="text-xl">
-                <strong>
-                  SCM AI-PACKS
-
-                  Private Limited
-                </strong>
+                <strong>SCM AIPACKS Private Limited</strong>
               </h1>
               <br />
-              <h3><strong>Bin Allotment</strong></h3>
-            </div>
-            {/* <div className="col-md-6">
-              <h1 className="text-xl text-center">
-                <strong>
-                  Bin
-                  <br />
-                  Allotment
-                </strong>
-              </h1>
-            </div> */}
-          </div>
-          {/* <div className="row mt-4">
-            <div className="col-md-12 font-weight-bold">
-              <hr />
+              <h3>
+                <strong>Bin Allotment</strong>
+              </h3>
             </div>
           </div> */}
+          <table>
+            <tr>
+              <td style={{ width: "10%" }}>
+                <img
+                  src="/AI_Packs.png"
+                  alt="Your Image"
+                  style={{ width: "auto", marginTop: "20px" }}
+                />
+              </td>
+              <td>
+                <div className="text-center">
+                  <h1 className="text-xl">
+                    <strong>SCM AIPACKS Private Limited</strong>
+                  </h1>
+                  <br />
+                  <h3>
+                    <strong>Bin Allotment</strong>
+                  </h3>
+                </div>
+              </td>
+            </tr>
+          </table>
 
           <div className="row -flex mt-2 flex-row flex-wrap">
             {/* <div className="col-md-12"> */}
@@ -209,21 +243,23 @@ export const IssueManifestReport = ({ docId }) => {
                     </td>
                     <td style={{ textAlign: "left" }}>
                       {/* #8, 03rd Main, 3rd Cross, Hoysala Nagar */}
-                      {headerData.senderAddress},{" "}{headerData.senderCity}
+                      {headerData.senderAddress}, {headerData.senderCity}
                       <br />
                       {/* Ramamurthy Nagar, Bengaluru - 560016 */}
                       {headerData.senderState}
                       <br />
                       {/* Karnataka */}
                       {headerData.senderPinCode}
-
                     </td>
                   </tr>
                   <tr>
                     <td style={{ textAlign: "right" }}>
                       <strong>GST:</strong>
                     </td>
-                    <td style={{ textAlign: "left" }}>{/*29ABMCS1982P1ZA */}{headerData.senderGst}</td>
+                    <td style={{ textAlign: "left" }}>
+                      {/*29ABMCS1982P1ZA */}
+                      {headerData.senderGst}
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -236,7 +272,8 @@ export const IssueManifestReport = ({ docId }) => {
                       <strong>Receiver:</strong>
                     </td>
                     <td style={{ textAlign: "left" }}>
-                      {/* BAXY LIMITED */}{headerData.receiverName}
+                      {/* BAXY LIMITED */}
+                      {headerData.receiverName}
                     </td>
                   </tr>
                   <tr>
@@ -368,7 +405,6 @@ export const IssueManifestReport = ({ docId }) => {
                             {row.productQty}
                           </td>
                         </tr>
-
                       </>
                     ))}
                 </tbody>

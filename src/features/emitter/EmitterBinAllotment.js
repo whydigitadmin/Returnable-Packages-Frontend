@@ -205,7 +205,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
           response.data.paramObjectsMap.binAllotmentNewVO[0].binReqDate
         );
         setEmitter(response.data.paramObjectsMap.binAllotmentNewVO[0].emitter);
-        // setFlow(response.data.paramObjectsMap.binAllotmentNewVO[0].docDate);
+        setFlow(response.data.paramObjectsMap.binAllotmentNewVO[0].flow);
         setReqKitName(
           response.data.paramObjectsMap.binAllotmentNewVO[0].kitCode
         );

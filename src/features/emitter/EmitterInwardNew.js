@@ -136,6 +136,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
       allotNo: "",
       allotDate: "",
       flow: "",
+      partName: "",
       kitCode: "",
       reqKitQty: "",
       allotKitQty: "",
@@ -468,6 +469,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
             allotNo: assetDetail.allotNo,
             allotDate: assetDetail.allotDate,
             flow: assetDetail.flow,
+            partName: assetDetail.partName,
             kitCode: assetDetail.kitCode,
             reqKitQty: assetDetail.reqKitQty,
             allotKitQty: assetDetail.allotKitQty,
@@ -637,6 +639,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
     // Update the selectedFiles state with the array of file names
     setSelectedFiles(fileNames);
   };
+  const handleBack = () => {
+    setOpenDialog(false);
+  };
 
   return (
     <>
@@ -649,14 +654,16 @@ function EmitterInwardNew({ addInwardManifeast }) {
             <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
           </Link>{" "}
           <p className="text-2xl">
-            <strong>{view1 ? "Pending Bin Inward" : " Bin Inward"}</strong>
+            <strong>
+              {view1 ? "Pending Bin Inward Details" : " Bin Inward Details"}
+            </strong>
           </p>
           {!viewButton && (
             <div className="ml-auto">
               {" "}
               <button
                 type="button"
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 onClick={viewSavedRecords}
               >
                 {view3 ? "Close" : "Inwarded Bins"}
@@ -689,6 +696,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                         Flow
                       </th>
                       <th className="px-2 text-black border text-center">
+                        Part
+                      </th>
+                      <th className="px-2 text-black border text-center">
                         Kit No
                       </th>
                       <th className="px-2 text-black border text-center">
@@ -698,6 +708,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                         Alloted QTY
                       </th>
                       <th className="px-2 text-black border text-center">
+                        Fulfillment %
+                      </th>
+                      <th className="px-2 text-black border text-center">
                         Issue Manifest
                       </th>
                     </tr>
@@ -705,7 +718,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   {/* Table body */}
                   <tbody>
                     {tableDataPending && tableDataPending.length > 0 ? (
-                      // Render table rows if data is available
                       tableDataPending.map((row) => (
                         <tr key={row.id}>
                           <td className="border px-2 py-2 text-center">
@@ -732,17 +744,26 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             {row.flow}
                           </td>
                           <td className="border px-2 py-2 text-center">
+                            {row.partName}
+                          </td>
+                          <td className="border px-2 py-2 text-center">
                             {row.kitCode}
                           </td>
                           <td className="border px-2 py-2 text-center">
                             {row.reqKitQty}
                           </td>
                           <td className="border px-2 py-2 text-center">
-                            {row.allotKitQty} (
+                            {/* {row.allotKitQty} (
                             {((row.allotKitQty / row.reqKitQty) * 100).toFixed(
                               2
                             )}
-                            %)
+                            %) */}
+                            {row.allotKitQty}
+                          </td>
+                          <td className="border px-2 py-2 text-center">
+                            {((row.allotKitQty / row.reqKitQty) * 100).toFixed(
+                              2
+                            )}
                           </td>
                           <td
                             className="border px-2 py-2 text-center"
@@ -1385,7 +1406,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
         <DialogContent>
           {/* Content of your dialog */}
           {/* Add your download logic or content here */}
-          <IssueManifestReport docId={downloadDocId} />
+          <IssueManifestReport goBack={handleBack} docId={downloadDocId} />
         </DialogContent>
       </Dialog>
       <ToastContainer />
