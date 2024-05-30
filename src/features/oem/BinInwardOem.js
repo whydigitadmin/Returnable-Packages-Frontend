@@ -53,18 +53,21 @@ const BinInwardOem = ({}) => {
   const [assetList, setAssetList] = useState([]);
 
   const [ListViewTableData, setListViewTableData] = useState([
-    {
-      id: 1,
-      inwardId: "1000001",
-      date: "15-05-2024",
-      kitNo: "PLS1220/0524/1002	",
-      allotedQty: "50",
-      recKitQty: "50",
-    },
+    // {
+    //   id: 1,
+    //   inwardId: "1000001",
+    //   date: "15-05-2024",
+    //   kitNo: "PLS1220/0524/1002	",
+    //   allotedQty: "50",
+    //   recKitQty: "50",
+    // },
   ]);
 
   useEffect(() => {
     getFlowByUserId();
+    if (listViewButton) {
+      getAllInwardedDetailsByOrgId();
+    }
   }, []);
 
   const getFlowByUserId = async () => {
@@ -78,6 +81,23 @@ const BinInwardOem = ({}) => {
           response.data.paramObjectsMap.flowDetails.map((l) => l.flow)
         );
         setFlowList(response.data.paramObjectsMap.flowDetails);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAllInwardedDetailsByOrgId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getAllOemBinInward?orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "FLOW LIST FROM API's ARE",
+          response.data.paramObjectsMap.oemBinInwardVOs
+        );
+        setListViewTableData(response.data.paramObjectsMap.oemBinInwardVOs);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -274,7 +294,7 @@ const BinInwardOem = ({}) => {
               {" "}
               <button
                 type="button"
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 onClick={(e) => {
                   setListViewButton(!listViewButton);
                 }}
@@ -307,16 +327,16 @@ const BinInwardOem = ({}) => {
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleSavedRecordView(row.inwardId);
+                                handleSavedRecordView(row.docId);
                               }}
                               style={{ cursor: "pointer", color: "blue" }}
                             >
-                              {row.inwardId}
+                              {row.docId}
                             </a>
                           </td>
-                          <td>{row.date}</td>
+                          <td>{row.docDate}</td>
                           <td>{row.kitNo}</td>
-                          <td>{row.recKitQty}</td>
+                          <td>{row.recievedKitQty}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -528,7 +548,7 @@ const BinInwardOem = ({}) => {
                                       setTimeout(
                                         () =>
                                           handleRecKitQtyChange(e, row.kitNo),
-                                        2000
+                                        500
                                       );
                                     }}
                                   />
@@ -606,10 +626,10 @@ const BinInwardOem = ({}) => {
                   <tbody>
                     {ListViewTableData.map((row, index) => (
                       <tr key={row.id}>
-                        <td> {row.inwardId}</td>
-                        <td>{row.date}</td>
+                        <td> {row.docId}</td>
+                        <td>{row.docDate}</td>
                         <td>{row.kitNo}</td>
-                        <td>{row.recKitQty}</td>
+                        <td>{row.recievedKitQty}</td>
                       </tr>
                     ))}
                   </tbody>
