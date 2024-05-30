@@ -753,17 +753,13 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             {row.reqKitQty}
                           </td>
                           <td className="border px-2 py-2 text-center">
-                            {/* {row.allotKitQty} (
-                            {((row.allotKitQty / row.reqKitQty) * 100).toFixed(
-                              2
-                            )}
-                            %) */}
                             {row.allotKitQty}
                           </td>
                           <td className="border px-2 py-2 text-center">
-                            {((row.allotKitQty / row.reqKitQty) * 100).toFixed(
+                            {/* {((row.allotKitQty / row.reqKitQty) * 100).toFixed(
                               2
-                            )}
+                            )} */}
+                            {(row.allotKitQty / row.reqKitQty) * 100}
                           </td>
                           <td
                             className="border px-2 py-2 text-center"
@@ -781,12 +777,10 @@ function EmitterInwardNew({ addInwardManifeast }) {
                         </tr>
                       ))
                     ) : (
-                      // Render a single row with a message if no data is available
                       <tr>
                         <td colSpan={7}>
                           <NoRecordsFound message={"No Pending Inward"} />
                         </td>
-                        {/* <NoRecordsFound /> */}
                       </tr>
                     )}
                   </tbody>
@@ -1310,9 +1304,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       <th className="px-2 text-black border text-center">
                         Alloted QTY
                       </th>
-                      {/* <th className="px-2 py-2 bg-blue-500 text-white">
-                 Return Qty
-               </th> */}
+                      <th className="px-2 text-black border text-center">
+                        Fulfillment %
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -1372,11 +1366,10 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             {row.reqKitQty}
                           </td>
                           <td className="border px-2 py-2 text-center">
-                            {row.allotedQty} (
-                            {((row.allotedQty / row.reqKitQty) * 100).toFixed(
-                              2
-                            )}
-                            %)
+                            {row.allotedQty}
+                          </td>
+                          <td className="border px-2 py-2 text-center">
+                            {(row.allotedQty / row.reqKitQty) * 100}
                           </td>
                         </tr>
                       ))}
@@ -1385,7 +1378,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
               </div>
               <div className="mt-4 d-flex justify-content-center">
                 <Pagination
-                  count={Math.ceil(tableDataView.length / rowsPerPage)} // Calculate total number of pages
+                  count={Math.ceil(tableDataView.length / rowsPerPage)}
                   page={page}
                   onChange={handleChangePage}
                   variant="outlined"
