@@ -64,6 +64,10 @@ function Login() {
             "token",
             response.data.paramObjectsMap.user.token
           );
+          localStorage.setItem(
+            "tokenId",
+            response.data.paramObjectsMap.user.tokenId
+          );
           localStorage.setItem("userName", trimmedEmail);
           localStorage.setItem(
             "orgId",

@@ -1,6 +1,8 @@
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import BellIcon from "@heroicons/react/24/outline/BellIcon";
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import axios from "axios";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { openRightDrawer } from "../features/common/rightDrawerSlice";
@@ -20,6 +22,9 @@ function Header() {
     modifiedUserDetails.charAt(0).toUpperCase() + modifiedUserDetails.slice(1);
   const [loginUserDto, setLoginUserDto] = useState(
     JSON.parse(localStorage.getItem("userDto"))
+  );
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
   );
 
   useEffect(() => {
@@ -48,10 +53,44 @@ function Header() {
     );
   };
 
-  function logoutUser() {
-    localStorage.clear();
-    window.location.href = "/";
-  }
+  const logoutUser = async () => {
+    const token = localStorage.getItem("token");
+    let headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers = {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      };
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/auth/logout?userName=${userName}`,
+          { headers }
+        );
+        if (response) {
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            localStorage.clear();
+            window.location.href = "/";
+          }
+        } else {
+          console.error("API Error:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+  };
 
   return (
     <>
