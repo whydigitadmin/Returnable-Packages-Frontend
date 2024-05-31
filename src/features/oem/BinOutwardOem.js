@@ -211,7 +211,6 @@ function BinOutwardOem({}) {
                   <table className="table table-hover w-full">
                     <thead>
                       <tr>
-                        <th>S.No</th>
                         <th>Outward ID</th>
                         <th>Date</th>
                         <th>Flow</th>
@@ -222,7 +221,7 @@ function BinOutwardOem({}) {
                     <tbody>
                       {ListViewTableData.map((row, index) => (
                         <tr key={row.id}>
-                          <td>{index + 1}</td>
+                          {/* <td>{index + 1}</td> */}
                           <td>
                             <a
                               href="#"
@@ -369,7 +368,6 @@ function BinOutwardOem({}) {
                       <table className="table table-hover w-full">
                         <thead>
                           <tr>
-                            <th>S.No</th>
                             <th>Asset</th>
                             <th>Asset Code</th>
                             <th>EXP QTY</th>
@@ -379,7 +377,7 @@ function BinOutwardOem({}) {
                         <tbody>
                           {tableData.map((row, index) => (
                             <tr key={row.id}>
-                              <td>{index + 1}</td>
+                              {/* <td>{index + 1}</td> */}
                               <td>{row.asset}</td>
                               <td>{row.assetCode}</td>
                               <td>{row.expQty}</td>

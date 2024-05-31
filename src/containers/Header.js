@@ -14,8 +14,13 @@ function Header() {
   const [currentTheme, setCurrentTheme] = useState(
     localStorage.getItem("theme")
   );
-
   const userDetails = localStorage.getItem("userDetails");
+  const modifiedUserDetails = userDetails.slice(5).toLowerCase();
+  const initCapUserDetails =
+    modifiedUserDetails.charAt(0).toUpperCase() + modifiedUserDetails.slice(1);
+  const [loginUserDto, setLoginUserDto] = useState(
+    JSON.parse(localStorage.getItem("userDto"))
+  );
 
   useEffect(() => {
     // themeChange(false);
@@ -111,6 +116,11 @@ function Header() {
         </div>
 
         <div className="order-last">
+          <p className="font-semibold me-2">
+            <span>Welcome </span>
+            <span className="text-uppercase">{loginUserDto.firstName}</span>
+            <span className="ms-1">({initCapUserDetails})</span>
+          </p>
           {/* Multiple theme selection, uncomment this if you want to enable multiple themes selection,
                 also includes corporate and retro themes in tailwind.config file */}
 

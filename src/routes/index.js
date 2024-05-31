@@ -154,6 +154,9 @@ const RetrivalManifest = lazy(() =>
 const TransporterPickup = lazy(() =>
   import("../pages/protected/TransporterPickup")
 );
+const EmitterDispatch = lazy(() =>
+  import("../pages/protected/EmitterDispatch")
+);
 const routes = [
   {
     path: "/dashboard", // the url
@@ -563,6 +566,10 @@ const routes = [
   {
     path: "/transporterPickup",
     component: TransporterPickup,
+  },
+  {
+    path: "/emitterdispatch",
+    component: EmitterDispatch,
   },
 ];
 
