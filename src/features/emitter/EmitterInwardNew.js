@@ -778,7 +778,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={7}>
+                        <td colSpan={9}>
                           <NoRecordsFound message={"No Pending Inward"} />
                         </td>
                       </tr>
