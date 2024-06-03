@@ -10,6 +10,14 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import CloseIcon from "@mui/icons-material/Close";
 
 function BinOutward() {
   const [flow, setFlow] = React.useState("");
@@ -35,21 +43,68 @@ function BinOutward() {
   const [errors, setErrors] = useState({});
   const [tableData, setTableData] = useState([]);
   const [listViewButton, setListViewButton] = useState(false);
-  const [ListViewTableData, setListViewTableData] = useState([
-    {
-      id: 1,
-      outwardId: "1000001",
-      date: "15-05-2024",
-      flow: "PUN-CH",
-      outQty: "8",
-      balQty: "42",
-    },
-  ]);
+  // const [ListViewTableData, setListViewTableData] = useState([
+  //   {
+  //     id: 1,
+  //     outwardId: "1000001",
+  //     date: "15-05-2024",
+  //     flow: "PUN-CH",
+  //     outQty: "8",
+  //     balQty: "42",
+  //   },
+  // ]);
+  const [ListViewTableData, setListViewTableData] = useState([]);
+  const [selectedRowData, setSelectedRowData] = useState([]);
+  const [savedRecordView, setSavedRecordView] = useState(false);
 
   useEffect(() => {
     getAddressById();
     getOutwardDocId();
+    getAllBinOutward();
   }, []);
+
+  // LISTVIEW API
+  const getAllBinOutward = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinOutward?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        console.log(
+          "THE LISTVIEW DATA'S ARE:",
+          response.data.paramObjectsMap.binOutwardVO
+        );
+        setListViewTableData(response.data.paramObjectsMap.binOutwardVO);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+  const handleSavedRecordViewById = async (rowId) => {
+    console.log("THE SELECTED ROW ID IS:", rowId);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinOutwardByDocId?docId=24BO10009`
+      );
+
+      if (response.status === 200) {
+        setSavedRecordView(true);
+
+        console.log(
+          "THE SELECTED ROW DATA IS:",
+          response.data.paramObjectsMap.binOutwardVO
+        );
+        setSelectedRowData(response.data.paramObjectsMap.binOutwardVO);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getOutwardDocId = async () => {
     try {
@@ -244,22 +299,17 @@ function BinOutward() {
     }
   };
 
+  const handleSavedRecordView = (e) => {
+    setSavedRecordView(true);
+  };
+  const handleSavedRecordViewClose = (e) => {
+    setSavedRecordView(false);
+  };
+
   return (
     <>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-4">
-          {/* <div className="row">
-            <div className="col-md-12">
-              <p className="text-2xl flex items-center">
-                <Link to="/app/welcomeemitter">
-                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                </Link>
-                <span>
-                  <strong className="ml-4">Bin Outward</strong>
-                </span>
-              </p>
-            </div>
-          </div> */}
           <div className="flex items-center">
             <Link to="/app/welcomeEmitter">
               <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
@@ -290,9 +340,10 @@ function BinOutward() {
                       <tr>
                         <th>Doc Id</th>
                         <th>Date</th>
+                        <th>Emitter</th>
+                        <th>Receiver</th>
                         <th>Flow</th>
                         <th>Kit</th>
-                        <th>Receiver</th>
                         <th>Out Qty</th>
                       </tr>
                     </thead>
@@ -300,22 +351,25 @@ function BinOutward() {
                       {ListViewTableData.map((row, index) => (
                         <tr key={row.id}>
                           {/* <td>{index + 1}</td> */}
-                          {/* <td>
+                          <td>
                             <a
                               href="#"
                               onClick={(e) => {
                                 e.preventDefault();
-                                handleSavedRecordView(row.gatheredId);
+                                handleSavedRecordViewById(row.docId);
                               }}
                               style={{ cursor: "pointer", color: "blue" }}
                             >
-                              {row.outwardId}
+                              {row.docId}
                             </a>
                           </td>
-                          <td>{row.date}</td>
+                          <td>{row.docDate}</td>
+                          <td>{row.emitter}</td>
+                          <td>{row.receiver}</td>
                           <td>{row.flow}</td>
-                          <td>{row.outQty}</td>
-                          <td>{row.balQty}</td> */}
+                          <td>{row.kitNo}</td>
+                          <td>{row.outwardKitQty}</td>
+                          {/* <td>{row.balQty}</td> */}
                         </tr>
                       ))}
                     </tbody>
@@ -541,6 +595,61 @@ function BinOutward() {
         </div>
         <ToastContainer />
       </div>
+      {/* VIEW MODAL */}
+      <Dialog
+        open={savedRecordView}
+        onClose={handleSavedRecordViewClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+          <div className="row">
+            <div className="col-md-11">
+              <Typography variant="h6">Detailed View</Typography>
+            </div>
+            <div className="col-md-1">
+              <IconButton
+                onClick={handleSavedRecordViewClose}
+                aria-label="close"
+              >
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </div>
+        </DialogTitle>
+        <DialogContent className="mt-3">
+          <div className="row">
+            <div className="overflow-x-auto w-full ">
+              <table className="table table-hover w-full">
+                <thead>
+                  <tr>
+                    <th>Outward ID</th>
+                    <th>Date</th>
+                    <th>Flow</th>
+                    <th>Kit No</th>
+                    <th>Receiver</th>
+                    <th>Destination</th>
+                    <th>Rec Kit QTY</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedRowData.map((row, index) => (
+                    <tr key={row.id}>
+                      <td> {row.docId}</td>
+                      <td>{row.docDate}</td>
+                      <td>{row.flow}</td>
+                      <td>{row.kitNo}</td>
+                      <td>{row.receiver}</td>
+                      <td>{row.destination}</td>
+                      <td>{row.outwardKitQty}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
