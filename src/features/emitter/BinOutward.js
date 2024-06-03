@@ -43,16 +43,6 @@ function BinOutward() {
   const [errors, setErrors] = useState({});
   const [tableData, setTableData] = useState([]);
   const [listViewButton, setListViewButton] = useState(false);
-  // const [ListViewTableData, setListViewTableData] = useState([
-  //   {
-  //     id: 1,
-  //     outwardId: "1000001",
-  //     date: "15-05-2024",
-  //     flow: "PUN-CH",
-  //     outQty: "8",
-  //     balQty: "42",
-  //   },
-  // ]);
   const [ListViewTableData, setListViewTableData] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState([]);
   const [savedRecordView, setSavedRecordView] = useState(false);
