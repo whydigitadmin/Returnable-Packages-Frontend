@@ -77,7 +77,7 @@ function BinOutward() {
     console.log("THE SELECTED ROW ID IS:", rowId);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinOutwardByDocId?docId=24BO10009`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinOutwardByDocId?docId=${rowId}`
       );
 
       if (response.status === 200) {
