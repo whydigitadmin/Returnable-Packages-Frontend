@@ -32,6 +32,7 @@ import { TbWeight } from "react-icons/tb";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import AddAssetCategory from "./AddAssetCategory";
+import SessionExpiry from "../../utils/SessionExpiry";
 
 const statsData = [
   {
@@ -76,6 +77,7 @@ function AssetCategory() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [sessionExpired, setSessionExpired] = React.useState(false);
 
   const handleViewClose = () => {
     setOpenView(false);
@@ -132,7 +134,13 @@ function AssetCategory() {
         );
       }
     } catch (error) {
-      console.error("Error fetching data:", error);
+      if (error.response && error.response.status === 401) {
+        // Handle 401 Unauthorized error
+        setSessionExpired(true);
+      } else {
+        // For other errors, log the error to the console
+        console.error("Error fetching data:", error);
+      }
     }
   };
 
@@ -151,6 +159,51 @@ function AssetCategory() {
     }
   };
   //SAVE TYPE
+  // const handleAddAssetCategory = () => {
+  //   const errors = {};
+  //   if (!assetCategory) {
+  //     errors.assetCategory = "Name is required";
+  //   }
+  //   if (!assetCategoryId) {
+  //     errors.assetCategoryId = "Code is required";
+  //   }
+  //   if (Object.keys(errors).length === 0) {
+  //     const formData = {
+  //       assetType: assetCategory,
+  //       typeCode: assetCategoryId,
+  //       createdby: loginUserName,
+  //       modifiedby: loginUserName,
+  //       orgId,
+  //       active,
+  //     };
+  //     Axios.post(
+  //       `${process.env.REACT_APP_API_URL}/api/master/addAssetCategory`,
+  //       formData
+  //     )
+  //       .then((response) => {
+  //         if (response.data.statusFlag === "Error") {
+  //           toast.error(response.data.paramObjectsMap.errorMessage, {
+  //             autoClose: 2000,
+  //             theme: "colored",
+  //           });
+  //         } else {
+  //           setAssetCategory("");
+  //           setAssetCategoryId("");
+  //           toast.success("Category Created successfully", {
+  //             autoClose: 2000,
+  //             theme: "colored",
+  //           });
+  //           handleClose();
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //       });
+  //   } else {
+  //     setErrors(errors);
+  //   }
+  // };
+
   const handleAddAssetCategory = () => {
     const errors = {};
     if (!assetCategory) {
@@ -168,9 +221,23 @@ function AssetCategory() {
         orgId,
         active,
       };
+
+      const token = localStorage.getItem("token");
+      let headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers = {
+          ...headers,
+          Authorization: `Bearer ${token}`,
+        };
+      }
+
       Axios.post(
         `${process.env.REACT_APP_API_URL}/api/master/addAssetCategory`,
-        formData
+        formData,
+        { headers }
       )
         .then((response) => {
           if (response.data.statusFlag === "Error") {
@@ -507,6 +574,7 @@ function AssetCategory() {
             </Dialog>
           </div>
         )}
+      {sessionExpired && <SessionExpiry sessionExpired={sessionExpired} />}
     </>
   );
 }

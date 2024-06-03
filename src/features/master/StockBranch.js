@@ -17,6 +17,8 @@ import {
   stringValidation,
   codeFieldValidation,
 } from "../../utils/userInputValidation";
+import { refreshAuthToken } from "../../utils/refreshAuthToken";
+import SessionExpiry from "../../utils/SessionExpiry";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -80,22 +82,40 @@ export const StockBranch = () => {
   const [userName, setUserName] = React.useState(
     localStorage.getItem("userName")
   );
-
+  const [tokenId, setTokenId] = React.useState(localStorage.getItem("tokenId"));
+  const [sessionExpired, setSessionExpired] = React.useState(false);
   useEffect(() => {
     getAllStockbranch();
   }, []);
 
   const getAllStockbranch = async () => {
+    const token = localStorage.getItem("token");
+    let headers = {
+      "Content-Type": "application/json",
+    };
+
+    if (token) {
+      headers = {
+        ...headers,
+        Authorization: `Bearer ${token}`,
+      };
+    }
+
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/stockbranchByOrgId?orgId=${orgId}`,
+        { headers }
       );
 
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.branch);
+        await refreshAuthToken();
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      if (error.response && error.response.status === 401) {
+        setSessionExpired(true);
+      }
     }
   };
 
@@ -116,10 +136,22 @@ export const StockBranch = () => {
         branch,
         createdby: userName,
       };
+      const token = localStorage.getItem("token");
+      let headers = {
+        "Content-Type": "application/json",
+      };
+
+      if (token) {
+        headers = {
+          ...headers,
+          Authorization: `Bearer ${token}`,
+        };
+      }
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/master/stockbranch`,
-          formData
+          formData,
+          { headers }
         )
         .then((response) => {
           setBranch("");
@@ -130,6 +162,7 @@ export const StockBranch = () => {
             autoClose: 2000,
             theme: "colored",
           });
+          console.log("created");
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -379,6 +412,7 @@ export const StockBranch = () => {
         <MaterialReactTable table={table} />
       </div>
       <ToastContainer />
+      {sessionExpired && <SessionExpiry sessionExpired={sessionExpired} />}
     </div>
   );
 };
