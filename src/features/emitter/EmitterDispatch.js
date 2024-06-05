@@ -15,43 +15,24 @@ import NoRecordsFound from "../../utils/NoRecordsFound";
 export const EmitterDispatch = () => {
   const [flow, setFlow] = React.useState("");
   const [flowData, setFlowData] = React.useState([]);
-  const [kitData, setKitData] = useState([]);
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
   const [kit, setKit] = useState("");
-  const [orgin, setOrgin] = useState("");
-  const [receiver, setReceiver] = useState("");
-  const [destination, setDestination] = useState("");
-  const [outwardKitQty, setOutwardKitQty] = useState("");
   const [avlQty, setAvlQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [emitterId, setEmitterId] = React.useState(
     localStorage.getItem("emitterId")
   );
+  const [invNo, setInvNo] = useState("");
+  const [invDate, setInvDate] = useState(null);
+  const [dispatchRemarks, setDispatchRemarks] = useState("");
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
-  const [displayName, setDisplayName] = useState(
-    localStorage.getItem("displayName")
-  );
   const [errors, setErrors] = useState({});
-  const [tableData, setTableData] = useState([
-    // {
-    //   binOutId: "24BO10016",
-    //   date: "29-05-2024",
-    //   part: "PART1234",
-    //   kit: "KIT1234",
-    //   qty: 10,
-    // },
-    // {
-    //   binOutId: "24BO10017",
-    //   date: "29-05-2024",
-    //   part: "PART12345",
-    //   kit: "KIT12345",
-    //   qty: 5,
-    // },
-  ]);
+  const [tableData, setTableData] = useState([]);
   const [tableView, setTableView] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
+  const [selectedRowData, setSelectedRowData] = useState([]);
 
   useEffect(() => {
     getAddressById();
@@ -66,9 +47,7 @@ export const EmitterDispatch = () => {
 
       if (response.status === 200) {
         setDocId(response.data.paramObjectsMap.binOutwardDocId);
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -80,15 +59,7 @@ export const EmitterDispatch = () => {
     const selectedId = event.target.value;
     setFlow(selectedId);
     getEmitterDispatchByFlowId(selectedId);
-    // getFlowDetailsByFlowId(selectedId);
-    // getkitNameById(selectedId);
     setTableView(true);
-  };
-
-  const handleSelectedKit = (event) => {
-    const kitQty = event.target.value;
-    setKit(kitQty);
-    getAvailableKitQtyByEmitter(kitQty);
   };
 
   const getAddressById = async () => {
@@ -105,58 +76,6 @@ export const EmitterDispatch = () => {
           )
           .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
-        // setUserName(userDetail.firstName);
-      }
-    } catch (error) {
-      toast.error("Network Error!");
-    }
-  };
-
-  const getFlowDetailsByFlowId = async (selectedId) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow/${selectedId}`
-      );
-
-      if (response.status === 200) {
-        setReceiver(response.data.paramObjectsMap.flowVO.receiver);
-        setDestination(response.data.paramObjectsMap.flowVO.destination);
-        setOrgin(response.data.paramObjectsMap.flowVO.orgin);
-        // setReceiverData([...receiverInfo]);
-      }
-    } catch (error) {
-      // toast.error("Network Error!");
-    }
-  };
-
-  const getkitNameById = async (selectedId) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/flow/${selectedId}`
-      );
-
-      if (response.status === 200) {
-        const kitDataArray =
-          response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
-            id: kit.id,
-            kitNo: kit.kitNo,
-          }));
-
-        setKitData([...kitDataArray]);
-      }
-    } catch (error) {
-      // toast.error("Network Error!");
-    }
-  };
-
-  const getkitAssetDetailsByKitId = async (qty) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getkitAssetDetailsByKitId?kitCode=${kit}&quantity=${qty}`
-      );
-
-      if (response.status === 200) {
-        setTableData(response.data.paramObjectsMap.kitAssetVO);
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -177,86 +96,51 @@ export const EmitterDispatch = () => {
     }
   };
 
-  const getAvailableKitQtyByEmitter = async (kitQty) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAvailableKitQtyByEmitter?emitterId=${emitterId}&flowId=${flow}&kitId=${kitQty}&orgId=${orgId}`
-      );
-
-      if (response.status === 200) {
-        setAvlQty(response.data.paramObjectsMap.avlKitQty[0].kitAvailQty);
-      }
-    } catch (error) {
-      toast.error("Network Error!");
-    }
-  };
-
-  const handleKitQty = (event) => {
-    const qty = event.target.value;
-
-    if (qty === "" || (parseInt(qty, 10) <= avlQty && parseInt(qty, 10) >= 0)) {
-      setOutwardKitQty(qty);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        outwardKitQty: "",
-      }));
-      getkitAssetDetailsByKitId(qty);
-    } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        outwardKitQty: "Outward Kit Qty cannot exceed Available Kit Qty",
-      }));
-    }
+  const handleNew = () => {
+    setFlow("");
+    setInvNo("");
+    setInvDate(null);
+    setDispatchRemarks("");
+    setSelectedRowData("");
+    setTableData("");
+    setTableView(false);
   };
 
   const handleSave = () => {
-    // const errors = {};
-    // if (!flow) {
-    //   errors.flow = "Flow is required";
-    // }
-
-    // if (!kit) {
-    //   errors.kit = "Kit is required";
-    // }
-
-    // if (!receiver) {
-    //   errors.receiver = "Receiver is required";
-    // }
-
-    // if (!outwardKitQty) {
-    //   errors.outwardKitQty = "Outward Kit Qty is required";
-    // }
-    console.log("asd", selectedRows);
+    const errors = {};
+    if (!flow) {
+      errors.flow = "Flow is required";
+    }
+    const dispatchDetailsDetails = selectedRowData.map((row) => ({
+      binOutDocDate: row.binOutDate,
+      binOutDocid: row.binOutId,
+      kitNo: row.kitNo,
+      partName: row.partName,
+      partNo: row.partNo,
+      qty: row.qty,
+    }));
+    const requestData = {
+      docId: "",
+      emitterId: emitterId,
+      flow: flow,
+      invoiceDate: invDate,
+      invoiceNo: invNo,
+      dispatchRemarks: dispatchRemarks,
+      dispatchDetailsDTO: dispatchDetailsDetails,
+      createdby: userName,
+      orgId: orgId,
+    };
+    console.log("SELECTED CHECKBOX DATA'S", selectedRowData);
+    console.log("DATA TO SAVE IS:", requestData);
     if (Object.keys(errors).length === 0) {
-      const requestData = {
-        binOutwardDetailsDTO: tableData,
-        createdBy: userName,
-        destination,
-        docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-        emitter: displayName,
-        emitterId,
-        flow,
-        kit,
-        orgId,
-        orgin,
-        outwardKitQty,
-        receiver,
-      };
       axios
         .post(
-          `${process.env.REACT_APP_API_URL}/api/emitter/binOutward`,
+          `${process.env.REACT_APP_API_URL}/api/emitter/createDispatch`,
           requestData
         )
         .then((response) => {
-          setFlow("");
-          setReceiver("");
-          setKit("");
-          setAvlQty("");
-          setDestination("");
-          setOutwardKitQty("");
-          setErrors("");
-          getOutwardDocId();
-          // toast.success("Outward Qty updated");
+          handleNew();
+          toast.success("Dispatch Completed Successfully!");
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -272,9 +156,14 @@ export const EmitterDispatch = () => {
     height: "20px",
   };
 
-  const handleCheckboxChange = (index) => {
+  const handleCheckboxChange = (index, rowData) => {
     setSelectedRows((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
+    );
+    setSelectedRowData((prevData) =>
+      prevData.includes(rowData)
+        ? prevData.filter((data) => data !== rowData)
+        : [...prevData, rowData]
     );
   };
 
@@ -311,7 +200,6 @@ export const EmitterDispatch = () => {
                 placeholder="Doc Id"
                 value={docId}
                 onChange={(e) => setDocId(e.target.value)}
-                // disabled={viewBinAllotmentId ? true : false}
                 disabled
               />
               {errors.docId && (
@@ -323,7 +211,6 @@ export const EmitterDispatch = () => {
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
                   Doc Date:
-                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
@@ -343,7 +230,6 @@ export const EmitterDispatch = () => {
                 <span className="error-text mb-1">{errors.docDate}</span>
               )}
             </div>
-            {/* STOCK BRANCH FIELD */}
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -370,99 +256,6 @@ export const EmitterDispatch = () => {
                 <span className="error-text mb-1">{errors.flow}</span>
               )}
             </div>
-            {/* <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Receiver
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="receiver"
-                value={receiver}
-                disabled
-              />
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Destination
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="destination"
-                value={destination}
-                disabled
-              />
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Kit
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <select
-                className="form-select form-sz w-full mb-2"
-                value={kit}
-                onChange={handleSelectedKit}
-              >
-                <option value="" disabled>
-                  Select a Kit
-                </option>
-                {kitData &&
-                  kitData.map((kit) => (
-                    <option key={kit.id} value={kit.kitNo}>
-                      {kit.kitNo}
-                    </option>
-                  ))}
-              </select>
-              {errors.kit && (
-                <span className="error-text mb-1">{errors.kit}</span>
-              )}
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Available Kit Qty
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                disabled
-                value={avlQty}
-              />
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Outward Kit Qty
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="outwardKitQty"
-                value={outwardKitQty}
-                onChange={handleKitQty}
-              />
-              {errors.outwardKitQty && (
-                <span className="error-text mb-1">{errors.outwardKitQty}</span>
-              )}
-            </div>*/}
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -475,36 +268,38 @@ export const EmitterDispatch = () => {
                 className="form-control form-sz mb-2"
                 name="invoice"
                 maxLength={15}
+                value={invNo}
+                onChange={(e) => setInvNo(e.target.value)}
               />
             </div>
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
                   Invoice Date:
-                  {/* <FaStarOfLife className="must" /> */}
                 </span>
               </label>
             </div>
             <div className="col-lg-2 col-md-4">
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DesktopDatePicker
-                  value={docDate}
-                  onChange={(date) => setDocDate(date)}
+                  value={invDate}
+                  onChange={(date) =>
+                    setInvDate(dayjs(date).format("YYYY-MM-DD"))
+                  }
                   slotProps={{
-                    textField: { size: "small", clearable: true },
+                    textField: { size: "small" },
                   }}
                   format="DD/MM/YYYY"
-                  disabled
                 />
               </LocalizationProvider>
-              {errors.docDate && (
-                <span className="error-text mb-1">{errors.docDate}</span>
+              {errors.invDate && (
+                <span className="error-text mb-1">{errors.invDate}</span>
               )}
             </div>
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Dispatch remarks
+                  Dispatch Remarks
                 </span>
               </label>
             </div>
@@ -512,7 +307,8 @@ export const EmitterDispatch = () => {
               <input
                 className="form-control form-sz mb-2"
                 name="dispatch"
-                // value={dispatch}
+                value={dispatchRemarks}
+                onChange={(e) => setDispatchRemarks(e.target.value)}
               />
             </div>
           </div>
@@ -542,7 +338,9 @@ export const EmitterDispatch = () => {
                               <input
                                 type="checkbox"
                                 checked={selectedRows.includes(index)}
-                                onChange={() => handleCheckboxChange(index)}
+                                onChange={() =>
+                                  handleCheckboxChange(index, row)
+                                }
                                 style={checkboxStyle}
                               />
                             </td>
@@ -552,30 +350,6 @@ export const EmitterDispatch = () => {
                             <td>{row.partNo}</td>
                             <td>{row.kitNo}</td>
                             <td>{row.qty}</td>
-                            {/* <td>
-                            <input
-                              type="text"
-                              value={row.outQty}
-                              onChange={(e) =>
-                                setTableData((prev) =>
-                                  prev.map((r, i) =>
-                                    i === index
-                                      ? { ...r, outQty: e.target.value }
-                                      : r
-                                  )
-                                )
-                              }
-                              className={`form-control form-sz mb-2 ${
-                                errors.qty && "border-red-500"
-                              }`}
-                              style={{ width: "50px" }}
-                            />
-                            {errors.qty && (
-                              <span className="error-text mb-1">
-                                {errors.qty}
-                              </span>
-                            )}
-                          </td> */}
                           </tr>
                         ))
                       ) : (
