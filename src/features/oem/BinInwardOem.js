@@ -41,15 +41,7 @@ const BinInwardOem = ({}) => {
   const [flowList, setFlowList] = useState([]);
   const [emitterOutwardList, setEmitterOutwardList] = useState([]);
 
-  const [tableData, setTableData] = useState([
-    {
-      allotedId: "",
-      allotedDate: "",
-      kitNo: "",
-      allotedKitQty: "",
-      recKitQty: "",
-    },
-  ]);
+  const [tableData, setTableData] = useState([]);
   const [assetList, setAssetList] = useState([]);
 
   const [ListViewTableData, setListViewTableData] = useState([
@@ -138,6 +130,8 @@ const BinInwardOem = ({}) => {
           allotedId: l.docId,
           allotedDate: l.docDate,
           allotedKitQty: l.outwardKitQty,
+          partNo: l.partNo,
+          partName: l.partName,
         }))
       );
     } else {
@@ -491,7 +485,7 @@ const BinInwardOem = ({}) => {
               {tableView && (
                 <>
                   <div className="row mt-2">
-                    <div className="col-lg-6 col-md-12 col-sm-12">
+                    <div className="col-lg-12 col-md-12 col-sm-12">
                       <div className="overflow-x-auto w-full ">
                         <table className="table table-hover w-full">
                           <thead>
@@ -499,6 +493,8 @@ const BinInwardOem = ({}) => {
                               {/* <th>S.No</th> */}
                               <th>Alloted Id</th>
                               <th>Alloted Date</th>
+                              <th>Part Name</th>
+                              <th>Part No</th>
                               <th>Kit No</th>
                               <th>Alloted Qty</th>
                               <th>REC QTY</th>
@@ -510,6 +506,8 @@ const BinInwardOem = ({}) => {
                                 {/* <td>{index + 1}</td> */}
                                 <td>{row.allotedId}</td>
                                 <td>{row.allotedDate}</td>
+                                <td>{row.partName}</td>
+                                <td>{row.partNo}</td>
                                 <td>{row.kitNo}</td>
                                 <td>{row.allotedKitQty}</td>
                                 <td>

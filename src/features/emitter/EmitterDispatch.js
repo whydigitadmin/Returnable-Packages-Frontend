@@ -153,8 +153,8 @@ export const EmitterDispatch = () => {
   };
 
   const checkboxStyle = {
-    width: "20px",
-    height: "20px",
+    width: "15px",
+    height: "15px",
   };
 
   const handleHeaderCheckboxChange = () => {
@@ -340,14 +340,14 @@ export const EmitterDispatch = () => {
                             onChange={handleHeaderCheckboxChange}
                             style={checkboxStyle}
                           />
-                          <span>Actions</span>
+                          <span className="ps-2">Actions</span>
                         </th>
-                        <th className="text-center">Bin Out Id</th>
-                        <th className="text-center">Date</th>
+                        <th className="text-center">Bin Outward Id</th>
+                        <th className="text-center">Outward Date</th>
                         <th className="text-center">Part Name</th>
                         <th className="text-center">Part No</th>
                         <th className="text-center">Kit</th>
-                        <th className="text-center">Qty</th>
+                        <th className="text-center">Kit Qty</th>
                       </tr>
                     </thead>
                     <tbody>
