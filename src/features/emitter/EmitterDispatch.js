@@ -33,6 +33,7 @@ export const EmitterDispatch = () => {
   const [tableView, setTableView] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
     getAddressById();
@@ -156,6 +157,18 @@ export const EmitterDispatch = () => {
     height: "20px",
   };
 
+  const handleHeaderCheckboxChange = () => {
+    setSelectAll(!selectAll);
+    if (!selectAll) {
+      const allIndexes = tableData.map((_, index) => index);
+      setSelectedRows(allIndexes);
+      setSelectedRowData(tableData);
+    } else {
+      setSelectedRows([]);
+      setSelectedRowData([]);
+    }
+  };
+
   const handleCheckboxChange = (index, rowData) => {
     setSelectedRows((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index]
@@ -259,7 +272,7 @@ export const EmitterDispatch = () => {
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Invoice no
+                  Invoice No
                 </span>
               </label>
             </div>
@@ -299,7 +312,7 @@ export const EmitterDispatch = () => {
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Dispatch Remarks
+                  Dispatch Remarks:
                 </span>
               </label>
             </div>
@@ -320,13 +333,21 @@ export const EmitterDispatch = () => {
                   <table className="table table-hover w-full">
                     <thead>
                       <tr>
-                        <th>Actions</th>
-                        <th>Bin Out Id</th>
-                        <th>Date</th>
-                        <th>Part Name</th>
-                        <th>Part No</th>
-                        <th>Kit</th>
-                        <th>Qty</th>
+                        <th className="text-center">
+                          <input
+                            type="checkbox"
+                            checked={selectAll}
+                            onChange={handleHeaderCheckboxChange}
+                            style={checkboxStyle}
+                          />
+                          <span>Actions</span>
+                        </th>
+                        <th className="text-center">Bin Out Id</th>
+                        <th className="text-center">Date</th>
+                        <th className="text-center">Part Name</th>
+                        <th className="text-center">Part No</th>
+                        <th className="text-center">Kit</th>
+                        <th className="text-center">Qty</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -334,7 +355,7 @@ export const EmitterDispatch = () => {
                         tableData.map((row, index) => (
                           <tr key={row.id}>
                             {/* <td>{index + 1}</td> */}
-                            <td>
+                            <td className="text-center">
                               <input
                                 type="checkbox"
                                 checked={selectedRows.includes(index)}
@@ -344,12 +365,12 @@ export const EmitterDispatch = () => {
                                 style={checkboxStyle}
                               />
                             </td>
-                            <td>{row.binOutId}</td>
-                            <td>{row.binOutDate}</td>
-                            <td>{row.partName}</td>
-                            <td>{row.partNo}</td>
-                            <td>{row.kitNo}</td>
-                            <td>{row.qty}</td>
+                            <td className="text-center">{row.binOutId}</td>
+                            <td className="text-center">{row.binOutDate}</td>
+                            <td className="text-center">{row.partName}</td>
+                            <td className="text-center">{row.partNo}</td>
+                            <td className="text-center">{row.kitNo}</td>
+                            <td className="text-center">{row.qty}</td>
                           </tr>
                         ))
                       ) : (
