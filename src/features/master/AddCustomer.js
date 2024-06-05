@@ -29,6 +29,7 @@ import {
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -120,6 +121,9 @@ function AddCustomer({ addcustomer, editCustomerId }) {
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
   const [openBankModal, setOpenBankModal] = React.useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [customerActivatePortal, setCustomerActivatePortal] =
     React.useState(true);
   const [customerCode, setCustomerCode] = React.useState("");
@@ -952,7 +956,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
     //   errors.customerCode = "Customer Code is required";
     // }
     if (!entityLegalName) {
-      errors.entityLegalName = "Customer Org Name is required";
+      errors.entityLegalName = "Entity Legal Name is required";
     }
     if (!customerType) {
       errors.customerType = "Customer Type is required";
@@ -986,6 +990,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
         email,
         active,
         orgId,
+        createdby: userName,
         customerAddressDTO: shippingAddresses,
         customerBankDetailsDTO: bankAddresses,
       };
@@ -1123,6 +1128,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
         email,
         active,
         orgId,
+        createdby: userName,
         customerAddressDTO: customerAddressVO,
         customerBankDetailsDTO: customerBankAddressVO,
       };
@@ -1130,27 +1136,24 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       axios
         .put(`${process.env.REACT_APP_API_URL}/api/master/customers`, formData)
         .then((response) => {
-          setCustomerId(
-            response.data.paramObjectsMap.customersVO.customersAddressVO.id
-          );
-          console.log(
-            "Response:",
-            response.data.paramObjectsMap.customersVO.customersAddressVO.id
-          );
-          console.log("CustomerId:", response.data.id);
-
-          setAddressShow(true);
-          setErrors({});
-          toast.success("Customer updated successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            setCustomerId(
+              response.data.paramObjectsMap.customersVO.customersAddressVO.id
+            );
+            console.log(
+              "Response:",
+              response.data.paramObjectsMap.customersVO.customersAddressVO.id
+            );
+            console.log("CustomerId:", response.data.id);
+            showSuccessToast(response.data.paramObjectsMap.message);
+            setAddressShow(true);
+            setErrors({});
+          }
         })
         .catch((error) => {
-          toast.error("Customer update failed", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          showErrorToast();
         });
     } else {
       setErrors(errors);
@@ -1209,7 +1212,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
         </div>
 
         <div className="row">
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1221,7 +1224,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
             {editCustomerId ? (
               <select
                 className="form-select form-sz w-full"
@@ -1233,8 +1236,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 <option value="" disabled>
                   Select a Customer
                 </option>
-                <option value="0">Emitter</option>
-                <option value="1">Receiver</option>
+                <option value="0">EMITTER</option>
+                <option value="1">RECEIVER</option>
               </select>
             ) : (
               <select
@@ -1246,8 +1249,8 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 <option value="" disabled>
                   Select a Customer
                 </option>
-                <option value="0">Emitter</option>
-                <option value="1">Receiver</option>
+                <option value="0">EMITTER</option>
+                <option value="1">RECEIVER</option>
               </select>
             )}
             {errors.customerType && (
@@ -1256,7 +1259,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
           </div>
           {editCustomerId && (
             <>
-              <div className="col-lg-3 col-md-6 mb-2">
+              <div className="col-lg-3 col-md-6 mb-4">
                 <label className="label mb-1">
                   <span
                     className={
@@ -1268,7 +1271,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                   </span>
                 </label>
               </div>
-              <div className="col-lg-3 col-md-6 mb-2">
+              <div className="col-lg-3 col-md-6 mb-4">
                 <input
                   placeholder=""
                   value={customerCode}
@@ -1286,7 +1289,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </div>
             </>
           )}
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1298,7 +1301,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <input
               placeholder=""
               value={entityLegalName}
@@ -1312,7 +1315,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               <div className="error-text">{errors.entityLegalName}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1324,7 +1327,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <input
               placeholder=""
               value={displayName}
@@ -1338,7 +1341,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               <div className="error-text">{errors.displayName}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1350,7 +1353,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <input
               className="form-control form-sz"
               placeholder=""
@@ -1361,7 +1364,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             />
             {errors.email && <div className="error-text">{errors.email}</div>}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1373,7 +1376,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <input
               className="form-control form-sz"
               placeholder=""
@@ -1391,7 +1394,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               <div className="error-text">{errors.phoneNumber}</div>
             )}
           </div>
-          <div className="col-lg-3 col-md-6 mb-2 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4 mb-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1402,7 +1405,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <FormControlLabel
               control={
                 <IOSSwitch
@@ -1413,7 +1416,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               }
             />
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1424,7 +1427,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <FormControlLabel
               disabled={isSubmitting}
               control={
@@ -1436,7 +1439,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
               }
             />
           </div>
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label mb-1">
               <span
                 className={
@@ -1477,7 +1480,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
             )}
           </div>
 
-          <div className="col-lg-3 col-md-6 mb-2">
+          <div className="col-lg-3 col-md-6 mb-4">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
                 Document
@@ -1664,7 +1667,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                             <button
                               key={index}
                               onClick={() => handleEditAddress(index)}
-                              className="btn btn-link"
+                              className=""
                             >
                               <FaEdit
                                 style={{ fontSize: "22px", color: "black" }}

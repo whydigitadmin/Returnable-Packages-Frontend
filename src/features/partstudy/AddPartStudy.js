@@ -92,6 +92,9 @@ function AddPartStudy({
   const [highestVolume, setHighestVolume] = useState();
   const [lowestVolume, setLowestVolume] = useState();
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [errors, setErrors] = useState({});
   const [active, setActive] = React.useState(true);
 
@@ -243,6 +246,7 @@ function AddPartStudy({
         // refPsId,
         weight,
         active,
+        createdBy: userName,
       };
       Axios.post(
         `${process.env.REACT_APP_API_URL}/api/partStudy/basicDetails`,
@@ -317,6 +321,7 @@ function AddPartStudy({
         partStudyDate: partStudyDate.startDate,
         partVolume,
         // refPsId,
+        createdBy: userName,
         weight,
         active,
       };

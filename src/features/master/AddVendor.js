@@ -961,8 +961,8 @@ function AddVendor({ addVendors, editVendorId }) {
               <option value="" disabled>
                 Select a vendor
               </option>
-              <option value="Transport">Transport</option>
-              <option value="Supplier">Supplier</option>
+              <option value="Transport">TRANSPORT</option>
+              <option value="Supplier">SUPPLIER</option>
             </select>
             {errors.venderType && (
               <div className="error-text">{errors.venderType}</div>
