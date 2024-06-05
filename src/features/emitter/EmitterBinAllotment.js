@@ -35,7 +35,9 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   const [avlQty, setAvlQty] = useState(null);
   const [alotQty, setAlotQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [errors, setErrors] = useState({});
   const [filteredStockBranch, setFilteredStockBranch] = useState("");
   const [stockBranchList, setStockBranchList] = useState("");
@@ -151,11 +153,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
         setEmitter(response.data.paramObjectsMap.BinAllotment[0].emitter);
         setReqKitName(response.data.paramObjectsMap.BinAllotment[0].kitcode);
         setReqPartName(response.data.paramObjectsMap.BinAllotment[0].partname);
+        setReqPartNo(response.data.paramObjectsMap.BinAllotment[0].partno);
         setReqQty(response.data.paramObjectsMap.BinAllotment[0].reqKitQty);
         setEmitterId(response.data.paramObjectsMap.BinAllotment[0].emitterid);
         setFlow(response.data.paramObjectsMap.BinAllotment[0].flow);
         setFlowId(response.data.paramObjectsMap.BinAllotment[0].flowid);
-        setReqPartNo(response.data.paramObjectsMap.BinAllotment[0].emitterid);
+        // setReqPartNo(response.data.paramObjectsMap.BinAllotment[0].emitterid);
       } else {
         console.error("API Error:", response.data);
       }
@@ -381,9 +384,9 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
         reqKitQty: reqQty,
         avlKitQty: avlQty,
         allotKitQty: alotQty,
-        // partCode: reqPartNo,
+        partCode: reqPartNo,
         partName: reqPartName,
-        createdby: userId,
+        createdby: userName,
         orgId: orgId,
         binAllotmentDetailsDTO: tableFormData,
       };
@@ -391,7 +394,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
 
       axios
         .post(
-          `${process.env.REACT_APP_API_URL}/api/emitter/binAllotment`,
+          `${process.env.REACT_APP_API_URL}/api/master/binAllotment`,
           formData
         )
         .then((response) => {

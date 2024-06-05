@@ -59,6 +59,9 @@ function IssueReq() {
   const [errors, setErrors] = React.useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [address, setAddress] = React.useState({});
   const [aleartState, setAleartState] = React.useState("");
   const [flowNames, setFlowNames] = React.useState([]);
@@ -289,6 +292,7 @@ function IssueReq() {
 
     if (Object.keys(errors).length === 0) {
       const formData = {
+        createdBy: userName,
         demandDate: selectedDate1,
         emitterId: emitterId,
         orgId,
@@ -358,6 +362,7 @@ function IssueReq() {
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
+        createdBy: userName,
         demandDate: selectedDate1,
         emitterId: emitterId,
         orgId,
@@ -1283,7 +1288,8 @@ function IssueReq() {
                                 <th>Req No</th>
                                 <th>Req Date</th>
                                 <th>Demand Date</th>
-                                <th>PART</th>
+                                <th>PART NAME</th>
+                                <th>PART No</th>
                                 <th>PART QTY</th>
                                 <th>Kit No</th>
                                 <th>KIT QTY</th>
@@ -1367,9 +1373,14 @@ function IssueReq() {
                                           )}
                                           {/* Render data for each item */}
                                           <td>{item.partName}</td>
-                                          <td>{item.partQty}</td>
+                                          <td>{item.partNo}</td>
+                                          <td className="text-center">
+                                            {item.partQty}
+                                          </td>
                                           <td>{item.kitName}</td>
-                                          <td>{item.kitQty}</td>
+                                          <td className="text-center">
+                                            {item.kitQty}
+                                          </td>
                                         </tr>
                                       ))}
                                     {/* Render remaining rows */}
@@ -1444,9 +1455,14 @@ function IssueReq() {
                                           )}
                                           {/* Render data for each item */}
                                           <td>{item.partName}</td>
-                                          <td>{item.partQty}</td>
+                                          <td>{item.partNo}</td>
+                                          <td className="text-center">
+                                            {item.partQty}
+                                          </td>
                                           <td>{item.kitName}</td>
-                                          <td>{item.kitQty}</td>
+                                          <td className="text-center">
+                                            {item.kitQty}
+                                          </td>
                                         </tr>
                                       ))}
                                   </React.Fragment>

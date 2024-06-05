@@ -166,7 +166,7 @@ export const EmitterDispatch = () => {
   const getEmitterDispatchByFlowId = async (selectedId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getEmitterDispatchByFlowId?emitterId=${emitterId}&flowId=${selectedId}&orgid=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getEmitterDispatchByFlowId?emitterId=${emitterId}&flowId=${selectedId}&orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -210,23 +210,23 @@ export const EmitterDispatch = () => {
   };
 
   const handleSave = () => {
-    const errors = {};
-    if (!flow) {
-      errors.flow = "Flow is required";
-    }
+    // const errors = {};
+    // if (!flow) {
+    //   errors.flow = "Flow is required";
+    // }
 
-    if (!kit) {
-      errors.kit = "Kit is required";
-    }
+    // if (!kit) {
+    //   errors.kit = "Kit is required";
+    // }
 
-    if (!receiver) {
-      errors.receiver = "Receiver is required";
-    }
+    // if (!receiver) {
+    //   errors.receiver = "Receiver is required";
+    // }
 
-    if (!outwardKitQty) {
-      errors.outwardKitQty = "Outward Kit Qty is required";
-    }
-
+    // if (!outwardKitQty) {
+    //   errors.outwardKitQty = "Outward Kit Qty is required";
+    // }
+    console.log("asd", selectedRows);
     if (Object.keys(errors).length === 0) {
       const requestData = {
         binOutwardDetailsDTO: tableData,
@@ -527,7 +527,8 @@ export const EmitterDispatch = () => {
                         <th>Actions</th>
                         <th>Bin Out Id</th>
                         <th>Date</th>
-                        <th>Part</th>
+                        <th>Part Name</th>
+                        <th>Part No</th>
                         <th>Kit</th>
                         <th>Qty</th>
                       </tr>
@@ -545,11 +546,12 @@ export const EmitterDispatch = () => {
                                 style={checkboxStyle}
                               />
                             </td>
-                            <td>{row.BinOutId}</td>
-                            <td>{row.Date}</td>
-                            <td>{row.Part}</td>
-                            <td>{row.Kit}</td>
-                            <td>{row.Qty}</td>
+                            <td>{row.binOutId}</td>
+                            <td>{row.binOutDate}</td>
+                            <td>{row.partName}</td>
+                            <td>{row.partNo}</td>
+                            <td>{row.kitNo}</td>
+                            <td>{row.qty}</td>
                             {/* <td>
                             <input
                               type="text"

@@ -26,7 +26,7 @@ function BinOutward() {
   const [kitData, setKitData] = useState([]);
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
-  const [kit, setKit] = useState("");
+  const [kitNo, setKitNo] = useState("");
   const [orgin, setOrgin] = useState("");
   const [receiver, setReceiver] = useState("");
   const [destination, setDestination] = useState("");
@@ -124,7 +124,7 @@ function BinOutward() {
 
   const handleSelectedKit = (event) => {
     const kitQty = event.target.value;
-    setKit(kitQty);
+    setKitNo(kitQty);
     getAvailableKitQtyByEmitter(kitQty);
   };
 
@@ -189,7 +189,7 @@ function BinOutward() {
   const getkitAssetDetailsByKitId = async (qty) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getkitAssetDetailsByKitId?kitCode=${kit}&quantity=${qty}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getkitAssetDetailsByKitId?kitCode=${kitNo}&quantity=${qty}`
       );
 
       if (response.status === 200) {
@@ -238,8 +238,8 @@ function BinOutward() {
       errors.flow = "Flow is required";
     }
 
-    if (!kit) {
-      errors.kit = "Kit is required";
+    if (!kitNo) {
+      errors.kitNo = "Kit is required";
     }
 
     if (!receiver) {
@@ -259,7 +259,7 @@ function BinOutward() {
         emitter: displayName,
         emitterId,
         flow,
-        kit,
+        kitNo,
         orgId,
         orgin,
         outwardKitQty,
@@ -273,7 +273,7 @@ function BinOutward() {
         .then((response) => {
           setFlow("");
           setReceiver("");
-          setKit("");
+          setKitNo("");
           setAvlQty("");
           setDestination("");
           setOutwardKitQty("");
@@ -499,7 +499,7 @@ function BinOutward() {
                 <div className="col-lg-2 col-md-4">
                   <select
                     className="form-select form-sz w-full mb-2"
-                    value={kit}
+                    value={kitNo}
                     onChange={handleSelectedKit}
                   >
                     <option value="" disabled>
