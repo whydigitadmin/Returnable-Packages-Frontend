@@ -37,6 +37,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const [extDate, setExtDate] = useState(null);
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
   const [finYear, setFinYear] = useState("");
   const [stockFrom, setStockFrom] = useState("");
   const [stockTo, setStockTo] = useState("");
@@ -524,11 +527,12 @@ function EmitterInwardNew({ addInwardManifeast }) {
         reqKitQty,
         returnQty: returnQty ? returnQty : 0,
         returnRemarks,
+        createdBy: userName,
       };
 
       axios
         .put(
-          `${process.env.REACT_APP_API_URL}/api/master/updateCreateBinInward`,
+          `${process.env.REACT_APP_API_URL}/api/emitter/updateCreateBinInward`,
           formData
         )
         .then((response) => {
@@ -1310,7 +1314,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                     </tr>
                   </thead>
                   <tbody>
-                    {paginatedData &&
+                    {paginatedData && paginatedData.length > 0 ? (
                       paginatedData.map((row) => (
                         <tr key={row.id}>
                           <td className="border px-2 py-2 text-center">
@@ -1372,7 +1376,16 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             {(row.allotedQty / row.reqKitQty) * 100}
                           </td>
                         </tr>
-                      ))}
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={9}>
+                          <NoRecordsFound
+                            message={"Bin Inward Details Not Found"}
+                          />
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

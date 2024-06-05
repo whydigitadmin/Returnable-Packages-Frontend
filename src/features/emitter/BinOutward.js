@@ -18,6 +18,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
+import NoRecordsFound from "../../utils/NoRecordsFound";
 
 function BinOutward() {
   const [flow, setFlow] = React.useState("");
@@ -57,7 +58,7 @@ function BinOutward() {
   const getAllBinOutward = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinOutward?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinOutward?emitterId=${emitterId}&orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -338,30 +339,40 @@ function BinOutward() {
                       </tr>
                     </thead>
                     <tbody>
-                      {ListViewTableData.map((row, index) => (
-                        <tr key={row.id}>
-                          {/* <td>{index + 1}</td> */}
-                          <td>
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleSavedRecordViewById(row.docId);
-                              }}
-                              style={{ cursor: "pointer", color: "blue" }}
-                            >
-                              {row.docId}
-                            </a>
+                      {ListViewTableData && ListViewTableData.length > 0 ? (
+                        ListViewTableData.map((row, index) => (
+                          <tr key={row.id}>
+                            {/* <td>{index + 1}</td> */}
+                            <td>
+                              <a
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleSavedRecordViewById(row.docId);
+                                }}
+                                style={{ cursor: "pointer", color: "blue" }}
+                              >
+                                {row.docId}
+                              </a>
+                            </td>
+                            <td>{row.docDate}</td>
+                            <td>{row.emitter}</td>
+                            <td>{row.receiver}</td>
+                            <td>{row.flow}</td>
+                            <td>{row.kitNo}</td>
+                            <td>{row.outwardKitQty}</td>
+                            {/* <td>{row.balQty}</td> */}
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9}>
+                            <NoRecordsFound
+                              message={"Bin Outward Details Not Found"}
+                            />
                           </td>
-                          <td>{row.docDate}</td>
-                          <td>{row.emitter}</td>
-                          <td>{row.receiver}</td>
-                          <td>{row.flow}</td>
-                          <td>{row.kitNo}</td>
-                          <td>{row.outwardKitQty}</td>
-                          {/* <td>{row.balQty}</td> */}
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>

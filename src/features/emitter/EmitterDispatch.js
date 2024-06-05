@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import NoRecordsFound from "../../utils/NoRecordsFound";
 
 export const EmitterDispatch = () => {
   const [flow, setFlow] = React.useState("");
@@ -34,20 +35,20 @@ export const EmitterDispatch = () => {
   );
   const [errors, setErrors] = useState({});
   const [tableData, setTableData] = useState([
-    {
-      binOutId: "24BO10016",
-      date: "29-05-2024",
-      part: "PART1234",
-      kit: "KIT1234",
-      qty: 10,
-    },
-    {
-      binOutId: "24BO10017",
-      date: "29-05-2024",
-      part: "PART12345",
-      kit: "KIT12345",
-      qty: 5,
-    },
+    // {
+    //   binOutId: "24BO10016",
+    //   date: "29-05-2024",
+    //   part: "PART1234",
+    //   kit: "KIT1234",
+    //   qty: 10,
+    // },
+    // {
+    //   binOutId: "24BO10017",
+    //   date: "29-05-2024",
+    //   part: "PART12345",
+    //   kit: "KIT12345",
+    //   qty: 5,
+    // },
   ]);
   const [tableView, setTableView] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
@@ -78,8 +79,9 @@ export const EmitterDispatch = () => {
   const handleSelectedFlow = (event) => {
     const selectedId = event.target.value;
     setFlow(selectedId);
-    getFlowDetailsByFlowId(selectedId);
-    getkitNameById(selectedId);
+    getEmitterDispatchByFlowId(selectedId);
+    // getFlowDetailsByFlowId(selectedId);
+    // getkitNameById(selectedId);
     setTableView(true);
   };
 
@@ -155,6 +157,20 @@ export const EmitterDispatch = () => {
 
       if (response.status === 200) {
         setTableData(response.data.paramObjectsMap.kitAssetVO);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
+  };
+
+  const getEmitterDispatchByFlowId = async (selectedId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getEmitterDispatchByFlowId?emitterId=${emitterId}&flowId=${selectedId}&orgid=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setTableData(response.data.paramObjectsMap.EmitterDispatch);
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -517,23 +533,24 @@ export const EmitterDispatch = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {tableData.map((row, index) => (
-                        <tr key={row.id}>
-                          {/* <td>{index + 1}</td> */}
-                          <td>
-                            <input
-                              type="checkbox"
-                              checked={selectedRows.includes(index)}
-                              onChange={() => handleCheckboxChange(index)}
-                              style={checkboxStyle}
-                            />
-                          </td>
-                          <td>{row.binOutId}</td>
-                          <td>{row.date}</td>
-                          <td>{row.part}</td>
-                          <td>{row.kit}</td>
-                          <td>{row.qty}</td>
-                          {/* <td>
+                      {tableData && tableData.length > 0 ? (
+                        tableData.map((row, index) => (
+                          <tr key={row.id}>
+                            {/* <td>{index + 1}</td> */}
+                            <td>
+                              <input
+                                type="checkbox"
+                                checked={selectedRows.includes(index)}
+                                onChange={() => handleCheckboxChange(index)}
+                                style={checkboxStyle}
+                              />
+                            </td>
+                            <td>{row.BinOutId}</td>
+                            <td>{row.Date}</td>
+                            <td>{row.Part}</td>
+                            <td>{row.Kit}</td>
+                            <td>{row.Qty}</td>
+                            {/* <td>
                             <input
                               type="text"
                               value={row.outQty}
@@ -557,8 +574,17 @@ export const EmitterDispatch = () => {
                               </span>
                             )}
                           </td> */}
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9}>
+                            <NoRecordsFound
+                              message={"Emitter Dispatch Details Not Found"}
+                            />
+                          </td>
                         </tr>
-                      ))}
+                      )}
                     </tbody>
                   </table>
                 </div>
