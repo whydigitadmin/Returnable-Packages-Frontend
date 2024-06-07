@@ -32,6 +32,8 @@ function BinOutward() {
   const [destination, setDestination] = useState("");
   const [outwardKitQty, setOutwardKitQty] = useState("");
   const [avlQty, setAvlQty] = useState("");
+  const [partName, setPartName] = useState("");
+  const [partCode, setPartCode] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [emitterId, setEmitterId] = React.useState(
@@ -62,10 +64,6 @@ function BinOutward() {
       );
 
       if (response.status === 200) {
-        console.log(
-          "THE LISTVIEW DATA'S ARE:",
-          response.data.paramObjectsMap.binOutwardVO
-        );
         setListViewTableData(response.data.paramObjectsMap.binOutwardVO);
       } else {
         console.error("API Error:", response.data);
@@ -126,6 +124,7 @@ function BinOutward() {
     const kitQty = event.target.value;
     setKitNo(kitQty);
     getAvailableKitQtyByEmitter(kitQty);
+    getEmitterOutwardList(kitQty);
   };
 
   const getAddressById = async () => {
@@ -214,6 +213,22 @@ function BinOutward() {
     }
   };
 
+  const getEmitterOutwardList = async (kitQty) => {
+    try {
+      const response = await axios.get(
+        // `${process.env.REACT_APP_API_URL}/api/master/getAvailableKitQtyByEmitter?emitterId=${emitterId}&flowId=${flow}&kitId=${kitQty}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getEmitterOutwardList?flowId=${flow}&kitNo=${kitQty}`
+      );
+
+      if (response.status === 200) {
+        setPartName(response.data.paramObjectsMap.EmitterOutward[0].partName);
+        setPartCode(response.data.paramObjectsMap.EmitterOutward[0].partNo);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
+  };
+
   const handleKitQty = (event) => {
     const qty = event.target.value;
 
@@ -262,6 +277,8 @@ function BinOutward() {
         kitNo,
         orgId,
         orgin,
+        partCode,
+        partName,
         outwardKitQty,
         receiver,
       };
@@ -279,6 +296,7 @@ function BinOutward() {
           setOutwardKitQty("");
           setErrors("");
           getOutwardDocId();
+          getAllBinOutward();
           // toast.success("Outward Qty updated");
         })
         .catch((error) => {
@@ -335,6 +353,8 @@ function BinOutward() {
                         <th>Receiver</th>
                         <th>Flow</th>
                         <th>Kit</th>
+                        <th>Part Name</th>
+                        <th>Part No</th>
                         <th>Out Qty</th>
                       </tr>
                     </thead>
@@ -360,6 +380,8 @@ function BinOutward() {
                             <td>{row.receiver}</td>
                             <td>{row.flow}</td>
                             <td>{row.kitNo}</td>
+                            <td>{row.partName}</td>
+                            <td>{row.partCode}</td>
                             <td>{row.outwardKitQty}</td>
                             {/* <td>{row.balQty}</td> */}
                           </tr>

@@ -48,6 +48,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const [allottedDate, setAllottedDate] = useState("");
   const [allotmentNo, setAllotmentNo] = useState("");
   const [flow, setFlow] = useState("");
+  const [partName, setPartName] = useState("");
+  const [partCode, setPartCode] = useState("");
   const [reqNo, setReqNo] = useState("");
   const [reqDate, setReqDate] = useState("");
   const [kitCode, setKitCode] = useState("");
@@ -313,6 +315,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
         );
         setAllotmentNo(selectedValue);
         setFlow(response.data.paramObjectsMap.allotDetails[0].flow);
+        setPartName(response.data.paramObjectsMap.allotDetails[0].part);
+        setPartCode(response.data.paramObjectsMap.allotDetails[0].partCode);
         setReqNo(response.data.paramObjectsMap.allotDetails[0].reqNo);
         setReqDate(response.data.paramObjectsMap.allotDetails[0].reqDate);
 
@@ -436,6 +440,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
             allotDate: assetDetail.allotDate,
             flow: assetDetail.flow,
             kitCode: assetDetail.kitCode,
+            part: assetDetail.part,
+            partCode: assetDetail.partCode,
             allotedQty: assetDetail.allotedQty,
             binInwardId: assetDetail.binInwardId,
             reqKitQty: assetDetail.reqKitQty,
@@ -473,6 +479,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
             allotDate: assetDetail.allotDate,
             flow: assetDetail.flow,
             partName: assetDetail.partName,
+            partNo: assetDetail.partNo,
             kitCode: assetDetail.kitCode,
             reqKitQty: assetDetail.reqKitQty,
             allotKitQty: assetDetail.allotKitQty,
@@ -519,6 +526,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
         allotmentNo,
         flow,
         kitCode,
+        partName,
+        partCode,
         reqNo,
         binReqDate: reqDate,
         allotDate: allottedDate,
@@ -700,7 +709,10 @@ function EmitterInwardNew({ addInwardManifeast }) {
                         Flow
                       </th>
                       <th className="px-2 text-black border text-center">
-                        Part
+                        Part Name
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Part No
                       </th>
                       <th className="px-2 text-black border text-center">
                         Kit No
@@ -751,6 +763,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             {row.partName}
                           </td>
                           <td className="border px-2 py-2 text-center">
+                            {row.partNo}
+                          </td>
+                          <td className="border px-2 py-2 text-center">
                             {row.kitCode}
                           </td>
                           <td className="border px-2 py-2 text-center">
@@ -782,8 +797,10 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={9}>
-                          <NoRecordsFound message={"No Pending Inward"} />
+                        <td colSpan={10}>
+                          <NoRecordsFound
+                            message={"Pending Bin Inward not found"}
+                          />
                         </td>
                       </tr>
                     )}
@@ -1303,6 +1320,12 @@ function EmitterInwardNew({ addInwardManifeast }) {
                         Kit No
                       </th>
                       <th className="px-2 text-black border text-center">
+                        Part Name
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Part No
+                      </th>
+                      <th className="px-2 text-black border text-center">
                         Req Qty
                       </th>
                       <th className="px-2 text-black border text-center">
@@ -1365,6 +1388,12 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             >
                               {row.kitCode}
                             </span>
+                          </td>
+                          <td className="border px-2 py-2 text-center">
+                            {row.part}
+                          </td>
+                          <td className="border px-2 py-2 text-center">
+                            {row.partCode}
                           </td>
                           <td className="border px-2 py-2 text-center">
                             {row.reqKitQty}

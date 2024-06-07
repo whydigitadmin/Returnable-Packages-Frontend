@@ -34,34 +34,6 @@ import {
   TableRow,
 } from "@mui/material";
 
-const statsData = [
-  {
-    title: "Pending Requests",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "--",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "--",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
-
 export const BinAllotmentDetails = () => {
   const [addBinAllotment, setAddBinAllotment] = React.useState(false);
   const [editBinRequest, setEditBinRequest] = React.useState(false);
@@ -80,6 +52,7 @@ export const BinAllotmentDetails = () => {
   const [viewAllotedBins, setViewAllotedBins] = useState(false);
   const [allotedBinTableView, setAllotedBinTableView] = useState(false);
   const [visibleCard, setVisibleCard] = useState(false);
+  const [statsData, setStatsData] = useState([]);
 
   const handleViewAllotedBins = () => {
     setViewAllotedBins(true);
@@ -116,7 +89,6 @@ export const BinAllotmentDetails = () => {
 
   useEffect(() => {
     getAllBinRequest();
-    // console.log("selected row id is:", selectedRowId)
   }, [selectedRowId]);
 
   const getAllBinRequest = async () => {
@@ -126,11 +98,36 @@ export const BinAllotmentDetails = () => {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.issueRequestVO);
-        console.log(
-          "Response from API is:",
-          response.data.paramObjectsMap.issueRequestVO
-        );
+        const allRequests = response.data.paramObjectsMap.issueRequestVO;
+        setData(allRequests.reverse());
+        const totalRequests = allRequests.length;
+        setStatsData([
+          {
+            title: "Pending Requests",
+            value: totalRequests.toString(),
+            icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            // title: "Average Transaction",
+            title: "--",
+            value: "0",
+            icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -138,23 +135,9 @@ export const BinAllotmentDetails = () => {
   };
 
   const handleEditRow = (row) => {
-    console.log("setSelectedRowId", row.original.reqNo);
     setSelectedRowId(row.original.reqNo);
-    console.log("Real state of selected row id is:", selectedRowId);
     setEditBinRequest(true);
   };
-
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
 
   const columns = useMemo(
     () => [
@@ -178,6 +161,17 @@ export const BinAllotmentDetails = () => {
             </IconButton>
           </div>
         ),
+      },
+      {
+        accessorKey: "reqKitQty",
+        header: "Req QTY",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
       },
       {
         accessorKey: "reqNo",
@@ -216,7 +210,7 @@ export const BinAllotmentDetails = () => {
       {
         accessorKey: "flow",
         header: "Flow",
-        size: 50,
+        size: 250,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -235,31 +229,6 @@ export const BinAllotmentDetails = () => {
           align: "center",
         },
       },
-      {
-        accessorKey: "reqKitQty",
-        header: "Req QTY",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      // {
-      //   accessorKey: "active",
-      //   header: "Active",
-      //   size: 50,
-      //   muiTableHeadCellProps: {
-      //     align: "center",
-      //   },
-      //   muiTableBodyCellProps: {
-      //     align: "center",
-      //   },
-      //   Cell: ({ cell: { value } }) => (
-      //     <span>{value ? "Active" : "Active"}</span>
-      //   ),
-      // },
     ],
     []
   );
@@ -268,24 +237,6 @@ export const BinAllotmentDetails = () => {
     data,
     columns,
   });
-
-  // const getAllBinAllotmentData = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
-  //     );
-
-  //     if (response.status === 200) {
-  //       setAllotedBinData(response.data.paramObjectsMap.binAllotmentNewVO.reverse());
-  //       console.log(
-  //         "Response from API is:",
-  //         response.data.paramObjectsMap.binAllotmentNewVO
-  //       );
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
 
   const allotedTable = useMaterialReactTable({
     data,
