@@ -34,11 +34,31 @@ export const EmitterDispatch = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
+  const [listViewButton, setListViewButton] = useState(false);
+  const [ListViewTableData, setListViewTableData] = useState([
+    {
+      id: 1,
+      docId: "1000001",
+      docDate: "15-05-2024",
+      flow: "CH-PUN",
+      invNo: "50",
+      invDate: "14-05-2024",
+    },
+  ]);
+  const [savedRecordView, setSavedRecordView] = useState(false);
+  const [viewId, setViewId] = useState("");
 
   useEffect(() => {
     getAddressById();
-    getOutwardDocId();
-  }, []);
+
+    getAllDispatchDetail();
+    if (viewId) {
+      // getAllDispatchDetail();
+      setDocId("abc");
+    } else {
+      getOutwardDocId();
+    }
+  }, [viewId]);
 
   const getOutwardDocId = async () => {
     try {
@@ -54,6 +74,25 @@ export const EmitterDispatch = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const getAllDispatchDetail = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllDispatch?emitterId=${emitterId}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "THE GET ALL DISPATCH DATA IS:",
+          response.data.paramObjectsMap.dispatchVO
+        );
+        setListViewTableData(response.data.paramObjectsMap.dispatchVO);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
+    console.log("THE GET DISPATCH DETAILS BY ID IS CALLED");
+    setFlow(1000000042);
   };
 
   const handleSelectedFlow = (event) => {
@@ -133,23 +172,23 @@ export const EmitterDispatch = () => {
     };
     console.log("SELECTED CHECKBOX DATA'S", selectedRowData);
     console.log("DATA TO SAVE IS:", requestData);
-    if (Object.keys(errors).length === 0) {
-      axios
-        .post(
-          `${process.env.REACT_APP_API_URL}/api/emitter/createDispatch`,
-          requestData
-        )
-        .then((response) => {
-          handleNew();
-          toast.success("Dispatch Completed Successfully!");
-        })
-        .catch((error) => {
-          console.error("Error:", error);
-          toast.error("Network Error!");
-        });
-    } else {
-      setErrors(errors);
-    }
+    // if (Object.keys(errors).length === 0) {
+    //   axios
+    //     .post(
+    //       `${process.env.REACT_APP_API_URL}/api/emitter/createDispatch`,
+    //       requestData
+    //     )
+    //     .then((response) => {
+    //       handleNew();
+    //       toast.success("Dispatch Completed Successfully!");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error:", error);
+    //       toast.error("Network Error!");
+    //     });
+    // } else {
+    //   setErrors(errors);
+    // }
   };
 
   const checkboxStyle = {
@@ -180,225 +219,295 @@ export const EmitterDispatch = () => {
     );
   };
 
+  const handleListViewButtonChange = () => {
+    setListViewButton(!listViewButton);
+    setViewId("");
+    setFlow("");
+    setTableData("");
+  };
+
+  const handleSavedRecordView = (rowId) => {
+    console.log("THE SELECTED ROW ID IS", rowId);
+    setViewId(rowId);
+    setListViewButton(false);
+  };
+
   return (
     <>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-4">
-          <div className="row">
-            <div className="col-md-12">
-              <p className="text-2xl flex items-center">
-                <Link to="/app/welcomeemitter">
-                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                </Link>
-                <span>
-                  <strong className="ml-4">Emitter Dispatch</strong>
-                </span>
-              </p>
-            </div>
-          </div>
-
-          <div className="row mt-4">
-            {/* DOC ID FIELD */}
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Doc Id:
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                placeholder="Doc Id"
-                value={docId}
-                onChange={(e) => setDocId(e.target.value)}
-                disabled
-              />
-              {errors.docId && (
-                <span className="error-text mb-1">{errors.docId}</span>
-              )}
-            </div>
-            {/* DOC DATE FIELD */}
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Doc Date:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  value={docDate}
-                  onChange={(date) => setDocDate(date)}
-                  slotProps={{
-                    textField: { size: "small", clearable: true },
-                  }}
-                  format="DD/MM/YYYY"
-                  disabled
-                />
-              </LocalizationProvider>
-              {errors.docDate && (
-                <span className="error-text mb-1">{errors.docDate}</span>
-              )}
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Flow
-                  <FaStarOfLife className="must" />
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <select
-                className="form-select form-sz w-full mb-2"
-                value={flow}
-                onChange={handleSelectedFlow}
+          <div className="flex items-center">
+            <Link to="/app/welcomeemitter">
+              <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+            </Link>
+            <p className="text-2xl">
+              <strong className="ml-4">Emitter Dispatch</strong>
+            </p>
+            <div className="ml-auto">
+              {" "}
+              <button
+                type="button"
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={(e) => {
+                  handleListViewButtonChange();
+                }}
               >
-                <option value="">Select a Flow</option>
-                {flowData &&
-                  flowData.map((flowName) => (
-                    <option key={flowName.id} value={flowName.id}>
-                      {flowName.flow}
-                    </option>
-                  ))}
-              </select>
-              {errors.flow && (
-                <span className="error-text mb-1">{errors.flow}</span>
-              )}
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Invoice No
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="invoice"
-                maxLength={15}
-                value={invNo}
-                onChange={(e) => setInvNo(e.target.value)}
-              />
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Invoice Date:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  value={invDate}
-                  onChange={(date) =>
-                    setInvDate(dayjs(date).format("YYYY-MM-DD"))
-                  }
-                  slotProps={{
-                    textField: { size: "small" },
-                  }}
-                  format="DD/MM/YYYY"
-                />
-              </LocalizationProvider>
-              {errors.invDate && (
-                <span className="error-text mb-1">{errors.invDate}</span>
-              )}
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Dispatch Remarks:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="dispatch"
-                value={dispatchRemarks}
-                onChange={(e) => setDispatchRemarks(e.target.value)}
-              />
+                {listViewButton ? "Close" : "View"}
+              </button>
             </div>
           </div>
 
-          {tableView && (
+          {listViewButton ? (
             <>
-              <div className="row mt-2">
+              {/* LISTVIEW TABLE */}
+              <div className="row mt-4">
                 <div className="overflow-x-auto w-full ">
                   <table className="table table-hover w-full">
                     <thead>
                       <tr>
-                        <th className="text-center">
-                          <input
-                            type="checkbox"
-                            checked={selectAll}
-                            onChange={handleHeaderCheckboxChange}
-                            style={checkboxStyle}
-                          />
-                          <span className="ps-2">Actions</span>
-                        </th>
-                        <th className="text-center">Bin Outward Id</th>
-                        <th className="text-center">Outward Date</th>
-                        <th className="text-center">Part Name</th>
-                        <th className="text-center">Part No</th>
-                        <th className="text-center">Kit</th>
-                        <th className="text-center">Kit Qty</th>
+                        {/* <th>S.No</th> */}
+                        <th>DocId</th>
+                        <th>Date</th>
+                        <th>Flow</th>
+                        <th>Invoice No</th>
+                        <th>Invoice Date No</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {tableData && tableData.length > 0 ? (
-                        tableData.map((row, index) => (
-                          <tr key={row.id}>
-                            {/* <td>{index + 1}</td> */}
-                            <td className="text-center">
-                              <input
-                                type="checkbox"
-                                checked={selectedRows.includes(index)}
-                                onChange={() =>
-                                  handleCheckboxChange(index, row)
-                                }
-                                style={checkboxStyle}
-                              />
-                            </td>
-                            <td className="text-center">{row.binOutId}</td>
-                            <td className="text-center">{row.binOutDate}</td>
-                            <td className="text-center">{row.partName}</td>
-                            <td className="text-center">{row.partNo}</td>
-                            <td className="text-center">{row.kitNo}</td>
-                            <td className="text-center">{row.qty}</td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={9}>
-                            <NoRecordsFound
-                              message={"Emitter Dispatch Details Not Found"}
-                            />
+                      {ListViewTableData.map((row, index) => (
+                        <tr key={row.id}>
+                          {/* <td>{index + 1}</td> */}
+                          <td>
+                            <a
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleSavedRecordView(row.docId);
+                              }}
+                              style={{ cursor: "pointer", color: "blue" }}
+                            >
+                              {row.docId}
+                            </a>
                           </td>
+                          <td>{row.docDate}</td>
+                          <td>{row.flow}</td>
+                          <td>{row.invoiceNo}</td>
+                          <td>{row.invoiceDate}</td>
                         </tr>
-                      )}
+                      ))}
                     </tbody>
                   </table>
                 </div>
               </div>
-              {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
+            </>
+          ) : (
+            <>
+              <div className="row mt-4">
+                {/* DOC ID FIELD */}
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Doc Id:
+                      {/* <FaStarOfLife className="must" /> */}
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    placeholder="Doc Id"
+                    value={docId}
+                    onChange={(e) => setDocId(e.target.value)}
+                    disabled
+                  />
+                  {errors.docId && (
+                    <span className="error-text mb-1">{errors.docId}</span>
+                  )}
+                </div>
+                {/* DOC DATE FIELD */}
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Doc Date:
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      value={docDate}
+                      onChange={(date) => setDocDate(date)}
+                      slotProps={{
+                        textField: { size: "small", clearable: true },
+                      }}
+                      format="DD/MM/YYYY"
+                      disabled
+                    />
+                  </LocalizationProvider>
+                  {errors.docDate && (
+                    <span className="error-text mb-1">{errors.docDate}</span>
+                  )}
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Flow
+                      <FaStarOfLife className="must" />
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <select
+                    className="form-select form-sz w-full mb-2"
+                    value={flow}
+                    onChange={handleSelectedFlow}
+                  >
+                    <option value="">Select a Flow</option>
+                    {flowData &&
+                      flowData.map((flowName) => (
+                        <option key={flowName.id} value={flowName.id}>
+                          {flowName.flow}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.flow && (
+                    <span className="error-text mb-1">{errors.flow}</span>
+                  )}
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Invoice No
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    name="invoice"
+                    maxLength={15}
+                    value={invNo}
+                    onChange={(e) => setInvNo(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Invoice Date:
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      value={invDate}
+                      onChange={(date) =>
+                        setInvDate(dayjs(date).format("YYYY-MM-DD"))
+                      }
+                      slotProps={{
+                        textField: { size: "small" },
+                      }}
+                      format="DD/MM/YYYY"
+                    />
+                  </LocalizationProvider>
+                  {errors.invDate && (
+                    <span className="error-text mb-1">{errors.invDate}</span>
+                  )}
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Dispatch Remarks:
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    name="dispatch"
+                    value={dispatchRemarks}
+                    onChange={(e) => setDispatchRemarks(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              {tableView && (
+                <>
+                  <div className="row mt-2">
+                    <div className="overflow-x-auto w-full ">
+                      <table className="table table-hover w-full">
+                        <thead>
+                          <tr>
+                            <th className="text-center">
+                              <input
+                                type="checkbox"
+                                checked={selectAll}
+                                onChange={handleHeaderCheckboxChange}
+                                style={checkboxStyle}
+                              />
+                              <span className="ps-2">Actions</span>
+                            </th>
+                            <th className="text-center">Bin Outward Id</th>
+                            <th className="text-center">Outward Date</th>
+                            <th className="text-center">Part Name</th>
+                            <th className="text-center">Part No</th>
+                            <th className="text-center">Kit</th>
+                            <th className="text-center">Kit Qty</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {tableData && tableData.length > 0 ? (
+                            tableData.map((row, index) => (
+                              <tr key={row.id}>
+                                {/* <td>{index + 1}</td> */}
+                                <td className="text-center">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedRows.includes(index)}
+                                    onChange={() =>
+                                      handleCheckboxChange(index, row)
+                                    }
+                                    style={checkboxStyle}
+                                  />
+                                </td>
+                                <td className="text-center">{row.binOutId}</td>
+                                <td className="text-center">
+                                  {row.binOutDate}
+                                </td>
+                                <td className="text-center">{row.partName}</td>
+                                <td className="text-center">{row.partNo}</td>
+                                <td className="text-center">{row.kitNo}</td>
+                                <td className="text-center">{row.qty}</td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={9}>
+                                <NoRecordsFound
+                                  message={"Emitter Dispatch Details Not Found"}
+                                />
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
+                </>
+              )}
+
+              <div className="mt-2">
+                <button
+                  type="button"
+                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  onClick={handleSave}
+                >
+                  Save
+                </button>
+              </div>
             </>
           )}
-
-          <div className="mt-2">
-            <button
-              type="button"
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
         </div>
         <ToastContainer />
       </div>
