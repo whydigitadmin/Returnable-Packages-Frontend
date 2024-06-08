@@ -57,6 +57,7 @@ const BinInwardOem = ({}) => {
 
   useEffect(() => {
     getFlowByUserId();
+    getInwardDocId();
     if (listViewButton) {
       getAllInwardedDetailsByOrgId();
     }
@@ -90,6 +91,25 @@ const BinInwardOem = ({}) => {
           response.data.paramObjectsMap.oemBinInwardVOs
         );
         setListViewTableData(response.data.paramObjectsMap.oemBinInwardVOs);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getInwardDocId = async (doc) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getDocIdByOemBinInward`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.oemBinOutwardDocId);
+        // Handle success
+      } else {
+        // Handle error
+        console.error("API Error:", response.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -531,6 +551,7 @@ const BinInwardOem = ({}) => {
                                   /> */}
                                   <input
                                     type="text"
+                                    style={{ width: 40 }}
                                     value={row.recKitQty}
                                     onChange={(e) => {
                                       setTableData((prev) =>

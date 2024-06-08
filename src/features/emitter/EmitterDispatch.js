@@ -56,14 +56,14 @@ export const EmitterDispatch = () => {
       // getAllDispatchDetail();
       setDocId("abc");
     } else {
-      getOutwardDocId();
+      getDocIdByDispatch();
     }
   }, [viewId]);
 
-  const getOutwardDocId = async () => {
+  const getDocIdByDispatch = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByBinOutward`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByDispatch`
       );
 
       if (response.status === 200) {
@@ -160,7 +160,7 @@ export const EmitterDispatch = () => {
       qty: row.qty,
     }));
     const requestData = {
-      docId: "",
+      docId: docId,
       emitterId: emitterId,
       flow: flow,
       invoiceDate: invDate,
@@ -172,23 +172,23 @@ export const EmitterDispatch = () => {
     };
     console.log("SELECTED CHECKBOX DATA'S", selectedRowData);
     console.log("DATA TO SAVE IS:", requestData);
-    // if (Object.keys(errors).length === 0) {
-    //   axios
-    //     .post(
-    //       `${process.env.REACT_APP_API_URL}/api/emitter/createDispatch`,
-    //       requestData
-    //     )
-    //     .then((response) => {
-    //       handleNew();
-    //       toast.success("Dispatch Completed Successfully!");
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error:", error);
-    //       toast.error("Network Error!");
-    //     });
-    // } else {
-    //   setErrors(errors);
-    // }
+    if (Object.keys(errors).length === 0) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/emitter/createDispatch`,
+          requestData
+        )
+        .then((response) => {
+          handleNew();
+          toast.success("Dispatch Completed Successfully!");
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error("Network Error!");
+        });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const checkboxStyle = {

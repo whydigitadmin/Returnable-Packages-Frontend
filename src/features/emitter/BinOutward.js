@@ -273,7 +273,7 @@ function BinOutward() {
         docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
         emitter: displayName,
         emitterId,
-        flow,
+        flowid: flow,
         kitNo,
         orgId,
         orgin,

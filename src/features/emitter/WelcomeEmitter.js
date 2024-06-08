@@ -268,7 +268,8 @@ function WelcomeEmitter() {
                 </div>
 
                 <div className="col-lg-4 col-md-6 col-sm-4">
-                  <Link to="/app/StockAdjustment">
+                  {/* <Link to="/app/StockAdjustment"> */}
+                  <Link to="#">
                     <div
                       className="card bg-base-100 shadow-xl mb-4 p-3 mt-3"
                       // style={{ width: "14rem" }}

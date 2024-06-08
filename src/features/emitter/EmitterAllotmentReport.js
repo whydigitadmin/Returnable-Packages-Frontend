@@ -173,7 +173,7 @@ function EmitterAllotmentReport() {
       {
         accessorKey: "docId",
         header: "Allotment No",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -184,7 +184,7 @@ function EmitterAllotmentReport() {
       {
         accessorKey: "docDate",
         header: "Alloted Date",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -195,7 +195,7 @@ function EmitterAllotmentReport() {
       {
         accessorKey: "binReqNo",
         header: "Req No",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -206,7 +206,7 @@ function EmitterAllotmentReport() {
       {
         accessorKey: "binReqDate",
         header: "Req Date",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -230,7 +230,7 @@ function EmitterAllotmentReport() {
       {
         accessorKey: "flow",
         header: "Flow",
-        size: 50,
+        size: 250,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -252,7 +252,7 @@ function EmitterAllotmentReport() {
       {
         accessorKey: "reqKitQty",
         header: "Req QTY",
-        size: 50,
+        size: 20,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -263,7 +263,7 @@ function EmitterAllotmentReport() {
       {
         accessorKey: "allotkKitQty",
         header: "Alloted QTY",
-        size: 50,
+        size: 20,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -338,24 +338,24 @@ function EmitterAllotmentReport() {
 
           <div className="row mt-4">
             {/* DATE FIELD */}
-            <div className="col-lg-2 col-md-4">
+            <div className="col-lg-2 col-md-6">
               <label className="label">
                 <span
                   className={
                     "label-text label-font-size text-base-content d-flex flex-row"
                   }
                 >
-                  Select Date
+                  Select Date :
                   <FaStarOfLife className="must" />
                 </span>
               </label>
             </div>
-            <div className="col-lg-2 col-md-4">
+            <div className="col-lg-3 col-md-6">
               <Datepicker
-                containerClassName="datesize"
+                // containerClassName="datesize"
                 value={dateValue}
                 theme={"light"}
-                inputClassName="input input-bordered datesize p-3"
+                inputClassName="input input-bordered w-full p-3"
                 popoverDirection={"down"}
                 toggleClassName="invisible"
                 onChange={handleDatePickerValueChange}
@@ -364,25 +364,25 @@ function EmitterAllotmentReport() {
               />
             </div>
             {/* KIT FIELD */}
-            <div className="col-lg-2 col-md-4">
+            <div className="col-lg-1 col-md-6">
               <label className="label">
                 <span
                   className={
                     "label-text label-font-size text-base-content d-flex flex-row"
                   }
                 >
-                  Kit
+                  Kit :
                 </span>
               </label>
             </div>
-            <div className="col-lg-2 col-md-4">
+            <div className="col-lg-2 col-md-6">
               <select
                 className="form-select form-sz w-full mb-2"
                 onChange={(e) => setKit(e.target.value)}
                 value={kit}
               >
                 <option value="" disabled>
-                  Select Kit
+                  Select a Kit
                 </option>
                 {kitList.length > 0 &&
                   kitList.map((list) => (
@@ -393,25 +393,25 @@ function EmitterAllotmentReport() {
               </select>
             </div>
             {/* FLOW FIELD */}
-            <div className="col-lg-2 col-md-4">
+            <div className="col-lg-1 col-md-6">
               <label className="label">
                 <span
                   className={
                     "label-text label-font-size text-base-content d-flex flex-row"
                   }
                 >
-                  Flow
+                  Flow :
                 </span>
               </label>
             </div>
-            <div className="col-lg-2 col-md-4">
+            <div className="col-lg-3 col-md-6">
               <select
                 className="form-select form-sz w-full mb-2"
                 onChange={(e) => setFlow(e.target.value)}
                 value={flow}
               >
                 <option value="" disabled>
-                  Select Flow
+                  Select a Flow
                 </option>
                 {flowList.length > 0 &&
                   flowList.map((list) => (

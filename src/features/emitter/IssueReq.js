@@ -82,7 +82,7 @@ function IssueReq() {
   const [value, setValue] = React.useState(0);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [emitterId, setEmitterId] = useState();
+  const [emitterId, setEmitterId] = useState(localStorage.getItem("emitterId"));
   const qtyInputRef = useRef(null);
   const [duplicateKitError, setDuplicateKitError] = useState(false);
   const [duplicatePartError, setDuplicatePartError] = useState(false);
@@ -95,6 +95,9 @@ function IssueReq() {
   //   setMode("KIT");
   //   setValue(0);
   // }, []);
+  useEffect(() => {
+    getIssueRequest();
+  }, []);
 
   useEffect(() => {
     getDisplayName();
@@ -128,7 +131,7 @@ function IssueReq() {
       );
 
       if (response.status === 200) {
-        setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
+        // setEmitterId(response.data.paramObjectsMap.userVO.customersVO.id);
 
         getAddressById(response.data.paramObjectsMap.userVO.customersVO.id);
       }
