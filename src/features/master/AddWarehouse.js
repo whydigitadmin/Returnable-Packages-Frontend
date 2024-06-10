@@ -92,18 +92,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [id, setId] = useState("");
 
-  const VisuallyHiddenInput = styled("input")({
-    clip: "rect(0 0 0 0)",
-    clipPath: "inset(50%)",
-    height: 1,
-    overflow: "hidden",
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    whiteSpace: "nowrap",
-    width: 1,
-  });
-
   useEffect(() => {
     getStockBranch();
     {
@@ -117,12 +105,24 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     getCityData();
   }, [country, state]);
 
+  useEffect(() => {
+    const generateFlowName = () => {
+      if (locationName && unit) {
+        const lName = locationName.toUpperCase();
+        const unitName = unit.toUpperCase();
+        const generatedName = `${lName}-${unitName}`;
+        setName(generatedName);
+      }
+    };
+
+    generateFlowName();
+  }, [locationName, unit]);
+
   const getCountryData = async () => {
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
       );
-      console.log("API Response:", response);
 
       if (response.status === 200) {
         setCountryData(response.data.paramObjectsMap.countryVO);
@@ -139,8 +139,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?country=${country}&orgId=${orgId}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setStateData(response.data.paramObjectsMap.stateVO);
       } else {
@@ -156,8 +154,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/basicMaster/city/getByStateAndCountry?country=${country}&orgId=${orgId}&state=${state}`
       );
-      console.log("API Response:", response);
-
       if (response.status === 200) {
         setCityData(response.data.paramObjectsMap.cityVO);
       } else {
@@ -173,7 +169,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       const response = await Axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/ActivestockbranchByOrgId?orgId=${orgId}`
       );
-      console.log("API Response:", response);
 
       if (response.status === 200) {
         const branchData = response.data.paramObjectsMap.branch;
@@ -195,10 +190,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       );
 
       if (response.status === 200) {
-        console.log(
-          "Edit User Details",
-          response.data.paramObjectsMap.warehouse
-        );
         setId(response.data.paramObjectsMap.warehouse.warehouseId);
         setLocationName(response.data.paramObjectsMap.warehouse.locationName);
         setUnit(response.data.paramObjectsMap.warehouse.unit);
@@ -262,9 +253,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
   // SAVE WAREHOUSE
   const handleWarehouse = () => {
     const errors = {};
-    if (!name) {
-      errors.name = "Warehouse Name is required";
-    }
+    // if (!name) {
+    //   errors.name = "Warehouse Name is required";
+    // }
     if (!locationName) {
       errors.locationName = "Location Name is required";
     }
@@ -349,9 +340,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
   // Update
   const handleUpdateWarehouse = () => {
     const errors = {};
-    if (!name) {
-      errors.name = "Warehouse Name is required";
-    }
+    // if (!name) {
+    //   errors.name = "Warehouse Name is required";
+    // }
     if (!locationName) {
       errors.locationName = "Location Name is required";
     }
@@ -534,7 +525,8 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               onInput={codeFieldValidation}
               name="name"
               value={name}
-              disabled={editWarehouseId ? true : false}
+              disabled
+              // disabled={editWarehouseId ? true : false}
               onChange={handleInputChange}
             />
             {errors.name && <span className="error-text">{errors.name}</span>}

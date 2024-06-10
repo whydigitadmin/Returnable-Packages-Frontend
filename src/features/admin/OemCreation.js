@@ -87,7 +87,6 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [userName, setUserName] = React.useState(
     localStorage.getItem("userName")
   );
-  const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
   const [oemData, setOemData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
@@ -174,7 +173,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       );
       if (response.status === 200) {
         setFlow(response.data.paramObjectsMap.flowVO);
-        setSelectedFlow(null); // Reset selected flow
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -277,7 +275,6 @@ function OemCreation({ addEmitter, oemEditId }) {
     setFlow([]);
     setEmitterCustomersVO([]);
     setOrgId(localStorage.getItem("orgId"));
-    setSelectedFlow(null);
     setSelectedFlows([]);
     // notify();
   };
@@ -285,6 +282,12 @@ function OemCreation({ addEmitter, oemEditId }) {
   // OEM CREATE
   const handleOemCreation = () => {
     const errors = {};
+    if (!emitter) {
+      errors.emitter = "Emitter is required";
+    }
+    if (selectedFlows.length === 0) {
+      errors.selectedFlows = "Please select atleast one flow";
+    }
     if (!firstName) {
       errors.firstName = "First Name is required";
     }
@@ -387,6 +390,12 @@ function OemCreation({ addEmitter, oemEditId }) {
   const handleOemUpdate = () => {
     console.log("ok");
     const errors = {};
+    if (!emitter) {
+      errors.emitter = "Emitter is required";
+    }
+    if (!selectedFlows.length === 0) {
+      errors.selectedFlows = "Please select atleast one flow";
+    }
     if (!firstName) {
       errors.firstName = "First Name is required";
     }
@@ -418,13 +427,11 @@ function OemCreation({ addEmitter, oemEditId }) {
     } else if (pincode.length < 6) {
       errors.pincode = "Pincode must be 6 Digit";
     }
-    // if (!warehouse) {
-    //   errors.warehouse = "Warehouse is required";
-    // }
     const userPayload = {
       accessRightsRoleId: 2,
       // accessWarehouse: warehouse,
       // accessaddId: 0,
+      accessFlowId: selectedFlows,
       active: active,
       createdBy: userName,
       email: email,
@@ -445,8 +452,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       userId: oemEditId,
     };
 
-    console.log("OEM Payload:", userPayload);
-
     const token = localStorage.getItem("token");
     let headers = {
       "Content-Type": "application/json",
@@ -458,10 +463,6 @@ function OemCreation({ addEmitter, oemEditId }) {
       };
     }
 
-    const hashedPassword = encryptPassword(password);
-
-    console.log("Update Payload is:", userPayload);
-
     if (Object.keys(errors).length === 0) {
       axios
         .put(
@@ -470,7 +471,6 @@ function OemCreation({ addEmitter, oemEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("OEM Updated successfully!", response.data);
           setErrors("");
           toast.success("OEM Updated successfully!", {
             autoClose: 2000,
@@ -481,20 +481,14 @@ function OemCreation({ addEmitter, oemEditId }) {
           }, 3000);
         })
         .catch((error) => {
-          console.error("Error update OEM:", error.message);
           toast.error("Failed to update OEM. Please try again.");
         });
     } else {
       setErrors(errors);
     }
   };
-
   const handleFlowSelection = (flow, isChecked) => {
-    console.log("Clicked:", flow, isChecked);
-
     setSelectedFlows((prevFlow) => {
-      console.log("Previous flow State:", prevFlow);
-
       if (!Array.isArray(prevFlow)) {
         console.error("flow state is not an array:", prevFlow);
         return prevFlow;
@@ -570,7 +564,6 @@ function OemCreation({ addEmitter, oemEditId }) {
   };
   const handleSwitchChange = (event) => {
     setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
   };
 
   return (
@@ -612,6 +605,9 @@ function OemCreation({ addEmitter, oemEditId }) {
                   </option>
                 ))}
             </select>
+            {errors.emitter && (
+              <span className="error-text">{errors.emitter}</span>
+            )}
           </div>
 
           <div className="col-lg-3 col-md-6 mb-4">
@@ -626,13 +622,18 @@ function OemCreation({ addEmitter, oemEditId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-4">
-            <button
-              type="button"
-              onClick={handleShippingClickOpen}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Select Flow
-            </button>
+            <div className="d-flex flex-column">
+              <button
+                type="button"
+                onClick={handleShippingClickOpen}
+                className="bg-blue inline-block rounded bg-primary w-fit h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Select Flow
+              </button>
+              {errors.selectedFlows && (
+                <span className="error-text mt-2">{errors.selectedFlows}</span>
+              )}
+            </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -984,6 +985,9 @@ function OemCreation({ addEmitter, oemEditId }) {
             </div>
           </div>
         </DialogContent>
+        <DialogActions>
+          <Button onClick={handleShippingClickClose}>OK</Button>
+        </DialogActions>
       </Dialog>
 
       {/* CLOSE CONFIRMATION MODAL */}

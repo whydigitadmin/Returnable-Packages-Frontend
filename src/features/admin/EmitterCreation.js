@@ -87,7 +87,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   const [userName, setUserName] = React.useState(
     localStorage.getItem("userName")
   );
-  const [selectedFlow, setSelectedFlow] = useState(null);
   const [selectedFlows, setSelectedFlows] = useState([]);
   const [emitterData, setEmitterData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
@@ -109,7 +108,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
 
   const handleSwitchChange = (event) => {
     setActive(event.target.checked);
-    console.log("THE CHECKED STATUS IS:", event.target.checked);
   };
 
   const getEmitterFlow = async (emitter) => {
@@ -125,7 +123,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       );
       if (response.status === 200) {
         setFlow(response.data.paramObjectsMap.flowVO);
-        setSelectedFlow(null); // Reset selected flow
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -227,12 +224,17 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     setFlow([]);
     setEmitterCustomersVO([]);
     setOrgId(localStorage.getItem("orgId"));
-    setSelectedFlow(null);
     setSelectedFlows([]);
   };
 
   const handleUserCreation = () => {
     const errors = {};
+    if (!emitter) {
+      errors.emitter = "Emitter is required";
+    }
+    if (selectedFlows.length === 0) {
+      errors.selectedFlows = "Please select atleast one flow";
+    }
     if (!firstName) {
       errors.firstName = "First Name is required";
     }
@@ -290,19 +292,19 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       emitterId: emitter,
       createdBy: userName,
       firstName: firstName,
-      orgId: orgId, // You may need to provide a default value
+      orgId: orgId,
       role: role,
       pno: phone,
       userAddressDTO: {
         address1: address,
-        address2: "", // You may need to provide a default value
+        address2: "",
         city: city,
         country: country,
         location: city,
         pin: pincode,
         state: state,
       },
-      userName: email || "", // You may need to provide a default value
+      userName: email || "",
     };
 
     const userDataWithHashedPassword = {
@@ -318,7 +320,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("Emitter saved successfully!", response.data);
           toast.success("Emitter saved successfully!", {
             autoClose: 2000,
             theme: "colored",
@@ -335,23 +336,16 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   };
 
   const handleFlowSelection = (flow, isChecked) => {
-    console.log("Clicked:", flow, isChecked);
-
     setSelectedFlows((prevFlow) => {
-      console.log("Previous flow State:", prevFlow);
-
       if (!Array.isArray(prevFlow)) {
-        console.error("flow state is not an array:", prevFlow);
         return prevFlow;
       }
 
       if (isChecked) {
         const updatedFlow = [...prevFlow, flow];
-        console.log("Updated flow State (Added):", updatedFlow);
         return updatedFlow;
       } else {
         const updatedFlow = prevFlow.filter((id) => id !== flow);
-        console.log("Updated flow State (Removed):", updatedFlow);
         return updatedFlow;
       }
     });
@@ -440,9 +434,14 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     }
   };
 
-  //UPDATE EMITTER
   const handleEmitterUpdate = () => {
     const errors = {};
+    if (!emitter) {
+      errors.emitter = "Emitter is required";
+    }
+    if (selectedFlows.length === 0) {
+      errors.selectedFlows = "Please select atleast one flow";
+    }
     if (!firstName) {
       errors.firstName = "First Name is required";
     }
@@ -478,9 +477,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     } else if (pincode.length < 6) {
       errors.pincode = "Pincode must be 6 Digit";
     }
-    // if (!warehouse) {
-    //   errors.warehouse = "Warehouse is required";
-    // }
     const userPayload = {
       accessRightsRoleId: 2,
       // accessWarehouse: warehouse,
@@ -517,10 +513,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       };
     }
 
-    const hashedPassword = encryptPassword(password);
-
-    console.log("Update Payload is:", userPayload);
-
     if (Object.keys(errors).length === 0) {
       axios
         .put(
@@ -529,7 +521,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           { headers }
         )
         .then((response) => {
-          console.log("Emitter Updated successfully!", response.data);
           setErrors("");
           toast.success("Emitter updated successfully!", {
             autoClose: 2000,
@@ -540,7 +531,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           }, 3000);
         })
         .catch((error) => {
-          console.error("Error update emitter:", error.message);
           toast.error("Failed to update emitter. Please try again.");
         });
     } else {
@@ -615,6 +605,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
                   </option>
                 ))}
             </select>
+            {errors.emitter && (
+              <span className="error-text">{errors.emitter}</span>
+            )}
           </div>
 
           <div className="col-lg-3 col-md-6 mb-4">
@@ -629,13 +622,18 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-4">
-            <button
-              type="button"
-              onClick={handleShippingClickOpen}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Select Flow
-            </button>
+            <div className="d-flex flex-column">
+              <button
+                type="button"
+                onClick={handleShippingClickOpen}
+                className="bg-blue inline-block rounded bg-primary w-fit h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Select Flow
+              </button>
+              {errors.selectedFlows && (
+                <span className="error-text mt-2">{errors.selectedFlows}</span>
+              )}
+            </div>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -991,7 +989,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
 
         <DialogActions>
           <Button onClick={handleShippingClickClose}>OK</Button>
-          {selectedFlow && <Button variant="contained">Submit</Button>}
         </DialogActions>
       </Dialog>
 
