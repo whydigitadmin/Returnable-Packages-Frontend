@@ -27,33 +27,19 @@ const BinInwardOem = ({}) => {
   const [invDate, setInvDate] = useState(null);
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
-  const [allotedId, setAllotedId] = useState([]);
+  const [allotedId, setAllotedId] = useState("");
   const [tableView, setTableView] = useState(false);
   const [loginUserId, setLoginUserId] = useState(
     localStorage.getItem("userId")
   );
-  const [loginUserName, setLoginUserName] = useState(
-    localStorage.getItem("userName")
-  );
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-
   const [errors, setErrors] = useState({});
   const [flowList, setFlowList] = useState([]);
   const [emitterOutwardList, setEmitterOutwardList] = useState([]);
-
   const [tableData, setTableData] = useState([]);
   const [assetList, setAssetList] = useState([]);
-
-  const [ListViewTableData, setListViewTableData] = useState([
-    // {
-    //   id: 1,
-    //   inwardId: "1000001",
-    //   date: "15-05-2024",
-    //   kitNo: "PLS1220/0524/1002	",
-    //   allotedQty: "50",
-    //   recKitQty: "50",
-    // },
-  ]);
+  const [ListViewTableData, setListViewTableData] = useState([]);
 
   useEffect(() => {
     getFlowByUserId();
@@ -69,10 +55,6 @@ const BinInwardOem = ({}) => {
         `${process.env.REACT_APP_API_URL}/api/oem/getFlowByUserId?orgId=${orgId}&userId=${loginUserId}`
       );
       if (response.status === 200) {
-        console.log(
-          "FLOW LIST FROM API's ARE",
-          response.data.paramObjectsMap.flowDetails.map((l) => l.flow)
-        );
         setFlowList(response.data.paramObjectsMap.flowDetails);
       }
     } catch (error) {
@@ -86,10 +68,6 @@ const BinInwardOem = ({}) => {
         `${process.env.REACT_APP_API_URL}/api/oem/getAllOemBinInward?orgId=${orgId}`
       );
       if (response.status === 200) {
-        console.log(
-          "FLOW LIST FROM API's ARE",
-          response.data.paramObjectsMap.oemBinInwardVOs
-        );
         setListViewTableData(response.data.paramObjectsMap.oemBinInwardVOs);
       }
     } catch (error) {
@@ -106,9 +84,7 @@ const BinInwardOem = ({}) => {
 
       if (response.status === 200) {
         setDocId(response.data.paramObjectsMap.oemBinOutwardDocId);
-        // Handle success
       } else {
-        // Handle error
         console.error("API Error:", response.data);
       }
     } catch (error) {
@@ -135,46 +111,43 @@ const BinInwardOem = ({}) => {
 
   const handleAllotedIdChange = (e) => {
     setAllotedId(e.target.value);
-
-    const selectedAllotData = emitterOutwardList.filter(
-      (l) => l.docId === e.target.value
-    );
-    console.log("THE SELECTED ALLOTED ID IS:", selectedAllotData);
-
-    setTableView(true);
-
-    if (Array.isArray(selectedAllotData) && selectedAllotData.length > 0) {
-      setTableData(
-        selectedAllotData.map((l) => ({
-          kitNo: l.kitNo,
-          allotedId: l.docId,
-          allotedDate: l.docDate,
-          allotedKitQty: l.outwardKitQty,
-          partNo: l.partNo,
-          partName: l.partName,
-        }))
-      );
-    } else {
-      setTableData([]);
-    }
+    getBininwardListByDocId(e.target.value);
   };
 
   const getEmitterOutwardDetailsByFlowId = async (selectedFlowId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getOutwardDetailsByFlow?flowId=${selectedFlowId}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByFlowOnEmitterDispatchScreen?FlowId=${selectedFlowId}`
       );
       if (response.status === 200) {
-        console.log(
-          "FLOW LIST FROM API's ARE",
-          response.data.paramObjectsMap.outwardDe
-        );
-        console.log(
-          "THE EMITTEROUTWARDLIST IS:",
-          response.data.paramObjectsMap.outwardDe
-        );
+        setEmitterOutwardList(response.data.paramObjectsMap.EmitterOutward);
+      }
+    } catch (error) {}
+  };
 
-        setEmitterOutwardList(response.data.paramObjectsMap.outwardDe);
+  const getBininwardListByDocId = async (DocId) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getBininwardListByDocId?DocId=${DocId}`
+      );
+      if (response.status === 200) {
+        const selectedAllotData = response.data.paramObjectsMap.EmitterOutward;
+        setTableView(true);
+
+        if (Array.isArray(selectedAllotData) && selectedAllotData.length > 0) {
+          setTableData(
+            selectedAllotData.map((l) => ({
+              kitNo: l.kitNo,
+              allotedId: l.allotedId,
+              allotedDate: l.allotedDate,
+              allotedKitQty: l.reqKitQty,
+              partNo: l.partNo,
+              partName: l.partName,
+            }))
+          );
+        } else {
+          setTableData([]);
+        }
       }
     } catch (error) {}
   };
@@ -220,35 +193,33 @@ const BinInwardOem = ({}) => {
     if (!flow.trim()) {
       errors.flow = "Flow is required";
     }
+    if (!allotedId) {
+      errors.allotedId = "Dispatch is required";
+    }
     if (!invNo.trim()) {
       errors.invNo = "Invoice No is required";
     }
-    // if (!invDate.trim()) {
-    //   errors.invDate = "Flow is required";
-    // }
-    // tableData.forEach((row) => {
-    //   if (!row.recKitQty.trim()) {
-    //     errors.recKitQty = "Asset is required";
-    //   }
-    // });
 
     const formData = {
       docDate: docDate.format("YYYY-MM-DD"),
-      flow: flow,
-      outwardDocId: allotedId,
-      grnNo: invNo,
-      grnDate: invDate,
-      kitNo: tableData.map((row) => row.kitNo).join(", "),
-      recievedKitQty: tableData.map((row) => row.recKitQty).join(", "),
-      oemBinInwardDetails: assetList.map((row) => ({
-        asset: row.assetName,
-        assetCode: row.assetCode,
-        recievedQty: row.qty,
+      flowId: flow,
+      docId: docId,
+      invoiceNo: invNo,
+      invoiceDate: invDate,
+      dispatchId: allotedId,
+      oemBinInwardDetails: tableData.map((row) => ({
+        receivedKitQty: row.receivedKitQty,
+        allotedQty: row.allotedKitQty,
+        kitNo: row.kitNo,
+        outwardDocDate: row.allotedDate,
+        outwardDocId: row.allotedId,
+        partName: row.partName,
+        partNo: row.partNo,
       })),
       orgId: orgId,
-      createdBy: loginUserName,
+      createdBy: userName,
     };
-    console.log("THE DATA TO SAVE IS:", formData);
+    console.log("THE DATA TO SAVE IS oemBinInward:", formData);
     const token = localStorage.getItem("token");
     let headers = {
       "Content-Type": "application/json",
@@ -280,8 +251,6 @@ const BinInwardOem = ({}) => {
               autoClose: 2000,
               theme: "colored",
             });
-            // handleNew();
-            // addUser(false);
           }
         })
         .catch((error) => {
@@ -432,7 +401,7 @@ const BinInwardOem = ({}) => {
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Alloted Id:
+                      Dispatch Id:
                       <FaStarOfLife className="must" />
                     </span>
                   </label>
@@ -446,26 +415,27 @@ const BinInwardOem = ({}) => {
                     value={allotedId}
                   >
                     <option value="" selected>
-                      Select a Doc Id
+                      Select a DispatchId
                     </option>
                     {emitterOutwardList.length > 0 &&
                       emitterOutwardList.map((outwardList, index) => (
                         <option
                           key={outwardList.index}
-                          value={outwardList.docId}
+                          value={outwardList.DocId}
                         >
-                          {outwardList.docId}
+                          {outwardList.DocId}
                         </option>
                       ))}
                   </select>
-                  {errors.flow && (
-                    <span className="error-text">{errors.flow}</span>
+                  {errors.allotedId && (
+                    <span className="error-text">{errors.allotedId}</span>
                   )}
                 </div>
                 <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       Invoice No:
+                      <FaStarOfLife className="must" />
                     </span>
                   </label>
                 </div>
@@ -531,43 +501,20 @@ const BinInwardOem = ({}) => {
                                 <td>{row.kitNo}</td>
                                 <td>{row.allotedKitQty}</td>
                                 <td>
-                                  {/* <input
-                                    type="text"
-                                    value={row.recKitQty}
-                                    onChange={(e) =>
-                                      setTableData((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? {
-                                                ...r,
-                                                recKitQty: e.target.value,
-                                              }
-                                            : r
-                                        )
-                                      )
-                                      // handleRecKitQtyChange(e)
-                                    }
-                                    
-                                  /> */}
                                   <input
-                                    type="text"
+                                    type="number"
                                     style={{ width: 40 }}
-                                    value={row.recKitQty}
+                                    value={row.receivedKitQty}
                                     onChange={(e) => {
                                       setTableData((prev) =>
                                         prev.map((r, i) =>
                                           i === index
                                             ? {
                                                 ...r,
-                                                recKitQty: e.target.value,
+                                                receivedKitQty: e.target.value,
                                               }
                                             : r
                                         )
-                                      );
-                                      setTimeout(
-                                        () =>
-                                          handleRecKitQtyChange(e, row.kitNo),
-                                        500
                                       );
                                     }}
                                   />
