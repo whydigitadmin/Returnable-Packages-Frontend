@@ -17,8 +17,6 @@ export const EmitterDispatch = () => {
   const [flowData, setFlowData] = React.useState([]);
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
-  const [kit, setKit] = useState("");
-  const [avlQty, setAvlQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [emitterId, setEmitterId] = React.useState(
@@ -35,30 +33,21 @@ export const EmitterDispatch = () => {
   const [selectedRowData, setSelectedRowData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [listViewButton, setListViewButton] = useState(false);
-  const [ListViewTableData, setListViewTableData] = useState([
-    {
-      id: 1,
-      docId: "1000001",
-      docDate: "15-05-2024",
-      flow: "CH-PUN",
-      invNo: "50",
-      invDate: "14-05-2024",
-    },
-  ]);
-  const [savedRecordView, setSavedRecordView] = useState(false);
+  const [listViewTableData, setListViewTableData] = useState([]);
   const [viewId, setViewId] = useState("");
+  const [expandedRows, setExpandedRows] = useState([]);
 
   useEffect(() => {
     getAddressById();
-
-    getAllDispatchDetail();
-    if (viewId) {
-      // getAllDispatchDetail();
-      setDocId("abc");
-    } else {
-      getDocIdByDispatch();
-    }
-  }, [viewId]);
+    getDocIdByDispatch();
+    // getAllDispatchDetail();
+    // if (viewId) {
+    //   getAllDispatchDetail();
+    //   // setDocId("abc");
+    // } else {
+    //   getDocIdByDispatch();
+    // }
+  }, []);
 
   const getDocIdByDispatch = async () => {
     try {
@@ -82,17 +71,11 @@ export const EmitterDispatch = () => {
         `${process.env.REACT_APP_API_URL}/api/emitter/getAllDispatch?emitterId=${emitterId}`
       );
       if (response.status === 200) {
-        console.log(
-          "THE GET ALL DISPATCH DATA IS:",
-          response.data.paramObjectsMap.dispatchVO
-        );
         setListViewTableData(response.data.paramObjectsMap.dispatchVO);
       }
     } catch (error) {
       toast.error("Network Error!");
     }
-    console.log("THE GET DISPATCH DETAILS BY ID IS CALLED");
-    setFlow(1000000042);
   };
 
   const handleSelectedFlow = (event) => {
@@ -136,6 +119,17 @@ export const EmitterDispatch = () => {
     }
   };
 
+  const handleRowClick = (rowId) => {
+    const currentExpandedRows = expandedRows;
+    const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
+
+    const newExpandedRows = isRowCurrentlyExpanded
+      ? currentExpandedRows.filter((id) => id !== rowId)
+      : currentExpandedRows.concat(rowId);
+
+    setExpandedRows(newExpandedRows);
+  };
+
   const handleNew = () => {
     setFlow("");
     setInvNo("");
@@ -162,7 +156,7 @@ export const EmitterDispatch = () => {
     const requestData = {
       docId: docId,
       emitterId: emitterId,
-      flow: flow,
+      flowId: flow,
       invoiceDate: invDate,
       invoiceNo: invNo,
       dispatchRemarks: dispatchRemarks,
@@ -170,8 +164,6 @@ export const EmitterDispatch = () => {
       createdby: userName,
       orgId: orgId,
     };
-    console.log("SELECTED CHECKBOX DATA'S", selectedRowData);
-    console.log("DATA TO SAVE IS:", requestData);
     if (Object.keys(errors).length === 0) {
       axios
         .post(
@@ -220,14 +212,14 @@ export const EmitterDispatch = () => {
   };
 
   const handleListViewButtonChange = () => {
+    getAllDispatchDetail();
     setListViewButton(!listViewButton);
     setViewId("");
     setFlow("");
-    setTableData("");
+    // setTableData("");
   };
 
   const handleSavedRecordView = (rowId) => {
-    console.log("THE SELECTED ROW ID IS", rowId);
     setViewId(rowId);
     setListViewButton(false);
   };
@@ -270,30 +262,75 @@ export const EmitterDispatch = () => {
                         <th>Date</th>
                         <th>Flow</th>
                         <th>Invoice No</th>
-                        <th>Invoice Date No</th>
+                        <th>Invoice Date</th>
+                        <th>Details</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {ListViewTableData.map((row, index) => (
-                        <tr key={row.id}>
-                          {/* <td>{index + 1}</td> */}
-                          <td>
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleSavedRecordView(row.docId);
-                              }}
-                              style={{ cursor: "pointer", color: "blue" }}
-                            >
+                      {listViewTableData.map((row, index) => (
+                        <React.Fragment key={row.id}>
+                          <tr>
+                            <td>
+                              {/* <a
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleRowClick(row.id);
+                                }}
+                                style={{ cursor: "pointer", color: "blue" }}
+                              >
+                                {row.docId}
+                              </a> */}
                               {row.docId}
-                            </a>
-                          </td>
-                          <td>{row.docDate}</td>
-                          <td>{row.flow}</td>
-                          <td>{row.invoiceNo}</td>
-                          <td>{row.invoiceDate}</td>
-                        </tr>
+                            </td>
+                            <td>{row.docDate}</td>
+                            <td>{row.flow}</td>
+                            <td>{row.invoiceNo}</td>
+                            <td>{row.invoiceDate}</td>
+                            <td>
+                              <a
+                                href="#"
+                                style={{ cursor: "pointer", color: "blue" }}
+                              >
+                                <button onClick={() => handleRowClick(row.id)}>
+                                  {expandedRows.includes(row.id)
+                                    ? "Hide Details"
+                                    : "Show Details"}
+                                </button>
+                              </a>
+                            </td>
+                          </tr>
+                          {expandedRows.includes(row.id) && (
+                            <tr>
+                              <td colSpan="6">
+                                <table className="table table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th>Bin Out Docid</th>
+                                      <th>Bin Out Doc Date</th>
+                                      <th>Part Name</th>
+                                      <th>Part No</th>
+                                      <th>Kit No</th>
+                                      <th>Qty</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {row.dispatchDetailsVO.map((detail) => (
+                                      <tr key={detail.id}>
+                                        <td>{detail.binOutDocid}</td>
+                                        <td>{detail.binOutDocDate}</td>
+                                        <td>{detail.partName}</td>
+                                        <td>{detail.partNo}</td>
+                                        <td>{detail.kitNo}</td>
+                                        <td>{detail.qty}</td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>
