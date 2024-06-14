@@ -40,7 +40,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   );
   const [errors, setErrors] = useState({});
   const [filteredStockBranch, setFilteredStockBranch] = useState("");
-  const [stockBranchList, setStockBranchList] = useState("");
+  const [stockBranchList, setStockBranchList] = useState([]);
   const [reqNoList, setReqNoList] = useState([]);
   const [reqData, setReqData] = useState(null);
   const [emitterId, setEmitterId] = useState("");
@@ -107,12 +107,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     }
     console.log("VIEWID is:", viewId);
     getNewDocId();
-    getStockBranch();
     getBinRequestByReqNo();
     // getAvlQtyByBranch();
     // getAllBinRequest()
     viewAllotedBinByDocId();
-  }, [tableData.assetCode, avlQty]);
+    getStockBranch();
+  }, [tableData.assetCode, avlQty, flowId]);
 
   const getNewDocId = async () => {
     try {
@@ -171,12 +171,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     const selectedValue = e.target.value;
     setStockFrom(selectedValue);
 
-    const filteredBranches = stockBranchList.filter(
-      (branch) => branch.branchCode !== selectedValue
-    );
-    setStockTo("");
-    setFilteredStockBranch(filteredBranches);
-    console.log("TO STOCK BRANCH IS:", filteredBranches);
+    // const filteredBranches = stockBranchList.filter(
+    //   (branch) => branch.branchCode !== selectedValue
+    // );
+    // setStockTo("");
+    // setFilteredStockBranch(filteredBranches);
+    // console.log("TO STOCK BRANCH IS:", filteredBranches);
     getAvlQtyByBranch(selectedValue);
   };
   const handleStockToChange = (e) => {
@@ -243,12 +243,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   const getStockBranch = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/ActivestockbranchByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getBranchLocationByFlow?flowId=${flowId}&orgId=${orgId}`
       );
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        setStockBranchList(response.data.paramObjectsMap.branch);
+        setStockBranchList(response.data.paramObjectsMap.assetDetailsVO);
       } else {
         console.error("API Error:", response.data);
       }
@@ -676,6 +676,19 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     <>
       <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
         <div className="d-flex justify-content-end">
+          {!viewId && (
+            <>
+              <div>
+                <button
+                  type="button"
+                  className="bg-blue me-3 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  onClick={handleSave}
+                >
+                  Save
+                </button>
+              </div>
+            </>
+          )}
           <Link to="/app/binallotmentdetails">
             <IoMdClose
               onClick={handleEmitterBinAllotmentClose}
@@ -686,34 +699,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
 
         <div className="row mt-3">
           {/* DOC ID FIELD */}
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Doc Id:
-                {/* <FaStarOfLife className="must" /> */}
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-6">
-            <input
-              className="form-control form-sz mb-2"
-              placeholder="Auto Gen"
-              value={viewId ? viewId : docId}
-              onChange={(e) => setDocId(e.target.value)}
-              disabled
-            />
-            {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )}
-          </div>
-          {/* DOC DATE FIELD */}
-          {viewId ? (
+          {viewId && (
             <>
               <div className="col-lg-3 col-md-6">
                 <label className="label mb-4">
                   <span className="label-text label-font-size text-base-content d-flex flex-row">
-                    Alloted Date:
-                    {/* <FaStarOfLife className="must" /> */}
+                    Doc Id:
                   </span>
                 </label>
               </div>
@@ -721,43 +712,75 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                 <input
                   className="form-control form-sz mb-2"
                   placeholder="Auto Gen"
-                  value={allotDate}
-                  // onChange={(e) => setDocId(e.target.value)}
+                  value={viewId ? viewId : docId}
+                  onChange={(e) => setDocId(e.target.value)}
                   disabled
                 />
-                {errors.allotDate && (
-                  <span className="error-text mb-1">{errors.allotDate}</span>
-                )}
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="col-lg-3 col-md-6">
-                <label className="label mb-4">
-                  <span className="label-text label-font-size text-base-content d-flex flex-row">
-                    Doc Date:
-                    {/* <FaStarOfLife className="must" /> */}
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DesktopDatePicker
-                    value={docDate}
-                    onChange={(date) => setDocDate(date)}
-                    slotProps={{
-                      textField: { size: "small", clearable: true },
-                    }}
-                    format="DD/MM/YYYY"
-                    disabled
-                  />
-                </LocalizationProvider>
-                {errors.docDate && (
-                  <span className="error-text mb-1">{errors.docDate}</span>
+                {errors.docId && (
+                  <span className="error-text mb-1">{errors.docId}</span>
                 )}
               </div>
             </>
           )}
+
+          {viewId && (
+            <>
+              {viewId ? (
+                <>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Alloted Date:
+                        {/* <FaStarOfLife className="must" /> */}
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder="Auto Gen"
+                      value={allotDate}
+                      // onChange={(e) => setDocId(e.target.value)}
+                      disabled
+                    />
+                    {errors.allotDate && (
+                      <span className="error-text mb-1">
+                        {errors.allotDate}
+                      </span>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Doc Date:
+                        {/* <FaStarOfLife className="must" /> */}
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        value={docDate}
+                        onChange={(date) => setDocDate(date)}
+                        slotProps={{
+                          textField: { size: "small", clearable: true },
+                        }}
+                        format="DD/MM/YYYY"
+                        disabled
+                      />
+                    </LocalizationProvider>
+                    {errors.docDate && (
+                      <span className="error-text mb-1">{errors.docDate}</span>
+                    )}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+
           {/* <div className="col-lg-3 col-md-6">
                         <label className="label mb-4">
                             <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -931,9 +954,9 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               <option value="" disabled>
                 Select Stock Branch
               </option>
-              {stockBranchList.length > 0 &&
-                stockBranchList.map((list) => (
-                  <option key={list.id} value={list.branchCode}>
+              {stockBranchList &&
+                stockBranchList.map((list, index) => (
+                  <option key={index} value={list.branchCode}>
                     {list.branchCode}
                   </option>
                 ))}
@@ -988,6 +1011,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               value={avlQty}
               disabled
             />
+            {avlQty === 0 && <span className="error-text">QTY is empty</span>}
             {errors.avlQty && (
               <span className="error-text">{errors.avlQty}</span>
             )}
@@ -1230,7 +1254,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
         {errors.tableData && (
           <div className="error-text mt-2">{errors.tableData}</div>
         )}
-        {!viewId && (
+        {/* {!viewId && (
           <>
             <div className="mt-4">
               <button
@@ -1249,7 +1273,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               </button>
             </div>
           </>
-        )}
+        )} */}
       </div>
       <ToastContainer />
     </>

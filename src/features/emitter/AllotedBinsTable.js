@@ -24,6 +24,7 @@ import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
 import DashBoardComponent from "../master/DashBoardComponent";
 import EmitterBinAllotment from "./EmitterBinAllotment";
+import IssueManifestReport from "../issueManifestReport/IssueManifestReport";
 
 import {
   Paper,
@@ -73,10 +74,15 @@ function AllotedBinsTable({ viewAllotedTable }) {
   const [selectedRowId, setSelectedRowId] = useState(null);
   // const [viewAllotedBins, setViewAllotedBins] = useState(false);
   const [view, setView] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleBack = () => {
     setAddBinAllotment(false);
     setView(false);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   useEffect(() => {
@@ -119,6 +125,11 @@ function AllotedBinsTable({ viewAllotedTable }) {
     setView(true);
   };
 
+  const handleDownloadClick = (row) => {
+    setSelectedRowId(row.original.docId);
+    setOpenDialog(true);
+  };
+
   const columns = useMemo(
     () => [
       {
@@ -140,7 +151,8 @@ function AllotedBinsTable({ viewAllotedTable }) {
               <VisibilityIcon />
             </IconButton>
             <IconButton
-            // onClick={() => handleViewRow(row)}
+              // onClick={() => handleViewRow(row)}
+              onClick={() => handleDownloadClick(row)}
             >
               <GetAppIcon />
             </IconButton>
@@ -299,6 +311,23 @@ function AllotedBinsTable({ viewAllotedTable }) {
           </div>
         </div>
       )}
+
+      <Dialog
+        open={openDialog}
+        onClose={handleCloseDialog}
+        fullWidth
+        maxWidth="lg"
+      >
+        <DialogContent>
+          {/* Content of your dialog */}
+          {/* Add your download logic or content here */}
+          <IssueManifestReport
+            goBack={handleBack}
+            docId={selectedRowId}
+            onClose={handleCloseDialog}
+          />
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

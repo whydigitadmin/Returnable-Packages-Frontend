@@ -3,11 +3,13 @@ import { MdPrint } from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
 import axios from "axios";
 import { IoMdClose } from "react-icons/io";
+import QRCode from "qrcode.react"; // Import QRCode library
 
-export const IssueManifestReport = ({ goBack, docId }) => {
+export const IssueManifestReport = ({ goBack, docId, onClose }) => {
   const componentRef = useRef();
   const [headerData, setHeaderData] = useState([]);
   const [gridData, setGridData] = useState([]);
+  const [qrCodeValue, setQrCodeValue] = useState([]);
 
   useEffect(() => {
     getHeaderDetailsByDocId();
@@ -15,38 +17,46 @@ export const IssueManifestReport = ({ goBack, docId }) => {
 
   const getHeaderDetailsByDocId = async () => {
     try {
-      const response = await axios.get(
+      const headerResponse = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/master/getBinAllotmentPdfHeaderDetails?docid=${docId}`
       );
-      console.log("API Response:", response);
+      console.log("API headerResponse:", headerResponse);
 
-      if (response.status === 200) {
+      if (headerResponse.status === 200) {
         console.log(
-          "API Response:",
-          response.data.paramObjectsMap.HeaderDetails[0]
+          "API headerResponse:",
+          headerResponse.data.paramObjectsMap.HeaderDetails[0]
         );
-        setHeaderData(response.data.paramObjectsMap.HeaderDetails[0]);
+        setHeaderData(headerResponse.data.paramObjectsMap.HeaderDetails[0]);
         try {
-          const response = await axios.get(
-            // `${process.env.REACT_APP_API_URL}/api/master/getBinAllotmentPdfHeaderDetails?docid=${docId}`
+          const gridResponse = await axios.get(
             `${process.env.REACT_APP_API_URL}/api/master/getBinAllotmentPdfGridDetails?docid=${docId}`
           );
-          console.log("API Response:", response);
+          console.log("API gridResponse:", gridResponse);
 
-          if (response.status === 200) {
+          if (gridResponse.status === 200) {
             console.log(
-              "API Response for Grid:",
-              response.data.paramObjectsMap.allotDetails
+              "API gridResponse for Grid:",
+              gridResponse.data.paramObjectsMap.allotDetails
             );
-            setGridData(response.data.paramObjectsMap.allotDetails);
+            setGridData(gridResponse.data.paramObjectsMap.allotDetails);
+
+            // Concatenate relevant fields from header and grid data
+            const concatenatedData = JSON.stringify({
+              headerData: headerResponse.data.paramObjectsMap.HeaderDetails[0],
+              gridData: gridResponse.data.paramObjectsMap.allotDetails,
+            });
+
+            setQrCodeValue(concatenatedData);
+            console.log("THE QRCODE DATA IS:", concatenatedData);
           } else {
-            console.error("API Error:", response.data);
+            console.error("API Error:", gridResponse.data);
           }
         } catch (error) {
           console.error("Error fetching data:", error);
         }
       } else {
-        console.error("API Error:", response.data);
+        console.error("API Error:", headerResponse.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -59,6 +69,7 @@ export const IssueManifestReport = ({ goBack, docId }) => {
 
   const handleReportClose = () => {
     goBack(false);
+    onClose(false);
   };
 
   return (
@@ -164,25 +175,6 @@ export const IssueManifestReport = ({ goBack, docId }) => {
 
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-5" ref={componentRef}>
-          {/* HEADINGS */}
-          {/* <div className="row">
-            <div className="col-md-2 text-center">
-              <img
-                src="/AI_Packs.png"
-                alt="Your Image"
-                style={{ width: "100px", marginTop: "20px" }}
-              />
-            </div>
-            <div className="col-md-10 text-center">
-              <h1 className="text-xl">
-                <strong>SCM AIPACKS Private Limited</strong>
-              </h1>
-              <br />
-              <h3>
-                <strong>Bin Allotment</strong>
-              </h3>
-            </div>
-          </div> */}
           <table>
             <tr>
               <td style={{ width: "10%" }}>
@@ -203,8 +195,41 @@ export const IssueManifestReport = ({ goBack, docId }) => {
                   </h3>
                 </div>
               </td>
+
+              <td>
+                <div className="mr-3">
+                  {qrCodeValue && (
+                    <QRCode
+                      value={qrCodeValue} // Set QR code value
+                      size={100} // Adjust size as needed
+                    />
+                  )}
+                </div>
+              </td>
             </tr>
           </table>
+          {/* <div className="d-flex justify-content-end">
+            <div>
+              <img
+                src="/AI_Packs.png"
+                alt="Your Image"
+                style={{ width: "auto", marginTop: "20px" }}
+              />
+            </div>
+
+            <div className="text-center">
+              <h1 className="text-xl">
+                <strong>SCM AIPACKS Private Limited</strong>
+              </h1>
+              <br />
+              <h3>
+                <strong>Bin Allotment</strong>
+              </h3>
+            </div>
+            <div className="mr-3">
+              {qrCodeValue && <QRCode value={qrCodeValue} size={100} />}
+            </div>
+          </div> */}
 
           <div className="row -flex mt-2 flex-row flex-wrap">
             {/* <div className="col-md-12"> */}
