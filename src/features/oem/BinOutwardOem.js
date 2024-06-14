@@ -40,14 +40,11 @@ function BinOutwardOem({}) {
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
   const [tableView, setTableView] = useState(false);
-
-  const [flowList, setFlowList] = useState([
-    {
-      id: 1,
-      flow: "PUN-CH",
-    },
-  ]);
-
+  const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const [flowList, setFlowList] = useState([]);
+  const [stockBranch, setStockBranch] = useState("");
+  const [selectedStockBranch, setSelectedStockBranch] = useState("");
+  const [stockBranchList, setStockBranchList] = useState([]);
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -78,7 +75,6 @@ function BinOutwardOem({}) {
       outQty: "16",
     },
   ]);
-
   const [ListViewTableData, setListViewTableData] = useState([
     {
       id: 1,
@@ -89,6 +85,97 @@ function BinOutwardOem({}) {
       balQty: "42",
     },
   ]);
+
+  useEffect(() => {
+    getStockBranchByUserId();
+    // getFlowByUserId();
+    // getInwardDocId();
+    // if (listViewButton) {
+    //   getAllInwardedDetailsByOrgId();
+    // }
+  }, []);
+
+  const getFlowByUserId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getFlowByUserId?orgId=${orgId}&userId=${userId}`
+      );
+      if (response.status === 200) {
+        setFlowList(response.data.paramObjectsMap.flowDetails);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getStockBranchByUserId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getStockBranchByUserId?orgId=${orgId}&userId=${userId}`
+      );
+      if (response.status === 200) {
+        console.log(
+          "getStockBranchByUserId:",
+          response.data.paramObjectsMap.branch
+        );
+        setStockBranchList(response.data.paramObjectsMap.branch);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const handleSelectionChange = (event) => {
+    const selectedOrigin = event.target.value;
+    setStockBranch(selectedOrigin);
+
+    const selectedBranch = stockBranchList.find(
+      (branch) => branch.orgin === selectedOrigin
+    );
+    if (selectedBranch) {
+      setSelectedStockBranch(selectedBranch.stockBranch);
+      getOemStockDetailsForBinOutward(selectedBranch.stockBranch);
+    } else {
+      setSelectedStockBranch("");
+    }
+  };
+
+  const getOemStockDetailsForBinOutward = (branch) => {
+    // const errors = {};
+    // if (!selectedStockBranch) {
+    //   errors.selectedStockBranch = "Stock Branch is required";
+    // }
+    if (Object.keys(errors).length === 0) {
+      axios
+        .get(
+          `${process.env.REACT_APP_API_URL}/api/oem/getOemStockDetailsForBinOutward?stockBranch=${branch}`
+        )
+        .then((response) => {
+          if (response.data.status === "Error") {
+            console.error("Error creating kit:", response.data.paramObjectsMap);
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            // toast.success(response.data.paramObjectsMap.message, {
+            //   autoClose: 2000,
+            //   theme: "colored",
+            // });
+
+            setTableData(response.data.paramObjectsMap.stockDetails);
+            setTableView(true);
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    } else {
+      setErrors(errors);
+    }
+  };
 
   const handleSavedRecordView = (e) => {
     setSavedRecordView(true);
@@ -291,31 +378,33 @@ function BinOutwardOem({}) {
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Flow:
+                      Stock Branch:
                       <FaStarOfLife className="must" />
                     </span>
                   </label>
                 </div>
                 <div className="col-lg-2 col-md-3">
                   <select
-                    name="Select Kit"
+                    // name="Select Kit"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     className="form-select form-sz"
-                    onChange={handleFlowChange}
-                    value={flow}
+                    onChange={handleSelectionChange}
+                    value={stockBranch}
                   >
                     <option value="" selected>
-                      Select a Flow
+                      Select a Stock Branch
                     </option>
-                    {flowList.length > 0 &&
-                      flowList.map((list) => (
-                        <option key={list.id} value={list.flow}>
-                          {list.flow}
+                    {stockBranchList.length > 0 &&
+                      stockBranchList.map((list) => (
+                        <option key={list.stockBranch} value={list.orgin}>
+                          {list.orgin}
                         </option>
                       ))}
                   </select>
-                  {errors.flow && (
-                    <span className="error-text">{errors.flow}</span>
+                  {errors.selectedStockBranch && (
+                    <span className="error-text mb-1">
+                      {errors.selectedStockBranch}
+                    </span>
                   )}
                 </div>
                 {/* <div className="col-lg-2 col-md-4">
@@ -368,43 +457,18 @@ function BinOutwardOem({}) {
                       <table className="table table-hover w-full">
                         <thead>
                           <tr>
-                            <th>Asset</th>
+                            <th>Category</th>
                             <th>Asset Code</th>
-                            <th>EXP QTY</th>
-                            <th>Out QTY</th>
+                            <th>Available QTY</th>
                           </tr>
                         </thead>
                         <tbody>
                           {tableData.map((row, index) => (
                             <tr key={row.id}>
                               {/* <td>{index + 1}</td> */}
-                              <td>{row.asset}</td>
+                              <td>{row.category}</td>
                               <td>{row.assetCode}</td>
-                              <td>{row.expQty}</td>
-                              <td>
-                                <input
-                                  type="text"
-                                  value={row.outQty}
-                                  onChange={(e) =>
-                                    setTableData((prev) =>
-                                      prev.map((r, i) =>
-                                        i === index
-                                          ? { ...r, outQty: e.target.value }
-                                          : r
-                                      )
-                                    )
-                                  }
-                                  className={`form-control form-sz mb-2 ${
-                                    errors.qty && "border-red-500"
-                                  }`}
-                                  style={{ width: "50px" }}
-                                />
-                                {errors.qty && (
-                                  <span className="error-text mb-1">
-                                    {errors.qty}
-                                  </span>
-                                )}
-                              </td>
+                              <td>{row.availQty}</td>
                             </tr>
                           ))}
                         </tbody>

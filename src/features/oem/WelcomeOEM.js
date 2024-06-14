@@ -267,7 +267,7 @@ function WelcomeOEM() {
                           }}
                         />
                         <h4 className="text-xl font-semibold">
-                          Retrival Manifest
+                          Retrieval Manifest
                         </h4>
                       </div>
                     </div>
