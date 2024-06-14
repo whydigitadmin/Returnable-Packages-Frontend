@@ -99,7 +99,7 @@ function EmitterStockLedgerReport() {
       },
       {
         accessorKey: "openQty",
-        header: "Open Qty",
+        header: "Opening Qty",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -110,7 +110,7 @@ function EmitterStockLedgerReport() {
       },
       {
         accessorKey: "rQty",
-        header: "rQty",
+        header: "Received Qty",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -121,7 +121,7 @@ function EmitterStockLedgerReport() {
       },
       {
         accessorKey: "dQty",
-        header: "dQTY",
+        header: "Dispatch QTY",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",

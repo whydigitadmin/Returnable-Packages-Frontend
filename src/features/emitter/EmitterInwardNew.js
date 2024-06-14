@@ -11,6 +11,8 @@ import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaArrowCircleLeft, FaCloudUploadAlt } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { IoMdDownload } from "react-icons/io";
+import { LiaQrcodeSolid } from "react-icons/lia";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NoRecordsFound from "../../utils/NoRecordsFound";
@@ -109,15 +111,24 @@ function EmitterInwardNew({ addInwardManifeast }) {
   ]);
 
   const [openDialog, setOpenDialog] = useState(false);
+  const [openQrDialog, setOpenQrDialog] = useState(false);
 
   const handleDownloadClick = (selectedAllotNo) => {
     setOpenDialog(true);
     setDownloadDocId(selectedAllotNo);
     console.log("Download Doc ID:", selectedAllotNo);
   };
+  const handleQrClick = (selectedAllotNo) => {
+    setOpenQrDialog(true);
+    setDownloadDocId(selectedAllotNo);
+    console.log("Download Doc ID:", selectedAllotNo);
+  };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+  };
+  const handleCloseQrDialog = () => {
+    setOpenQrDialog(false);
   };
 
   const [page, setPage] = useState(1);
@@ -655,6 +666,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const handleBack = () => {
     setOpenDialog(false);
   };
+  const handleBackQr = () => {
+    setOpenQrDialog(false);
+  };
 
   return (
     <>
@@ -693,6 +707,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   {/* Table header */}
                   <thead>
                     <tr>
+                      <th className="px-2 text-black border text-center">
+                        Actions
+                      </th>
                       <th
                         className="px-2 text-black border text-center"
                         style={{ width: "15%" }}
@@ -726,9 +743,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       <th className="px-2 text-black border text-center">
                         Fulfillment %
                       </th>
-                      <th className="px-2 text-black border text-center">
-                        Issue Manifest
-                      </th>
                     </tr>
                   </thead>
                   {/* Table body */}
@@ -736,6 +750,22 @@ function EmitterInwardNew({ addInwardManifeast }) {
                     {tableDataPending && tableDataPending.length > 0 ? (
                       tableDataPending.map((row) => (
                         <tr key={row.id}>
+                          <td
+                            className="border px-2 py-2 text-center d-flex flex-row"
+                            style={{
+                              cursor: "pointer",
+                              color: "black",
+                            }}
+                          >
+                            <IoMdDownload
+                              className="w-7 h-7"
+                              onClick={() => handleDownloadClick(row.allotNo)}
+                            />
+                            <LiaQrcodeSolid
+                              className="w-7 h-7"
+                              onClick={() => handleQrClick(row.allotNo)}
+                            />
+                          </td>
                           <td className="border px-2 py-2 text-center">
                             <a
                               href="#"
@@ -779,19 +809,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               2
                             )} */}
                             {(row.allotKitQty / row.reqKitQty) * 100}
-                          </td>
-                          <td
-                            className="border px-2 py-2 text-center"
-                            style={{
-                              textDecoration: "underline",
-                              cursor: "pointer",
-                              width: "auto",
-                              color: "blue",
-                              textAlign: "center",
-                            }}
-                            onClick={() => handleDownloadClick(row.allotNo)}
-                          >
-                            Download
                           </td>
                         </tr>
                       ))
@@ -1294,6 +1311,9 @@ function EmitterInwardNew({ addInwardManifeast }) {
                 <table className="table table-hover w-full">
                   <thead>
                     <tr>
+                      <th className="px-2 text-black border text-center">
+                        Actions
+                      </th>
                       <th
                         className="text-black border px-2 text-center"
                         style={{
@@ -1340,6 +1360,24 @@ function EmitterInwardNew({ addInwardManifeast }) {
                     {paginatedData && paginatedData.length > 0 ? (
                       paginatedData.map((row) => (
                         <tr key={row.id}>
+                          <td
+                            className="border px-2 py-2 text-center d-flex flex-row"
+                            style={{
+                              cursor: "pointer",
+                              color: "black",
+                            }}
+                          >
+                            <IoMdDownload
+                              className="w-7 h-7"
+                              onClick={() =>
+                                handleDownloadClick(row.allotmentNo)
+                              }
+                            />
+                            <LiaQrcodeSolid
+                              className="w-7 h-7"
+                              onClick={() => handleQrClick(row.allotmentNo)}
+                            />
+                          </td>
                           <td className="border px-2 py-2 text-center">
                             <span
                               onClick={() => {
@@ -1442,6 +1480,19 @@ function EmitterInwardNew({ addInwardManifeast }) {
           {/* Content of your dialog */}
           {/* Add your download logic or content here */}
           <IssueManifestReport goBack={handleBack} docId={downloadDocId} />
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={openQrDialog}
+        onClose={handleCloseQrDialog}
+        fullWidth
+        maxWidth="xs"
+      >
+        <DialogContent>
+          {/* Content of your dialog */}
+          {/* Add your download logic or content here */}
+          {/* <IssueManifestReport goBack={handleBackQr} docId={downloadDocId} /> */}
+          Qr under progress
         </DialogContent>
       </Dialog>
       <ToastContainer />

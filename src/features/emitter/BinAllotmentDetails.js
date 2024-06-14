@@ -103,19 +103,19 @@ export const BinAllotmentDetails = () => {
         const totalRequests = allRequests.length;
         setStatsData([
           {
-            title: "Pending Requests",
+            title: "Total Requests",
             value: totalRequests.toString(),
             icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
           {
-            title: "--",
+            title: "Pending Requests",
             value: "0",
             icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
           {
-            title: "--",
+            title: "Completed Requests",
             value: "0",
             icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
             description: "",

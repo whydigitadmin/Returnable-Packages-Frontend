@@ -157,6 +157,17 @@ export const InwardManifestDetails = () => {
       //   },
       // },
       {
+        accessorKey: "docDate",
+        header: "Transferred Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
         accessorKey: "category",
         header: "Category",
         size: 50,

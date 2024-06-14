@@ -1,7 +1,7 @@
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import GetAppIcon from '@mui/icons-material/GetApp';
+import GetAppIcon from "@mui/icons-material/GetApp";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
@@ -36,19 +36,19 @@ import {
 
 const statsData = [
   {
-    title: "No of Users",
+    title: "Total Requests",
     value: "0",
     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
     description: "",
   },
   {
-    title: "Active Users",
+    title: "Pending Requests",
     value: "0",
     icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
     description: "",
   },
   {
-    title: "InActive Users",
+    title: "Completed Requests",
     value: "0",
     icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
     description: "",
@@ -72,11 +72,11 @@ function AllotedBinsTable({ viewAllotedTable }) {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [selectedRowId, setSelectedRowId] = useState(null);
   // const [viewAllotedBins, setViewAllotedBins] = useState(false);
-  const [view, setView] = useState(false)
+  const [view, setView] = useState(false);
 
   const handleBack = () => {
     setAddBinAllotment(false);
-    setView(false)
+    setView(false);
   };
 
   useEffect(() => {
@@ -121,7 +121,6 @@ function AllotedBinsTable({ viewAllotedTable }) {
 
   const columns = useMemo(
     () => [
-
       {
         accessorKey: "actions",
         header: "Actions",
@@ -147,6 +146,28 @@ function AllotedBinsTable({ viewAllotedTable }) {
             </IconButton>
           </div>
         ),
+      },
+      {
+        accessorKey: "reqKitQty",
+        header: "Req QTY",
+        size: 20,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "allotkKitQty",
+        header: "Allotted QTY",
+        size: 20,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
       },
       {
         accessorKey: "docId",
@@ -214,28 +235,6 @@ function AllotedBinsTable({ viewAllotedTable }) {
           align: "center",
         },
       },
-      {
-        accessorKey: "reqKitQty",
-        header: "Req QTY",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "allotkKitQty",
-        header: "Allotted QTY",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
     ],
     []
   );
@@ -248,11 +247,14 @@ function AllotedBinsTable({ viewAllotedTable }) {
     viewAllotedTable(false);
   };
 
-
   return (
     <>
-
-      {view ? (<EmitterBinAllotment addBinAllotment={handleBack} viewId={selectedRowId} />) : (
+      {view ? (
+        <EmitterBinAllotment
+          addBinAllotment={handleBack}
+          viewId={selectedRowId}
+        />
+      ) : (
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           {/* DASHBOARD COMPONENT */}
           <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
@@ -295,11 +297,10 @@ function AllotedBinsTable({ viewAllotedTable }) {
           <div className="mt-2">
             <MaterialReactTable table={table} />
           </div>
-
         </div>
       )}
     </>
   );
-};
+}
 
 export default AllotedBinsTable;
