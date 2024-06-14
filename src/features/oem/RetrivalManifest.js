@@ -175,16 +175,18 @@ export const RetrivalManifest = () => {
                             />{" "}
                             Download
                           </button> */}
-                        <img
-                          src="/RetrivalManifest-download.png"
-                          alt="completed-status-icon"
-                          style={{
-                            width: 40,
-                            height: 40,
-                            margin: "auto",
-                            cursor: "pointer",
-                          }}
-                        />
+                        <Link to="/app/RetrievalManifest-Report">
+                          <img
+                            src="/RetrivalManifest-download.png"
+                            alt="completed-status-icon"
+                            style={{
+                              width: 40,
+                              height: 40,
+                              margin: "auto",
+                              cursor: "pointer",
+                            }}
+                          />
+                        </Link>
                       </td>
                     </tr>
                   );
