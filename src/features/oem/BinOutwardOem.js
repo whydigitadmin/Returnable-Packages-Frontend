@@ -41,40 +41,12 @@ function BinOutwardOem({}) {
   const [savedRecordView, setSavedRecordView] = useState(false);
   const [tableView, setTableView] = useState(false);
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [flowList, setFlowList] = useState([]);
   const [stockBranch, setStockBranch] = useState("");
   const [selectedStockBranch, setSelectedStockBranch] = useState("");
   const [stockBranchList, setStockBranchList] = useState([]);
-  const [tableData, setTableData] = useState([
-    {
-      id: 1,
-      asset: "Pallet",
-      assetCode: "PLT1213",
-      expQty: "50",
-      outQty: "8",
-    },
-    {
-      id: 1,
-      asset: "Lid",
-      assetCode: "LID1213",
-      expQty: "50",
-      outQty: "8",
-    },
-    {
-      id: 1,
-      asset: "SideWall",
-      assetCode: "SW1213",
-      expQty: "50",
-      outQty: "8",
-    },
-    {
-      id: 1,
-      asset: "Insert",
-      assetCode: "IN1213",
-      expQty: "100",
-      outQty: "16",
-    },
-  ]);
+  const [tableData, setTableData] = useState([]);
   const [ListViewTableData, setListViewTableData] = useState([
     {
       id: 1,
@@ -88,12 +60,29 @@ function BinOutwardOem({}) {
 
   useEffect(() => {
     getStockBranchByUserId();
+    getOutwardDocId();
     // getFlowByUserId();
-    // getInwardDocId();
     // if (listViewButton) {
     //   getAllInwardedDetailsByOrgId();
     // }
   }, []);
+
+  const getOutwardDocId = async (doc) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getDocIdByOemBinOutward`
+      );
+      console.log("API Response:", response);
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.oemBinOutwardDocId);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getFlowByUserId = async () => {
     try {
@@ -199,71 +188,51 @@ function BinOutwardOem({}) {
   const handleSave = () => {
     // Validation
     const errors = {};
-    if (!kitName.trim()) {
-      errors.kitName = "Kit No is required";
+    if (!selectedStockBranch) {
+      errors.selectedStockBranch = "Stock Branch is required";
     }
-    if (!outwardKitQty.trim()) {
-      errors.outwardKitQty = "Outward Kit Qty is required";
-    }
-    tableData.forEach((row) => {
-      if (!row.asset.trim()) {
-        errors.asset = "Asset is required";
-      }
-      if (!row.assetCode.trim()) {
-        errors.assetCode = "Asset Code is required";
-      }
-      if (!row.qty.trim()) {
-        errors.qty = "Qty is required";
-      }
-    });
-
-    if (Object.keys(errors).length > 0) {
-      setErrors(errors);
-      return;
-    }
-
-    // If no validation errors, proceed to save
     const formData = {
-      createdBy: "string", // Replace "string" with actual value
       docDate: docDate.format("YYYY-MM-DD"),
-      kit: kitName,
+      // docId: docId,
+      id: 0,
       oemBinOutwardDetails: tableData.map((row) => ({
-        asset: row.asset,
+        asset: row.assetName,
         assetCode: row.assetCode,
-        qty: parseInt(row.qty),
+        availqty: row.availQty,
+        category: row.category,
+        id: 0,
+        outQty: row.outQty,
       })),
-      orgId: 0, // Replace 0 with actual value
-      outwardKitQty: parseInt(outwardKitQty),
+      orgId: orgId,
+      stockBranch: selectedStockBranch,
+      createdby: userName,
     };
 
-    axios
-      .post("/api/oem/updateCreateOemBinOutward", formData)
-      .then((response) => {
-        // Handle successful response
-        console.log("Response:", response.data);
-        // Optionally, show a success message
-        toast.success("Bin Outward saved successfully!");
-        // Reset input fields
-        setDocId("");
-        setDocDate(dayjs()); // Reset to current date
-        setKitName("");
-        setOutwardKitQty("");
-        setTableData([
-          {
-            id: 1,
-            asset: "",
-            assetCode: "",
-            qty: "",
-          },
-        ]);
-        setErrors({}); // Clear errors
-      })
-      .catch((error) => {
-        // Handle error
-        console.error("Error:", error);
-        // Optionally, show an error message
-        toast.error("Failed to save bin inward.");
-      });
+    if (Object.keys(errors).length === 0) {
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/oem/oemBinOutward`,
+          formData
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+          toast.success("Bin Outward saved successfully!");
+          setDocDate(dayjs());
+          setKitName("");
+          setSelectedStockBranch("");
+          setOutwardKitQty("");
+          setTableData([]);
+          setTableView(false);
+          setErrors({});
+          getOutwardDocId();
+        })
+        .catch((error) => {
+          // Handle error
+          console.error("Error:", error);
+          // Optionally, show an error message
+          toast.error("Failed to save bin inward.");
+        });
+    }
   };
 
   return (
@@ -460,6 +429,7 @@ function BinOutwardOem({}) {
                             <th>Category</th>
                             <th>Asset Code</th>
                             <th>Available QTY</th>
+                            <th>Outward QTY</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -469,6 +439,32 @@ function BinOutwardOem({}) {
                               <td>{row.category}</td>
                               <td>{row.assetCode}</td>
                               <td>{row.availQty}</td>
+                              <td>
+                                <input
+                                  type="number"
+                                  className="border border-black rounded ms-3"
+                                  style={{ width: 50 }}
+                                  value={row.outQty}
+                                  onChange={(e) => {
+                                    setTableData((prev) =>
+                                      prev.map((r, i) =>
+                                        i === index
+                                          ? {
+                                              ...r,
+                                              outQty: e.target.value,
+                                            }
+                                          : r
+                                      )
+                                    );
+                                  }}
+                                />
+
+                                {errors.outQty && (
+                                  <span className="error-text mb-1">
+                                    {errors.outQty}
+                                  </span>
+                                )}
+                              </td>
                             </tr>
                           ))}
                         </tbody>
@@ -500,7 +496,7 @@ function BinOutwardOem({}) {
         <ToastContainer />
         {/* VIEW MODAL */}
         <Dialog
-          open={savedRecordView}
+          // open={savedRecordView}
           onClose={handleSavedRecordViewClose}
           maxWidth="sm"
           fullWidth

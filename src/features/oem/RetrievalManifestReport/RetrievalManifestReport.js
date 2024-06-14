@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import { MdPrint } from "react-icons/md";
 import { useReactToPrint } from "react-to-print";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { IoMdClose } from "react-icons/io";
 
 export const RetrievalManifestReport = ({ goBack, docId }) => {
@@ -159,10 +160,12 @@ export const RetrievalManifestReport = ({ goBack, docId }) => {
         </div>
 
         <div className="mt-2">
-          <IoMdClose
-            onClick={handleReportClose}
-            className="cursor-pointer w-8 h-8 mb-3"
-          />
+          <Link to="/app/retrivalmanifest">
+            <IoMdClose
+              // onClick={handleReportClose}
+              className="cursor-pointer w-8 h-8 mb-3"
+            />
+          </Link>
         </div>
       </div>
 

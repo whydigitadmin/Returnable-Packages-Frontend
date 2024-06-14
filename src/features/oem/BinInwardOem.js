@@ -83,7 +83,7 @@ const BinInwardOem = ({}) => {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        setDocId(response.data.paramObjectsMap.oemBinOutwardDocId);
+        setDocId(response.data.paramObjectsMap.oemBinInwardDocId);
       } else {
         console.error("API Error:", response.data);
       }
@@ -251,6 +251,11 @@ const BinInwardOem = ({}) => {
               autoClose: 2000,
               theme: "colored",
             });
+            setFlow("");
+            setAllotedId("");
+            setInvNo("");
+            setInvDate(null);
+            setTableView(false);
           }
         })
         .catch((error) => {
@@ -503,7 +508,8 @@ const BinInwardOem = ({}) => {
                                 <td>
                                   <input
                                     type="number"
-                                    style={{ width: 40 }}
+                                    className="border border-black rounded"
+                                    style={{ width: 50 }}
                                     value={row.receivedKitQty}
                                     onChange={(e) => {
                                       setTableData((prev) =>
@@ -519,9 +525,9 @@ const BinInwardOem = ({}) => {
                                     }}
                                   />
 
-                                  {errors.qty && (
+                                  {errors.receivedKitQty && (
                                     <span className="error-text mb-1">
-                                      {errors.qty}
+                                      {errors.receivedKitQty}
                                     </span>
                                   )}
                                 </td>
