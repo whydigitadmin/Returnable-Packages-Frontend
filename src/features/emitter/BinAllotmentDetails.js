@@ -52,6 +52,7 @@ export const BinAllotmentDetails = () => {
   const [viewAllotedBins, setViewAllotedBins] = useState(false);
   const [allotedBinTableView, setAllotedBinTableView] = useState(false);
   const [visibleCard, setVisibleCard] = useState(false);
+  const [totAllotedReq, setTotAllotedReq] = useState("");
   const [statsData, setStatsData] = useState([]);
 
   const handleViewAllotedBins = () => {
@@ -89,7 +90,28 @@ export const BinAllotmentDetails = () => {
 
   useEffect(() => {
     getAllBinRequest();
-  }, [selectedRowId]);
+    getAllBinAllotmentData();
+  }, [selectedRowId, totAllotedReq]);
+
+  const getAllBinAllotmentData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getAllBinAllotmentByOrgId?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setTotAllotedReq(
+          response.data.paramObjectsMap.binAllotmentNewVO.length
+        );
+        console.log(
+          "TOTAL ALLOTED REQUEST COUNT:",
+          response.data.paramObjectsMap.binAllotmentNewVO.length
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getAllBinRequest = async () => {
     try {
@@ -100,7 +122,7 @@ export const BinAllotmentDetails = () => {
       if (response.status === 200) {
         const allRequests = response.data.paramObjectsMap.issueRequestVO;
         setData(allRequests.reverse());
-        const totalRequests = allRequests.length;
+        const totalRequests = totAllotedReq + allRequests.length;
         setStatsData([
           {
             title: "Total Requests",
@@ -110,13 +132,13 @@ export const BinAllotmentDetails = () => {
           },
           {
             title: "Pending Requests",
-            value: "0",
+            value: allRequests.length,
             icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
           {
             title: "Completed Requests",
-            value: "0",
+            value: totAllotedReq,
             icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
             description: "",
           },

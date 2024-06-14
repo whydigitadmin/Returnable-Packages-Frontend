@@ -35,35 +35,6 @@ import {
   TableRow,
 } from "@mui/material";
 
-const statsData = [
-  {
-    title: "Total Requests",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Pending Requests",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Completed Requests",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
-
-// export const AllotedBinsTable = (allotedBinTableView) => {
 function AllotedBinsTable({ viewAllotedTable }) {
   const [addBinAllotment, setAddBinAllotment] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -75,6 +46,11 @@ function AllotedBinsTable({ viewAllotedTable }) {
   // const [viewAllotedBins, setViewAllotedBins] = useState(false);
   const [view, setView] = useState(false);
   const [openDialog, setOpenDialog] = useState(false);
+  const [pendingBinReq, setPendingBinReq] = useState("");
+  const [loginUserId, setLoginUserId] = React.useState(
+    localStorage.getItem("userId")
+  );
+  const [statsData, setStatsData] = useState([]);
 
   const handleBack = () => {
     setAddBinAllotment(false);
@@ -86,8 +62,23 @@ function AllotedBinsTable({ viewAllotedTable }) {
   };
 
   useEffect(() => {
+    getAllPendingBinRequest();
     getAllBinAllotmentData();
-  }, [selectedRowId]);
+  }, [selectedRowId, pendingBinReq]);
+
+  const getAllPendingBinRequest = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequestreportByOrgId?OrgId=${orgId}&userId=${loginUserId}`
+      );
+
+      if (response.status === 200) {
+        setPendingBinReq(response.data.paramObjectsMap.issueRequestVO.length);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getAllBinAllotmentData = async () => {
     try {
@@ -101,6 +92,37 @@ function AllotedBinsTable({ viewAllotedTable }) {
           "Response from API is:",
           response.data.paramObjectsMap.binAllotmentNewVO
         );
+
+        const allRequests = response.data.paramObjectsMap.binAllotmentNewVO;
+        // setData(allRequests.reverse());
+        const totalRequests = pendingBinReq + allRequests.length;
+        setStatsData([
+          {
+            title: "Total Requests",
+            value: totalRequests.toString(),
+            icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Pending Requests",
+            value: pendingBinReq,
+            icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Completed Requests",
+            value: totalRequests,
+            icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            // title: "Average Transaction",
+            title: "--",
+            value: "0",
+            icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

@@ -45,33 +45,7 @@ export const UserDetails = () => {
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  const [statsData, setStatsData] = useState([
-    {
-      title: "No of Users",
-      value: "0",
-      icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-      description: "",
-    },
-    {
-      title: "Active Users",
-      value: "0",
-      icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-      description: "",
-    },
-    {
-      title: "InActive Users",
-      value: "0",
-      icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-      description: "",
-    },
-    {
-      // title: "Average Transaction",
-      title: "--",
-      value: "0",
-      icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-      description: "",
-    },
-  ]);
+  const [statsData, setStatsData] = useState([]);
 
   const handleViewClickOpen = () => {
     setOpenView(true);
