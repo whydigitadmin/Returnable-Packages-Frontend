@@ -111,24 +111,15 @@ function EmitterInwardNew({ addInwardManifeast }) {
   ]);
 
   const [openDialog, setOpenDialog] = useState(false);
-  const [openQrDialog, setOpenQrDialog] = useState(false);
 
   const handleDownloadClick = (selectedAllotNo) => {
     setOpenDialog(true);
     setDownloadDocId(selectedAllotNo);
     console.log("Download Doc ID:", selectedAllotNo);
   };
-  const handleQrClick = (selectedAllotNo) => {
-    setOpenQrDialog(true);
-    setDownloadDocId(selectedAllotNo);
-    console.log("Download Doc ID:", selectedAllotNo);
-  };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
-  };
-  const handleCloseQrDialog = () => {
-    setOpenQrDialog(false);
   };
 
   const [page, setPage] = useState(1);
@@ -666,9 +657,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
   const handleBack = () => {
     setOpenDialog(false);
   };
-  const handleBackQr = () => {
-    setOpenQrDialog(false);
-  };
 
   return (
     <>
@@ -708,7 +696,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   <thead>
                     <tr>
                       <th className="px-2 text-black border text-center">
-                        Actions
+                        Action
                       </th>
                       <th
                         className="px-2 text-black border text-center"
@@ -751,7 +739,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       tableDataPending.map((row) => (
                         <tr key={row.id}>
                           <td
-                            className="border px-2 py-2 text-center d-flex flex-row"
+                            className="border px-2 py-2 text-center d-flex justify-content-center"
                             style={{
                               cursor: "pointer",
                               color: "black",
@@ -760,10 +748,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                             <IoMdDownload
                               className="w-7 h-7"
                               onClick={() => handleDownloadClick(row.allotNo)}
-                            />
-                            <LiaQrcodeSolid
-                              className="w-7 h-7"
-                              onClick={() => handleQrClick(row.allotNo)}
                             />
                           </td>
                           <td className="border px-2 py-2 text-center">
@@ -1312,7 +1296,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   <thead>
                     <tr>
                       <th className="px-2 text-black border text-center">
-                        Actions
+                        Action
                       </th>
                       <th
                         className="text-black border px-2 text-center"
@@ -1361,7 +1345,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       paginatedData.map((row) => (
                         <tr key={row.id}>
                           <td
-                            className="border px-2 py-2 text-center d-flex flex-row"
+                            className="border px-2 py-2 text-center d-flex justify-content-center"
                             style={{
                               cursor: "pointer",
                               color: "black",
@@ -1372,10 +1356,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               onClick={() =>
                                 handleDownloadClick(row.allotmentNo)
                               }
-                            />
-                            <LiaQrcodeSolid
-                              className="w-7 h-7"
-                              onClick={() => handleQrClick(row.allotmentNo)}
                             />
                           </td>
                           <td className="border px-2 py-2 text-center">
@@ -1480,19 +1460,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
           {/* Content of your dialog */}
           {/* Add your download logic or content here */}
           <IssueManifestReport goBack={handleBack} docId={downloadDocId} />
-        </DialogContent>
-      </Dialog>
-      <Dialog
-        open={openQrDialog}
-        onClose={handleCloseQrDialog}
-        fullWidth
-        maxWidth="xs"
-      >
-        <DialogContent>
-          {/* Content of your dialog */}
-          {/* Add your download logic or content here */}
-          {/* <IssueManifestReport goBack={handleBackQr} docId={downloadDocId} /> */}
-          Qr under progress
         </DialogContent>
       </Dialog>
       <ToastContainer />

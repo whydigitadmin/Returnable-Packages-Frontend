@@ -330,7 +330,7 @@ function EmitterAllotmentReport() {
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
                 </Link>
                 <span>
-                  <strong className="ml-4">Allotment Report</strong>
+                  <strong className="ml-4">Allotment Register</strong>
                 </span>
               </p>
             </div>
