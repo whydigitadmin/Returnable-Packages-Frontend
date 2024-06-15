@@ -174,50 +174,17 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
       </div>
 
       <div className="container-sm">
-        <div className="card bg-base-100 shadow-xl p-5" ref={componentRef}>
-          <table>
-            <tr>
-              <td style={{ width: "10%" }}>
-                <img
-                  src="/AI_Packs.png"
-                  alt="Your Image"
-                  style={{ width: "auto", marginTop: "20px" }}
-                />
-              </td>
-              <td>
-                <div className="text-center">
-                  <h1 className="text-xl">
-                    <strong>SCM AIPACKS Private Limited</strong>
-                  </h1>
-                  <br />
-                  <h3>
-                    <strong>Bin Allotment</strong>
-                  </h3>
-                </div>
-              </td>
-
-              <td>
-                <div className="mr-3">
-                  {qrCodeValue && (
-                    <QRCode
-                      value={qrCodeValue} // Set QR code value
-                      size={100} // Adjust size as needed
-                    />
-                  )}
-                </div>
-              </td>
-            </tr>
-          </table>
-          {/* <div className="d-flex justify-content-end">
+        <div className="card bg-base-100 shadow-xl p-4" ref={componentRef}>
+          <div className="d-flex justify-content-between">
             <div>
               <img
                 src="/AI_Packs.png"
                 alt="Your Image"
-                style={{ width: "auto", marginTop: "20px" }}
+                style={{ width: "150px" }}
               />
             </div>
 
-            <div className="text-center">
+            <div className="text-center mt-5">
               <h1 className="text-xl">
                 <strong>SCM AIPACKS Private Limited</strong>
               </h1>
@@ -226,10 +193,10 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                 <strong>Bin Allotment</strong>
               </h3>
             </div>
-            <div className="mr-3">
+            <div className="mr-3 mt-5">
               {qrCodeValue && <QRCode value={qrCodeValue} size={100} />}
             </div>
-          </div> */}
+          </div>
 
           <div className="row -flex mt-2 flex-row flex-wrap">
             {/* <div className="col-md-12"> */}

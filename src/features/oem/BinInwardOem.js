@@ -56,6 +56,12 @@ const BinInwardOem = ({}) => {
       );
       if (response.status === 200) {
         setFlowList(response.data.paramObjectsMap.flowDetails);
+        if (response.data.paramObjectsMap.flowDetails.length === 1) {
+          setFlow(response.data.paramObjectsMap.flowDetails[0].flowId);
+          getEmitterOutwardDetailsByFlowId(
+            response.data.paramObjectsMap.flowDetails[0].flowId
+          );
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -115,12 +121,16 @@ const BinInwardOem = ({}) => {
   };
 
   const getEmitterOutwardDetailsByFlowId = async (selectedFlowId) => {
+    console.log("THE FLOW ID IS:", selectedFlowId);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByFlowOnEmitterDispatchScreen?FlowId=${selectedFlowId}`
       );
       if (response.status === 200) {
         setEmitterOutwardList(response.data.paramObjectsMap.EmitterOutward);
+        if (response.data.paramObjectsMap.EmitterOutward.length === 1) {
+          setAllotedId(response.data.paramObjectsMap.EmitterOutward.DocId);
+        }
       }
     } catch (error) {}
   };
@@ -190,7 +200,7 @@ const BinInwardOem = ({}) => {
 
   const handleSave = () => {
     const errors = {};
-    if (!flow.trim()) {
+    if (!flow) {
       errors.flow = "Flow is required";
     }
     if (!allotedId) {
@@ -389,9 +399,11 @@ const BinInwardOem = ({}) => {
                     onChange={handleFlowChange}
                     value={flow}
                   >
-                    <option value="" selected>
-                      Select a Flow
-                    </option>
+                    {flowList.length > 1 && (
+                      <option value="" selected>
+                        Select a Flow
+                      </option>
+                    )}
                     {flowList.length > 0 &&
                       flowList.map((list, index) => (
                         <option key={list.flowId} value={list.flowId}>
@@ -486,50 +498,90 @@ const BinInwardOem = ({}) => {
                           <thead>
                             <tr>
                               {/* <th>S.No</th> */}
-                              <th>Alloted Id</th>
-                              <th>Alloted Date</th>
-                              <th>Part Name</th>
-                              <th>Part No</th>
-                              <th>Kit No</th>
-                              <th>Alloted Qty</th>
-                              <th>REC QTY</th>
+                              <th className="text-center">Alloted Id</th>
+                              <th className="text-center">Alloted Date</th>
+                              <th className="text-center">Part Name</th>
+                              <th className="text-center">Part No</th>
+                              <th className="text-center">Kit No</th>
+                              <th className="text-center">Alloted Qty</th>
+                              <th className="text-center">REC QTY</th>
                             </tr>
                           </thead>
                           <tbody>
                             {tableData.map((row, index) => (
                               <tr key={row.id}>
                                 {/* <td>{index + 1}</td> */}
-                                <td>{row.allotedId}</td>
-                                <td>{row.allotedDate}</td>
-                                <td>{row.partName}</td>
-                                <td>{row.partNo}</td>
-                                <td>{row.kitNo}</td>
-                                <td>{row.allotedKitQty}</td>
-                                <td>
-                                  <input
-                                    type="number"
-                                    className="border border-black rounded"
-                                    style={{ width: 50 }}
-                                    value={row.receivedKitQty}
-                                    onChange={(e) => {
-                                      setTableData((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? {
-                                                ...r,
-                                                receivedKitQty: e.target.value,
-                                              }
-                                            : r
-                                        )
-                                      );
-                                    }}
-                                  />
+                                <td className="text-center">{row.allotedId}</td>
+                                <td className="text-center">
+                                  {row.allotedDate}
+                                </td>
+                                <td className="text-center">{row.partName}</td>
+                                <td className="text-center">{row.partNo}</td>
+                                <td className="text-center">{row.kitNo}</td>
+                                <td className="text-center">
+                                  {row.allotedKitQty}
+                                </td>
+                                <td className="text-center">
+                                  <div className="d-flex flex-column">
+                                    <input
+                                      type="number"
+                                      className="border border-black rounded"
+                                      style={{ width: 50 }}
+                                      value={row.receivedKitQty}
+                                      onChange={(e) => {
+                                        const inputValue = parseInt(
+                                          e.target.value,
+                                          10
+                                        );
+                                        if (isNaN(inputValue)) {
+                                          setTableData((prev) =>
+                                            prev.map((r, i) =>
+                                              i === index
+                                                ? {
+                                                    ...r,
+                                                    receivedKitQty: "",
+                                                  }
+                                                : r
+                                            )
+                                          );
+                                          setErrors((prevErrors) => ({
+                                            ...prevErrors,
+                                            receivedKitQty: "",
+                                          }));
+                                        } else if (
+                                          inputValue >= 0 &&
+                                          inputValue <= row.allotedKitQty
+                                        ) {
+                                          setTableData((prev) =>
+                                            prev.map((r, i) =>
+                                              i === index
+                                                ? {
+                                                    ...r,
+                                                    receivedKitQty: inputValue,
+                                                  }
+                                                : r
+                                            )
+                                          );
+                                          setErrors((prevErrors) => ({
+                                            ...prevErrors,
+                                            receivedKitQty: "",
+                                          }));
+                                        } else {
+                                          setErrors((prevErrors) => ({
+                                            ...prevErrors,
+                                            receivedKitQty:
+                                              "Can't Exceed with Allocated QTY",
+                                          }));
+                                        }
+                                      }}
+                                    />
 
-                                  {errors.receivedKitQty && (
-                                    <span className="error-text mb-1">
-                                      {errors.receivedKitQty}
-                                    </span>
-                                  )}
+                                    {errors.receivedKitQty && (
+                                      <span className="error-text mb-1">
+                                        {errors.receivedKitQty}
+                                      </span>
+                                    )}
+                                  </div>
                                 </td>
                               </tr>
                             ))}

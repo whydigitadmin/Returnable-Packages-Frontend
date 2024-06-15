@@ -745,9 +745,17 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               color: "black",
                             }}
                           >
-                            <IoMdDownload
-                              className="w-7 h-7"
+                            <img
+                              src="/RetrivalManifest-download.png"
+                              alt="pending-status-icon"
+                              title="add"
                               onClick={() => handleDownloadClick(row.allotNo)}
+                              style={{
+                                width: 30,
+                                height: 30,
+                                margin: "auto",
+                                hover: "pointer",
+                              }}
                             />
                           </td>
                           <td className="border px-2 py-2 text-center">
