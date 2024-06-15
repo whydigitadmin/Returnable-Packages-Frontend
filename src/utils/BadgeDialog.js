@@ -137,11 +137,7 @@ const BadgeDialog = ({
                   requestData.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell>
-                        {row.status === "Completed" ? (
-                          <CheckCircleIcon style={{ color: green[500] }} />
-                        ) : (
-                          <HourglassEmptyIcon style={{ color: red[500] }} />
-                        )}
+                        <CheckCircleIcon style={{ color: green[500] }} />
                       </StyledTableCell>
 
                       {/* <StyledTableCell>{row.invoiceno}</StyledTableCell> */}

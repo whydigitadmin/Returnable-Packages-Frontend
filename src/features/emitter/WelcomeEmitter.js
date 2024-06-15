@@ -76,24 +76,29 @@ function WelcomeEmitter() {
     localStorage.getItem("userDetails")
   );
 
-  const [emitterId] = useState(localStorage.getItem("emitterId"));
-  const [orgId] = useState(localStorage.getItem("orgId"));
   const [completedData, setCompletedData] = useState([]);
   const [pendingData, setPendingData] = useState([]);
   const [completedInwardData, setCompletedInwardData] = useState([]);
   const [pendingInwardData, setPendingInwardData] = useState([]);
   const [completedOutwardData, setCompletedOutwardData] = useState([]);
+  const [emitterId, setEmitterId] = useState(localStorage.getItem("emitterId"));
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+
+  useEffect(() => {
+    if (emitterId && orgId) {
+      fetchAllData();
+    }
+  }, [emitterId, orgId]);
 
   useEffect(() => {
     getDisplayName();
-    console.log(userDetail);
   }, [userDetail]);
 
-  useEffect(() => {
+  const fetchAllData = () => {
     getAllIssueRequest();
     getAllInwardRequest();
     getAllBinOutward();
-  }, []);
+  };
 
   const [open, setOpen] = useState(false);
   const [badgeType, setBadgeType] = useState("");
@@ -113,18 +118,11 @@ function WelcomeEmitter() {
       );
 
       if (response.status === 200) {
-        setDisplayName(
-          response.data.paramObjectsMap.userVO.customersVO.displayName
-        );
-        localStorage.setItem(
-          "displayName",
-          response.data.paramObjectsMap.userVO.customersVO.displayName
-        );
-        localStorage.setItem(
-          "emitterId",
-          response.data.paramObjectsMap.userVO.customersVO.id
-        );
-        console.log("userVO", response.data.paramObjectsMap.userVO);
+        const userVO = response.data.paramObjectsMap.userVO;
+        setDisplayName(userVO.customersVO.displayName);
+        localStorage.setItem("displayName", userVO.customersVO.displayName);
+        localStorage.setItem("emitterId", userVO.customersVO.id);
+        setEmitterId(userVO.customersVO.id);
       }
     } catch (error) {
       toast.error("Network Error!");
