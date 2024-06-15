@@ -301,12 +301,22 @@ function IssueReq() {
         orgId,
         irType: "IR_KIT",
         flowTo: selectedFlowId,
-        issueItemDTO: kitFields.map((field) => ({
-          kitName: field.kitNo,
-          kitQty: field.qty,
-        })),
+        // issueItemDTO: kitFields.map((field) => ({
+        //   kitName: field.kitNo,
+        //   kitQty: field.qty,
+        // })),
+        issueItemDTO: kitFields.map((field) => {
+          const kit = kitData.find((kit) => kit.kitName === field.kitNo);
+          return {
+            kitName: field.kitNo,
+            kitQty: field.qty,
+            partName: kit ? kit.partName : "N/A",
+            partNo: kit ? kit.partNumber : "N/A",
+            partQty: kit ? kit.partQty : 0,
+          };
+        }),
       };
-      console.log("test1", formData);
+      console.log("handleKitWiseIssueReq", formData);
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/emitter/createIssueRequest`,
@@ -433,6 +443,8 @@ function IssueReq() {
             id: kit.id,
             kitName: kit.kitNo,
             partName: kit.partName,
+            partNumber: kit.partNumber,
+            partQty: kit.partQty,
           }));
 
         // Setting kitData in the state using a callback function
