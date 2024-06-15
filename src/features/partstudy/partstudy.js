@@ -1,49 +1,39 @@
-import React, { useMemo, useEffect, useState } from "react";
-import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
+import EditIcon from "@mui/icons-material/Edit";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import Accordion from "@mui/material/Accordion";
+import AccordionDetails from "@mui/material/AccordionDetails";
+import AccordionSummary from "@mui/material/AccordionSummary";
 import Button from "@mui/material/Button";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
-import Box from "@mui/material/Box";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
-import { styled } from "@mui/material/styles";
-import EditIcon from "@mui/icons-material/Edit";
+import axios from "axios";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import { TbListDetails } from "react-icons/tb";
-import { LuPackageOpen } from "react-icons/lu";
-import { FiTruck } from "react-icons/fi";
-import { TbBuildingWarehouse } from "react-icons/tb";
-import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaBoxOpen } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import Accordion from "@mui/material/Accordion";
-import AccordionActions from "@mui/material/AccordionActions";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import NewPartStudy from "./NewPartStudy";
-import CloseIcon from "@mui/icons-material/Close";
-import IconButton from "@mui/material/IconButton";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import {
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableRow,
   Tooltip,
-  Paper,
 } from "@mui/material";
 
 const statsData = [
@@ -122,12 +112,104 @@ function Partstudy() {
     }
   };
 
+  const handleDownloadPDF = (row) => {
+    const doc = new jsPDF();
+    doc.setFontSize(12); // Reduced font size
+    doc.text("Part Study Details", 14, 15);
+
+    const basicData = row.original;
+    const packagingData = row.original.packingDetailVO;
+    const logisticsData = row.original.logisticsVO;
+    const stockData = row.original.stockDetailVO;
+
+    doc.autoTable({
+      startY: 20,
+      head: [["Field", "Value"]],
+      body: [
+        ["Part Study Id", basicData.refPsId],
+        ["Part Study Date", basicData.partStudyDate],
+        ["Part Name", basicData.partName],
+        ["Part No", basicData.partNumber],
+        ["Weight", basicData.weight],
+        ["Part Volume", basicData.partVolume],
+        ["Highest Volume", basicData.highestVolume],
+        ["Lowest Volume", basicData.lowestVolume],
+        ["Active", basicData.active],
+      ],
+      margin: { top: 10 },
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 }, // Reduce font size and cell padding
+    });
+
+    doc.text("Packaging Details", 14, doc.lastAutoTable.finalY + 10);
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 15,
+      head: [["Field", "Value"]],
+      body: [
+        ["Length", packagingData.length],
+        ["Breath", packagingData.breath],
+        ["Height", packagingData.height],
+        ["Existing Part", packagingData.existingPart],
+        ["Part Sensitive", packagingData.partSensitive],
+        ["Part Greasy", packagingData.partGreasy],
+        ["Part Orientation", packagingData.partOrientation],
+        ["Multiple Part In Single Unit", packagingData.multiPartInSingleUnit],
+        ["Stacking", packagingData.stacking],
+        ["Nesting", packagingData.nesting],
+        ["Remarks", packagingData.remarks],
+      ],
+      margin: { top: 10 },
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 },
+    });
+
+    doc.text("Logistics Details", 14, doc.lastAutoTable.finalY + 10);
+    doc.autoTable({
+      startY: doc.lastAutoTable.finalY + 15,
+      head: [["Field", "Value"]],
+      body: [
+        ["Avg Lot Size", logisticsData.avgLotSize],
+        ["Dispatch Frequency", logisticsData.dispatchFrequency],
+        ["Dispatch To", logisticsData.diapatchTo],
+      ],
+      margin: { top: 10 },
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 },
+    });
+
+    doc.addPage(); // Add a new page for Stock Keeping Days
+
+    doc.text("Stock Keeping Days", 14, 15);
+    doc.autoTable({
+      startY: 20,
+      head: [["Field", "Value"]],
+      body: [
+        ["Emitter Store Days", stockData.emitterStoreDays],
+        ["Emitter Line Days", stockData.emitterLineDays],
+        ["In Transit Days", stockData.inTransitDays],
+        ["Receiver Line Storage Days", stockData.receiverLineStorageDays],
+        [
+          "Receiver Manufacturing Line Days",
+          stockData.receiverManufacturingLineDays,
+        ],
+        ["Other Storage Days", stockData.otherStorageDays],
+        ["Reverse Logistics Day", stockData.reverseLogisticsDay],
+        ["Total Cycle Time", stockData.totalCycleTime],
+      ],
+      margin: { top: 10 },
+      theme: "grid",
+      styles: { fontSize: 10, cellPadding: 2 },
+    });
+
+    doc.save(`${basicData.partName}_PartStudy.pdf`);
+  };
+
   const columns = useMemo(
     () => [
       {
         accessorKey: "actions",
         header: "Actions",
-        size: 50,
+        size: 120,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -138,8 +220,17 @@ function Partstudy() {
         enableColumnOrdering: false,
         enableEditing: false,
         Cell: ({ row }) => (
-          <div>
-            <IconButton onClick={() => handleViewRow(row)}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <IconButton
+              onClick={() => handleViewRow(row)}
+              style={{ margin: "0 4px" }}
+            >
               <VisibilityIcon />
             </IconButton>
             <Tooltip
@@ -155,14 +246,24 @@ function Partstudy() {
                 <IconButton
                   onClick={() => handleEditRow(row)}
                   disabled={row.original.eflag}
+                  style={{ margin: "0 4px" }}
                 >
                   <EditIcon />
                 </IconButton>
               </span>
             </Tooltip>
+            <Tooltip title="Pdf Download">
+              <IconButton
+                onClick={() => handleDownloadPDF(row)}
+                style={{ margin: "0 4px" }}
+              >
+                <FiDownload />
+              </IconButton>
+            </Tooltip>
           </div>
         ),
       },
+
       {
         accessorKey: "emitterDisplayName",
         header: "Emitter",
