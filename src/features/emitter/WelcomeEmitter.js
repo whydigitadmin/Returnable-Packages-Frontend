@@ -3,7 +3,8 @@ import CreditCardIcon from "@heroicons/react/24/outline/CreditCardIcon";
 import UserGroupIcon from "@heroicons/react/24/outline/UserGroupIcon";
 import UsersIcon from "@heroicons/react/24/outline/UsersIcon";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+// import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
+import DownloadingIcon from "@mui/icons-material/Downloading";
 import axios from "axios";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
@@ -346,9 +347,9 @@ function WelcomeEmitter() {
                               badgeContent={
                                 pendingData ? pendingData.length : 0
                               }
-                              color="secondary"
+                              color="primary"
                               tooltipTitle="Pending Requests"
-                              IconComponent={HourglassEmptyIcon}
+                              IconComponent={DownloadingIcon}
                               pendingReqData={pendingData}
                               type="Pending"
                             />
@@ -403,9 +404,9 @@ function WelcomeEmitter() {
                           /> */}
                           <BadgeWithIcon
                             badgeContent={pendingInwardData.length}
-                            color="secondary"
+                            color="primary"
                             tooltipTitle="Pending inward"
-                            IconComponent={HourglassEmptyIcon}
+                            IconComponent={DownloadingIcon}
                             pendingReqData={pendingInwardData}
                             type="Pending"
                             inward="Inward"
