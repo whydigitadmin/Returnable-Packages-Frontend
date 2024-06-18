@@ -9,11 +9,8 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -24,11 +21,11 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaCloudUploadAlt, FaUser } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
-import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
 import { MdGroups } from "react-icons/md";
+import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import AddCustomer from "./AddCustomer";
 import DashBoardComponent from "./DashBoardComponent";
 
@@ -94,6 +91,17 @@ function Customer() {
 
   const handleAdd = () => {
     setAdd(true);
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
   };
 
   const handleBack = () => {
@@ -286,7 +294,7 @@ function Customer() {
             </div>
             <div className="">
               <div className="flex justify-between mt-4">
-                <button
+                {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
                   onClick={handleClickOpen}
@@ -308,7 +316,18 @@ function Customer() {
                   >
                     Bulk Upload
                   </span>
-                </button>
+                </button> */}
+                <BulkUploadDialog
+                  open={open}
+                  onOpenClick={handleClickOpen}
+                  handleClose={handleClose}
+                  dialogTitle="Upload File"
+                  uploadText="Upload file"
+                  downloadText="Sample File"
+                  onSubmit={handleSubmit}
+                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                  handleFileUpload={handleFileUpload}
+                />
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -337,7 +356,7 @@ function Customer() {
             <div className="mt-4">
               <MaterialReactTable table={table} />
             </div>
-            <Dialog
+            {/* <Dialog
               fullWidth={true}
               maxWidth={"sm"}
               open={open}
@@ -384,7 +403,7 @@ function Customer() {
                   Submit
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
             {/* VIEW MODAL */}
             <Dialog
               open={openView}

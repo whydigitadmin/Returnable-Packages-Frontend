@@ -9,30 +9,26 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
-import Tooltip from "@mui/material/Tooltip";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaBox, FaCloudUploadAlt } from "react-icons/fa";
-import { FaRegObjectGroup } from "react-icons/fa6";
-import { FaDatabase } from "react-icons/fa6";
-import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
+import { FaBox } from "react-icons/fa";
+import { FaDatabase, FaRegObjectGroup } from "react-icons/fa6";
 import { LuTimerReset } from "react-icons/lu";
-import DashBoardComponent from "./DashBoardComponent";
+import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import AddAsset from "./AddAsset";
+import DashBoardComponent from "./DashBoardComponent";
 
 function Asset() {
   const [open, setOpen] = React.useState(false);
@@ -85,6 +81,16 @@ function Asset() {
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
   };
 
   const handleClose = () => {
@@ -292,7 +298,7 @@ function Asset() {
             </div>
             <div className="">
               <div className="flex justify-between mt-4">
-                <button
+                {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
                   onClick={handleClickOpen}
@@ -314,7 +320,19 @@ function Asset() {
                   >
                     Bulk Upload
                   </span>
-                </button>
+                </button> */}
+
+                <BulkUploadDialog
+                  open={open}
+                  onOpenClick={handleClickOpen}
+                  handleClose={handleClose}
+                  dialogTitle="Upload File"
+                  uploadText="Upload file"
+                  downloadText="Sample File"
+                  onSubmit={handleSubmit}
+                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                  handleFileUpload={handleFileUpload}
+                />
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -343,7 +361,7 @@ function Asset() {
             <div className="mt-4">
               <MaterialReactTable table={table} />
             </div>
-            <Dialog
+            {/* <Dialog
               fullWidth={true}
               maxWidth={"sm"}
               open={open}
@@ -390,7 +408,7 @@ function Asset() {
                   Submit
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
             {/* VIEW MODAL */}
             <Dialog
               open={openView}

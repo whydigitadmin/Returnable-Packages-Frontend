@@ -1,25 +1,24 @@
+import EditIcon from "@mui/icons-material/Edit";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import React, { useState, useEffect, useMemo } from "react";
-import { FaBoxes, FaCloudUploadAlt } from "react-icons/fa";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaBoxes } from "react-icons/fa";
 import { FaRegObjectGroup } from "react-icons/fa6";
-import { FiDownload } from "react-icons/fi";
-import { IoIosAdd, IoMdClose } from "react-icons/io";
-import Tooltip from "@mui/material/Tooltip";
-import EditIcon from "@mui/icons-material/Edit";
-import IconButton from "@mui/material/IconButton";
 import { LuTimerReset } from "react-icons/lu";
 // import AddItemGroups from "./AddKit";
+import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import AddKit from "./AddKit";
 import DashBoardComponent from "./DashBoardComponent";
 
@@ -64,6 +63,17 @@ function CreateKit() {
 
   const handleClickOpen = () => {
     setOpen(true);
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
   };
 
   const handleAddItem = () => {
@@ -282,7 +292,7 @@ function CreateKit() {
             <div className="">
               {/* <h1 className="text-2xl font-semibold mt-4">Asset Kit</h1> */}
               <div className="flex justify-between mt-4">
-                <button
+                {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
                   onClick={handleClickOpen}
@@ -304,7 +314,19 @@ function CreateKit() {
                   >
                     Bulk Upload
                   </span>
-                </button>
+                </button> */}
+
+                <BulkUploadDialog
+                  open={open}
+                  onOpenClick={handleClickOpen}
+                  handleClose={handleClose}
+                  dialogTitle="Upload File"
+                  uploadText="Upload file"
+                  downloadText="Sample File"
+                  onSubmit={handleSubmit}
+                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                  handleFileUpload={handleFileUpload}
+                />
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -336,7 +358,7 @@ function CreateKit() {
                 <MaterialReactTable table={table} />
               </div>
             </div>
-            <Dialog
+            {/* <Dialog
               fullWidth={true}
               maxWidth={"sm"}
               open={open}
@@ -383,7 +405,7 @@ function CreateKit() {
                   Submit
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
             <Dialog
               fullWidth={true}
               maxWidth={"sm"}

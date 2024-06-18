@@ -9,11 +9,8 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -24,11 +21,11 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
-import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
+import { FaBoxOpen } from "react-icons/fa";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
+import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import DashBoardComponent from "../master/DashBoardComponent";
 import OemCreation from "./OemCreation";
 
@@ -84,6 +81,16 @@ const Oemuser = () => {
     setOpen(false);
   };
 
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
+  };
   const handleAddEmitterOpen = () => {
     setAddEmitter(true);
   };
@@ -288,7 +295,7 @@ const Oemuser = () => {
             {/* BULK UPLPOAD AND NEW EMITTER  */}
             <div className="">
               <div className="flex justify-between mt-4">
-                <button
+                {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
                   onClick={handleClickOpen}
@@ -310,7 +317,19 @@ const Oemuser = () => {
                   >
                     Bulk Upload
                   </span>
-                </button>
+                </button> */}
+
+                <BulkUploadDialog
+                  open={open}
+                  onOpenClick={handleClickOpen}
+                  handleClose={handleClose}
+                  dialogTitle="Upload File"
+                  uploadText="Upload file"
+                  downloadText="Sample File"
+                  onSubmit={handleSubmit}
+                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                  handleFileUpload={handleFileUpload}
+                />
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -343,7 +362,7 @@ const Oemuser = () => {
             </div>
 
             {/* BULK UPLOAD MODAL */}
-            <Dialog
+            {/* <Dialog
               fullWidth={true}
               maxWidth={"sm"}
               open={open}
@@ -390,7 +409,7 @@ const Oemuser = () => {
                   Submit
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
           </div>
         )}
 

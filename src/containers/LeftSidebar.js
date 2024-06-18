@@ -1,7 +1,7 @@
 import XMarkIcon from "@heroicons/react/24/outline/XMarkIcon";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import routes from "../routes/sidebar";
 import SidebarSubmenu from "./SidebarSubmenu";
 

@@ -1,28 +1,6 @@
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import { styled } from "@mui/material/styles";
-import axios from "axios";
-import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen, FaCloudUploadAlt, FaUser } from "react-icons/fa";
-import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
-import DashBoardComponent from "../master/DashBoardComponent";
-import UserCreation from "./UserCreation";
 import {
   Paper,
   Table,
@@ -31,8 +9,24 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import IconButton from "@mui/material/IconButton";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
+import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
+import DashBoardComponent from "../master/DashBoardComponent";
+import UserCreation from "./UserCreation";
 
 export const UserDetails = () => {
   const [addUser, setAddUser] = React.useState(false);
@@ -46,6 +40,8 @@ export const UserDetails = () => {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [statsData, setStatsData] = useState([]);
+
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/upload`;
 
   const handleViewClickOpen = () => {
     setOpenView(true);
@@ -61,6 +57,17 @@ export const UserDetails = () => {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
   };
 
   const handleAddUserOpen = () => {
@@ -277,7 +284,7 @@ export const UserDetails = () => {
             {/* BULK UPLOAD AND ADD NEW BUTTON */}
             <div className="">
               <div className="flex justify-between mt-4">
-                <button
+                {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
                   onClick={handleClickOpen}
@@ -299,7 +306,20 @@ export const UserDetails = () => {
                   >
                     Bulk Upload
                   </span>
-                </button>
+                </button> */}
+
+                <BulkUploadDialog
+                  open={open}
+                  onOpenClick={handleClickOpen}
+                  handleClose={handleClose}
+                  dialogTitle="Upload File"
+                  uploadText="Upload file"
+                  downloadText="Sample File"
+                  onSubmit={handleSubmit}
+                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                  handleFileUpload={handleFileUpload}
+                  apiUrl={apiUrl}
+                />
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -332,7 +352,7 @@ export const UserDetails = () => {
             </div>
 
             {/* BULK UPLOAD MODAL */}
-            <Dialog
+            {/* <Dialog
               fullWidth={true}
               maxWidth={"sm"}
               open={open}
@@ -379,7 +399,7 @@ export const UserDetails = () => {
                   Submit
                 </Button>
               </DialogActions>
-            </Dialog>
+            </Dialog> */}
           </div>
         )}
 
@@ -387,9 +407,7 @@ export const UserDetails = () => {
       <Dialog open={openView} onClose={handleViewClose} maxWidth="sm" fullWidth>
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
           <div className="row">
-            <div className="col-md-11">
-              <Typography variant="h6">User Details</Typography>
-            </div>
+            <div className="col-md-11"></div>
             <div className="col-md-1">
               <IconButton onClick={handleViewClose} aria-label="close">
                 <CloseIcon />

@@ -1,6 +1,7 @@
 import Badge from "@mui/material/Badge";
 import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
+import { green, red } from "@mui/material/colors";
 import React, { useState } from "react";
 import BadgeDialog from "./BadgeDialog";
 
@@ -48,7 +49,13 @@ const BadgeWithIcon = ({
             }}
             style={{ pointerEvents: "none" }}
           >
-            <IconComponent />
+            <IconComponent
+              style={
+                type === "Completed"
+                  ? { color: green[500] }
+                  : { color: red[500] }
+              }
+            />
           </Badge>
         </IconButton>
       </Tooltip>

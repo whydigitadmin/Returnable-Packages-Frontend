@@ -12,6 +12,10 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import sampleFile from "../../assets/sampleFiles/rp_user_sample_data_asset_category";
+
+import sampleFile from "../../assets/sampleFiles/rp_user_sample_data_asset_category.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import { stringValidation } from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
@@ -82,6 +86,9 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
   const [active, setActive] = React.useState(true);
   const [errors, setErrors] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
+  const [open, setOpen] = React.useState(false);
+
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/master/ExcelUploadForAssetCategory`;
 
   const handleSelectChange = (e) => {
     setAssetCategory(e.target.value);
@@ -90,6 +97,24 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
   // const handleUnitChange = (e) => {
   //   setDimUnit(e.target.value);
   // };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     console.log("THE EDIT ID IS:", editItemSpecificationId);
@@ -587,6 +612,20 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
             >
               Cancel
             </button>
+            <div style={{ marginLeft: "60%" }}>
+              <BulkUploadDialog
+                open={open}
+                onOpenClick={handleClickOpen}
+                handleClose={handleClose}
+                dialogTitle="Upload File"
+                uploadText="Upload file"
+                downloadText="Sample File"
+                onSubmit={handleSubmit}
+                sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                handleFileUpload={handleFileUpload}
+                apiUrl={apiUrl}
+              />
+            </div>
           </div>
         )}
       </div>

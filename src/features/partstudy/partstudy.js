@@ -115,7 +115,7 @@ function Partstudy() {
   const handleDownloadPDF = (row) => {
     const doc = new jsPDF();
     doc.setFontSize(12); // Reduced font size
-    doc.text("Part Study Details", 14, 15);
+    doc.text("Part Study Basic Details", 14, 15);
 
     const basicData = row.original;
     const packagingData = row.original.packingDetailVO;
@@ -141,7 +141,7 @@ function Partstudy() {
       styles: { fontSize: 10, cellPadding: 2 }, // Reduce font size and cell padding
     });
 
-    doc.text("Packaging Details", 14, doc.lastAutoTable.finalY + 10);
+    doc.text("Packaging Design", 14, doc.lastAutoTable.finalY + 10);
     doc.autoTable({
       startY: doc.lastAutoTable.finalY + 15,
       head: [["Field", "Value"]],
