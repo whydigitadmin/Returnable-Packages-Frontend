@@ -121,6 +121,17 @@ const BinInwardOem = ({}) => {
     setAllotedId(e.target.value);
     getBininwardListByDocId(e.target.value);
   };
+  const handleInvNoChange = (e) => {
+    setInvNo(e.target.value);
+    const selectedInvNo = emitterOutwardList.find(
+      (i) => i.invoiceNo === e.target.value
+    );
+
+    setAllotedId(selectedInvNo.DocId);
+    console.log("THE SELECTED INVOICE NO IS:", selectedInvNo.DocId);
+
+    getBininwardListByDocId(selectedInvNo.DocId);
+  };
 
   const getEmitterOutwardDetailsByFlowId = async (selectedFlowId) => {
     console.log("THE FLOW ID IS:", selectedFlowId);
@@ -219,8 +230,10 @@ const BinInwardOem = ({}) => {
       invoiceNo: invNo,
       invoiceDate: invDate,
       dispatchId: allotedId,
+      oemInwardNo: oemInwardNo,
+      oemInwardDate: oemInwardDate,
       oemBinInwardDetails: tableData.map((row) => ({
-        receivedKitQty: row.receivedKitQty,
+        receivedKitQty: row.allotedKitQty,
         allotedQty: row.allotedKitQty,
         kitNo: row.kitNo,
         outwardDocDate: row.allotedDate,
@@ -464,7 +477,8 @@ const BinInwardOem = ({}) => {
                     name="Select Invoice"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     className="form-select form-sz"
-                    onChange={handleAllotedIdChange}
+                    // onChange={handleAllotedIdChange}
+                    onChange={handleInvNoChange}
                     value={invNo}
                   >
                     <option value="" selected>
@@ -474,15 +488,32 @@ const BinInwardOem = ({}) => {
                       emitterOutwardList.map((outwardList, index) => (
                         <option
                           key={outwardList.index}
-                          value={outwardList.DocId}
+                          value={outwardList.invoiceNo}
                         >
-                          {outwardList.DocId}
+                          {outwardList.invoiceNo}
                         </option>
                       ))}
                   </select>
                   {errors.invNo && (
                     <span className="error-text">{errors.invNo}</span>
                   )}
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Dispatch ID:
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <input
+                    className={`form-control form-sz mb-2 ${
+                      errors.oemInwardNo && "border-red-500"
+                    }`}
+                    placeholder=""
+                    value={allotedId}
+                    disabled
+                  />
                 </div>
                 <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
@@ -574,6 +605,9 @@ const BinInwardOem = ({}) => {
                                   {row.allotedKitQty}
                                 </td>
                                 <td className="text-center">
+                                  {row.allotedKitQty}
+                                </td>
+                                {/* <td className="text-center">
                                   <div className="d-flex flex-column">
                                     <input
                                       type="number"
@@ -634,7 +668,7 @@ const BinInwardOem = ({}) => {
                                       </span>
                                     )}
                                   </div>
-                                </td>
+                                </td> */}
                               </tr>
                             ))}
                           </tbody>

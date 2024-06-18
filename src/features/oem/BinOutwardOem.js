@@ -428,7 +428,7 @@ function BinOutwardOem({}) {
                           <tr>
                             <th>Category</th>
                             <th>Asset Code</th>
-                            <th>Available QTY</th>
+                            <th>Total Empty QTY</th>
                             <th>Outward QTY</th>
                           </tr>
                         </thead>

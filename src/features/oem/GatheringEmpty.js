@@ -33,16 +33,20 @@ export const GatheringEmpty = () => {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
   const [flow, setFlow] = useState("");
-  // const [flowList, setFlowList] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
   const [tableView, setTableView] = useState(false);
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
-  const [flowList, setFlowList] = useState([
+  const [recBranch, setRecBranch] = useState("");
+  const [recBranchList, setRecBranchList] = useState([
     {
       id: 1,
-      flow: "PUN-CH",
+      flow: "CH",
+    },
+    {
+      id: 2,
+      flow: "BLR",
     },
   ]);
 
@@ -87,7 +91,7 @@ export const GatheringEmpty = () => {
     },
   ]);
 
-  const handleFlowChange = (e) => {
+  const handleRecBranchChange = (e) => {
     setFlow(e.target.value);
     setTableView(true);
   };
@@ -210,7 +214,7 @@ export const GatheringEmpty = () => {
                       <th>S.No</th>
                       <th>Gathered ID</th>
                       <th>Date</th>
-                      <th>Flow</th>
+                      {/* <th>Flow</th> */}
                       <th>REC QTY</th>
                       <th>Bal QTY</th>
                     </tr>
@@ -232,7 +236,7 @@ export const GatheringEmpty = () => {
                           </a>
                         </td>
                         <td>{row.gatheredDate}</td>
-                        <td>{row.flow}</td>
+                        {/* <td>{row.flow}</td> */}
                         <td>{row.recQty}</td>
                         <td>{row.balQty}</td>
                       </tr>
@@ -286,7 +290,7 @@ export const GatheringEmpty = () => {
               <div className="col-lg-2 col-md-4">
                 <label className="label mb-4">
                   <span className="label-text label-font-size text-base-content d-flex flex-row">
-                    Flow:
+                    Receiver Branch:
                     <FaStarOfLife className="must" />
                   </span>
                 </label>
@@ -296,14 +300,14 @@ export const GatheringEmpty = () => {
                   name="Select Kit"
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="form-select form-sz"
-                  onChange={handleFlowChange}
-                  value={flow}
+                  onChange={handleRecBranchChange}
+                  value={recBranch}
                 >
                   <option value="" selected>
-                    Select a Flow
+                    Select a Branch
                   </option>
-                  {flowList.length > 0 &&
-                    flowList.map((list) => (
+                  {recBranchList.length > 0 &&
+                    recBranchList.map((list) => (
                       <option key={list.id} value={list.flow}>
                         {list.flow}
                       </option>
@@ -321,17 +325,17 @@ export const GatheringEmpty = () => {
                     <table className="table table-hover w-full">
                       <thead>
                         <tr>
-                          <th>S.No</th>
+                          {/* <th>S.No</th> */}
                           <th>Asset Type</th>
                           <th>Asset Code</th>
-                          <th>EXP QTY</th>
+                          <th>Inward Qty</th>
                           <th>EMPTY QTY</th>
                         </tr>
                       </thead>
                       <tbody>
                         {tableData.map((row, index) => (
                           <tr key={row.id}>
-                            <td>{index + 1}</td>
+                            {/* <td>{index + 1}</td> */}
                             <td>{row.assetType}</td>
                             <td>{row.assetCode}</td>
                             <td>{row.expQty}</td>

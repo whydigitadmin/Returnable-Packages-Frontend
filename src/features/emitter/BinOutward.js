@@ -465,7 +465,7 @@ function BinOutward() {
                     value={flow}
                     onChange={handleSelectedFlow}
                   >
-                    {/* <option value="">Select a Flow</option> */}
+                    <option value="">Select a Flow</option>
                     {flowData &&
                       flowData.map((flowName) => (
                         <option key={flowName.id} value={flowName.id}>

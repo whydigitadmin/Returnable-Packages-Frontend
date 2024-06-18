@@ -31,7 +31,8 @@ const TransporterPickup = ({}) => {
     localStorage.getItem("userName")
   );
   const [listViewButton, setListViewButton] = useState(false);
-  const [savedRecordView, setSavedRecordView] = useState(false);
+  const [pendingView, setPendingView] = useState(true);
+  const [transactionView, setTransactionView] = useState(false);
   const [transporterList, setTransporterList] = useState([
     { id: 1, name: "Safe Express" },
   ]);
@@ -58,11 +59,12 @@ const TransporterPickup = ({}) => {
     },
   ]);
 
-  const handleSavedRecordView = (e) => {
-    setSavedRecordView(true);
+  const handleTransactionView = (e) => {
+    setTransactionView(true);
+    setPendingView(false);
   };
   const handleSavedRecordViewClose = (e) => {
-    setSavedRecordView(false);
+    setTransactionView(false);
   };
 
   const handleNew = () => {
@@ -155,23 +157,30 @@ const TransporterPickup = ({}) => {
             <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
           </Link>{" "}
           <p className="text-2xl">
-            <strong>Transporter Pickup</strong>
+            <strong>
+              {listViewButton
+                ? "Transporter Pickup"
+                : "Pending Transporter Pickup"}
+            </strong>
           </p>
           <div className="ml-auto">
             {" "}
-            <button
-              type="button"
-              className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              onClick={(e) => {
-                setListViewButton(!listViewButton);
-              }}
-            >
-              {listViewButton ? "Close" : "View"}
-            </button>
+            {!transactionView && (
+              <button
+                type="button"
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={(e) => {
+                  setListViewButton(!listViewButton);
+                  setPendingView(!pendingView);
+                }}
+              >
+                {listViewButton ? "Close" : "View"}
+              </button>
+            )}
           </div>
         </div>
 
-        {listViewButton ? (
+        {pendingView && (
           <>
             <div className="row mt-4">
               <div className="overflow-x-auto w-full ">
@@ -179,7 +188,7 @@ const TransporterPickup = ({}) => {
                   <thead>
                     <tr>
                       <th className="text-center">S.No</th>
-                      <th className="text-center">Pickup ID</th>
+                      <th className="text-center">Retrival Manifest No</th>
                       <th className="text-center">Date</th>
                       <th className="text-center">Handover To</th>
                       <th className="text-center">Handover By</th>
@@ -193,17 +202,16 @@ const TransporterPickup = ({}) => {
                       <tr key={row.id}>
                         <td className="text-center">{index + 1}</td>
                         <td className="text-center">
-                          {/* <a
+                          <a
                             href="#"
                             onClick={(e) => {
                               e.preventDefault();
-                              handleSavedRecordView(row.gatheredId);
+                              handleTransactionView(row.pickId);
                             }}
                             style={{ cursor: "pointer", color: "blue" }}
                           >
                             {row.pickId}
-                          </a> */}
-                          {row.pickId}
+                          </a>
                         </td>
                         <td className="text-center">{row.date}</td>
                         <td className="text-center">{row.handTo}</td>
@@ -218,26 +226,50 @@ const TransporterPickup = ({}) => {
               </div>
             </div>
           </>
-        ) : (
+        )}
+
+        {listViewButton && (
           <>
             <div className="row mt-4">
-              {/* <div className="col-lg-2 col-md-3">
-                <label className="label mb-4">
-                  <span className="label-text label-font-size text-base-content d-flex flex-row">
-                    Doc Id:
-                  </span>
-                </label>
+              <div className="overflow-x-auto w-full ">
+                <table className="table table-hover w-full">
+                  <thead>
+                    <tr>
+                      <th className="text-center">S.No</th>
+                      <th className="text-center">Pickup ID</th>
+                      <th className="text-center">Date</th>
+                      <th className="text-center">Handover To</th>
+                      <th className="text-center">Handover By</th>
+                      <th className="text-center">Driver</th>
+                      <th className="text-center">Ph No</th>
+                      <th className="text-center">Vehicle</th>
+                      <th className="text-center">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {ListViewTableData.map((row, index) => (
+                      <tr key={row.id}>
+                        <td className="text-center">{index + 1}</td>
+                        <td className="text-center">{row.pickId}</td>
+                        <td className="text-center">{row.date}</td>
+                        <td className="text-center">{row.handTo}</td>
+                        <td className="text-center">{row.handBy}</td>
+                        <td className="text-center">{row.driver}</td>
+                        <td className="text-center">{row.phNo}</td>
+                        <td className="text-center">{row.vehicle}</td>
+                        <td className="text-center">Done</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-              <div className="col-lg-2 col-md-3">
-                <input
-                  className={`form-control form-sz mb-2 ${
-                    errors.docId && "border-red-500"
-                  }`}
-                  placeholder=""
-                  value={docId}
-                  onChange={(e) => setDocId(e.target.value)}
-                />
-              </div> */}
+            </div>
+          </>
+        )}
+
+        {transactionView && (
+          <>
+            <div className="row mt-4">
               <div className="col-lg-2 col-md-3">
                 <label className="label mb-4">
                   <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -346,7 +378,6 @@ const TransporterPickup = ({}) => {
                   <span className="error-text mb-1">{errors.driverPhNo}</span>
                 )}
               </div>
-              {/* </div> */}
               <div className="col-lg-2 col-md-3">
                 <label className="label mb-4">
                   <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -379,7 +410,11 @@ const TransporterPickup = ({}) => {
               <button
                 type="button"
                 className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                onClick={handleNew}
+                // onClick={handleNew}
+                onClick={() => {
+                  setTransactionView(!transactionView);
+                  setPendingView(true);
+                }}
               >
                 Cancel
               </button>
@@ -391,7 +426,7 @@ const TransporterPickup = ({}) => {
       <ToastContainer />
 
       {/* VIEW MODAL */}
-      <Dialog
+      {/* <Dialog
         open={savedRecordView}
         onClose={handleSavedRecordViewClose}
         maxWidth="sm"
@@ -413,56 +448,7 @@ const TransporterPickup = ({}) => {
           </div>
         </DialogTitle>
         <DialogContent className="mt-4">
-          {/* <TableContainer component={Paper}>
-                <Table>
-                  <TableBody>
-                    <TableRow>
-                      <TableCell>Gathered ID</TableCell>
-                      <TableCell>1000001</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Gathered Date</TableCell>
-                      <TableCell>15-05-2024</TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Flow</TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Pallet</TableCell>
-                      <TableCell></TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Lid</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.address1}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>SideWall</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.city}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Insert</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.state}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>Country</TableCell>
-                      <TableCell>
-                        {selectedRowData.userAddressVO.country}
-                      </TableCell>
-                    </TableRow>
-                    <TableRow>
-                      <TableCell>PinCode</TableCell>
-                      <TableCell>{}</TableCell>
-                    </TableRow>
-                  </TableBody>
-                </Table>
-              </TableContainer> */}
+          
           <div className="row mt-4">
             <div className="overflow-x-auto w-full ">
               <table className="table table-hover w-full">
@@ -492,7 +478,7 @@ const TransporterPickup = ({}) => {
             </div>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog> */}
     </>
   );
 };
