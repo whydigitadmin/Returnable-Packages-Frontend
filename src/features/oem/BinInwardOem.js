@@ -25,6 +25,8 @@ const BinInwardOem = ({}) => {
   const [flow, setFlow] = useState("");
   const [invNo, setInvNo] = useState("");
   const [invDate, setInvDate] = useState(null);
+  const [oemInwardNo, setOemInwardNo] = useState("");
+  const [oemInwardDate, setOemInwardDate] = useState(null);
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
   const [allotedId, setAllotedId] = useState("");
@@ -415,7 +417,7 @@ const BinInwardOem = ({}) => {
                     <span className="error-text">{errors.flow}</span>
                   )}
                 </div>
-                <div className="col-lg-2 col-md-4">
+                {/* <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       Dispatch Id:
@@ -447,7 +449,7 @@ const BinInwardOem = ({}) => {
                   {errors.allotedId && (
                     <span className="error-text">{errors.allotedId}</span>
                   )}
-                </div>
+                </div> */}
                 <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -456,17 +458,30 @@ const BinInwardOem = ({}) => {
                     </span>
                   </label>
                 </div>
+
                 <div className="col-lg-2 col-md-3">
-                  <input
-                    className={`form-control form-sz mb-2 ${
-                      errors.receivedKitQty && "border-red-500"
-                    }`}
-                    placeholder=""
+                  <select
+                    name="Select Invoice"
+                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
+                    className="form-select form-sz"
+                    onChange={handleAllotedIdChange}
                     value={invNo}
-                    onChange={(e) => setInvNo(e.target.value)}
-                  />
+                  >
+                    <option value="" selected>
+                      Select a Invoice
+                    </option>
+                    {emitterOutwardList.length > 0 &&
+                      emitterOutwardList.map((outwardList, index) => (
+                        <option
+                          key={outwardList.index}
+                          value={outwardList.DocId}
+                        >
+                          {outwardList.DocId}
+                        </option>
+                      ))}
+                  </select>
                   {errors.invNo && (
-                    <span className="error-text mb-1">{errors.invNo}</span>
+                    <span className="error-text">{errors.invNo}</span>
                   )}
                 </div>
                 <div className="col-lg-2 col-md-3">
@@ -480,6 +495,43 @@ const BinInwardOem = ({}) => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
                       value={invDate}
+                      onChange={handleInvDateChange}
+                      slotProps={{
+                        textField: { size: "small" },
+                      }}
+                      format="DD/MM/YYYY"
+                    />
+                  </LocalizationProvider>
+                </div>
+
+                <div className="col-lg-2 col-md-3">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      OEM Inward No:
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <input
+                    className={`form-control form-sz mb-2 ${
+                      errors.oemInwardNo && "border-red-500"
+                    }`}
+                    placeholder=""
+                    value={oemInwardNo}
+                    onChange={(e) => setOemInwardNo(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      OEM Inward Date:
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-3">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      value={oemInwardDate}
                       onChange={handleInvDateChange}
                       slotProps={{
                         textField: { size: "small" },

@@ -194,7 +194,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
               </h3>
             </div>
             <div className="mr-3 mt-5">
-              {qrCodeValue && <QRCode value={qrCodeValue} size={100} />}
+              {qrCodeValue && <QRCode value={qrCodeValue} size={150} />}
             </div>
           </div>
 

@@ -256,6 +256,10 @@ function IssueReq() {
               typeof flow.flowName === "string" && flow.flowName.trim() !== ""
           )
           .map((flow) => ({ id: flow.id, flow: flow.flowName }));
+        if (validFlows.length === 1) {
+          setSelectedFlowId(validFlows[0].id);
+          console.log("THE FIRST FLOW INDEX VALUE IS:", validFlows[0].id);
+        }
         setFlowData(validFlows);
         console.log("validFlows", validFlows);
       }
@@ -881,7 +885,7 @@ function IssueReq() {
                       value={selectedFlowId}
                       onChange={handleFlowChange}
                     >
-                      <option value="">Select a Flow</option>
+                      {/* <option value="">Select a Flow</option> */}
                       {flowData &&
                         flowData.map((flowName) => (
                           <option key={flowName.id} value={flowName.id}>

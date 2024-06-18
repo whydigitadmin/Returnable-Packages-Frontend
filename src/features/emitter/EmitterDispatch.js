@@ -24,6 +24,8 @@ export const EmitterDispatch = () => {
   );
   const [invNo, setInvNo] = useState("");
   const [invDate, setInvDate] = useState(null);
+  const [grnNo, setGrnNo] = useState("");
+  const [grnDate, setGrnDate] = useState(null);
   const [dispatchRemarks, setDispatchRemarks] = useState("");
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [errors, setErrors] = useState({});
@@ -120,14 +122,20 @@ export const EmitterDispatch = () => {
   };
 
   const handleRowClick = (rowId) => {
-    const currentExpandedRows = expandedRows;
-    const isRowCurrentlyExpanded = currentExpandedRows.includes(rowId);
-
-    const newExpandedRows = isRowCurrentlyExpanded
-      ? currentExpandedRows.filter((id) => id !== rowId)
-      : currentExpandedRows.concat(rowId);
-
+    const isRowExpanded = expandedRows.includes(rowId);
+    const newExpandedRows = isRowExpanded
+      ? expandedRows.filter((id) => id !== rowId)
+      : [...expandedRows, rowId];
     setExpandedRows(newExpandedRows);
+
+    const updatedListViewTableData = listViewTableData.map((row) => {
+      if (row.id === rowId) {
+        row.backgroundColor = isRowExpanded ? "" : "red";
+      }
+      return row;
+    });
+
+    setListViewTableData(updatedListViewTableData);
   };
 
   const handleNew = () => {
@@ -269,20 +277,8 @@ export const EmitterDispatch = () => {
                     <tbody>
                       {listViewTableData.map((row, index) => (
                         <React.Fragment key={row.id}>
-                          <tr>
-                            <td>
-                              {/* <a
-                                href="#"
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  handleRowClick(row.id);
-                                }}
-                                style={{ cursor: "pointer", color: "blue" }}
-                              >
-                                {row.docId}
-                              </a> */}
-                              {row.docId}
-                            </td>
+                          <tr style={{ backgroundColor: "red" }}>
+                            <td>{row.docId}</td>
                             <td>{row.docDate}</td>
                             <td>{row.flow}</td>
                             <td>{row.invoiceNo}</td>
@@ -300,29 +296,82 @@ export const EmitterDispatch = () => {
                               </a>
                             </td>
                           </tr>
+
                           {expandedRows.includes(row.id) && (
                             <tr>
                               <td colSpan="6">
                                 <table className="table table-bordered">
                                   <thead>
                                     <tr>
-                                      <th>Bin Out Docid</th>
-                                      <th>Bin Out Doc Date</th>
-                                      <th>Part Name</th>
-                                      <th>Part No</th>
-                                      <th>Kit No</th>
-                                      <th>Qty</th>
+                                      <th
+                                        style={{
+                                          backgroundColor: "green",
+                                        }}
+                                      >
+                                        Bin Out Docid
+                                      </th>
+                                      <th style={{ backgroundColor: "green" }}>
+                                        Bin Out Doc Date
+                                      </th>
+                                      <th style={{ backgroundColor: "green" }}>
+                                        Part Name
+                                      </th>
+                                      <th style={{ backgroundColor: "green" }}>
+                                        Part No
+                                      </th>
+                                      <th style={{ backgroundColor: "green" }}>
+                                        Kit No
+                                      </th>
+                                      <th style={{ backgroundColor: "green" }}>
+                                        Qty
+                                      </th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {row.dispatchDetailsVO.map((detail) => (
                                       <tr key={detail.id}>
-                                        <td>{detail.binOutDocid}</td>
-                                        <td>{detail.binOutDocDate}</td>
-                                        <td>{detail.partName}</td>
-                                        <td>{detail.partNo}</td>
-                                        <td>{detail.kitNo}</td>
-                                        <td>{detail.qty}</td>
+                                        <td
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.binOutDocid}
+                                        </td>
+                                        <td
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.binOutDocDate}
+                                        </td>
+                                        <td
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.partName}
+                                        </td>
+                                        <td
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.partNo}
+                                        </td>
+                                        <td
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.kitNo}
+                                        </td>
+                                        <td
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.qty}
+                                        </td>
                                       </tr>
                                     ))}
                                   </tbody>
@@ -449,6 +498,46 @@ export const EmitterDispatch = () => {
                   </LocalizationProvider>
                   {errors.invDate && (
                     <span className="error-text mb-1">{errors.invDate}</span>
+                  )}
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      GRN No
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    name="grnNo"
+                    maxLength={15}
+                    value={grnNo}
+                    onChange={(e) => setGrnNo(e.target.value)}
+                  />
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      GRN Date:
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DesktopDatePicker
+                      value={grnDate}
+                      onChange={(date) =>
+                        setGrnDate(dayjs(date).format("YYYY-MM-DD"))
+                      }
+                      slotProps={{
+                        textField: { size: "small" },
+                      }}
+                      format="DD/MM/YYYY"
+                    />
+                  </LocalizationProvider>
+                  {errors.grnDate && (
+                    <span className="error-text mb-1">{errors.grnDate}</span>
                   )}
                 </div>
                 <div className="col-lg-2 col-md-4">
