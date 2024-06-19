@@ -12,8 +12,8 @@ import { FaStarOfLife } from "react-icons/fa";
 import { IoMdClose } from "react-icons/io";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { encryptPassword } from "../user/components/utils";
 import { stringValidation } from "../../utils/userInputValidation";
+import { encryptPassword } from "../user/components/utils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -685,7 +685,6 @@ function OemCreation({ addEmitter, oemEditId }) {
             />
             {errors.email && <span className="error-text">{errors.email}</span>}
           </div>
-
           {!oemEditId && (
             <>
               <div className="col-lg-3 col-md-6 mb-2">

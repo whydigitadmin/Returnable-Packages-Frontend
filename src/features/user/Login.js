@@ -15,6 +15,7 @@ function Login() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loginObj, setLoginObj] = useState(INITIAL_LOGIN_OBJ);
+  const [loadingBtn, setLoadingBtn] = useState(false);
 
   const isValidEmail = (email) => {
     // Use a regular expression or any other method to validate the email format
@@ -37,6 +38,7 @@ function Login() {
       setErrorMessage("Password is required!");
     } else {
       setLoading(true);
+      setLoadingBtn(true);
 
       // Create a request body
       const requestBody = {
@@ -98,10 +100,12 @@ function Login() {
         }
 
         setLoading(false);
+        setLoadingBtn(false);
       } catch (error) {
         console.error("Login error:", error);
         setErrorMessage("Login failed. Please try again."); // Handle login error here
         setLoading(false);
+        setLoadingBtn(false);
       }
     }
   };
@@ -112,20 +116,27 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-base-200 flex items-center">
-      <div className="card mx-auto w-full max-w-5xl my-3 shadow-xl rounded-left-border">
+    <div
+      className="min-h-screen flex items-center"
+      style={{ backgroundColor: "#22223b" }}
+    >
+      <div className="card mx-auto w-full max-w-4xl my-2 shadow-xl rounded-left-border">
         <div className="grid  md:grid-cols-2 grid-cols-1  bg-base-100 rounded-xl">
           <div className="">
             <LandingIntro />
           </div>
           <div className="py-16 px-10">
-            <div className="mb-2 bg-body-secondary login-border d-flex flex-row">
-              <div className="signin-btn" style={{ width: "98%" }}>
-                Sign In
+            <div
+              className="mb-2 login-border"
+              // style={{ backgroundColor: "#f7f052" }}
+            >
+              <div className="font-semibold text-2xl" style={{ width: "98%" }}>
+                Welcome Back !{" "}
+                {/* <span style={{ fontSize: "30px" }}>&#128075;</span> */}
+              </div>{" "}
+              <div className="text-sm font-semibold" style={{ width: "98%" }}>
+                Please Enter your Login Credentials
               </div>
-              {/* <a href="/register" className="signup-btn signin-hide">
-                SignUp
-              </a> */}
             </div>
             <form onSubmit={(e) => submitForm(e)}>
               <div className="mb-4">
@@ -149,23 +160,34 @@ function Login() {
               </div>
 
               <div className="text-right text-primary">
-                <Link to="/forgot-password">
-                  <span className="text-sm  inline-block  hover:text-primary hover:underline hover:cursor-pointer transition duration-200">
+                <Link to="">
+                  <span className="text-sm  inline-block  font-semibold hover:text-primary hover:underline hover:cursor-pointer transition duration-200">
                     Forgot Password?
                   </span>
                 </Link>
               </div>
 
               <ErrorText styleClass="mt-8">{errorMessage}</ErrorText>
-              <button
+              {/* <button
                 type="submit"
-                className={
-                  "btn mt-2 w-full btn-primary" + (loading ? " loading" : "")
-                }
+                className={"btn mt-2 w-full" + (loading ? " loading" : "")}
+                style={{ backgroundColor: "#4ED14E" }}
               >
                 Login
+              </button> */}
+              <button
+                type="submit"
+                className={"btn mt-2 w-full" + (loading ? " loading" : "")}
+                style={{ backgroundColor: "#21C544" }}
+              >
+                {loadingBtn ? (
+                  <span>Loading...</span> // Display loading text or spinner
+                ) : (
+                  "Login"
+                )}
               </button>
             </form>
+            {/* <GoGreen /> */}
           </div>
         </div>
       </div>

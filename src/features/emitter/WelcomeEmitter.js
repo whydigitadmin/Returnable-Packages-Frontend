@@ -6,12 +6,12 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 // import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 import DownloadingIcon from "@mui/icons-material/Downloading";
 import axios from "axios";
-import moment from "moment";
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BadgeWithIcon from "../../utils/BadgeWithIcon";
+import LastLogin from "../../utils/LastLogin";
 import DashboardStats from "../dashboard/components/DashboardStats";
 
 const statsData = [
@@ -214,11 +214,11 @@ function WelcomeEmitter() {
 
       <div className="row" style={{ gap: "3%" }}>
         <div
-          className="col-lg-3 col-md-3 card bg-base-100 shadow-xl mb-4 pe-2"
+          className="col-lg-3 col-md-3 card bg-white shadow-xl mb-4 p-3 rounded-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out"
           style={{ height: "350px" }}
         >
           <div className="">
-            <h4 className="text-2xl font-semibold mt-4 mb-2 text-center">
+            <h4 className="text-xl font-semibold mt-4 mb-2 text-center">
               WELCOME TO
             </h4>
             {/* <h4 className="text-4xl font-bold mt-2 ms-2 mb-4">AIPACKS</h4> */}
@@ -227,16 +227,16 @@ function WelcomeEmitter() {
               style={{ width: "100px", margin: "auto" }}
               className="text-center mb-3"
             />
-            <h4 className="text-md dark:text-slate-300 font-semibold ms-2 mb-1">
+            {/* <h4 className="text-md dark:text-slate-300 font-semibold ms-2 mb-2 text-center">
               {userDetail.firstName}
-            </h4>
+            </h4> */}
             {/* <p className="text-sm ms-2 mb-2">
               Last login{" "}
               <span>
                 {moment(userDetail.lastLogin).format("MMMM Do YYYY, h:mm:ss a")}
               </span>
             </p> */}
-            <p className="text-sm ms-2 mb-2">
+            {/* <p className="text-sm ms-2 mb-2">
               Last login{" "}
               <span>
                 {userDetail.lastLogin === null
@@ -245,7 +245,9 @@ function WelcomeEmitter() {
                       "MMMM Do YYYY, h:mm:ss a"
                     )}
               </span>
-            </p>
+            </p> */}
+            <LastLogin userDetail={userDetail} />
+
             {/* <p className="text-2xl ms-2">Tue</p>
             <p className="text-5xl ms-5">Jan</p>
             <p className="text-9xl text-right me-2 mb-3">17</p> */}
@@ -261,12 +263,12 @@ function WelcomeEmitter() {
                 style={{
                   width: "28px",
                   height: "28px",
-                  marginTop: "30px",
+                  marginTop: "26px",
                   marginRight: "4px",
                 }}
               />
 
-              <h4 className="text-2xl font-semibold mt-4 pt-1 ms-1 mb-4">
+              <h4 className="text-xl font-semibold mt-4 pt-1 ms-1 mb-4 text-center">
                 {displayName}
               </h4>
             </div>
@@ -279,7 +281,7 @@ function WelcomeEmitter() {
             </p> */}
           </div>
         </div>
-        <div className="col-lg-8 col-md-8 card bg-base-100 shadow-xl mb-4">
+        <div className="col-lg-8 col-md-8 card bg-white shadow-xl mb-4 p-3 rounded-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
           {userDetails === "ROLE_OEM" ? (
             <>
               <div className="col-lg-12">

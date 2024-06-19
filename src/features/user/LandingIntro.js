@@ -1,21 +1,35 @@
+import Lottie from "lottie-react";
+import LoginLottieFile from "../../pages/LoginLottie.json";
 import TemplatePointers from "./components/TemplatePointers";
 
 function LandingIntro() {
   return (
     <>
-      <div className="hero min-h-full rounded-l-xl bg-base-200">
+      <div
+        className="hero min-h-full rounded-l-xl"
+        style={{ backgroundColor: "#ffffff", borderRight: "1px dashed grey" }}
+      >
         <div className="hero-content py-12">
           <div className="max-w-md">
-            <div className="text-center mb-2">
+            <div className="text-center mb-4">
+              {" "}
               <img
                 src="./BIN_BEE.png"
                 alt="Dashwind Admin Template"
-                className="w-48 inline-block"
+                className="w-40 inline-block"
               ></img>
             </div>
-            <h1 className="text-3xl text-center font-bold mb-10">
+            <div className="text-center mb-2">
+              <Lottie
+                animationData={LoginLottieFile}
+                loop={true}
+                style={{ width: "275px", height: "275px" }}
+              />
+            </div>
+
+            {/* <h1 className="text-3xl text-center font-bold mb-10">
               Returnable Packages
-            </h1>
+            </h1> */}
 
             {/* Importing pointers component */}
           </div>

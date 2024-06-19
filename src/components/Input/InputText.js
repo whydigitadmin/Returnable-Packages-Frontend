@@ -22,9 +22,7 @@ function InputText({
   return (
     <div className={`w-full ${containerStyle}`}>
       <label className="label" style={{ width: "auto" }}>
-        <span className={"label-text text-base-content " + labelStyle}>
-          {labelTitle}
-        </span>
+        <span className="text-sm font-semibold">{labelTitle}</span>
         {type === "password" && (
           <WtTooltip
             content={
