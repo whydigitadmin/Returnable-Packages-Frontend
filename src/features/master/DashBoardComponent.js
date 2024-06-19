@@ -1,25 +1,111 @@
-function DashBoardComponent({title, icon, value, description, colorIndex}){
+import { useState } from "react";
+import {
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableRow,
+} from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
 
-    const COLORS = ["blue", "green", "primary", "gray"]
+function DashBoardComponent({
+  title,
+  subTitle,
+  icon,
+  value,
+  description,
+  colorIndex,
+}) {
+  const COLORS = ["blue", "green", "primary", "gray"];
+  const [lowVolume, setLowVolume] = useState(false);
 
-    const getDescStyle = () => {
-        if(description.includes("↗︎"))return "font-bold text-green-700 dark:text-green-300"
-        else if(description.includes("↙"))return "font-bold text-rose-500 dark:text-red-400"
-        else return ""
-    }
+  const getDescStyle = () => {
+    if (description.includes("↗︎"))
+      return "font-bold text-green-700 dark:text-green-300";
+    else if (description.includes("↙"))
+      return "font-bold text-rose-500 dark:text-red-400";
+    else return "";
+  };
 
-    return(
-        <div className="stats shadow">
-            <div className="stat">
-            <div className="dark:text-slate-300 text-right font-semibold">{title}</div>
-                <div className="flex justify-between mt-4 mb-2">
-                <div className={`w-10 h-10 rounded dark:text-slate-300 bg-${COLORS[colorIndex]} text-${COLORS[colorIndex]}`}>{icon}</div>
-                <div className={`font-semibold text-3xl mt-2 text-right dark:text-slate-100 text-${COLORS[colorIndex]}`}>{value}</div>
-                </div>
-                <div className={"stat-desc  " + getDescStyle()}>{description}</div>
+  const handleLowVolumeOpen = () => {
+    setLowVolume(true);
+    console.log("THE MODAL IS OPEN");
+  };
+  const handleLowVolumeClose = () => {
+    setLowVolume(false);
+  };
+
+  return (
+    <>
+      <div className="stats shadow">
+        <div className="stat">
+          <div
+            className={
+              title === "low stock"
+                ? "dark:text-slate-300 text-right font-semibold cursor-pointer"
+                : "dark:text-slate-300 text-right font-semibold"
+            }
+            onClick={title === "low stock" ? handleLowVolumeOpen : undefined}
+          >
+            {title}
+          </div>
+
+          <div className="dark:text-slate-300 text-right font-semibold mt-2 cursor-pointer">
+            {subTitle}
+          </div>
+          <div className="flex justify-between mt-4 mb-2">
+            <div
+              className={`w-10 h-10 rounded dark:text-slate-300 bg-${COLORS[colorIndex]} text-${COLORS[colorIndex]}`}
+            >
+              {icon}
             </div>
+            <div
+              className={`font-semibold text-3xl mt-2 text-right dark:text-slate-100 text-${COLORS[colorIndex]}`}
+            >
+              {value}
+            </div>
+          </div>
+          <div className={"stat-desc  " + getDescStyle()}>{description}</div>
         </div>
-    )
+      </div>
+
+      {/* VIEW MODAL */}
+      <Dialog
+        open={lowVolume}
+        onClose={handleLowVolumeClose}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
+          <div className="row">
+            <div className="col-md-11"></div>
+            <div className="col-md-1">
+              <IconButton onClick={handleLowVolumeClose} aria-label="close">
+                <CloseIcon />
+              </IconButton>
+            </div>
+          </div>
+        </DialogTitle>
+        <DialogContent className="mt-4">
+          <TableContainer component={Paper}>
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell>Email ID</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
+          {/* )} */}
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
 
-export default DashBoardComponent
+export default DashBoardComponent;

@@ -431,7 +431,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        const allotAssetDetails = response.data.paramObjectsMap.binInwardVO;
+        const allotAssetDetails =
+          response.data.paramObjectsMap.binInwardVO.reverse();
 
         const updatedTableData = allotAssetDetails.map(
           (assetDetail, index) => ({
@@ -710,15 +711,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       >
                         Allotment Date
                       </th>
-                      <th className="px-2 text-black border text-center">
-                        Flow
-                      </th>
-                      <th className="px-2 text-black border text-center">
-                        Part Name
-                      </th>
-                      <th className="px-2 text-black border text-center">
-                        Part No
-                      </th>
+
                       <th className="px-2 text-black border text-center">
                         Kit No
                       </th>
@@ -728,6 +721,17 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       <th className="px-2 text-black border text-center">
                         Alloted QTY
                       </th>
+
+                      <th className="px-2 text-black border text-center">
+                        Flow
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Part Name
+                      </th>
+                      <th className="px-2 text-black border text-center">
+                        Part No
+                      </th>
+
                       <th className="px-2 text-black border text-center">
                         Fulfillment %
                       </th>
@@ -778,15 +782,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                           <td className="border px-2 py-2 text-center">
                             {row.allotDate}
                           </td>
-                          <td className="border px-2 py-2 text-center">
-                            {row.flow}
-                          </td>
-                          <td className="border px-2 py-2 text-center">
-                            {row.partName}
-                          </td>
-                          <td className="border px-2 py-2 text-center">
-                            {row.partNo}
-                          </td>
+
                           <td className="border px-2 py-2 text-center">
                             {row.kitCode}
                           </td>
@@ -796,6 +792,17 @@ function EmitterInwardNew({ addInwardManifeast }) {
                           <td className="border px-2 py-2 text-center">
                             {row.allotKitQty}
                           </td>
+
+                          <td className="border px-2 py-2 text-center">
+                            {row.flow}
+                          </td>
+                          <td className="border px-2 py-2 text-center">
+                            {row.partName}
+                          </td>
+                          <td className="border px-2 py-2 text-center">
+                            {row.partNo}
+                          </td>
+
                           <td className="border px-2 py-2 text-center">
                             {/* {((row.allotKitQty / row.reqKitQty) * 100).toFixed(
                               2
@@ -1025,7 +1032,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
               <span className="error-text mb-1">{errors.docId}</span>
             )} */}
                 </div>
-                <div className="col-lg-2 col-md-3">
+
+                {/* <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       Return QTY
@@ -1035,7 +1043,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                 <div className="col-lg-2 col-md-3">
                   <input
                     className="form-control form-sz mb-2"
-                    //   placeholder="Alloted Kit Qty"
                     value={returnQty}
                     onChange={(e) => setReturnQty(e.target.value)}
                     onInput={(e) => {
@@ -1043,9 +1050,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
                     }}
                     maxLength={4}
                   />
-                  {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
                 </div>
 
                 <div className="col-lg-2 col-md-3">
@@ -1058,14 +1062,11 @@ function EmitterInwardNew({ addInwardManifeast }) {
                 <div className="col-lg-2 col-md-3">
                   <input
                     className="form-control form-sz mb-2"
-                    //   placeholder="Alloted Kit Qty"
                     value={returnRemarks}
                     onChange={(e) => setReturnRemarks(e.target.value)}
                   />
-                  {/* {errors.docId && (
-              <span className="error-text mb-1">{errors.docId}</span>
-            )} */}
-                </div>
+                </div> */}
+
                 <div className="col-lg-2 col-md-6">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -1359,11 +1360,25 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               color: "black",
                             }}
                           >
-                            <IoMdDownload
+                            {/* <IoMdDownload
                               className="w-7 h-7"
                               onClick={() =>
                                 handleDownloadClick(row.allotmentNo)
                               }
+                            /> */}
+                            <img
+                              src="/RetrivalManifest-download.png"
+                              alt="pending-status-icon"
+                              title="add"
+                              onClick={() =>
+                                handleDownloadClick(row.allotmentNo)
+                              }
+                              style={{
+                                width: 30,
+                                height: 30,
+                                margin: "auto",
+                                hover: "pointer",
+                              }}
                             />
                           </td>
                           <td className="border px-2 py-2 text-center">

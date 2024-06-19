@@ -64,7 +64,9 @@ function BinOutward() {
       );
 
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.binOutwardVO);
+        setListViewTableData(
+          response.data.paramObjectsMap.binOutwardVO.reverse()
+        );
       } else {
         console.error("API Error:", response.data);
       }
@@ -195,7 +197,8 @@ function BinOutward() {
         setTableData(response.data.paramObjectsMap.kitAssetVO);
       }
     } catch (error) {
-      toast.error("Network Error!");
+      // toast.error("Network Error!");
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -216,7 +219,6 @@ function BinOutward() {
   const getEmitterOutwardList = async (kitQty) => {
     try {
       const response = await axios.get(
-        // `${process.env.REACT_APP_API_URL}/api/master/getAvailableKitQtyByEmitter?emitterId=${emitterId}&flowId=${flow}&kitId=${kitQty}&orgId=${orgId}`
         `${process.env.REACT_APP_API_URL}/api/emitter/getEmitterOutwardList?flowId=${flow}&kitNo=${kitQty}`
       );
 
@@ -230,20 +232,25 @@ function BinOutward() {
   };
 
   const handleKitQty = (event) => {
-    const qty = event.target.value;
-
-    if (qty === "" || (parseInt(qty, 10) <= avlQty && parseInt(qty, 10) >= 0)) {
-      setOutwardKitQty(qty);
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        outwardKitQty: "",
-      }));
-      getkitAssetDetailsByKitId(qty);
+    const inputValue = event.target.value.toUpperCase().replace(/[^0-9]/g, "");
+    const newValue = parseInt(inputValue, 10);
+    if (!isNaN(newValue)) {
+      if (newValue <= avlQty && newValue !== 0) {
+        setOutwardKitQty(newValue);
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          outwardKitQty: "",
+        }));
+        getkitAssetDetailsByKitId(newValue);
+      } else {
+        setErrors((prevErrors) => ({
+          ...prevErrors,
+          outwardKitQty:
+            "Outward Kit Qty is too low or cannot exceed Available Kit Qty",
+        }));
+      }
     } else {
-      setErrors((prevErrors) => ({
-        ...prevErrors,
-        outwardKitQty: "Outward Kit Qty cannot exceed Available Kit Qty",
-      }));
+      setOutwardKitQty("");
     }
   };
 
@@ -291,13 +298,15 @@ function BinOutward() {
           setFlow("");
           setReceiver("");
           setKitNo("");
+          setPartCode("");
+          setPartName("");
           setAvlQty("");
           setDestination("");
           setOutwardKitQty("");
           setErrors("");
           getOutwardDocId();
           getAllBinOutward();
-          // toast.success("Outward Qty updated");
+          toast.success("Outward Qty updated");
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -553,6 +562,52 @@ function BinOutward() {
                     value={avlQty}
                   />
                 </div>
+
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Part No
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    name="partcode"
+                    value={partCode}
+                    disabled
+                  />
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Part Name
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    name="partname"
+                    value={partName}
+                    disabled
+                  />
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Part QTY
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    name="partQty"
+                    // value={partQty}
+                    disabled
+                  />
+                </div>
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -574,35 +629,6 @@ function BinOutward() {
                     </span>
                   )}
                 </div>
-                {/* <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Invoice no
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="invoice"
-                // value={invoice}
-                maxLength={15}
-              />
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Dispatch remarks
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="dispatch"
-                // value={dispatch}
-              />
-            </div> */}
               </div>
               <div className="mt-2">
                 <button

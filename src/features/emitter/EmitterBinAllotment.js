@@ -59,6 +59,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
 
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
+  const [allocateErrorMsg, setAllocateErrorMsg] = useState(false);
 
   const [tableData, setTableData] = useState([
     {
@@ -1036,10 +1037,12 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                   .replace(/[^0-9]/g, ""); // Only allow numeric input
                 const newValue = parseInt(inputValue, 10);
                 if (!isNaN(newValue)) {
-                  if (newValue <= minQty) {
+                  if (newValue <= minQty && newValue !== 0) {
                     setAlotQty(newValue);
+                    setAllocateErrorMsg(false);
                   } else {
                     setAlotQty("");
+                    setAllocateErrorMsg(true);
                   }
                 } else {
                   setAlotQty("");
@@ -1048,6 +1051,11 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               // onKeyDown={(e) => handleAllotedQtyChange(e)}
               disabled={viewId ? true : false}
             />
+            {allocateErrorMsg && (
+              <span className="error-text">
+                Allocate Qty is too low or exceed from Available Qty
+              </span>
+            )}
           </div>
         </div>
         <div className="mt-4">

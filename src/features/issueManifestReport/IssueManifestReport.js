@@ -43,8 +43,18 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
 
             // Concatenate relevant fields from header and grid data
             const concatenatedData = JSON.stringify({
-              headerData: headerResponse.data.paramObjectsMap.HeaderDetails[0],
-              gridData: gridResponse.data.paramObjectsMap.allotDetails,
+              // headerData: headerResponse.data.paramObjectsMap.HeaderDetails[0],
+              TransactionNo:
+                headerResponse.data.paramObjectsMap.HeaderDetails[0].allotno,
+              TransactionDate:
+                headerResponse.data.paramObjectsMap.HeaderDetails[0].allotDate,
+              Receiver:
+                headerResponse.data.paramObjectsMap.HeaderDetails[0]
+                  .receiverName,
+              RequestNo:
+                headerResponse.data.paramObjectsMap.HeaderDetails[0].binreqno,
+              Kit: gridResponse.data.paramObjectsMap.allotDetails[0].kitcode,
+              // gridData: gridResponse.data.paramObjectsMap.allotDetails,
             });
 
             setQrCodeValue(concatenatedData);
@@ -321,12 +331,12 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                     <th
                       style={{ border: "2px solid black", textAlign: "center" }}
                     >
-                      Product Code
+                      Product
                     </th>
                     <th
                       style={{ border: "2px solid black", textAlign: "center" }}
                     >
-                      Product
+                      Product Code
                     </th>
                     <th
                       style={{ border: "2px solid black", textAlign: "center" }}
@@ -378,7 +388,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                               textAlign: "center",
                             }}
                           >
-                            {row.productCode}
+                            {row.productName}
                           </td>
                           <td
                             style={{
@@ -386,7 +396,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                               textAlign: "center",
                             }}
                           >
-                            {row.productName}
+                            {row.productCode}
                           </td>
                           <td
                             style={{

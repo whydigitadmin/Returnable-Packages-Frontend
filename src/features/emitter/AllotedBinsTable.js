@@ -104,7 +104,7 @@ function AllotedBinsTable({ viewAllotedTable }) {
             description: "",
           },
           {
-            title: "Pending Requests",
+            title: "Total Pending Requests",
             value: pendingBinReq,
             icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
             description: "",
@@ -117,7 +117,8 @@ function AllotedBinsTable({ viewAllotedTable }) {
           },
           {
             // title: "Average Transaction",
-            title: "--",
+            title: "low stock",
+            subTitle: "priority Pending",
             value: "0",
             icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
             description: "",
@@ -182,6 +183,28 @@ function AllotedBinsTable({ viewAllotedTable }) {
         ),
       },
       {
+        accessorKey: "binReqNo",
+        header: "Req No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "binReqDate",
+        header: "Req Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
         accessorKey: "reqKitQty",
         header: "Req QTY",
         size: 20,
@@ -225,17 +248,7 @@ function AllotedBinsTable({ viewAllotedTable }) {
           align: "center",
         },
       },
-      {
-        accessorKey: "binReqNo",
-        header: "Req No",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+
       {
         accessorKey: "emitter",
         header: "Emitter",
@@ -247,17 +260,7 @@ function AllotedBinsTable({ viewAllotedTable }) {
           align: "center",
         },
       },
-      {
-        accessorKey: "binReqDate",
-        header: "Req Date",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+
       {
         accessorKey: "kitCode",
         header: "Kit",
@@ -298,11 +301,15 @@ function AllotedBinsTable({ viewAllotedTable }) {
           </div>
 
           {/* ALLOTED BINS BUTTON */}
-          <div className="">
-            <div className="flex justify-content-between mt-4 w-full">
-              <h1 className="text-xl font-semibold mt-3"> Alloted Bin List</h1>
+          <div className="d-flex flex-row-reverse">
+            <div className="d-flex justify-content-between mt-4 w-full">
+              <h1 className="text-2xl font-semibold mt-3 text-center">
+                Alloted Bin List
+                <span className="text-sm">(for last 30 Days)</span>
+              </h1>
+
               <button
-                className="btn btn-ghost btn-lg text-sm col-xs-1"
+                className="btn btn-ghost btn-lg text-sm col-xs- justify-content-end "
                 style={{ color: "blue" }}
                 onClick={handleAllotedBinsTableClose}
               >
