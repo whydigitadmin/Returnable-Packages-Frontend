@@ -19,6 +19,7 @@ import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import NoRecordsFound from "../../utils/NoRecordsFound";
+import { Pagination } from "@mui/material";
 
 function BinOutward() {
   const [flow, setFlow] = React.useState("");
@@ -49,6 +50,21 @@ function BinOutward() {
   const [ListViewTableData, setListViewTableData] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState([]);
   const [savedRecordView, setSavedRecordView] = useState(false);
+
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = ListViewTableData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   useEffect(() => {
     getAddressById();
@@ -368,8 +384,8 @@ function BinOutward() {
                       </tr>
                     </thead>
                     <tbody>
-                      {ListViewTableData && ListViewTableData.length > 0 ? (
-                        ListViewTableData.map((row, index) => (
+                      {paginatedData && paginatedData.length > 0 ? (
+                        paginatedData.map((row) => (
                           <tr key={row.id}>
                             {/* <td>{index + 1}</td> */}
                             <td>
@@ -406,6 +422,15 @@ function BinOutward() {
                       )}
                     </tbody>
                   </table>
+                </div>
+                <div className="mt-4 d-flex justify-content-center">
+                  <Pagination
+                    count={Math.ceil(ListViewTableData.length / rowsPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    variant="outlined"
+                    shape="rounded"
+                  />
                 </div>
               </div>
             </>
