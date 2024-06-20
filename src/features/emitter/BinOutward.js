@@ -35,6 +35,7 @@ function BinOutward() {
   const [avlQty, setAvlQty] = useState("");
   const [partName, setPartName] = useState("");
   const [partCode, setPartCode] = useState("");
+  const [partQty, setPartQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [emitterId, setEmitterId] = React.useState(
@@ -241,6 +242,7 @@ function BinOutward() {
       if (response.status === 200) {
         setPartName(response.data.paramObjectsMap.EmitterOutward[0].partName);
         setPartCode(response.data.paramObjectsMap.EmitterOutward[0].partNo);
+        setPartQty(response.data.paramObjectsMap.EmitterOutward[0].partQty);
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -262,7 +264,7 @@ function BinOutward() {
         setErrors((prevErrors) => ({
           ...prevErrors,
           outwardKitQty:
-            "Outward Kit Qty is too low or cannot exceed Available Kit Qty",
+            'Kit Qty cannot be "zero" or cannot be more than "Available Kit Qty"',
         }));
       }
     } else {
@@ -389,7 +391,8 @@ function BinOutward() {
                           <tr key={row.id}>
                             {/* <td>{index + 1}</td> */}
                             <td>
-                              <a
+                              {row.docId}
+                              {/* <a
                                 href="#"
                                 onClick={(e) => {
                                   e.preventDefault();
@@ -398,7 +401,7 @@ function BinOutward() {
                                 style={{ cursor: "pointer", color: "blue" }}
                               >
                                 {row.docId}
-                              </a>
+                              </a> */}
                             </td>
                             <td>{row.docDate}</td>
                             <td>{row.emitter}</td>
@@ -568,25 +571,11 @@ function BinOutward() {
                         </option>
                       ))}
                   </select>
-                  {errors.kit && (
-                    <span className="error-text mb-1">{errors.kit}</span>
+                  {errors.kitNo && (
+                    <span className="error-text mb-1">{errors.kitNo}</span>
                   )}
                 </div>
                 {/* PART NAME FIELD */}
-                <div className="col-lg-2 col-md-4">
-                  <label className="label mb-4">
-                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Available Kit Qty
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-2 col-md-4">
-                  <input
-                    className="form-control form-sz mb-2"
-                    disabled
-                    value={avlQty}
-                  />
-                </div>
 
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
@@ -629,8 +618,22 @@ function BinOutward() {
                   <input
                     className="form-control form-sz mb-2"
                     name="partQty"
-                    // value={partQty}
+                    value={partQty}
                     disabled
+                  />
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <label className="label mb-4">
+                    <span className="label-text label-font-size text-base-content d-flex flex-row">
+                      Available Kit Qty
+                    </span>
+                  </label>
+                </div>
+                <div className="col-lg-2 col-md-4">
+                  <input
+                    className="form-control form-sz mb-2"
+                    disabled
+                    value={avlQty}
                   />
                 </div>
                 <div className="col-lg-2 col-md-4">

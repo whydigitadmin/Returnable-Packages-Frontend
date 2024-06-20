@@ -564,7 +564,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
           setErrors({});
           setReturnQty("");
           setReturnRemarks("");
-
+          setView2(false);
+          setView1(true);
           setTableData([
             {
               id: 1,
@@ -1070,7 +1071,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                 <div className="col-lg-2 col-md-6">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Upload Receipt
+                      Upload Acknowledgement
                       {/* <FaStarOfLife className="must" /> */}
                     </span>
                   </label>
@@ -1449,7 +1450,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       ))
                     ) : (
                       <tr>
-                        <td colSpan={9}>
+                        <td colSpan={12}>
                           <NoRecordsFound
                             message={"Bin Inward Details Not Found"}
                           />

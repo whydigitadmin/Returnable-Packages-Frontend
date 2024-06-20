@@ -153,6 +153,9 @@ export const EmitterDispatch = () => {
     if (!flow) {
       errors.flow = "Flow is required";
     }
+    if (!invNo) {
+      errors.invNo = "Invoice No is required";
+    }
     const dispatchDetailsDetails = selectedRowData.map((row) => ({
       binOutDocDate: row.binOutDate,
       binOutDocid: row.binOutId,
@@ -437,7 +440,7 @@ export const EmitterDispatch = () => {
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Flow
+                      Flow:
                       <FaStarOfLife className="must" />
                     </span>
                   </label>
@@ -463,7 +466,8 @@ export const EmitterDispatch = () => {
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Invoice No
+                      Invoice No:
+                      <FaStarOfLife className="must" />
                     </span>
                   </label>
                 </div>
@@ -475,6 +479,9 @@ export const EmitterDispatch = () => {
                     value={invNo}
                     onChange={(e) => setInvNo(e.target.value)}
                   />
+                  {errors.invNo && (
+                    <span className="error-text mb-1">{errors.invNo}</span>
+                  )}
                 </div>
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
@@ -503,7 +510,7 @@ export const EmitterDispatch = () => {
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      GRN No
+                      Receiver Inward No:
                     </span>
                   </label>
                 </div>
@@ -519,7 +526,8 @@ export const EmitterDispatch = () => {
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      GRN Date:
+                      {/* GRN Date: */}
+                      Receiver Inward Date:
                     </span>
                   </label>
                 </div>

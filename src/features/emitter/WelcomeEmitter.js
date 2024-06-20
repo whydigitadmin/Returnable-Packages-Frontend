@@ -509,6 +509,48 @@ function WelcomeEmitter() {
               </div>
 
               <div className="col-lg-4 col-md-6 col-sm-4">
+                <Link to="/app/emitterdispatch">
+                  <div
+                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    style={{
+                      "--tw-bg-opacity": "1",
+                      "--tw-hover-bg-color": "#d2fbd0",
+                    }}
+                    onMouseEnter={(e) =>
+                      (e.currentTarget.style.backgroundColor = "#d2fbd0")
+                    }
+                    onMouseLeave={(e) =>
+                      (e.currentTarget.style.backgroundColor = "transparent")
+                    }
+                    // style={{ width: "14rem" }}
+                  >
+                    <div className="">
+                      <div className="d-flex flex-row">
+                        {/* <TbChartInfographic
+                        className="text-md font-semibold me-2 w-8 h-8"
+                        style={{ marginTop: -6 }}
+                      /> */}
+                        <img
+                          src={
+                            "https://cdn-icons-png.flaticon.com/128/6734/6734037.png"
+                          }
+                          style={{
+                            width: "30px",
+                            height: "30px",
+                            marginRight: "6px",
+                            marginTop: "-6",
+                          }}
+                        />
+                        <h4 className="text-md font-semibold mt-2">
+                          Emitter Dispatch
+                        </h4>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </div>
+
+              <div className="col-lg-4 col-md-6 col-sm-4">
                 {/* <Link to="/app/StockAdjustment"> */}
                 <Link to="#">
                   <div
@@ -626,48 +668,7 @@ function WelcomeEmitter() {
                           }}
                         />
                         <h4 className="text-md font-semibold mt-2">
-                          Allotment Detail
-                        </h4>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </div>
-              <div className="col-lg-4 col-md-6 col-sm-4">
-                <Link to="/app/emitterdispatch">
-                  <div
-                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
-                    style={{
-                      "--tw-bg-opacity": "1",
-                      "--tw-hover-bg-color": "#d2fbd0",
-                    }}
-                    onMouseEnter={(e) =>
-                      (e.currentTarget.style.backgroundColor = "#d2fbd0")
-                    }
-                    onMouseLeave={(e) =>
-                      (e.currentTarget.style.backgroundColor = "transparent")
-                    }
-                    // style={{ width: "14rem" }}
-                  >
-                    <div className="">
-                      <div className="d-flex flex-row">
-                        {/* <TbChartInfographic
-                        className="text-md font-semibold me-2 w-8 h-8"
-                        style={{ marginTop: -6 }}
-                      /> */}
-                        <img
-                          src={
-                            "https://cdn-icons-png.flaticon.com/128/6734/6734037.png"
-                          }
-                          style={{
-                            width: "30px",
-                            height: "30px",
-                            marginRight: "6px",
-                            marginTop: "-6",
-                          }}
-                        />
-                        <h4 className="text-md font-semibold mt-2">
-                          Emitter Dispatch
+                          Allotment Register
                         </h4>
                       </div>
                     </div>
