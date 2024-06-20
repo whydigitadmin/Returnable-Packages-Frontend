@@ -275,9 +275,7 @@ function WelcomeOEM() {
                             marginRight: "6px",
                           }}
                         />
-                        <h4 className="text-lg font-semibold">
-                          Gathering Empty
-                        </h4>
+                        <h4 className="text-lg font-semibold">Empty Bins</h4>
                       </div>
                     </div>
                   </Link>

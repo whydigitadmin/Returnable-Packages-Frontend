@@ -19,7 +19,8 @@ function InternalPage() {
   );
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Home" }));
+    // dispatch(setPageTitle({ title: "Home" }));
+    dispatch(setPageTitle({ title: "Dashboard" }));
     getAllBinAllotmentData();
     getAllBinRequest();
   }, [dispatch]);

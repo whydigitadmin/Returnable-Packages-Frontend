@@ -12,6 +12,9 @@ import {
 } from "../../utils/userInputValidation";
 import axios from "axios";
 
+const dummyImageURL =
+  "https://t3.ftcdn.net/jpg/04/62/93/66/240_F_462936689_BpEEcxfgMuYPfTaIAOC1tCDurmsno7Sp.jpg";
+
 function AddPackage({
   refPsId,
   handleBack,
@@ -37,13 +40,13 @@ function AddPackage({
   const [stacking, setStacking] = useState("");
   const [nesting, setNesting] = useState("");
   const [remarks, setRemarks] = useState("");
-  const [partImage, setPartImage] = useState(null);
-  const [existingPackingImage, setExistingPackingImage] = useState(null);
-  const [partDrawing, setPartDrawing] = useState("");
-  const [approvedPackingTechnicalDrawing, setApprovedPackingTechnicalDrawing] =
-    useState("");
-  const [approvedCommercialContract, setApprovedCommercialContract] =
-    useState("");
+  const [partImagePreview, setPartImagePreview] = useState(null);
+  const [existingPackingImagePreview, setExistingPackingImagePreview] =
+    useState(null);
+  const [partDrawingPreview, setPartDrawingPreview] = useState(null);
+  const [comercialPreview, setComercialPreview] = useState(null);
+  const [approvedCommercialContract, setApprovedCommercialContractPreview] =
+    useState(null);
   const [partStudyId, setPartStudyId] = useState(refPsId);
   const [emitterStudyId, setEmitterStudyId] = useState(emitter);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
@@ -116,21 +119,21 @@ function AddPackage({
       case "remarks":
         setRemarks(value);
         break;
-      case "partImage":
-        setPartImage(value);
-        break;
-      case "existingPackingImage":
-        setExistingPackingImage(value);
-        break;
-      case "partDrawing":
-        setPartDrawing(value);
-        break;
-      case "approvedPackingTechnicalDrawing":
-        setApprovedPackingTechnicalDrawing(value);
-        break;
-      case "approvedCommercialContract":
-        setApprovedCommercialContract(value);
-        break;
+      // case "partImage":
+      //   setPartImage(value);
+      //   break;
+      // case "existingPackingImage":
+      //   setExistingPackingImage(value);
+      //   break;
+      // case "partDrawing":
+      //   setPartDrawing(value);
+      //   break;
+      // case "approvedPackingTechnicalDrawing":
+      //   setApprovedPackingTechnicalDrawing(value);
+      //   break;
+      // case "approvedCommercialContract":
+      //   setApprovedCommercialContract(value);
+      //   break;
     }
   };
 
@@ -257,7 +260,7 @@ function AddPackage({
 
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadPartImage?id=${refPsId}`,
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadPartImageInBloob?refPsId=${refPsId}`,
         formData,
         {
           headers: {
@@ -283,7 +286,7 @@ function AddPackage({
 
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadExPackageImage?id=${refPsId}`,
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadExistingPackingImageInBloob?refPsId=${refPsId}`,
         formData,
         {
           headers: {
@@ -308,7 +311,7 @@ function AddPackage({
 
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadPartDrawing?id=${refPsId}`,
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadpartdrawingInBloob?refPsId=${refPsId}`,
         formData,
         {
           headers: {
@@ -333,7 +336,7 @@ function AddPackage({
 
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadApprovedTechnicalDrawing?id=${refPsId}`,
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadTechnicalDrawingInBloob?refPsId=${refPsId}`,
         formData,
         {
           headers: {
@@ -358,7 +361,7 @@ function AddPackage({
 
     axios
       .post(
-        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadApprovedCommercialImage?id=${refPsId}`,
+        `${process.env.REACT_APP_API_URL}/api/partStudy/uploadApprovedCommercialContractInBloob?refPsId=${refPsId}`,
         formData,
         {
           headers: {
@@ -412,6 +415,7 @@ function AddPackage({
       if (response.status === 200) {
         console.log("packageDetail", response.data);
         const packingDetailVO = response.data.paramObjectsMap.packingDetailVO;
+        console.log("const packageDetail", packingDetailVO);
         setPartStudyId(packingDetailVO.refPsId);
         setLength(packingDetailVO.length);
         setBreath(packingDetailVO.breath);
@@ -427,6 +431,26 @@ function AddPackage({
         setStacking(packingDetailVO.stacking);
         setNesting(packingDetailVO.nesting);
         setRemarks(packingDetailVO.remarks);
+        setPartImagePreview(
+          response.data.paramObjectsMap.packingDetailVO.partImage
+        );
+        setApprovedCommercialContractPreview(
+          response.data.paramObjectsMap.packingDetailVO
+            .approvedCommercialContract
+        );
+        setComercialPreview(
+          response.data.paramObjectsMap.packingDetailVO.comercial
+        );
+        setExistingPackingImagePreview(
+          response.data.paramObjectsMap.packingDetailVO.existingPackingImage
+        );
+        setPartDrawingPreview(
+          response.data.paramObjectsMap.packingDetailVO.partDrawing
+        );
+        console.log(
+          "packingDetailVO.partImage",
+          response.data.paramObjectsMap.packingDetailVO.partImage
+        );
         // setPartStudyDate({ startDate: new Date(basicDetailVO.partStudyDate) });
       }
     } catch (error) {
@@ -985,6 +1009,15 @@ function AddPackage({
             {errors.uploadError && (
               <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
+            {partImagePreview && (
+              <img
+                src={`data:image/jpeg;base64,${partImagePreview}`}
+                alt="Product"
+                onError={(e) => {
+                  e.target.src = dummyImageURL;
+                }}
+              />
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -1026,6 +1059,15 @@ function AddPackage({
             {errors.uploadError && (
               <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
+            {existingPackingImagePreview && (
+              <img
+                src={`data:image/jpeg;base64,${existingPackingImagePreview}`}
+                alt="Product"
+                onError={(e) => {
+                  e.target.src = dummyImageURL;
+                }}
+              />
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -1065,6 +1107,15 @@ function AddPackage({
               ))}
             {errors.uploadError && (
               <span className="error-text mb-1">{errors.uploadFiles}</span>
+            )}
+            {partDrawingPreview && (
+              <img
+                src={`data:image/jpeg;base64,${partDrawingPreview}`}
+                alt="Product"
+                onError={(e) => {
+                  e.target.src = dummyImageURL;
+                }}
+              />
             )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -1106,6 +1157,15 @@ function AddPackage({
             {errors.uploadError && (
               <span className="error-text mb-1">{errors.uploadFiles}</span>
             )}
+            {comercialPreview && (
+              <img
+                src={`data:image/jpeg;base64,${comercialPreview}`}
+                alt="Product"
+                onError={(e) => {
+                  e.target.src = dummyImageURL;
+                }}
+              />
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
@@ -1145,6 +1205,15 @@ function AddPackage({
               ))}
             {errors.uploadError && (
               <span className="error-text mb-1">{errors.uploadFiles}</span>
+            )}
+            {approvedCommercialContract && (
+              <img
+                src={`data:image/jpeg;base64,${approvedCommercialContract}`}
+                alt="Product"
+                onError={(e) => {
+                  e.target.src = dummyImageURL;
+                }}
+              />
             )}
           </div>
         </div>

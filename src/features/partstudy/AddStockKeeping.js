@@ -170,16 +170,16 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
     if (!inTransitDays) {
       errors.inTransitDays = "InTransitDays is required";
     }
-    if (!receiverLineStorageDays) {
-      errors.receiverLineStorageDays = "Receiver Line Storage Days is required";
-    }
-    if (!receiverManufacturingLineDays) {
-      errors.receiverManufacturingLineDays =
-        "Receiver Manufacturing Line Days is required";
-    }
-    if (!otherStorageDays) {
-      errors.otherStorageDays = " Other Storage Days is required";
-    }
+    // if (!receiverLineStorageDays) {
+    //   errors.receiverLineStorageDays = "Receiver Line Storage Days is required";
+    // }
+    // if (!receiverManufacturingLineDays) {
+    //   errors.receiverManufacturingLineDays =
+    //     "Receiver Manufacturing Line Days is required";
+    // }
+    // if (!otherStorageDays) {
+    //   errors.otherStorageDays = " Other Storage Days is required";
+    // }
     if (!reverseLogisticsDay) {
       errors.reverseLogisticsDay = "Empty Packaging Reverse Days is required";
     }
@@ -423,7 +423,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
                 }
               >
                 Other Storage
-                <FaStarOfLife className="must" />
+                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
