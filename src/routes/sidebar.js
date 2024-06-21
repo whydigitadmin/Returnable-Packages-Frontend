@@ -90,7 +90,7 @@ const routes = [
             className={{ submenuIconClasses }}
           />
         ),
-        name: <span>OEM User</span>,
+        name: <span>OEM Receiver / User</span>,
       },
 
       // {

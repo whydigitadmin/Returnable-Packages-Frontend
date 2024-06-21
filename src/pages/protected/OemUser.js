@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "OEM User" }));
+    dispatch(setPageTitle({ title: "OEM Receiver / User" }));
   }, []);
 
   return <Oemuser />;

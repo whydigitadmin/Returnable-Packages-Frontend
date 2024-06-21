@@ -139,9 +139,7 @@ function AddUsers({ addusers }) {
         {/* <h1 className="text-xl font-semibold mb-4">User Details</h1> */}
 
         <div className="d-flex justify-content-between">
-          <h1 className="text-xl font-semibold mb-3">
-           Users Details
-          </h1>
+          <h1 className="text-xl font-semibold mb-3">Users Details</h1>
           <IoMdClose
             onClick={handleUsers}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -338,6 +336,18 @@ function AddUsers({ addusers }) {
               <option value="">Select</option>
               <option value="">One</option>
             </select>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <label className="label mb-4">
+              <span className={"label-text label-font-size text-base-content"}>
+                view Information
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6">
+            <FormControlLabel
+              control={<IOSSwitch sx={{ m: 1 }} defaultChecked />}
+            />
           </div>
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">

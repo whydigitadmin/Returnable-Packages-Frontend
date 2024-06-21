@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Asset Inward Details" }));
+    dispatch(setPageTitle({ title: "Asset Inward / Transfer" }));
   }, []);
 
   return <InwardManifestDetails />;

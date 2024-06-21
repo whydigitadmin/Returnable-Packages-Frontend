@@ -78,6 +78,7 @@ function UserCreation({ addUser, userEditId }) {
   const [pincode, setPincode] = React.useState("");
   const [phone, setPhone] = React.useState("");
   const [active, setActive] = React.useState(true);
+  const [allowInfo, setAllowInfo] = React.useState(false);
   const [role, setRole] = React.useState("ROLE_USER");
   const [warehouse, setWarehouse] = React.useState([]);
   const [errors, setErrors] = useState({});
@@ -836,7 +837,28 @@ function UserCreation({ addUser, userEditId }) {
               <span className="error-text">{errors.warehouse}</span>
             )}
           </div>
-          {/* ACTIVE FIELD */}
+          {/* ALLOW INFORMATION FIELD */}
+          {/* <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
+              <span className={"label-text label-font-size text-base-content"}>
+                Allow Information
+              </span>
+            </label>
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <FormControlLabel
+              control={
+                <IOSSwitch
+                  sx={{ m: 1 }}
+                  checked={allowInfo}
+                  onChange={(e) => {
+                    setAllowInfo(e.target.checked);
+                  }}
+                />
+              }
+            />
+          </div> */}
+
           <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>

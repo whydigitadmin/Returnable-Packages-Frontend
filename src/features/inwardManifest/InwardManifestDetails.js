@@ -304,7 +304,7 @@ export const InwardManifestDetails = () => {
                     className="text-form text-base"
                     style={{ marginLeft: "10px" }}
                   >
-                    Asset Inward
+                    Inward / Transfer
                   </span>
                 </button>
               </div>

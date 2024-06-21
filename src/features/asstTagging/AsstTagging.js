@@ -105,6 +105,9 @@ export function AsstTagging({ addTagging, viewId }) {
   const [cancelledAssets, setCancelledAssets] = useState([]);
   const [assetCategory, setAssetCategory] = useState("");
   const [assetCategoryList, setAssetCategoryList] = useState([]);
+  const [poNo, setPoNo] = useState("");
+  const [poDate, setPoDate] = useState(null);
+  const [poList, setPoList] = useState([]);
 
   const handleOpenBarcodeScannerDialog = (tagCode) => {
     setSelectedBarcode(tagCode);
@@ -689,6 +692,50 @@ export function AsstTagging({ addTagging, viewId }) {
             name="assetName"
             disabled
             value={viewId ? docDate : currentDate}
+          />
+        </div>
+
+        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          <label className="label">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row"
+              }
+            >
+              Po No
+              <FaStarOfLife className="must" />
+            </span>
+          </label>
+        </div>
+        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          <input
+            className="form-control form-sz"
+            onChange={(e) => setPoNo(e.target.value)}
+            value={poNo}
+            name="poNo"
+          />
+        </div>
+        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          <label className="label">
+            <span
+              className={
+                "label-text label-font-size text-base-content d-flex flex-row"
+              }
+            >
+              PO Date <FaStarOfLife className="must" />
+            </span>
+          </label>
+        </div>
+        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+          <input
+            className="form-control form-sz mb-2"
+            type={"text"}
+            placeholder={""}
+            name="poDate"
+            value={poDate}
+            onChange={(e) => {
+              setPoDate(e.target.value);
+            }}
           />
         </div>
 

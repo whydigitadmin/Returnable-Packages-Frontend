@@ -28,34 +28,9 @@ import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import DashBoardComponent from "../master/DashBoardComponent";
 import OemCreation from "./OemCreation";
-
-const statsData = [
-  {
-    title: "No of Emitters",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active Emitters",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "InActive Emitters",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
+import { FaUser } from "react-icons/fa";
+import { FaDatabase } from "react-icons/fa6";
+import { MdGroups } from "react-icons/md";
 
 const Oemuser = () => {
   const [addEmitter, setAddEmitter] = React.useState(false);
@@ -68,6 +43,7 @@ const Oemuser = () => {
   const [userAddressData, setUserAddressData] = React.useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [statsData, setStatsData] = useState([]);
 
   const handleViewClose = () => {
     setOpenView(false);
@@ -117,12 +93,51 @@ const Oemuser = () => {
             (user) => user.role === "ROLE_OEM"
           )
         );
+
+        const allOem = response.data.paramObjectsMap.userVO.filter(
+          (user) => user.role === "ROLE_OEM"
+        );
+        const totalOem = allOem.length;
+
+        const activeOem = allOem.filter(
+          (customer) => customer.active === "Active"
+        ).length;
+        const inActiveOem = allOem.filter(
+          (customer) => customer.active === "In-Active"
+        ).length;
+
         console.log(
           "EMITTER DATA IS:",
           response.data.paramObjectsMap.userVO.filter(
             (user) => user.role === "ROLE_OEM"
           )
         );
+        setStatsData([
+          {
+            title: "All OEM",
+            value: totalOem,
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active OEM",
+            value: activeOem,
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "In-Active OEM",
+            value: inActiveOem,
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -295,30 +310,6 @@ const Oemuser = () => {
             {/* BULK UPLPOAD AND NEW EMITTER  */}
             <div className="">
               <div className="flex justify-between mt-4">
-                {/* <button
-                  className="btn btn-ghost btn-lg text-sm col-xs-1"
-                  style={{ color: "blue" }}
-                  onClick={handleClickOpen}
-                >
-                  <img
-                    src="/upload.png"
-                    alt="pending-status-icon"
-                    title="add"
-                    style={{
-                      width: 30,
-                      height: 30,
-                      margin: "auto",
-                      hover: "pointer",
-                    }}
-                  />
-                  <span
-                    className="text-form text-base"
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Bulk Upload
-                  </span>
-                </button> */}
-
                 <BulkUploadDialog
                   open={open}
                   onOpenClick={handleClickOpen}
@@ -350,7 +341,7 @@ const Oemuser = () => {
                     className="text-form text-base"
                     style={{ marginLeft: "10px" }}
                   >
-                    OEM User
+                    OEM Receiver / User
                   </span>
                 </button>
               </div>
