@@ -80,9 +80,9 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [role, setRole] = React.useState("ROLE_OEM");
   const [errors, setErrors] = useState({});
   const [openShippingModal, setOpenShippingModal] = React.useState(false);
-  const [emitter, setEmitter] = useState("");
+  const [receiver, setReceiver] = useState("");
   const [flow, setFlow] = useState([]);
-  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
+  const [receiverCustomersVO, setReceiverCustomersVO] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userName, setUserName] = React.useState(
     localStorage.getItem("userName")
@@ -155,21 +155,15 @@ function OemCreation({ addEmitter, oemEditId }) {
     setOpenShippingModal(false);
   };
 
-  const handleEmitterChange = (event) => {
-    setEmitter(event.target.value);
-    getEmitterFlow(event.target.value);
+  const handleReceiverChange = (event) => {
+    setReceiver(event.target.value);
+    getReceiverFlow(event.target.value);
   };
 
-  const getEmitterFlow = async (emitter) => {
+  const getReceiverFlow = async (receiver) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/activeflow`,
-        {
-          params: {
-            orgId: orgId,
-            emitterId: emitter,
-          },
-        }
+        `${process.env.REACT_APP_API_URL}/api/master/activeReceiverflow?orgId=${orgId}&receiverId=${receiver}`
       );
       if (response.status === 200) {
         setFlow(response.data.paramObjectsMap.flowVO);
@@ -178,6 +172,24 @@ function OemCreation({ addEmitter, oemEditId }) {
       console.error("Error fetching data:", error);
     }
   };
+  // const getReceiverFlow = async (receiver) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/activeflow`,
+  //       {
+  //         params: {
+  //           orgId: orgId,
+  //           emitterId: receiver,
+  //         },
+  //       }
+  //     );
+  //     if (response.status === 200) {
+  //       setFlow(response.data.paramObjectsMap.flowVO);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const getCustomersList = async () => {
     try {
@@ -186,8 +198,8 @@ function OemCreation({ addEmitter, oemEditId }) {
       );
 
       if (response.status === 200) {
-        setEmitterCustomersVO(
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
+        setReceiverCustomersVO(
+          response.data.paramObjectsMap.customersVO.receiverCustomersVO
         );
       }
     } catch (error) {
@@ -271,9 +283,9 @@ function OemCreation({ addEmitter, oemEditId }) {
     setRole("ROLE_OEM");
     setErrors({});
     setOpenShippingModal(false);
-    setEmitter(null);
+    setReceiver(null);
     setFlow([]);
-    setEmitterCustomersVO([]);
+    setReceiverCustomersVO([]);
     setOrgId(localStorage.getItem("orgId"));
     setSelectedFlows([]);
     // notify();
@@ -282,8 +294,8 @@ function OemCreation({ addEmitter, oemEditId }) {
   // OEM CREATE
   const handleOemCreation = () => {
     const errors = {};
-    if (!emitter) {
-      errors.emitter = "Emitter is required";
+    if (!receiver) {
+      errors.receiver = "receiver is required";
     }
     if (selectedFlows.length === 0) {
       errors.selectedFlows = "Please select atleast one flow";
@@ -341,7 +353,7 @@ function OemCreation({ addEmitter, oemEditId }) {
       active: active,
       createdBy: userName,
       email: email,
-      emitterId: emitter,
+      emitterId: receiver,
       firstName: firstName,
       lastName: "",
       orgId: orgId,
@@ -390,8 +402,8 @@ function OemCreation({ addEmitter, oemEditId }) {
   const handleOemUpdate = () => {
     console.log("ok");
     const errors = {};
-    if (!emitter) {
-      errors.emitter = "Emitter is required";
+    if (!receiver) {
+      errors.receiver = "receiver is required";
     }
     if (!selectedFlows.length === 0) {
       errors.selectedFlows = "Please select atleast one flow";
@@ -515,7 +527,7 @@ function OemCreation({ addEmitter, oemEditId }) {
 
       if (response.status === 200) {
         setOemData(response.data.paramObjectsMap.userVO);
-        setEmitter(response.data.paramObjectsMap.userVO.customersVO.id);
+        setReceiver(response.data.paramObjectsMap.userVO.customersVO.id);
         setFirstName(response.data.paramObjectsMap.userVO.firstName);
         setEmail(response.data.paramObjectsMap.userVO.email);
         setAddress(response.data.paramObjectsMap.userVO.userAddressVO.address1);
@@ -525,7 +537,7 @@ function OemCreation({ addEmitter, oemEditId }) {
         setPincode(response.data.paramObjectsMap.userVO.userAddressVO.pin);
         setPhone(response.data.paramObjectsMap.userVO.pno);
         setSelectedFlows(response.data.paramObjectsMap.userVO.accessFlowId);
-        getEmitterFlow(response.data.paramObjectsMap.userVO.customersVO.id);
+        getReceiverFlow(response.data.paramObjectsMap.userVO.customersVO.id);
         if (response.data.paramObjectsMap.userVO.active === "In-Active") {
           setActive(false);
         }
@@ -584,7 +596,7 @@ function OemCreation({ addEmitter, oemEditId }) {
                   "label-text label-font-size text-base-content d-flex flex-row"
                 }
               >
-                Emitter
+                Receiver
                 <FaStarOfLife className="must" />
               </span>
             </label>
@@ -592,21 +604,21 @@ function OemCreation({ addEmitter, oemEditId }) {
           <div className="col-lg-3 col-md-6">
             <select
               className="form-select form-sz w-full mb-2"
-              onChange={handleEmitterChange}
-              value={emitter}
+              onChange={handleReceiverChange}
+              value={receiver}
             >
               <option value="" disabled>
-                Select an Emitter
+                Select an Receiver
               </option>
-              {emitterCustomersVO.length > 0 &&
-                emitterCustomersVO.map((list) => (
+              {receiverCustomersVO.length > 0 &&
+                receiverCustomersVO.map((list) => (
                   <option key={list.id} value={list.id}>
                     {list.displayName}
                   </option>
                 ))}
             </select>
-            {errors.emitter && (
-              <span className="error-text">{errors.emitter}</span>
+            {errors.receiver && (
+              <span className="error-text">{errors.receiver}</span>
             )}
           </div>
 

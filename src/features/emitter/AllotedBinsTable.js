@@ -93,9 +93,9 @@ function AllotedBinsTable({ viewAllotedTable }) {
           response.data.paramObjectsMap.binAllotmentNewVO
         );
 
-        const allRequests = response.data.paramObjectsMap.binAllotmentNewVO;
-        // setData(allRequests.reverse());
-        const totalRequests = pendingBinReq + allRequests.length;
+        const allRequests =
+          response.data.paramObjectsMap.binAllotmentNewVO.length;
+        const totalRequests = pendingBinReq + allRequests;
         setStatsData([
           {
             title: "Total Requests",
@@ -111,12 +111,11 @@ function AllotedBinsTable({ viewAllotedTable }) {
           },
           {
             title: "Completed Requests",
-            value: totalRequests,
+            value: allRequests,
             icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
           {
-            // title: "Average Transaction",
             title: "low stock",
             subTitle: "priority Pending",
             value: "0",
@@ -305,16 +304,16 @@ function AllotedBinsTable({ viewAllotedTable }) {
             <div className="d-flex justify-content-between mt-4 w-full">
               <h1 className="text-2xl font-semibold mt-3 text-center">
                 Alloted Bin List
-                <span className="text-sm">(for last 30 Days)</span>
+                <p className="text-sm">(for last 30 Days)</p>
               </h1>
 
               <button
-                className="btn btn-ghost btn-lg text-sm col-xs- justify-content-end "
-                style={{ color: "blue" }}
+                className="btn btn-ghost btn-lg text-sm col-xs- justify-content-end mb-2"
+                style={{ color: "blue", border: "1px solid grey" }}
                 onClick={handleAllotedBinsTableClose}
               >
                 <img
-                  src="/inwardManifestReport.png"
+                  src="/issuemanifest1.png"
                   alt="pending-status-icon"
                   title="add"
                   style={{

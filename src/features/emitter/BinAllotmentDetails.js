@@ -143,8 +143,8 @@ export const BinAllotmentDetails = () => {
             description: "",
           },
           {
-            // title: "Average Transaction",
-            title: "--",
+            title: "low stock",
+            subTitle: "priority Pending",
             value: "0",
             icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
             description: "",
@@ -292,12 +292,15 @@ export const BinAllotmentDetails = () => {
                 </h1>
 
                 <button
-                  className="btn btn-ghost btn-lg text-sm col-xs-1"
-                  style={{ color: "blue" }}
+                  className="btn btn-ghost btn-lg text-sm col-xs-1 mb-2"
+                  style={{
+                    color: "blue",
+                    border: "1px solid grey",
+                  }}
                   onClick={handleViewAllotedBins}
                 >
                   <img
-                    src="/inwardManifestReport.png"
+                    src="/issuemanifest1.png"
                     alt="pending-status-icon"
                     title="add"
                     style={{
@@ -309,7 +312,7 @@ export const BinAllotmentDetails = () => {
                   />
                   <span
                     className="text-form text-base"
-                    style={{ marginLeft: "10px" }}
+                    style={{ marginLeft: "10px", color: "green" }}
                   >
                     Alloted Bins
                   </span>

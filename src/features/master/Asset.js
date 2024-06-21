@@ -38,32 +38,7 @@ function Asset() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
-  const [statsData, setStatsData] = useState([
-    {
-      title: "Total Assets",
-      value: "0",
-      icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
-      description: "",
-    },
-    {
-      title: "Active Assets",
-      value: "0",
-      icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
-      description: "",
-    },
-    {
-      title: "Asset Categories",
-      value: "0",
-      icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
-      description: "",
-    },
-    {
-      title: "-",
-      value: "0",
-      icon: <LuTimerReset className="w-7 h-7 text-white dashicon" />,
-      description: "",
-    },
-  ]);
+  const [statsData, setStatsData] = useState([]);
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -119,6 +94,7 @@ function Asset() {
 
       if (response.status === 200) {
         const allAssets = response.data.paramObjectsMap.assetVO;
+
         setData(allAssets.reverse());
         const totalAsset = allAssets.length;
         const activeAsset = allAssets.filter(
@@ -127,6 +103,8 @@ function Asset() {
         const inActiveAsset = allAssets.filter(
           (asset) => asset.active === "In-Active"
         ).length;
+        const totalAssetCategory = allAssets.map((row) => row.category).length;
+
         setStatsData([
           {
             title: "Total Assets",
@@ -141,7 +119,6 @@ function Asset() {
             description: "",
           },
           {
-            // title: "Average Transaction",
             title: "In-Active Assets",
             value: inActiveAsset.toString(),
             icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
@@ -149,7 +126,7 @@ function Asset() {
           },
           {
             title: "Asset Categories",
-            value: "0",
+            value: totalAssetCategory,
             icon: <FaRegObjectGroup className="w-7 h-7 text-white dashicon" />,
             description: "",
           },

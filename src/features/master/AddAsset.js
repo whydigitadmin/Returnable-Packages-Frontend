@@ -487,8 +487,8 @@ function AddAsset({ addItem, editItemId }) {
         weight,
         weightUnit,
         orgId,
-        poDate,
-        poNo,
+        // poDate,
+        // poNo,
         createdby: userName,
         modifiedby: userName,
       };
@@ -778,7 +778,8 @@ function AddAsset({ addItem, editItemId }) {
               onInput={stringAndNoAndSpecialCharValidation}
             />
           </div>
-          <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+
+          {/* <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
               <span
                 className={
@@ -796,7 +797,6 @@ function AddAsset({ addItem, editItemId }) {
               onChange={handleCategoryChange}
               value={poNo}
               name="poNo"
-              // disabled={codeSelected}
             >
               <option value="" disabled>
                 Select a Po No
@@ -830,7 +830,7 @@ function AddAsset({ addItem, editItemId }) {
               value={poDate}
               onChange={handleCategoryChange}
             />
-          </div>
+          </div> */}
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
               <span className={"label-text label-font-size text-base-content"}>
