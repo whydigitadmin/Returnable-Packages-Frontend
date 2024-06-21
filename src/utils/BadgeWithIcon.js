@@ -3,6 +3,7 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import { green, red } from "@mui/material/colors";
 import React, { useState } from "react";
+import CountUp from "react-countup";
 import BadgeDialog from "./BadgeDialog";
 
 const BadgeWithIcon = ({
@@ -41,7 +42,7 @@ const BadgeWithIcon = ({
           }}
         >
           <Badge
-            badgeContent={badgeContent}
+            badgeContent={<CountUp end={badgeContent} duration={2} />}
             color={color}
             anchorOrigin={{
               vertical: "top",

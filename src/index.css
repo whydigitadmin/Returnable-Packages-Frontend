@@ -81,3 +81,60 @@
 .asset-table th {
   background-color: #f2f2f2;
 }
+
+/* App.css */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: auto;
+}
+
+/* Custom scrollbar styles */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(45deg, #f3f3f3, #f1f1f1);
+  border-radius: 10px;
+  margin: 2px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(60, 60, 60, 0.7);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(60, 60, 60, 0.9);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Firefox scrollbar styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(60, 60, 60, 0.7)
+    linear-gradient(45deg, #f3f3f3, #f1f1f1);
+}
+
+*::-webkit-scrollbar {
+  width: 12px;
+}
+
+*::-webkit-scrollbar-track {
+  background: linear-gradient(45deg, #f3f3f3, #f1f1f1);
+  border-radius: 10px;
+  margin: 2px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgba(60, 60, 60, 0.7);
+  border-radius: 10px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+  transition: background-color 0.3s;
+}

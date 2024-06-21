@@ -1,9 +1,10 @@
 import Subtitle from "../Typography/Subtitle";
 
-function TitleCard({ title, children, topMargin, TopSideButtons }) {
+function TitleCard({ title, children, topMargin, TopSideButtons, style }) {
   return (
     <div
       className={"w-full p-6 bg-base-100 shadow-xl " + (topMargin || "mt-6")}
+      style={{ ...style }}
     >
       {/* Title for Card */}
       <Subtitle styleClass={TopSideButtons ? "inline-block" : ""}>

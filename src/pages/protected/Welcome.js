@@ -90,10 +90,10 @@ function InternalPage() {
   };
 
   return (
-    <div className="container card w-full p-6 bg-base-100 shadow-xl">
+    <div className="container card w-9/12 p-4 bg-white-800 shadow-xl">
       {/* <h1 className="text-2xl font-medium mb-4">Home</h1> */}
       <div className="row">
-        <div className="col-lg-4 col-md-6 col-sm-12">
+        <div className="col-lg-6 col-md-6 col-sm-12">
           <Link to="/app/binallotmentdetails">
             <div style={cardStyle}>
               <div style={cardHeaderStyle}>
@@ -128,7 +128,7 @@ function InternalPage() {
           </Link>
         </div>
 
-        <div className="col-lg-4 col-md-6 col-sm-12">
+        <div className="col-lg-6 col-md-6 col-sm-12">
           <Link to="">
             <div style={cardStyle}>
               <div style={cardHeaderStyle}>
@@ -151,7 +151,7 @@ function InternalPage() {
           Asset Stock Transfer
         </h1>
 
-        <div className="col-lg-4 col-md-6 col-sm-12">
+        <div className="col-lg-6 col-md-6 col-sm-12">
           <Link to="/app/inwardManifestDetails">
             <div style={cardStyle}>
               <div style={cardHeaderStyle}>
@@ -168,7 +168,7 @@ function InternalPage() {
           </Link>
         </div>
 
-        <div className="col-lg-4 col-md-6 col-sm-12">
+        <div className="col-lg-6 col-md-6 col-sm-12">
           <Link to="/app/EmptyRetrievalManifest">
             <div style={cardStyle}>
               <div style={cardHeaderStyle}>
@@ -187,7 +187,7 @@ function InternalPage() {
 
         <h1 className="text-xl font-semibold mt-4 mb-3 col-12">Reports</h1>
 
-        <div className="col-lg-4 col-md-6 col-sm-12">
+        <div className="col-lg-6 col-md-6 col-sm-12">
           <Link to="/app/reports">
             <div style={cardStyle}>
               <div style={cardHeaderStyle}>

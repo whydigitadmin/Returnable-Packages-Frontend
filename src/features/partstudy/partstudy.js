@@ -20,10 +20,8 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen } from "react-icons/fa";
 import { FiDownload } from "react-icons/fi";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
+import logo from "../../assets/AI_Packs.png";
 import NewPartStudy from "./NewPartStudy";
 
 import {
@@ -35,33 +33,10 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-
-const statsData = [
-  {
-    title: "No of warehouse",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active warehouse",
-    value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Low stock warehouses",
-    value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Average Transaction",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
+import { FaBoxes, FaTruck } from "react-icons/fa";
+import { LuTimerReset } from "react-icons/lu";
+import { MdMapsHomeWork } from "react-icons/md";
+import DashBoardComponent from "../master/DashBoardComponent";
 
 function Partstudy() {
   const [open, setOpen] = React.useState(false);
@@ -75,6 +50,36 @@ function Partstudy() {
   const [logisticsData, setLogisticsData] = useState(null);
   const [stockData, setStockData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState("");
+
+  const [statsData, setStatsData] = useState([
+    {
+      title: "Total Count",
+      value: "0",
+      icon: <MdMapsHomeWork className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      title: "Active",
+      value: "0",
+      icon: <FaTruck className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+
+    {
+      // title: "Cycle Time",
+      title: "Completed",
+      value: "0",
+      icon: <LuTimerReset className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+    {
+      // title: "Unique Item/Item group",
+      title: "InComplete",
+      value: "0",
+      icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
+      description: "",
+    },
+  ]);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -105,17 +110,116 @@ function Partstudy() {
       );
 
       if (response.status === 200) {
+        // Update the state with basicDetailVO data
         setData(response.data.paramObjectsMap.basicDetailVO);
+
+        // Calculate the counts
+        const totalFlowCount =
+          response.data.paramObjectsMap.basicDetailVO.length;
+        const activeFlowsCount =
+          response.data.paramObjectsMap.basicDetailVO.filter(
+            (item) => item.active === "Active"
+          ).length;
+        const completedFlowsCount =
+          response.data.paramObjectsMap.basicDetailVO.filter(
+            (item) => item.eflag === true
+          ).length;
+
+        const InCompleteCount = totalFlowCount - completedFlowsCount;
+
+        // Update statsData with the new counts
+        const updatedStatsData = statsData.map((item) => {
+          if (item.title === "Total Count") {
+            return {
+              ...item,
+              value: totalFlowCount.toString(),
+            };
+          }
+          if (item.title === "Active") {
+            return {
+              ...item,
+              value: activeFlowsCount.toString(),
+            };
+          }
+          if (item.title === "Completed") {
+            return {
+              ...item,
+              value: completedFlowsCount.toString(),
+            };
+          }
+          if (item.title === "InComplete") {
+            return {
+              ...item,
+              value: InCompleteCount.toString(),
+            };
+          }
+          return item; // Return unchanged for other items
+        });
+
+        // Update the state with the new statsData
+        setStatsData(updatedStatsData);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  // Correct path to your image
   const handleDownloadPDF = (row) => {
     const doc = new jsPDF();
-    doc.setFontSize(12); // Reduced font size
-    doc.text("Part Study Basic Details", 14, 15);
+
+    // Add your local image to the PDF
+    const imgData = logo;
+    const imgWidth = 30; // Adjust width as needed
+    const imgHeight = 30; // Adjust height as needed
+    const imgXPosition = 12; // Adjust x position as needed
+    const imgYPosition = 10; // Adjust y position as needed
+    doc.addImage(
+      imgData,
+      "PNG",
+      imgXPosition,
+      imgYPosition,
+      imgWidth,
+      imgHeight
+    );
+
+    // Add heading next to the logo
+    const headingText = "Part Study Details";
+    const headingXPosition = imgXPosition + imgWidth + 30; // Position next to the logo
+    const headingYPosition = imgYPosition + imgHeight / 2 + 3; // Vertically center align with the image
+    doc.setFontSize(20); // Set font size for heading
+    doc.text(headingText, headingXPosition, headingYPosition);
+
+    // Watermark content and style
+    const watermarkContent = "Strictly Confidential";
+    const watermarkFontSize = 40;
+    const watermarkColor = "#CCCCCC"; // Light gray color
+
+    const addWatermark = (doc, pageIndex) => {
+      doc.setFontSize(watermarkFontSize);
+      doc.setTextColor(watermarkColor);
+
+      // Set opacity
+      doc.setGState(new doc.GState({ opacity: 0.3 }));
+
+      let x = doc.internal.pageSize.getWidth() / 2;
+      let y = doc.internal.pageSize.getHeight() / 2;
+
+      // Adjust position for the first page
+      if (pageIndex === 1) {
+        x += 20; // Move left
+        y += 40; // Move down
+      }
+
+      doc.text(watermarkContent, x, y, { angle: 50, align: "center" });
+
+      // Reset the opacity to default for subsequent content
+      doc.setGState(new doc.GState({ opacity: 1 }));
+    };
+
+    // Adding content to the document
+    doc.setFontSize(12);
+    doc.text("Basic Details", 14, 45); // Adjust y position to account for the image and heading height
 
     const basicData = row.original;
     const packagingData = row.original.packingDetailVO;
@@ -123,7 +227,7 @@ function Partstudy() {
     const stockData = row.original.stockDetailVO;
 
     doc.autoTable({
-      startY: 20,
+      startY: 50, // Adjust startY to account for the image and heading height
       head: [["Field", "Value"]],
       body: [
         ["Part Study Id", basicData.refPsId],
@@ -138,7 +242,7 @@ function Partstudy() {
       ],
       margin: { top: 10 },
       theme: "grid",
-      styles: { fontSize: 10, cellPadding: 2 }, // Reduce font size and cell padding
+      styles: { fontSize: 10, cellPadding: 2 },
     });
 
     doc.text("Packaging Design", 14, doc.lastAutoTable.finalY + 10);
@@ -163,9 +267,16 @@ function Partstudy() {
       styles: { fontSize: 10, cellPadding: 2 },
     });
 
-    doc.text("Logistics Details", 14, doc.lastAutoTable.finalY + 10);
+    let finalY = doc.lastAutoTable.finalY + 20; // Calculate final Y position
+
+    if (finalY + 20 > doc.internal.pageSize.height) {
+      doc.addPage();
+      finalY = 20; // Reset Y position for new page
+    }
+
+    doc.text("Logistics Details", 14, finalY);
     doc.autoTable({
-      startY: doc.lastAutoTable.finalY + 15,
+      startY: finalY + 5,
       head: [["Field", "Value"]],
       body: [
         ["Avg Lot Size", logisticsData.avgLotSize],
@@ -177,11 +288,16 @@ function Partstudy() {
       styles: { fontSize: 10, cellPadding: 2 },
     });
 
-    doc.addPage(); // Add a new page for Stock Keeping Days
+    finalY = doc.lastAutoTable.finalY + 20; // Calculate final Y position
 
-    doc.text("Stock Keeping Days", 14, 15);
+    if (finalY + 20 > doc.internal.pageSize.height) {
+      doc.addPage();
+      finalY = 20; // Reset Y position for new page
+    }
+
+    doc.text("Stock Keeping Days", 14, finalY);
     doc.autoTable({
-      startY: 20,
+      startY: finalY + 5,
       head: [["Field", "Value"]],
       body: [
         ["Emitter Store Days", stockData.emitterStoreDays],
@@ -201,8 +317,112 @@ function Partstudy() {
       styles: { fontSize: 10, cellPadding: 2 },
     });
 
+    // Add watermark to each page
+    for (let i = 1; i <= doc.internal.getNumberOfPages(); i++) {
+      doc.setPage(i);
+      addWatermark(doc, i);
+    }
+
+    // Save the PDF with a specific filename
     doc.save(`${basicData.partName}_PartStudy.pdf`);
   };
+  //   const doc = new jsPDF();
+  //   doc.setFontSize(12); // Reduced font size
+
+  //   // Add logo
+  //   // const imgData =
+  //   //   "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==";
+
+  //   // doc.addImage(imgData, "PNG", 10, 10, 50, 20); // Adjust the coordinates and size as needed
+
+  //   doc.text("Part Study Basic Details", 14, 15);
+
+  //   const basicData = row.original;
+  //   const packagingData = row.original.packingDetailVO;
+  //   const logisticsData = row.original.logisticsVO;
+  //   const stockData = row.original.stockDetailVO;
+
+  //   doc.autoTable({
+  //     startY: 20,
+  //     head: [["Field", "Value"]],
+  //     body: [
+  //       ["Part Study Id", basicData.refPsId],
+  //       ["Part Study Date", basicData.partStudyDate],
+  //       ["Part Name", basicData.partName],
+  //       ["Part No", basicData.partNumber],
+  //       ["Weight", basicData.weight],
+  //       ["Part Volume", basicData.partVolume],
+  //       ["Highest Volume", basicData.highestVolume],
+  //       ["Lowest Volume", basicData.lowestVolume],
+  //       ["Active", basicData.active],
+  //     ],
+  //     margin: { top: 10 },
+  //     theme: "grid",
+  //     styles: { fontSize: 10, cellPadding: 2 }, // Reduce font size and cell padding
+  //   });
+
+  //   doc.text("Packaging Design", 14, doc.lastAutoTable.finalY + 10);
+  //   doc.autoTable({
+  //     startY: doc.lastAutoTable.finalY + 15,
+  //     head: [["Field", "Value"]],
+  //     body: [
+  //       ["Length", packagingData.length],
+  //       ["Breath", packagingData.breath],
+  //       ["Height", packagingData.height],
+  //       ["Existing Part", packagingData.existingPart],
+  //       ["Part Sensitive", packagingData.partSensitive],
+  //       ["Part Greasy", packagingData.partGreasy],
+  //       ["Part Orientation", packagingData.partOrientation],
+  //       ["Multiple Part In Single Unit", packagingData.multiPartInSingleUnit],
+  //       ["Stacking", packagingData.stacking],
+  //       ["Nesting", packagingData.nesting],
+  //       ["Remarks", packagingData.remarks],
+  //     ],
+  //     margin: { top: 10 },
+  //     theme: "grid",
+  //     styles: { fontSize: 10, cellPadding: 2 },
+  //   });
+
+  //   doc.text("Logistics Details", 14, doc.lastAutoTable.finalY + 10);
+  //   doc.autoTable({
+  //     startY: doc.lastAutoTable.finalY + 15,
+  //     head: [["Field", "Value"]],
+  //     body: [
+  //       ["Avg Lot Size", logisticsData.avgLotSize],
+  //       ["Dispatch Frequency", logisticsData.dispatchFrequency],
+  //       ["Dispatch To", logisticsData.diapatchTo],
+  //     ],
+  //     margin: { top: 10 },
+  //     theme: "grid",
+  //     styles: { fontSize: 10, cellPadding: 2 },
+  //   });
+
+  //   doc.addPage(); // Add a new page for Stock Keeping Days
+
+  //   doc.text("Stock Keeping Days", 14, 15);
+  //   doc.autoTable({
+  //     startY: 20,
+  //     head: [["Field", "Value"]],
+  //     body: [
+  //       ["Emitter Store Days", stockData.emitterStoreDays],
+  //       ["Emitter Line Days", stockData.emitterLineDays],
+  //       ["In Transit Days", stockData.inTransitDays],
+  //       ["Receiver Line Storage Days", stockData.receiverLineStorageDays],
+  //       [
+  //         "Receiver Manufacturing Line Days",
+  //         stockData.receiverManufacturingLineDays,
+  //       ],
+  //       ["Other Storage Days", stockData.otherStorageDays],
+  //       ["Reverse Logistics Day", stockData.reverseLogisticsDay],
+  //       ["Total Cycle Time", stockData.totalCycleTime],
+  //     ],
+  //     margin: { top: 10 },
+  //     theme: "grid",
+  //     styles: { fontSize: 10, cellPadding: 2 },
+  //   });
+
+  //   doc.save(`${basicData.partName}_PartStudy.pdf`);
+  // };
 
   const columns = useMemo(
     () => [
@@ -362,6 +582,11 @@ function Partstudy() {
         )) || (
           <>
             <div className="card w-full p-6 bg-base-100 shadow-xl">
+              <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
+                {statsData.map((d, k) => {
+                  return <DashBoardComponent key={k} {...d} colorIndex={k} />;
+                })}
+              </div>
               <div className="d-flex justify-content-end mb-2">
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"

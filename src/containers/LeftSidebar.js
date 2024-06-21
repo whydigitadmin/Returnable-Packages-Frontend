@@ -62,16 +62,14 @@ function LeftSidebar() {
                   end
                   to={route.path}
                   className={({ isActive }) =>
-                    `${
-                      isActive ? "font-semibold  bg-base-200 " : "font-normal"
-                    }`
+                    `${isActive ? "font-semibold  " : "font-normal"}`
                   }
                   onClick={close} // Close sidebar on NavLink click
                 >
                   {route.icon} {route.name}
                   {location.pathname === route.path ? (
                     <span
-                      className="absolute inset-y-0 left-0 w-1 rounded-tr-md rounded-br-md bg-primary "
+                      className="absolute inset-y-0 left-0 w-1 rounded-tr-md rounded-br-md "
                       aria-hidden="true"
                     ></span>
                   ) : null}

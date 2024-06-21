@@ -1,4 +1,4 @@
-import { useState } from "react";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Paper,
   Table,
@@ -10,8 +10,9 @@ import {
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import { useState } from "react";
+import CountUp from "react-countup";
 
 function DashBoardComponent({
   title,
@@ -23,6 +24,7 @@ function DashBoardComponent({
 }) {
   const COLORS = ["blue", "green", "primary", "gray"];
   const [lowVolume, setLowVolume] = useState(false);
+  const [animatedValue, setAnimatedValue] = useState(0);
 
   const getDescStyle = () => {
     if (description.includes("↗︎"))
@@ -32,18 +34,33 @@ function DashBoardComponent({
     else return "";
   };
 
+  // useEffect(() => {
+  //   // if (lowVolume) {
+  //   let currentValue = 0;
+  //   const interval = setInterval(() => {
+  //     currentValue++;
+  //     setAnimatedValue(currentValue);
+  //     if (currentValue === value) {
+  //       clearInterval(interval);
+  //     }
+  //   }, 15); // Adjust interval time for smoother or faster animation
+  //   // } else {
+  //   //   setAnimatedValue(0); // Reset animation when closing dialog
+  //   // }
+  // }, [value]);
+
   const handleLowVolumeOpen = () => {
     setLowVolume(true);
-    console.log("THE MODAL IS OPEN");
   };
+
   const handleLowVolumeClose = () => {
     setLowVolume(false);
   };
 
   return (
     <>
-      <div className="stats shadow">
-        <div className="stat">
+      <div className="stats shadow transition transform hover:scale-105 duration-500 cursor-pointer">
+        <div className="stat bg-green-200 text-green-800">
           <div
             className={
               title === "low stock"
@@ -54,7 +71,6 @@ function DashBoardComponent({
           >
             {title}
           </div>
-
           <div className="dark:text-slate-300 text-right font-semibold mt-2 cursor-pointer">
             {subTitle}
           </div>
@@ -67,7 +83,7 @@ function DashBoardComponent({
             <div
               className={`font-semibold text-3xl mt-2 text-right dark:text-slate-100 text-${COLORS[colorIndex]}`}
             >
-              {value}
+              <CountUp end={value} duration={2} />
             </div>
           </div>
           <div className={"stat-desc  " + getDescStyle()}>{description}</div>

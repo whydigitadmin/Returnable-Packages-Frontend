@@ -320,10 +320,10 @@ function WelcomeEmitter() {
             </>
           ) : (
             <div className="row">
-              <div className="col-lg-4 col-md-6 col-sm-4">
+              <div className="col-lg-4 col-md-6 col-sm-4 ">
                 <Link to="/app/IssueReq">
                   <div
-                    className="card bg-base-100 shadow-xl mb-3 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-3 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",
@@ -392,7 +392,7 @@ function WelcomeEmitter() {
               <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/EmitterInwardNew">
                   <div
-                    className="card bg-base-100 shadow-xl mb-3 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-3 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",
@@ -456,7 +456,7 @@ function WelcomeEmitter() {
               <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/BinOutward">
                   <div
-                    className="card bg-base-100 shadow-xl mb-3 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-3 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",
@@ -511,7 +511,7 @@ function WelcomeEmitter() {
               <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/emitterdispatch">
                   <div
-                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",
@@ -554,7 +554,7 @@ function WelcomeEmitter() {
                 {/* <Link to="/app/StockAdjustment"> */}
                 <Link to="#">
                   <div
-                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",
@@ -596,7 +596,7 @@ function WelcomeEmitter() {
               <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/emitterstockledgerreport">
                   <div
-                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",
@@ -637,7 +637,7 @@ function WelcomeEmitter() {
               <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="/app/emitterallotmentreport">
                   <div
-                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",
@@ -678,7 +678,7 @@ function WelcomeEmitter() {
               <div className="col-lg-4 col-md-6 col-sm-4">
                 <Link to="#">
                   <div
-                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out"
+                    className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{
                       "--tw-bg-opacity": "1",
                       "--tw-hover-bg-color": "#d2fbd0",

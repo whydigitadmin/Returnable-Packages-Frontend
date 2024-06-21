@@ -1,66 +1,69 @@
 import {
-    Chart as ChartJS,
-    Filler,
-    ArcElement,
-    Title,
-    Tooltip,
-    Legend,
-  } from 'chart.js';
-  import { Pie } from 'react-chartjs-2';
-  import TitleCard from '../../../components/Cards/TitleCard';
-  import Subtitle from '../../../components/Typography/Subtitle';
-  
-  ChartJS.register(ArcElement, Tooltip, Legend,
-      Tooltip,
-      Filler,
-      Legend);
-  
-  function PieChart(){
-  
-      const options = {
-          responsive: true,
-          plugins: {
-            legend: {
-              position: 'top',
-            },
-          },
-        };
-        
-        const labels = ['India', 'Middle East', 'Europe', 'US', 'Latin America', 'Asia(non-india)'];
-        
-        const data = {
-          labels,
-          datasets: [
-              {
-                  label: '# of Orders',
-                  data: [122, 219, 30, 51, 82, 13],
-                  backgroundColor: [
-                    'rgba(255, 99, 255, 0.8)',
-                    'rgba(54, 162, 235, 0.8)',
-                    'rgba(255, 206, 255, 0.8)',
-                    'rgba(75, 192, 255, 0.8)',
-                    'rgba(153, 102, 255, 0.8)',
-                    'rgba(255, 159, 255, 0.8)',
-                  ],
-                  borderColor: [
-                    'rgba(255, 99, 255, 1)',
-                    'rgba(54, 162, 235, 1)',
-                    'rgba(255, 206, 255, 1)',
-                    'rgba(75, 192, 255, 1)',
-                    'rgba(153, 102, 255, 1)',
-                    'rgba(255, 159, 255, 1)',
-                  ],
-                  borderWidth: 1,
-                }
-          ],
-        };
-  
-      return(
-          <TitleCard title={"Orders by country"}>
-                  <Pie options={options} data={data} />
-          </TitleCard>
-      )
-  }
-  
-  
-  export default PieChart
+  ArcElement,
+  Chart as ChartJS,
+  Filler,
+  Legend,
+  Tooltip,
+} from "chart.js";
+import { Pie } from "react-chartjs-2";
+import TitleCard from "../../../components/Cards/TitleCard";
+
+ChartJS.register(ArcElement, Tooltip, Legend, Filler);
+
+function PieChart() {
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: "top",
+      },
+    },
+  };
+
+  const labels = [
+    "India",
+    "Middle East",
+    "Europe",
+    "US",
+    "Latin America",
+    "Asia(non-india)",
+  ];
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "# of Orders",
+        data: [50, 90, 55, 51, 82, 72],
+        backgroundColor: [
+          "#f9c80e",
+          "#f86624",
+          "#ea3546",
+          "#662e9b",
+          "#43bccd",
+          "#4FB477", // Repeat colors to match the number of data points
+        ],
+        borderColor: [
+          "#f9c80e",
+          "#f86624",
+          "#ea3546",
+          "#662e9b",
+          "#43bccd",
+          "#4FB477", // Repeat colors to match the number of data points
+        ],
+        borderWidth: 1,
+        // borderRadius: 2,
+      },
+    ],
+  };
+
+  return (
+    <TitleCard title={"Allotment Share"} style={{ borderRadius: "10px" }}>
+      <div style={{ width: "330px", height: "300px", margin: "auto" }}>
+        <Pie options={options} data={data} />
+      </div>
+    </TitleCard>
+  );
+}
+
+export default PieChart;

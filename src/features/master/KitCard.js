@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
+import PerformanceCharts from "../charts/components/PerformanceChart";
+import PieChart from "../charts/components/PieChart";
+import RatioComponent from "../charts/components/RatioComponent";
 
 export const KitCard = () => {
   const [kitCode, setKitCode] = useState("");
@@ -10,6 +13,11 @@ export const KitCard = () => {
   const [kitVO, setKitVO] = useState([]);
   const [hoveredImage, setHoveredImage] = useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+
+  const ratioData = [
+    { id: 1, title: "Allotment vs Request", value1: 40, value2: 60 },
+    { id: 2, title: "Bin's Allotted vs Bins' Request", value1: 80, value2: 20 },
+  ];
 
   const dummyAssets = [
     {
@@ -96,13 +104,26 @@ export const KitCard = () => {
       });
   };
 
+  const getCategoryColor = (assetCategory) => {
+    switch (assetCategory) {
+      case "Category A":
+        return "bg-blue-500"; // Example color class for Category A
+      case "Category B":
+        return "bg-green-500"; // Example color class for Category B
+      case "Category C":
+        return "bg-yellow-500"; // Example color class for Category C
+      default:
+        return "bg-green-100"; // Default color if category doesn't match
+    }
+  };
+
   return (
     <div style={{ width: "100%" }}>
       <div className="card w-full p-6 bg-base-100 shadow-xl">
         <div className="row">
           <div className="col-lg-2 col-md-6 mb-2">
             <label className="label">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
+              <span className="label-text text-md font-semibold text-base-content d-flex flex-row">
                 Kit Code
                 <FaStarOfLife className="must" />
               </span>
@@ -157,7 +178,7 @@ export const KitCard = () => {
           <div className="d-flex flex-row">
             <label className="label">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Part Quantity:
+                Part Qty:
               </span>
             </label>
             <span className="dark:text-slate-300 text-left font-semibold mt-2 ms-1">
@@ -167,76 +188,108 @@ export const KitCard = () => {
         )}
         <div>
           {kitData && (
-            <div className="overflow-x-auto w-full mt-2">
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th>Asset</th>
-                    <th>Asset Category</th>
-                    <th>Asset Code</th>
-                    <th>Quantity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {kitData.kitAssetVO.map((asset, index) => {
-                    // Find the corresponding dummy asset for the current asset
-                    const dummyAsset = dummyAssets.find(
-                      (dummy) => dummy.assetName === asset.assetName
-                    );
+            <div className="d-flex col-md-12 gap-2">
+              <div className="overflow-x-auto col-md-4 mt-2">
+                <table className="table w-full table-striped table-hover">
+                  <thead>
+                    <tr>
+                      <th className="font-semibold text-md">Asset Category</th>
+                      <th className="font-semibold text-md">Asset Code</th>
+                      <th className="font-semibold text-md">Qty</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {kitData.kitAssetVO.map((asset, index) => {
+                      const dummyAsset = dummyAssets.find(
+                        (dummy) => dummy.assetName === asset.assetName
+                      );
+                      const imageUrl = dummyAsset
+                        ? dummyAsset.imageUrl
+                        : dummyAssets.find(
+                            (asset) => asset.assetName === "NoImage"
+                          ).imageUrl;
 
-                    // Set the image URL based on whether a corresponding dummy asset was found
-                    const imageUrl = dummyAsset
-                      ? dummyAsset.imageUrl
-                      : dummyAssets.find(
-                          (asset) => asset.assetName === "NoImage"
-                        ).imageUrl;
-
-                    return (
-                      <tr key={asset.id}>
-                        <td style={{ position: "relative" }}>
-                          <img
-                            src={imageUrl}
-                            alt="Mechanical Image"
-                            style={{
-                              width: "50px",
-                              height: "50px",
-                            }}
-                            onMouseEnter={() => setHoveredImage(imageUrl)}
-                            onMouseLeave={() => setHoveredImage(null)}
-                          />
-                        </td>
-                        <td>{asset.assetCategory}</td>
-                        <td>{asset.assetCodeId}</td>
-                        <td>{asset.quantity}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                      return (
+                        <tr key={asset.id}>
+                          <td>
+                            <span
+                              className={`badge ${getCategoryColor(
+                                asset.assetCategory
+                              )} text-sm text-green-800 border-none  text-xs font-semibold`}
+                            >
+                              {asset.assetCategory}
+                            </span>
+                          </td>
+                          <td>{asset.assetCodeId}</td>
+                          <td>{asset.quantity}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              {emitterData.length > 0 && (
+                <div className="overflow-x-auto col-md-4 mt-2">
+                  <div className="">
+                    {emitterData.map((kit) => (
+                      <div className="bg-white border rounded-lg overflow-hidden shadow-md">
+                        <div className="p-3">
+                          <h3 className="text-md font-semibold mb-2">
+                            PARTIES
+                          </h3>
+                          <div className="mb-2">
+                            <p className="text-gray-600">
+                              <span className=" text-sm font-semibold">
+                                Emitter:
+                              </span>{" "}
+                              <span className="text-sm">{kit.emitter}</span>
+                            </p>
+                            <p className="text-gray-600">
+                              <span className="text-sm font-semibold">
+                                Receiver:
+                              </span>{" "}
+                              <span className="text-sm"> {kit.receiver}</span>
+                            </p>
+                            <p className="text-gray-600">
+                              <span className="font-semibold text-sm">
+                                Flow:
+                              </span>{" "}
+                              <span className="text-sm"> {kit.flow} </span>
+                            </p>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <span className="inline-block px-2 py-1 text-xs font-semibold bg-yellow-200 text-yellow-800 rounded-full">
+                                Min Dehire Qty: 15
+                              </span>
+                              <span className="inline-block px-2 py-1 text-xs font-semibold bg-blue-200 text-blue-800  rounded-full">
+                                Min Issue Qty: 20
+                              </span>
+                              <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-200 text-green-800 rounded-full">
+                                Kit Rotation: 40
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="overflow-x-auto col-md-4 mt-2">
+                <div className="">
+                  <RatioComponent />
+                </div>
+              </div>
             </div>
           )}
-          {emitterData.length > 0 && (
-            <div className="overflow-x-auto w-full mt-2">
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th>Emitter</th>
-                    <th>Receiver</th>
-                    <th>Flow</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {emitterData.map((kit) => {
-                    return (
-                      <tr key={kit.id}>
-                        <td>{kit.emitter}</td>
-                        <td>{kit.receiver}</td>
-                        <td>{kit.flow}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+          {kitData && (
+            <div className="d-flex flex-direction-row gap-2">
+              <div className="col-md-6">
+                <PieChart />
+              </div>
+              {/* <div className="col-md-1"></div> */}
+              <div className="col-md-6">
+                <PerformanceCharts />
+              </div>
             </div>
           )}
         </div>
