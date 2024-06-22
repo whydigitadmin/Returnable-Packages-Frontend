@@ -11,9 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaStarOfLife } from "react-icons/fa";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -24,7 +22,7 @@ const BinInwardOem = ({}) => {
   const [docDate, setDocDate] = useState(dayjs());
   const [flow, setFlow] = useState("");
   const [invNo, setInvNo] = useState("");
-  const [invDate, setInvDate] = useState(null);
+  const [invDate, setInvDate] = useState("");
   const [oemInwardNo, setOemInwardNo] = useState("");
   const [oemInwardDate, setOemInwardDate] = useState(null);
   const [listViewButton, setListViewButton] = useState(false);
@@ -40,7 +38,6 @@ const BinInwardOem = ({}) => {
   const [flowList, setFlowList] = useState([]);
   const [emitterOutwardList, setEmitterOutwardList] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [assetList, setAssetList] = useState([]);
   const [ListViewTableData, setListViewTableData] = useState([]);
 
   useEffect(() => {
@@ -111,10 +108,11 @@ const BinInwardOem = ({}) => {
     setFlow(e.target.value);
     getEmitterOutwardDetailsByFlowId(e.target.value);
   };
-  const handleInvDateChange = (newDate) => {
+
+  const handleOemDateChange = (newDate) => {
     const originalDateString = newDate;
     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
-    setInvDate(formattedDate);
+    setOemInwardDate(formattedDate);
   };
 
   const handleAllotedIdChange = (e) => {
@@ -126,15 +124,12 @@ const BinInwardOem = ({}) => {
     const selectedInvNo = emitterOutwardList.find(
       (i) => i.invoiceNo === e.target.value
     );
-
     setAllotedId(selectedInvNo.DocId);
-    console.log("THE SELECTED INVOICE NO IS:", selectedInvNo.DocId);
-
+    setInvDate(selectedInvNo.invoiceDate);
     getBininwardListByDocId(selectedInvNo.DocId);
   };
 
   const getEmitterOutwardDetailsByFlowId = async (selectedFlowId) => {
-    console.log("THE FLOW ID IS:", selectedFlowId);
     try {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/emitter/getDocIdByFlowOnEmitterDispatchScreen?FlowId=${selectedFlowId}`
@@ -175,35 +170,6 @@ const BinInwardOem = ({}) => {
     } catch (error) {}
   };
 
-  const handleRecKitQtyChange = async (e, kitNo) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getkitAssetDetailsByKitId?kitCode=${kitNo}&quantity=${e.target.value}`
-      );
-      if (response.status === 200) {
-        console.log(
-          "ASSET DETAILS ARE:",
-          response.data.paramObjectsMap.kitAssetVO
-        );
-        const viewTableData = response.data.paramObjectsMap.kitAssetVO.map(
-          (row, index) => ({
-            id: index + 1,
-            assetCode: row.assetCode,
-            assetCategory: row.assetCategory,
-            assetName: row.asset,
-            qty: row.qty,
-          })
-        );
-        console.log("THE ASSET LIST IS:", viewTableData);
-        setAssetList(viewTableData);
-      } else {
-        console.error("API Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   const handleNew = () => {
     setTableView(false);
     setFlow("");
@@ -218,6 +184,12 @@ const BinInwardOem = ({}) => {
     }
     if (!allotedId) {
       errors.allotedId = "Dispatch is required";
+    }
+    if (!oemInwardNo) {
+      errors.oemInwardNo = "OEM Inward No is required";
+    }
+    if (!oemInwardDate) {
+      errors.oemInwardDate = "OEM Inward Date is required";
     }
     if (!invNo.trim()) {
       errors.invNo = "Invoice No is required";
@@ -279,8 +251,11 @@ const BinInwardOem = ({}) => {
             setFlow("");
             setAllotedId("");
             setInvNo("");
-            setInvDate(null);
+            setInvDate("");
+            setOemInwardDate(null);
+            setOemInwardNo("");
             setTableView(false);
+            setEmitterOutwardList([]);
           }
         })
         .catch((error) => {
@@ -304,7 +279,6 @@ const BinInwardOem = ({}) => {
               <strong className="ml-4">Bin Inward</strong>
             </p>
             <div className="ml-auto">
-              {" "}
               <button
                 type="button"
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -430,39 +404,7 @@ const BinInwardOem = ({}) => {
                     <span className="error-text">{errors.flow}</span>
                   )}
                 </div>
-                {/* <div className="col-lg-2 col-md-4">
-                  <label className="label mb-4">
-                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Dispatch Id:
-                      <FaStarOfLife className="must" />
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-2 col-md-3">
-                  <select
-                    name="Select Kit"
-                    style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="form-select form-sz"
-                    onChange={handleAllotedIdChange}
-                    value={allotedId}
-                  >
-                    <option value="" selected>
-                      Select a DispatchId
-                    </option>
-                    {emitterOutwardList.length > 0 &&
-                      emitterOutwardList.map((outwardList, index) => (
-                        <option
-                          key={outwardList.index}
-                          value={outwardList.DocId}
-                        >
-                          {outwardList.DocId}
-                        </option>
-                      ))}
-                  </select>
-                  {errors.allotedId && (
-                    <span className="error-text">{errors.allotedId}</span>
-                  )}
-                </div> */}
+
                 <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -523,22 +465,21 @@ const BinInwardOem = ({}) => {
                   </label>
                 </div>
                 <div className="col-lg-2 col-md-3">
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DesktopDatePicker
-                      value={invDate}
-                      onChange={handleInvDateChange}
-                      slotProps={{
-                        textField: { size: "small" },
-                      }}
-                      format="DD/MM/YYYY"
-                    />
-                  </LocalizationProvider>
+                  <input
+                    className={`form-control form-sz mb-2 ${
+                      errors.oemInwardNo && "border-red-500"
+                    }`}
+                    placeholder=""
+                    value={invDate}
+                    disabled
+                  />
                 </div>
 
                 <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       OEM Inward No:
+                      <FaStarOfLife className="must" />
                     </span>
                   </label>
                 </div>
@@ -556,6 +497,7 @@ const BinInwardOem = ({}) => {
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       OEM Inward Date:
+                      <FaStarOfLife className="must" />
                     </span>
                   </label>
                 </div>
@@ -563,7 +505,7 @@ const BinInwardOem = ({}) => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
                       value={oemInwardDate}
-                      onChange={handleInvDateChange}
+                      onChange={handleOemDateChange}
                       slotProps={{
                         textField: { size: "small" },
                       }}

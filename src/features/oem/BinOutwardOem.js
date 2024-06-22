@@ -6,16 +6,12 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IoMdClose } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -28,13 +24,11 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
+import NoRecordsFound from "../../utils/NoRecordsFound";
 
 function BinOutwardOem({}) {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
-  const [flow, setFlow] = useState("");
-  const [kitName, setKitName] = useState("");
-  const [outwardKitQty, setOutwardKitQty] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
   const [listViewButton, setListViewButton] = useState(false);
@@ -42,7 +36,6 @@ function BinOutwardOem({}) {
   const [tableView, setTableView] = useState(false);
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
-  const [flowList, setFlowList] = useState([]);
   const [stockBranch, setStockBranch] = useState("");
   const [selectedStockBranch, setSelectedStockBranch] = useState("");
   const [stockBranchList, setStockBranchList] = useState([]);
@@ -59,7 +52,7 @@ function BinOutwardOem({}) {
   ]);
 
   useEffect(() => {
-    getStockBranchByUserId();
+    getOemStockBranchByUserId();
     getOutwardDocId();
     // getFlowByUserId();
     // if (listViewButton) {
@@ -72,7 +65,6 @@ function BinOutwardOem({}) {
       const response = await axios.get(
         `${process.env.REACT_APP_API_URL}/api/oem/getDocIdByOemBinOutward`
       );
-      console.log("API Response:", response);
 
       if (response.status === 200) {
         setDocId(response.data.paramObjectsMap.oemBinOutwardDocId);
@@ -84,29 +76,12 @@ function BinOutwardOem({}) {
     }
   };
 
-  const getFlowByUserId = async () => {
+  const getOemStockBranchByUserId = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getFlowByUserId?orgId=${orgId}&userId=${userId}`
+        `${process.env.REACT_APP_API_URL}/api/oem/getOemStockBranchByUserId?orgId=${orgId}&userId=${userId}`
       );
       if (response.status === 200) {
-        setFlowList(response.data.paramObjectsMap.flowDetails);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getStockBranchByUserId = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getStockBranchByUserId?orgId=${orgId}&userId=${userId}`
-      );
-      if (response.status === 200) {
-        console.log(
-          "getStockBranchByUserId:",
-          response.data.paramObjectsMap.branch
-        );
         setStockBranchList(response.data.paramObjectsMap.branch);
       } else {
         console.error("API Error:", response.data);
@@ -117,11 +92,11 @@ function BinOutwardOem({}) {
   };
 
   const handleSelectionChange = (event) => {
-    const selectedOrigin = event.target.value;
-    setStockBranch(selectedOrigin);
+    const selectedStockBranch = event.target.value;
+    setStockBranch(selectedStockBranch);
 
     const selectedBranch = stockBranchList.find(
-      (branch) => branch.orgin === selectedOrigin
+      (branch) => branch.stockBranch === selectedStockBranch
     );
     if (selectedBranch) {
       setSelectedStockBranch(selectedBranch.stockBranch);
@@ -173,13 +148,7 @@ function BinOutwardOem({}) {
     setSavedRecordView(false);
   };
 
-  const handleFlowChange = (e) => {
-    setFlow(e.target.value);
-    setTableView(true);
-  };
-
   const handleNew = () => {
-    setFlow("");
     // setTableData({})
     setTableView(false);
     setErrors({});
@@ -193,7 +162,7 @@ function BinOutwardOem({}) {
     }
     const formData = {
       docDate: docDate.format("YYYY-MM-DD"),
-      // docId: docId,
+      docId,
       id: 0,
       oemBinOutwardDetails: tableData.map((row) => ({
         asset: row.assetName,
@@ -218,9 +187,7 @@ function BinOutwardOem({}) {
           console.log("Response:", response.data);
           toast.success("Bin Outward saved successfully!");
           setDocDate(dayjs());
-          setKitName("");
           setSelectedStockBranch("");
-          setOutwardKitQty("");
           setTableData([]);
           setTableView(false);
           setErrors({});
@@ -247,7 +214,6 @@ function BinOutwardOem({}) {
               <strong className="ml-4">Bin Outward</strong>
             </p>
             <div className="ml-auto">
-              {" "}
               <button
                 type="button"
                 className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -305,7 +271,7 @@ function BinOutwardOem({}) {
             <>
               <div className="row mt-4">
                 {/* DOC ID FIELD */}
-                <div className="col-lg-2 col-md-4">
+                <div className="col-lg-1 col-md-2">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       Doc Id:
@@ -352,7 +318,7 @@ function BinOutwardOem({}) {
                     </span>
                   </label>
                 </div>
-                <div className="col-lg-2 col-md-3">
+                <div className="col-lg-3 col-md-6">
                   <select
                     // name="Select Kit"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
@@ -365,8 +331,8 @@ function BinOutwardOem({}) {
                     </option>
                     {stockBranchList.length > 0 &&
                       stockBranchList.map((list) => (
-                        <option key={list.stockBranch} value={list.orgin}>
-                          {list.orgin}
+                        <option key={list.destination} value={list.stockBranch}>
+                          {list.stockBranch}
                         </option>
                       ))}
                   </select>
@@ -376,48 +342,6 @@ function BinOutwardOem({}) {
                     </span>
                   )}
                 </div>
-                {/* <div className="col-lg-2 col-md-4">
-                  <label className="label mb-4">
-                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Kit No
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-2 col-md-3">
-                  <input
-                    className={`form-control form-sz mb-2 ${
-                      errors.kitName && "border-red-500"
-                    }`}
-                    placeholder="Kit No"
-                    value={kitName}
-                    onChange={(e) => setKitName(e.target.value)}
-                  />
-                  {errors.kitName && (
-                    <span className="error-text mb-1">{errors.kitName}</span>
-                  )}
-                </div>
-                <div className="col-lg-2 col-md-4">
-                  <label className="label mb-4">
-                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Outward Kit Qty
-                    </span>
-                  </label>
-                </div>
-                <div className="col-lg-2 col-md-3">
-                  <input
-                    className={`form-control form-sz mb-2 ${
-                      errors.outwardKitQty && "border-red-500"
-                    }`}
-                    placeholder="Outward Kit Qty"
-                    value={outwardKitQty}
-                    onChange={(e) => setOutwardKitQty(e.target.value)}
-                  />
-                  {errors.outwardKitQty && (
-                    <span className="error-text mb-1">
-                      {errors.outwardKitQty}
-                    </span>
-                  )}
-                </div> */}
               </div>
               {tableView && (
                 <>
@@ -433,40 +357,50 @@ function BinOutwardOem({}) {
                           </tr>
                         </thead>
                         <tbody>
-                          {tableData.map((row, index) => (
-                            <tr key={row.id}>
-                              {/* <td>{index + 1}</td> */}
-                              <td>{row.category}</td>
-                              <td>{row.assetCode}</td>
-                              <td>{row.availQty}</td>
-                              <td>
-                                <input
-                                  type="number"
-                                  className="border border-black rounded ms-3"
-                                  style={{ width: 50 }}
-                                  value={row.outQty}
-                                  onChange={(e) => {
-                                    setTableData((prev) =>
-                                      prev.map((r, i) =>
-                                        i === index
-                                          ? {
-                                              ...r,
-                                              outQty: e.target.value,
-                                            }
-                                          : r
-                                      )
-                                    );
-                                  }}
-                                />
+                          {tableData && tableData.length > 0 ? (
+                            tableData.map((row, index) => (
+                              <tr key={row.id}>
+                                {/* <td>{index + 1}</td> */}
+                                <td>{row.category}</td>
+                                <td>{row.assetCode}</td>
+                                <td>{row.availQty}</td>
+                                <td>
+                                  <input
+                                    type="number"
+                                    className="border border-black rounded ms-3"
+                                    style={{ width: 50 }}
+                                    value={row.outQty}
+                                    onChange={(e) => {
+                                      setTableData((prev) =>
+                                        prev.map((r, i) =>
+                                          i === index
+                                            ? {
+                                                ...r,
+                                                outQty: e.target.value,
+                                              }
+                                            : r
+                                        )
+                                      );
+                                    }}
+                                  />
 
-                                {errors.outQty && (
-                                  <span className="error-text mb-1">
-                                    {errors.outQty}
-                                  </span>
-                                )}
+                                  {errors.outQty && (
+                                    <span className="error-text mb-1">
+                                      {errors.outQty}
+                                    </span>
+                                  )}
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={9}>
+                                <NoRecordsFound
+                                  message={"Bin outward details Not Found.!"}
+                                />
                               </td>
                             </tr>
-                          ))}
+                          )}
                         </tbody>
                       </table>
                     </div>

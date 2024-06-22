@@ -161,14 +161,14 @@ function InternalPage() {
                     alt="Asset Inward"
                     style={cardIconStyle}
                   />
-                  <h5 className="text-md font-semibold ">Asset Inward</h5>
+                  <h5 className="text-md font-semibold ">Stock Transfer</h5>
                 </div>
               </div>
             </div>
           </Link>
         </div>
 
-        <div className="col-lg-6 col-md-6 col-sm-12">
+        {/* <div className="col-lg-6 col-md-6 col-sm-12">
           <Link to="/app/EmptyRetrievalManifest">
             <div style={cardStyle}>
               <div style={cardHeaderStyle}>
@@ -183,7 +183,7 @@ function InternalPage() {
               </div>
             </div>
           </Link>
-        </div>
+        </div> */}
 
         <h1 className="text-xl font-semibold mt-4 mb-3 col-12">Reports</h1>
 

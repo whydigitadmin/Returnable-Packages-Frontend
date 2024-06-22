@@ -6,16 +6,12 @@ import dayjs from "dayjs";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
-import { FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { IoMdClose } from "react-icons/io";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -28,58 +24,18 @@ import {
   TableContainer,
   TableRow,
 } from "@mui/material";
+import NoRecordsFound from "../../utils/NoRecordsFound";
 
 export const GatheringEmpty = () => {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
-  const [flow, setFlow] = useState("");
-  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
+  const [stockBranch, setStockBranch] = useState("");
+  const [stockBranchList, setStockBranchList] = useState([]);
   const [tableView, setTableView] = useState(false);
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
-  const [recBranch, setRecBranch] = useState("");
-  const [recBranchList, setRecBranchList] = useState([
-    {
-      id: 1,
-      flow: "CH",
-    },
-    {
-      id: 2,
-      flow: "BLR",
-    },
-  ]);
-
-  const [tableData, setTableData] = useState([
-    {
-      id: 1,
-      assetType: "Standard",
-      assetCode: "PLT1213",
-      expQty: "50",
-      emptyQty: "8",
-    },
-    {
-      id: 2,
-      assetType: "Standard",
-      assetCode: "LID1213",
-      expQty: "50",
-      emptyQty: "8",
-    },
-    {
-      id: 3,
-      assetType: "Standard",
-      assetCode: "SW1213",
-      expQty: "50",
-      emptyQty: "8",
-    },
-    {
-      id: 4,
-      assetType: "Customized",
-      assetCode: "IN1213",
-      expQty: "100",
-      emptyQty: "16",
-    },
-  ]);
+  const [tableData, setTableData] = useState([]);
   const [ListViewTableData, setListViewTableData] = useState([
     {
       id: 1,
@@ -90,11 +46,70 @@ export const GatheringEmpty = () => {
       balQty: "42",
     },
   ]);
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
+
+  useEffect(() => {
+    getOemStockBranchByUserId();
+    getDocIdByGatheringEmpty();
+  }, []);
+
+  const getDocIdByGatheringEmpty = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getDocIdByGatheringEmpty`
+      );
+
+      if (response.status === 200) {
+        setDocId(response.data.paramObjectsMap.gatheringDocId);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getOemStockBranchByUserId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getOemStockBranchByUserId?orgId=${orgId}&userId=${userId}`
+      );
+      if (response.status === 200) {
+        setStockBranchList(response.data.paramObjectsMap.branch);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleRecBranchChange = (e) => {
-    setFlow(e.target.value);
+    setStockBranch(e.target.value);
+    getEmptyAssetDetailsForGathering(e.target.value);
     setTableView(true);
+    setErrors({});
   };
+
+  const getEmptyAssetDetailsForGathering = async (selectedStockBranch) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getEmptyAssetDetailsForGathering?orgId=${orgId}&stockBranch=${selectedStockBranch}`
+      );
+      if (response.status === 200) {
+        setTableData(response.data.paramObjectsMap.oemEmptyDetails);
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const handleSavedRecordView = (e) => {
     setSavedRecordView(true);
   };
@@ -103,7 +118,7 @@ export const GatheringEmpty = () => {
   };
 
   const handleNew = () => {
-    setFlow("");
+    setStockBranch("");
     // setTableData({});
     setErrors({});
     setTableView(false);
@@ -112,18 +127,12 @@ export const GatheringEmpty = () => {
   const handleSave = () => {
     // Validation
     const errors = {};
-    if (!flow.trim()) {
-      errors.flow = "Kit No is required";
+    if (!stockBranch.trim()) {
+      errors.stockBranch = "Stock Branch is required";
     }
     tableData.forEach((row) => {
-      if (!row.asset.trim()) {
-        errors.asset = "Asset is required";
-      }
-      if (!row.assetCode.trim()) {
-        errors.assetCode = "Asset Code is required";
-      }
-      if (!row.qty.trim()) {
-        errors.qty = "Qty is required";
+      if (!row.emptyQty.trim()) {
+        errors.emptyQty = "Empty Qty is required";
       }
     });
 
@@ -132,44 +141,38 @@ export const GatheringEmpty = () => {
       return;
     }
 
-    // If no validation errors, proceed to save
     const formData = {
-      createdBy: "string", // Replace "string" with actual value
+      createdBy: userName,
+      docId,
       docDate: docDate.format("YYYY-MM-DD"),
-      kit: flow,
-      oemBinOutwardDetails: tableData.map((row) => ({
-        asset: row.asset,
+      gathereingEmptyDetailsDTO: tableData.map((row) => ({
+        assetType: row.assetType,
         assetCode: row.assetCode,
-        qty: parseInt(row.qty),
+        assetName: row.assetName,
+        category: row.category,
+        availqty: row.availqty,
+        emptyQty: parseInt(row.emptyQty),
       })),
-      orgId: 0, // Replace 0 with actual value
+      orgId,
+      stockBranch,
     };
 
     axios
-      .post("/api/oem/updateCreateOemBinOutward", formData)
+      .post(
+        `${process.env.REACT_APP_API_URL}/api/oem/createGatheringEmpty`,
+        formData
+      )
       .then((response) => {
-        // Handle successful response
-        console.log("Response:", response.data);
-        // Optionally, show a success message
-        toast.success("Bin Outward saved successfully!");
-        // Reset input fields
-        setDocId("");
-        setDocDate(dayjs()); // Reset to current date
-        setFlow("");
-        setTableData([
-          {
-            id: 1,
-            asset: "",
-            assetCode: "",
-            qty: "",
-          },
-        ]);
-        setErrors({}); // Clear errors
+        console.log("/api/oem/createGatheringEmpty:", response.data);
+        setDocDate(dayjs());
+        setStockBranch("");
+        setTableView(false);
+        setTableData([]);
+        setErrors({});
+        getDocIdByGatheringEmpty();
       })
       .catch((error) => {
-        // Handle error
         console.error("Error:", error);
-        // Optionally, show an error message
         toast.error("Failed to save bin inward.");
       });
   };
@@ -190,7 +193,6 @@ export const GatheringEmpty = () => {
             </span>
           </p>
           <div className="ml-auto">
-            {" "}
             <button
               type="button"
               className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
@@ -250,21 +252,21 @@ export const GatheringEmpty = () => {
           <>
             <div className="row mt-4">
               {/* DOC ID FIELD */}
-              {/* <div className="col-lg-2 col-md-4">
-              <label className="label mb-4">
-                <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Doc Id:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-2 col-md-4">
-              <input
-                className="form-control form-sz mb-2"
-                value={1000000033}
-                onChange={(e) => setDocId(e.target.value)}
-                disabled
-              />
-            </div> */}
+              <div className="col-lg-1 col-md-2">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Doc Id:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-4">
+                <input
+                  className="form-control form-sz mb-2"
+                  value={docId}
+                  onChange={(e) => setDocId(e.target.value)}
+                  disabled
+                />
+              </div>
               {/* DOC DATE FIELD */}
               <div className="col-lg-2 col-md-4">
                 <label className="label mb-4">
@@ -295,26 +297,26 @@ export const GatheringEmpty = () => {
                   </span>
                 </label>
               </div>
-              <div className="col-lg-2 col-md-3">
+              <div className="col-lg-3 col-md-3">
                 <select
                   name="Select Kit"
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="form-select form-sz"
                   onChange={handleRecBranchChange}
-                  value={recBranch}
+                  value={stockBranch}
                 >
                   <option value="" selected>
                     Select a Branch
                   </option>
-                  {recBranchList.length > 0 &&
-                    recBranchList.map((list) => (
-                      <option key={list.id} value={list.flow}>
-                        {list.flow}
+                  {stockBranchList.length > 0 &&
+                    stockBranchList.map((list) => (
+                      <option key={list.destination} value={list.stockBranch}>
+                        {list.stockBranch}
                       </option>
                     ))}
                 </select>
-                {errors.flow && (
-                  <span className="error-text">{errors.flow}</span>
+                {errors.stockBranch && (
+                  <span className="error-text">{errors.stockBranch}</span>
                 )}
               </div>
             </div>
@@ -326,45 +328,55 @@ export const GatheringEmpty = () => {
                       <thead>
                         <tr>
                           {/* <th>S.No</th> */}
-                          <th>Asset Type</th>
+                          <th>Category</th>
                           <th>Asset Code</th>
-                          <th>Inward Qty</th>
+                          <th>Available Qty</th>
                           <th>EMPTY QTY</th>
                         </tr>
                       </thead>
                       <tbody>
-                        {tableData.map((row, index) => (
-                          <tr key={row.id}>
-                            {/* <td>{index + 1}</td> */}
-                            <td>{row.assetType}</td>
-                            <td>{row.assetCode}</td>
-                            <td>{row.expQty}</td>
-                            <td>
-                              <input
-                                type="text"
-                                value={row.emptyQty}
-                                onChange={(e) =>
-                                  setTableData((prev) =>
-                                    prev.map((r, i) =>
-                                      i === index
-                                        ? { ...r, emptyQty: e.target.value }
-                                        : r
+                        {tableData && tableData.length > 0 ? (
+                          tableData.map((row, index) => (
+                            <tr key={row.id}>
+                              {/* <td>{index + 1}</td> */}
+                              <td>{row.category}</td>
+                              <td>{row.assetCode}</td>
+                              <td className="ps-5">{row.availQty}</td>
+                              <td>
+                                <input
+                                  type="text"
+                                  value={row.emptyQty}
+                                  onChange={(e) =>
+                                    setTableData((prev) =>
+                                      prev.map((r, i) =>
+                                        i === index
+                                          ? { ...r, emptyQty: e.target.value }
+                                          : r
+                                      )
                                     )
-                                  )
-                                }
-                                className={`form-control form-sz mb-2 ${
-                                  errors.qty && "border-red-500"
-                                }`}
-                                style={{ width: "50px" }}
+                                  }
+                                  className={`form-control form-sz mb-2 ${
+                                    errors.emptyQty && "border-red-500"
+                                  }`}
+                                  style={{ width: "50px" }}
+                                />
+                                {errors.emptyQty && (
+                                  <span className="error-text mb-1">
+                                    {errors.emptyQty}
+                                  </span>
+                                )}
+                              </td>
+                            </tr>
+                          ))
+                        ) : (
+                          <tr>
+                            <td colSpan={9}>
+                              <NoRecordsFound
+                                message={"Empty bins Not Found.!"}
                               />
-                              {errors.qty && (
-                                <span className="error-text mb-1">
-                                  {errors.qty}
-                                </span>
-                              )}
                             </td>
                           </tr>
-                        ))}
+                        )}
                       </tbody>
                     </table>
                   </div>

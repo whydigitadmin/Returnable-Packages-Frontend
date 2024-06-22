@@ -153,6 +153,9 @@ export const EmitterDispatch = () => {
     if (!flow) {
       errors.flow = "Flow is required";
     }
+    if (!invDate) {
+      errors.invDate = "Invoice Date is required";
+    }
     if (!invNo) {
       errors.invNo = "Invoice No is required";
     }
@@ -520,6 +523,7 @@ export const EmitterDispatch = () => {
                     name="grnNo"
                     maxLength={15}
                     value={grnNo}
+                    disabled
                     onChange={(e) => setGrnNo(e.target.value)}
                   />
                 </div>
@@ -534,6 +538,7 @@ export const EmitterDispatch = () => {
                 <div className="col-lg-2 col-md-4">
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
+                      disabled
                       value={grnDate}
                       onChange={(date) =>
                         setGrnDate(dayjs(date).format("YYYY-MM-DD"))
