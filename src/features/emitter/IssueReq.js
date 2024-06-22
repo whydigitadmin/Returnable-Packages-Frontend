@@ -54,6 +54,7 @@ function IssueReq() {
   const [selectedPartNumbers, setSelectedPartNumbers] = React.useState("");
   const [getkit, setGetKit] = React.useState("");
   const [getKitIds, setGetKitIds] = React.useState([]);
+  const [partNoAndPartName, setPartNoAndPartName] = React.useState([]);
   const [selectedKitId, setSelectedKitId] = React.useState("");
   const [demandDate, setSelectedDate] = React.useState(null);
   const [errors, setErrors] = React.useState("");
@@ -442,6 +443,17 @@ function IssueReq() {
           response.data.paramObjectsMap.flowVO.flowDetailVO
         );
 
+        // const kitDataArray =
+        //   response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
+        //     id: kit.id,
+        //     kitName: kit.kitNo,
+        //     partName: kit.partName,
+        //     partNumber: kit.partNumber,
+        //     partQty: kit.partQty,
+        //   }));
+
+        // // Setting kitData in the state using a callback function
+        // setKitData([...kitDataArray]);
         const kitDataArray =
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
             id: kit.id,
@@ -451,8 +463,19 @@ function IssueReq() {
             partQty: kit.partQty,
           }));
 
-        // Setting kitData in the state using a callback function
-        setKitData([...kitDataArray]);
+        // Using a Set to keep track of unique kit names
+        const uniqueKitNames = new Set();
+        const uniqueKits = [];
+
+        kitDataArray.forEach((kit) => {
+          if (!uniqueKitNames.has(kit.kitName)) {
+            uniqueKitNames.add(kit.kitName);
+            uniqueKits.push(kit);
+          }
+        });
+
+        // Setting kitData in the state with unique kit names
+        setKitData([...uniqueKits]);
 
         const partDataArray =
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((part) => ({
@@ -614,6 +637,7 @@ function IssueReq() {
 
   const handleKitNoChange = (e, index) => {
     const selectedKitNo = e.target.value;
+    getPartNoAndPartName(e.target.value);
 
     // Check if the selected kit already exists
 
@@ -637,6 +661,25 @@ function IssueReq() {
         newFields[index].kitNo = selectedKitNo;
         return newFields;
       });
+    }
+  };
+
+  const getPartNoAndPartName = async (kit) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getPartNoAndPartName?emitterId=${emitterId}&flowId=${selectedFlowId}&kitNo=${kit}`
+      );
+      if (response.status === 200) {
+        setPartNoAndPartName(response.data.paramObjectsMap.partNoAndPartName);
+        console.log(
+          "partNoAndPartName",
+          response.data.paramObjectsMap.partNoAndPartName
+        );
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -1119,13 +1162,13 @@ function IssueReq() {
                             </div>
                           )}
                         </div>
-                        {selectedKit && (
+                        {partNoAndPartName && (
                           <div className="col-lg-3 col-md-2 mt-6">
                             <Card style={{ border: "1px solid #000000" }}>
                               <CardContent>
-                                {selectedKit && (
+                                {partNoAndPartName && (
                                   <Typography variant="outlined">
-                                    Part: {selectedKit.partName}
+                                    Part: {partNoAndPartName.partNo}
                                   </Typography>
                                 )}
                               </CardContent>

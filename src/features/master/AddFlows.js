@@ -217,6 +217,10 @@ function AddFlows({ addFlows, editFlowId }) {
           response.data.paramObjectsMap.flowVO.warehouseId
         );
         setKitDTO(response.data.paramObjectsMap.flowVO.flowDetailVO);
+        console.log(
+          "setKitDTO",
+          response.data.paramObjectsMap.flowVO.flowDetailVO
+        );
         editDestinationList(response.data.paramObjectsMap.flowVO.orgin);
         editRetrivalList(response.data.paramObjectsMap.flowVO.warehouseId);
         if (response.data.paramObjectsMap.flowVO.active === "In-Active") {
@@ -562,7 +566,125 @@ function AddFlows({ addFlows, editFlowId }) {
     setCycleTime("");
     setErrors({});
   };
+  // OLD CODE
+  // const handleAddKitDetails = () => {
+  //   const errors = {};
+  //   if (!kitNo) {
+  //     errors.kitNo = "Kit is required";
+  //   }
+  //   if (!partName) {
+  //     errors.partName = "Part Name is required";
+  //   }
+  //   if (!partNumber) {
+  //     errors.partNumber = "Part Number is required";
+  //   }
+  //   if (!cycleTime) {
+  //     errors.cycleTime = "Cycle Time is required";
+  //   }
+  //   if (Object.keys(errors).length === 0) {
+  //     const existingKit = kitDTO.find(
+  //       (kit) => kit.kitNo === kitNo && kit.partNumber === partNumber
+  //     );
+  //     if (existingKit) {
+  //       toast.error("This kit and part number combination already exists", {
+  //         position: toast.POSITION.TOP_CENTER,
+  //         autoClose: 2000,
+  //         theme: "colored",
+  //       });
+  //     } else {
+  //       const existingPartNumber = kitDTO.find(
+  //         (kit) => kit.partNumber === partNumber
+  //       );
+  //       if (existingPartNumber) {
+  //         toast.error("This part number is already assigned to another kit", {
+  //           position: toast.POSITION.TOP_CENTER,
+  //           autoClose: 2000,
+  //           theme: "colored",
+  //         });
+  //       } else {
+  //         const newKitDetails = {
+  //           kitNo,
+  //           kitDesc,
+  //           partName,
+  //           partNumber,
+  //           cycleTime,
+  //           orgId,
+  //         };
+  //         setKitDTO([...kitDTO, newKitDetails]);
+  //         handleKitClose();
+  //       }
+  //     }
+  //   } else {
+  //     setErrors(errors);
+  //   }
+  // };
+  // KIT & CYCLE TIME SAME
+  // const handleAddKitDetails = () => {
+  //   const errors = {};
+  //   if (!kitNo) {
+  //     errors.kitNo = "Kit is required";
+  //   }
+  //   if (!partName) {
+  //     errors.partName = "Part Name is required";
+  //   }
+  //   if (!partNumber) {
+  //     errors.partNumber = "Part Number is required";
+  //   }
+  //   if (!cycleTime) {
+  //     errors.cycleTime = "Cycle Time is required";
+  //   }
+  //   if (Object.keys(errors).length === 0) {
+  //     const existingKit = kitDTO.find(
+  //       (kit) => kit.kitNo === kitNo && kit.partNumber === partNumber
+  //     );
+  //     if (existingKit) {
+  //       toast.error("This kit and part number combination already exists", {
+  //         position: toast.POSITION.TOP_CENTER,
+  //         autoClose: 2000,
+  //         theme: "colored",
+  //       });
+  //     } else {
+  //       const existingPartNumber = kitDTO.find(
+  //         (kit) => kit.partNumber === partNumber
+  //       );
+  //       if (existingPartNumber) {
+  //         toast.error("This part number is already assigned to another kit", {
+  //           position: toast.POSITION.TOP_CENTER,
+  //           autoClose: 2000,
+  //           theme: "colored",
+  //         });
+  //       } else {
+  //         const matchingKitNo = kitDTO.find((kit) => kit.kitNo === kitNo);
+  //         if (matchingKitNo && matchingKitNo.cycleTime !== cycleTime) {
+  //           toast.error("Cycle Time must be the same for the same Kit Number", {
+  //             position: toast.POSITION.TOP_CENTER,
+  //             autoClose: 2000,
+  //             theme: "colored",
+  //           });
+  //         } else {
+  //           const newKitDetails = {
+  //             // id: kitDTO.length ? kitDTO[kitDTO.length - 1].id + 1 : 1000000001,
+  //             // flow2RowId: null,
+  //             id,
+  //             orgId,
+  //             kitNo,
+  //             kitDesc,
+  //             partName,
+  //             partNumber,
+  //             cycleTime,
+  //             active: true,
+  //           };
+  //           setKitDTO([...kitDTO, newKitDetails]);
+  //           handleKitClose();
+  //         }
+  //       }
+  //     }
+  //   } else {
+  //     setErrors(errors);
+  //   }
+  // };
 
+  // kitNo, partName, and cycleTime Validation:
   const handleAddKitDetails = () => {
     const errors = {};
     if (!kitNo) {
@@ -598,16 +720,34 @@ function AddFlows({ addFlows, editFlowId }) {
             theme: "colored",
           });
         } else {
-          const newKitDetails = {
-            kitNo,
-            kitDesc,
-            partName,
-            partNumber,
-            cycleTime,
-            orgId,
-          };
-          setKitDTO([...kitDTO, newKitDetails]);
-          handleKitClose();
+          const matchingKitNo = kitDTO.find((kit) => kit.kitNo === kitNo);
+          if (
+            matchingKitNo &&
+            (matchingKitNo.partName !== partName ||
+              matchingKitNo.cycleTime !== cycleTime)
+          ) {
+            toast.error(
+              "Kit Number, Part Name, and Cycle Time must be the same for the same Kit Number",
+              {
+                position: toast.POSITION.TOP_CENTER,
+                autoClose: 2000,
+                theme: "colored",
+              }
+            );
+          } else {
+            const newKitDetails = {
+              id,
+              orgId,
+              kitNo,
+              kitDesc,
+              partName,
+              partNumber,
+              cycleTime,
+              active: false,
+            };
+            setKitDTO([...kitDTO, newKitDetails]);
+            handleKitClose();
+          }
         }
       }
     } else {

@@ -222,35 +222,7 @@ function WelcomeOEM() {
                     </div>
                   </Link>
                 </div>
-                <div className="col-lg-12">
-                  <Link to="/app/BinOutwardOem">
-                    <div
-                      className="card bg-base-100 shadow-xl mb-2  pt-3 pb-3 pl-3 mt-2 transition duration-300 ease-in-out"
-                      style={{
-                        "--tw-bg-opacity": "1",
-                        "--tw-hover-bg-color": "#d2fbd0",
-                      }}
-                      onMouseEnter={(e) =>
-                        (e.currentTarget.style.backgroundColor = "#d2fbd0")
-                      }
-                      onMouseLeave={(e) =>
-                        (e.currentTarget.style.backgroundColor = "transparent")
-                      }
-                    >
-                      <div className="d-flex flex-row">
-                        <img
-                          src="/outgoing.png"
-                          style={{
-                            width: "35px",
-                            height: "35px",
-                            marginRight: "6px",
-                          }}
-                        />
-                        <h4 className="text-lg font-semibold">Bin Outward</h4>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
+
                 <div className="col-lg-12">
                   <Link to={"/app/gatheringempty"}>
                     <div
@@ -276,6 +248,35 @@ function WelcomeOEM() {
                           }}
                         />
                         <h4 className="text-lg font-semibold">Empty Bins</h4>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+                <div className="col-lg-12">
+                  <Link to="/app/BinOutwardOem">
+                    <div
+                      className="card bg-base-100 shadow-xl mb-2  pt-3 pb-3 pl-3 mt-2 transition duration-300 ease-in-out"
+                      style={{
+                        "--tw-bg-opacity": "1",
+                        "--tw-hover-bg-color": "#d2fbd0",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#d2fbd0")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
+                    >
+                      <div className="d-flex flex-row">
+                        <img
+                          src="/outgoing.png"
+                          style={{
+                            width: "35px",
+                            height: "35px",
+                            marginRight: "6px",
+                          }}
+                        />
+                        <h4 className="text-lg font-semibold">Bin Outward</h4>
                       </div>
                     </div>
                   </Link>
