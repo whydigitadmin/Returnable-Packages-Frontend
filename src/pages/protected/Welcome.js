@@ -113,6 +113,7 @@ function InternalPage() {
                     IconComponent={DownloadingIcon}
                     pendingReqData={data}
                     type="Pending"
+                    page="Dashboard"
                   />
                   <BadgeWithIcon
                     badgeContent={totAllotedReq.length}
@@ -121,6 +122,7 @@ function InternalPage() {
                     completedReqData={totAllotedReq}
                     IconComponent={CheckCircleIcon}
                     type="Completed"
+                    page="DashboardCom"
                   />
                 </div>
               </div>

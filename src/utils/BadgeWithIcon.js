@@ -16,6 +16,7 @@ const BadgeWithIcon = ({
   type,
   inward,
   outward,
+  page,
 }) => {
   const [open, setOpen] = useState(false);
 
@@ -66,6 +67,7 @@ const BadgeWithIcon = ({
         completedReqData={completedReqData}
         pendingReqData={pendingReqData}
         type={type}
+        page={page}
         inwardTo={inward}
         outwardTo={outward}
       />

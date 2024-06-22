@@ -13,12 +13,14 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  stringValidation,
-  codeFieldValidation,
-} from "../../utils/userInputValidation";
-import { refreshAuthToken } from "../../utils/refreshAuthToken";
+import sampleFile from "../../assets/sampleFiles/sample_data_unit.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import SessionExpiry from "../../utils/SessionExpiry";
+import { refreshAuthToken } from "../../utils/refreshAuthToken";
+import {
+  codeFieldValidation,
+  stringValidation,
+} from "../../utils/userInputValidation";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -82,11 +84,34 @@ export const StockBranch = () => {
   const [userName, setUserName] = React.useState(
     localStorage.getItem("userName")
   );
+  const [open, setOpen] = React.useState(false);
   const [tokenId, setTokenId] = React.useState(localStorage.getItem("tokenId"));
   const [sessionExpired, setSessionExpired] = React.useState(false);
+
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/master/ExcelUploadForStockBranch`;
+
   useEffect(() => {
     getAllStockbranch();
   }, []);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
+  };
 
   const getAllStockbranch = async () => {
     const token = localStorage.getItem("token");
@@ -379,6 +404,18 @@ export const StockBranch = () => {
             }
           />
         </div>
+        <BulkUploadDialog
+          open={open}
+          onOpenClick={handleClickOpen}
+          handleClose={handleClose}
+          dialogTitle="Upload File"
+          uploadText="Upload file"
+          downloadText="Sample File"
+          onSubmit={handleSubmit}
+          sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+          handleFileUpload={handleFileUpload}
+          apiUrl={apiUrl}
+        />
       </div>
       {selectedRowId ? (
         <div className="d-flex flex-row">

@@ -1,15 +1,7 @@
-import { Box } from "@mui/material";
-import { styled } from "@mui/material/styles";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Switch from "@mui/material/Switch";
-import { MaterialReactTable } from "material-react-table";
-import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen, FaStarOfLife } from "react-icons/fa";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import {
+  Box,
   Paper,
   Table,
   TableBody,
@@ -21,11 +13,21 @@ import {
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
+import FormControlLabel from "@mui/material/FormControlLabel";
 import IconButton from "@mui/material/IconButton";
+import Switch from "@mui/material/Switch";
 import Typography from "@mui/material/Typography";
+import { styled } from "@mui/material/styles";
 import axios from "axios";
+import { MaterialReactTable } from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaBoxOpen, FaStarOfLife } from "react-icons/fa";
+import { LuWarehouse } from "react-icons/lu";
+import { TbWeight } from "react-icons/tb";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import sampleFile from "../../assets/sampleFiles/sample_data_unit.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import { stringValidation } from "../../utils/userInputValidation";
 
 const statsData = [
@@ -120,6 +122,8 @@ function Unit() {
   const [active, setActive] = useState(true);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [updateLoading, setUpdateLoading] = useState(false);
+
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/master/ExcelUploadForUnit`;
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -256,6 +260,17 @@ function Unit() {
         console.error("Error:", error);
         setUpdateLoading(false); // Reset loading state on error
       });
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
   };
 
   const VisuallyHiddenInput = styled("input")({
@@ -405,6 +420,20 @@ function Unit() {
               }
             />
           </div>
+          <div className="col-lg-3 col-md-6 mb-2">
+            <BulkUploadDialog
+              open={open}
+              onOpenClick={handleClickOpen}
+              handleClose={handleClose}
+              dialogTitle="Upload File"
+              uploadText="Upload file"
+              downloadText="Sample File"
+              onSubmit={handleSubmit}
+              sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+              handleFileUpload={handleFileUpload}
+              apiUrl={apiUrl}
+            />
+          </div>
           {edit ? (
             <div className="d-flex flex-row mt-3">
               <button
@@ -456,22 +485,7 @@ function Unit() {
                   gap: "1rem",
                   justifyContent: "flex-end",
                 }}
-              >
-                {/* <Tooltip arrow placement="right" title="Edit">
-                  <IconButton style={{ color: "blue" }}>
-                    <Edit />
-                  </IconButton>
-                </Tooltip>
-
-                <Tooltip arrow placement="right" title="View">
-                  <IconButton
-                    color="primary"
-                    // onClick={() => handleView(row.original)}
-                  >
-                    <VisibilityIcon />
-                  </IconButton>
-                </Tooltip> */}
-              </Box>
+              ></Box>
             )}
           />
         </div>

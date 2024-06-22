@@ -40,6 +40,7 @@ const BadgeDialog = ({
   pendingReqData,
   inwardTo,
   outwardTo,
+  page,
 }) => {
   const requestData = type === "Completed" ? completedReqData : pendingReqData;
 
@@ -86,7 +87,8 @@ const BadgeDialog = ({
                   requestData.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell>
-                        {row.status === "Completed" ? (
+                        {row.status === "Completed" ||
+                        page === "DashboardCom" ? (
                           <CheckCircleIcon style={{ color: green[500] }} />
                         ) : (
                           <HourglassEmptyIcon style={{ color: red[500] }} />
@@ -98,9 +100,20 @@ const BadgeDialog = ({
                           <StyledTableCell>{row.allotDate}</StyledTableCell>
                         </>
                       )}
-                      <StyledTableCell>{row.binReqNo}</StyledTableCell>
-                      <StyledTableCell>{row.binReqDate}</StyledTableCell>
-                      <StyledTableCell>{row.kitNo}</StyledTableCell>
+                      <StyledTableCell>
+                        {" "}
+                        {page === "Dashboard" ? row.reqNo : row.binReqNo}
+                      </StyledTableCell>
+                      <StyledTableCell>
+                        {" "}
+                        {page === "Dashboard" ? row.reqDate : row.binReqDate}
+                      </StyledTableCell>
+                      {page === "Dashboard" || page === "DashboardCom" ? (
+                        <StyledTableCell> {row.kitCode} </StyledTableCell>
+                      ) : (
+                        <StyledTableCell> {row.kitNo} </StyledTableCell>
+                      )}
+
                       {inWardData ? (
                         <StyledTableCell>{row.allotkitQty}</StyledTableCell>
                       ) : (
