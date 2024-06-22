@@ -131,7 +131,7 @@ function InternalPage() {
         </div>
 
         <div className="col-lg-6 col-md-6 col-sm-12">
-          <Link to="">
+          <Link to="/app/adminbinretrieval">
             <div style={cardStyle}>
               <div style={cardHeaderStyle}>
                 <div style={{ display: "flex", alignItems: "center" }}>

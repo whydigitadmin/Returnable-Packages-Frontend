@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -22,6 +22,7 @@ const TransporterPickup = ({}) => {
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
   const [handoverTo, setHandoverTo] = useState("");
+  const [transporterDocNo, setTransporterDocNo] = useState("");
   const [driver, setDriver] = useState("");
   const [driverPhNo, setDriverPhNo] = useState("");
   const [vehicleNo, setVehicleNo] = useState("");
@@ -50,7 +51,7 @@ const TransporterPickup = ({}) => {
     {
       id: 1,
       pickId: "1000001",
-      date: "15-05-2024",
+      date: "15-05-2024-10:30:00",
       handTo: "Safe Express",
       handBy: loginUserName,
       driver: "Devaraj",
@@ -58,6 +59,28 @@ const TransporterPickup = ({}) => {
       vehicle: "TN01AB1213",
     },
   ]);
+
+  useEffect(() => {
+    getAllVendorByOrgId();
+  }, []);
+
+  const getAllVendorByOrgId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getVendorByOrgId?orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setTransporterList(
+          response.data.paramObjectsMap.vendorVO.filter(
+            (user) => user.venderType === "Transport"
+          )
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handleTransactionView = (e) => {
     setTransactionView(true);
@@ -190,11 +213,11 @@ const TransporterPickup = ({}) => {
                       <th className="text-center">S.No</th>
                       <th className="text-center">Retrival Manifest No</th>
                       <th className="text-center">Date</th>
-                      <th className="text-center">Handover To</th>
+                      {/* <th className="text-center">Handover To</th>
                       <th className="text-center">Handover By</th>
                       <th className="text-center">Driver</th>
                       <th className="text-center">Ph No</th>
-                      <th className="text-center">Vehicle</th>
+                      <th className="text-center">Vehicle</th> */}
                     </tr>
                   </thead>
                   <tbody>
@@ -214,11 +237,11 @@ const TransporterPickup = ({}) => {
                           </a>
                         </td>
                         <td className="text-center">{row.date}</td>
-                        <td className="text-center">{row.handTo}</td>
+                        {/* <td className="text-center">{row.handTo}</td>
                         <td className="text-center">{row.handBy}</td>
                         <td className="text-center">{row.driver}</td>
                         <td className="text-center">{row.phNo}</td>
-                        <td className="text-center">{row.vehicle}</td>
+                        <td className="text-center">{row.vehicle}</td> */}
                       </tr>
                     ))}
                   </tbody>
@@ -237,13 +260,12 @@ const TransporterPickup = ({}) => {
                     <tr>
                       <th className="text-center">S.No</th>
                       <th className="text-center">Pickup ID</th>
-                      <th className="text-center">Date</th>
+                      <th className="text-center">Date & Time</th>
                       <th className="text-center">Handover To</th>
                       <th className="text-center">Handover By</th>
                       <th className="text-center">Driver</th>
                       <th className="text-center">Ph No</th>
                       <th className="text-center">Vehicle</th>
-                      <th className="text-center">Status</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -257,7 +279,6 @@ const TransporterPickup = ({}) => {
                         <td className="text-center">{row.driver}</td>
                         <td className="text-center">{row.phNo}</td>
                         <td className="text-center">{row.vehicle}</td>
-                        <td className="text-center">Done</td>
                       </tr>
                     ))}
                   </tbody>
@@ -312,13 +333,32 @@ const TransporterPickup = ({}) => {
                   </option>
                   {transporterList.length > 0 &&
                     transporterList.map((list) => (
-                      <option key={list.id} value={list.name}>
-                        {list.name}
+                      <option key={list.id} value={list.displyName}>
+                        {list.displyName}
                       </option>
                     ))}
                 </select>
                 {errors.handoverTo && (
                   <span className="error-text">{errors.handoverTo}</span>
+                )}
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Transporter DocNo
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-2 col-md-3">
+                <input
+                  className={`form-control form-sz mb-2 ${
+                    errors.transporterDocNo && "border-red-500"
+                  }`}
+                  value={transporterDocNo}
+                  onChange={(e) => setTransporterDocNo(e.target.value)}
+                />
+                {errors.transporterDocNo && (
+                  <span className="error-text">{errors.transporterDocNo}</span>
                 )}
               </div>
 

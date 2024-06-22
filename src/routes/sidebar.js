@@ -569,6 +569,18 @@ const routes = [
     ),
     name: <span className="ml-1">Bin Allotment</span>,
   },
+  {
+    path: "/app/adminbinretrieval", //no url needed as this has submenu
+    icon: (
+      <img
+        src="/issuemanifest1.png"
+        alt="Issuemanifest"
+        style={{ width: "30px", height: "auto" }}
+        className={{ submenuIconClasses }}
+      />
+    ),
+    name: <span className="ml-1">Bin Retrieval</span>,
+  },
 
   {
     path: "", //no url needed as this has submenu

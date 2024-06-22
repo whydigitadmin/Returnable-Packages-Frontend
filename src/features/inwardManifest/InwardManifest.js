@@ -266,7 +266,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
     const selectedValue = e.target.value;
     setStockFrom(selectedValue);
     const filteredBranches = stockBranch.filter(
-      (branch) => branch.branchCode !== selectedValue
+      (branch) => branch.warehouseLocation !== selectedValue
     );
     setStockTo("");
     setFilteredStockBranch(filteredBranches);
@@ -296,15 +296,32 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
     }
   };
 
+  // OLD
+  // const getStockBranch = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/ActivestockbranchByOrgId?orgId=${orgId}`
+  //     );
+  //     console.log("API Response:", response);
+
+  //     if (response.status === 200) {
+  //       setStockBranch(response.data.paramObjectsMap.branch);
+  //     } else {
+  //       console.error("API Error:", response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
   const getStockBranch = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/ActivestockbranchByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/warehouse/activeWarehouse?orgId=${orgId}`
       );
       console.log("API Response:", response);
 
       if (response.status === 200) {
-        setStockBranch(response.data.paramObjectsMap.branch);
+        setStockBranch(response.data.paramObjectsMap.WarehouseVO);
       } else {
         console.error("API Error:", response.data);
       }
@@ -717,8 +734,8 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               {/* </option> */}
               {stockBranch.length > 0 &&
                 stockBranch.map((list) => (
-                  <option key={list.id} value={list.branchCode}>
-                    {list.branchCode}
+                  <option key={list.id} value={list.warehouseLocation}>
+                    {list.warehouseLocation}
                   </option>
                 ))}
             </select>
@@ -746,8 +763,8 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               </option>
               {filteredStockBranch &&
                 filteredStockBranch.map((list) => (
-                  <option key={list.id} value={list.branchCode}>
-                    {list.branchCode}
+                  <option key={list.id} value={list.warehouseLocation}>
+                    {list.warehouseLocation}
                   </option>
                 ))}
             </select>

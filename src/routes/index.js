@@ -9,24 +9,24 @@ const WelcomeEmitter = lazy(() => import("../pages/protected/WelcomeEmitter"));
 const WelcomeOEM = lazy(() => import("../pages/protected/WelcomeOem"));
 const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const EmitterInward = lazy(() => import("../pages/protected/EmitterInward"));
-const EmitterInwardNew = lazy(
-  () => import("../pages/protected/EmitterInwardNew")
+const EmitterInwardNew = lazy(() =>
+  import("../pages/protected/EmitterInwardNew")
 );
 const EmitterOutward = lazy(() => import("../pages/protected/EmitterOutward"));
 const BinOutward = lazy(() => import("../pages/protected/BinOutward"));
-const KitDistributionReport = lazy(
-  () => import("../pages/protected/KitDistributionReport")
+const KitDistributionReport = lazy(() =>
+  import("../pages/protected/KitDistributionReport")
 );
-const StockAdjustment = lazy(
-  () => import("../pages/protected/StockAdjustment")
+const StockAdjustment = lazy(() =>
+  import("../pages/protected/StockAdjustment")
 );
 const IssueManifest = lazy(() => import("../pages/protected/IssueManifest"));
-const IssueManifestReport = lazy(
-  () => import("../pages/protected/IssueManifestReport")
+const IssueManifestReport = lazy(() =>
+  import("../pages/protected/IssueManifestReport")
 );
 // const InwardManifest = lazy(() => import("../pages/protected/InwardManifest"));
-const InwardManifestDetails = lazy(
-  () => import("../pages/protected/InwardManifestDetails")
+const InwardManifestDetails = lazy(() =>
+  import("../pages/protected/InwardManifestDetails")
 );
 const Page404 = lazy(() => import("../pages/protected/404"));
 const Blank = lazy(() => import("../pages/protected/Blank"));
@@ -41,8 +41,8 @@ const Asset = lazy(() => import("../pages/protected/Asset"));
 const AssetCategory = lazy(() => import("../pages/protected/AssetCategory"));
 const CreateKit = lazy(() => import("../pages/protected/CreateKit"));
 const Customer = lazy(() => import("../pages/protected/Customer"));
-const ManufacturerDetails = lazy(
-  () => import("../pages/protected/ManufacturerDetails")
+const ManufacturerDetails = lazy(() =>
+  import("../pages/protected/ManufacturerDetails")
 );
 const Flows = lazy(() => import("../pages/protected/Flows"));
 const Vendors = lazy(() => import("../pages/protected/Vendors"));
@@ -52,14 +52,14 @@ const Asn = lazy(() => import("../pages/protected/Asn"));
 const GRN = lazy(() => import("../pages/protected/GRN"));
 const Return = lazy(() => import("../pages/protected/Return"));
 const Unit = lazy(() => import("../pages/protected/Unit"));
-const WarehouseLocation = lazy(
-  () => import("../pages/protected/WarehouseLocation")
+const WarehouseLocation = lazy(() =>
+  import("../pages/protected/WarehouseLocation")
 );
-const DeliveryChalleonVendors = lazy(
-  () => import("../pages/protected/DeliveryChalleonVendors")
+const DeliveryChalleonVendors = lazy(() =>
+  import("../pages/protected/DeliveryChalleonVendors")
 );
-const MaterialRequest = lazy(
-  () => import("../pages/protected/MaterialRequest")
+const MaterialRequest = lazy(() =>
+  import("../pages/protected/MaterialRequest")
 );
 const Allotment = lazy(() => import("../pages/protected/Allotment"));
 const Outward = lazy(() => import("../pages/protected/Outward"));
@@ -74,16 +74,16 @@ const Reports = lazy(() => import("../pages/protected/Reports"));
 const Integration = lazy(() => import("../pages/protected/Integration"));
 const Audit = lazy(() => import("../pages/protected/Audit"));
 const Inventory = lazy(() => import("../pages/protected/Inventory"));
-const InventoryAdjustments = lazy(
-  () => import("../pages/protected/InventoryAdjustment")
+const InventoryAdjustments = lazy(() =>
+  import("../pages/protected/InventoryAdjustment")
 );
 const Calendar = lazy(() => import("../pages/protected/Calendar"));
 const Team = lazy(() => import("../pages/protected/Team"));
 const Transactions = lazy(() => import("../pages/protected/Transactions"));
 const Bills = lazy(() => import("../pages/protected/Bills"));
 const Preferences = lazy(() => import("../pages/protected/Preferences"));
-const ProfileSettings = lazy(
-  () => import("../pages/protected/ProfileSettings")
+const ProfileSettings = lazy(() =>
+  import("../pages/protected/ProfileSettings")
 );
 const ChangePassword = lazy(() => import("../pages/protected/ChangePassword"));
 const GettingStarted = lazy(() => import("../pages/GettingStarted"));
@@ -91,27 +91,27 @@ const DocFeatures = lazy(() => import("../pages/DocFeatures"));
 const DocComponents = lazy(() => import("../pages/DocComponents"));
 
 const UserDetails = lazy(() => import("../pages/protected/UserDetails"));
-const EmitterCreation = lazy(
-  () => import("../pages/protected/EmitterCreation")
+const EmitterCreation = lazy(() =>
+  import("../pages/protected/EmitterCreation")
 );
 const EmitterDetails = lazy(() => import("../pages/protected/EmitterDetails"));
 const OemUser = lazy(() => import("../pages/protected/OemUser"));
 const Roles = lazy(() => import("../pages/protected/Roles"));
-const Responsibilities = lazy(
-  () => import("../pages/protected/Responsibilites")
+const Responsibilities = lazy(() =>
+  import("../pages/protected/Responsibilites")
 );
 const Branch = lazy(() => import("../pages/protected/Branch"));
 const AccessRights = lazy(() => import("../pages/protected/AccessRights"));
 const EmptyCount = lazy(() => import("../pages/protected/EmptyCount"));
-const EmptyRetrievalManifest = lazy(
-  () => import("../pages/protected/EmptyRetrievalManifest")
+const EmptyRetrievalManifest = lazy(() =>
+  import("../pages/protected/EmptyRetrievalManifest")
 );
 const DocumentType = lazy(() => import("../pages/protected/DocumentType"));
 const Services = lazy(() => import("../pages/protected/Services"));
 const ChargeCode = lazy(() => import("../pages/protected/ChargeCode"));
 // const AsstTagging = lazy(() => import("../pages/protected/AsstTagging"));
-const AssetTaggingDetails = lazy(
-  () => import("../pages/protected/AssetTaggingDetails")
+const AssetTaggingDetails = lazy(() =>
+  import("../pages/protected/AssetTaggingDetails")
 );
 const StockBranch = lazy(() => import("../pages/protected/StockBranch"));
 const CityMaster = lazy(() => import("../pages/protected/CityMaster"));
@@ -122,43 +122,46 @@ const Terms = lazy(() => import("../pages/protected/Terms"));
 const PoOrder = lazy(() => import("../pages/protected/PoOrder"));
 // const POD = lazy(() => import("../pages/protected/POD"));
 const PodDetails = lazy(() => import("../pages/protected/PodDetails"));
-const ProofofDispatchDetails = lazy(
-  () => import("../pages/protected/ProofofDispatchDetails")
+const ProofofDispatchDetails = lazy(() =>
+  import("../pages/protected/ProofofDispatchDetails")
 );
 const Pdf = lazy(() => import("../pages/protected/Pdf"));
 const BinInwardOem = lazy(() => import("../pages/protected/BinInwardOem"));
 const BinOutwardOem = lazy(() => import("../pages/protected/BinOutwardOem"));
-const BinAllotmentDetails = lazy(
-  () => import("../pages/protected/BinAllotmentDetails")
+const BinAllotmentDetails = lazy(() =>
+  import("../pages/protected/BinAllotmentDetails")
 );
 const CompanyDetails = lazy(() => import("../pages/protected/CompanyDetails"));
-const AllotmentReport = lazy(
-  () => import("../pages/protected/AllotmentReport")
+const AllotmentReport = lazy(() =>
+  import("../pages/protected/AllotmentReport")
 );
-const AssetTaggingReport = lazy(
-  () => import("../pages/protected/AssetTaggingReport")
+const AssetTaggingReport = lazy(() =>
+  import("../pages/protected/AssetTaggingReport")
 );
-const AssetStockReport = lazy(
-  () => import("../pages/protected/AssetStockReport")
+const AssetStockReport = lazy(() =>
+  import("../pages/protected/AssetStockReport")
 );
-const EmitterAllotmentReport = lazy(
-  () => import("../pages/protected/EmitterAllotmentReport")
+const EmitterAllotmentReport = lazy(() =>
+  import("../pages/protected/EmitterAllotmentReport")
 );
-const EmitterStockLedgerReport = lazy(
-  () => import("../pages/protected/EmitterStockLedgerReport")
+const EmitterStockLedgerReport = lazy(() =>
+  import("../pages/protected/EmitterStockLedgerReport")
 );
 const GatheringEmpty = lazy(() => import("../pages/protected/GatheringEmpty"));
-const RetrivalManifest = lazy(
-  () => import("../pages/protected/RetrivalManifest")
+const RetrivalManifest = lazy(() =>
+  import("../pages/protected/RetrivalManifest")
 );
-const TransporterPickup = lazy(
-  () => import("../pages/protected/TransporterPickup")
+const TransporterPickup = lazy(() =>
+  import("../pages/protected/TransporterPickup")
 );
-const EmitterDispatch = lazy(
-  () => import("../pages/protected/EmitterDispatch")
+const EmitterDispatch = lazy(() =>
+  import("../pages/protected/EmitterDispatch")
 );
-const RetrievalManifestReport = lazy(
-  () => import("../pages/protected/RetrievalManifestReport")
+const RetrievalManifestReport = lazy(() =>
+  import("../pages/protected/RetrievalManifestReport")
+);
+const AdminBinRetrieval = lazy(() =>
+  import("../pages/protected/AdminBinRetrieval")
 );
 const routes = [
   {
@@ -577,6 +580,10 @@ const routes = [
   {
     path: "/RetrievalManifest-Report",
     component: RetrievalManifestReport,
+  },
+  {
+    path: "/adminbinretrieval",
+    component: AdminBinRetrieval,
   },
 ];
 
