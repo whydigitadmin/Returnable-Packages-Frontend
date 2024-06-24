@@ -184,17 +184,7 @@ export const BinAllotmentDetails = () => {
           </div>
         ),
       },
-      {
-        accessorKey: "reqKitQty",
-        header: "Req QTY",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
+
       {
         accessorKey: "reqNo",
         header: "Req No",
@@ -209,6 +199,28 @@ export const BinAllotmentDetails = () => {
       {
         accessorKey: "reqDate",
         header: "Req Date",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "kitCode",
+        header: "Kit No",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "reqKitQty",
+        header: "Req QTY",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -233,17 +245,6 @@ export const BinAllotmentDetails = () => {
         accessorKey: "flow",
         header: "Flow",
         size: 250,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "kitCode",
-        header: "Kit No",
-        size: 50,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -288,7 +289,7 @@ export const BinAllotmentDetails = () => {
             <div className="">
               <div className="flex justify-content-between mt-4 w-full">
                 <h1 className="text-xl font-semibold mt-3">
-                  Pending Allotment List
+                  Pending Bin Request
                 </h1>
 
                 <button
