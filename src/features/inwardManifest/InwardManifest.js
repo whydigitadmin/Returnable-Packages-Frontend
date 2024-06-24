@@ -45,7 +45,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const [branchAssetList, setBranchAssetList] = React.useState([]);
   const [assetCode, setAssetCode] = useState("");
   const [availQty, setAvailQty] = useState("");
-  const [transferQty, setTransferQty] = useState("");
+  const [transferQty, setTransferQty] = useState();
   const [stockBranch, setStockBranch] = useState("");
   const [docId, setDocId] = useState("");
   const [showTable, setShowTable] = useState(false);
@@ -144,27 +144,37 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   };
 
   const getAssetDetailsForAssetInward = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAssetDetailsForAssetInward?assetCode=${assetCode}&orgId=${orgId}&qty=${transferQty}&stockBranch=${stockFrom}`
-      );
+    const errors = {};
+    if (!transferQty) {
+      errors.transferQty = "Transfer Qty is required";
+    }
 
-      if (response.status === 200) {
-        const assetDetails =
-          response.data.paramObjectsMap.assetTaggingDetailsVO;
+    if (Object.keys(errors).length === 0) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/master/getAssetDetailsForAssetInward?assetCode=${assetCode}&orgId=${orgId}&qty=${transferQty}&stockBranch=${stockFrom}`
+        );
 
-        let serialNumberCounter = 0;
+        if (response.status === 200) {
+          const assetDetails =
+            response.data.paramObjectsMap.assetTaggingDetailsVO;
 
-        const assetsWithSerialNumber = assetDetails.map((asset) => ({
-          ...asset,
-          serialNumber: ++serialNumberCounter,
-        }));
-        setAssetTaggingDetails(assetsWithSerialNumber);
-        setShowTable(true);
-        console.log("serialNumber:", assetsWithSerialNumber);
+          let serialNumberCounter = 0;
+
+          const assetsWithSerialNumber = assetDetails.map((asset) => ({
+            ...asset,
+            serialNumber: ++serialNumberCounter,
+          }));
+          setAssetTaggingDetails(assetsWithSerialNumber);
+          setShowTable(true);
+          setErrors("");
+          console.log("serialNumber:", assetsWithSerialNumber);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } else {
+      setErrors(errors);
     }
   };
   const getAssetCodeByCategory = async (name) => {
@@ -859,15 +869,30 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               value={transferQty}
               onChange={(e) => setTransferQty(e.target.value)}
             />
+            {errors.transferQty && (
+              <span className="error-text mb-4">{errors.transferQty}</span>
+            )}
           </div>
         </div>
-        <div className="mt-2">
+        <div className="d-flex flex-row mt-2">
           <button
-            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
+            type="button"
+            className="bg-blue me-3 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             onClick={getAssetDetailsForAssetInward}
           >
             Check
           </button>
+          {showTable && (
+            <div className="">
+              <button
+                type="button"
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={handleSave}
+              >
+                Proceed
+              </button>
+            </div>
+          )}
         </div>
         {/* <div className="mt-2">
           <button
@@ -997,17 +1022,6 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
             </div>
           </div>
         </div> */}
-        {showTable && (
-          <div className="mt-4">
-            <button
-              type="button"
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          </div>
-        )}
       </div>
       <ToastContainer />
     </>
