@@ -54,7 +54,7 @@ function Vendors() {
     {
       title: "Average PO Per Vendor",
       value: "0",
-      icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+      icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
       description: "",
     },
     {

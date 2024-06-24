@@ -61,7 +61,7 @@ function Warehouse() {
       // title: "Average Transaction",
       title: "Active warehouse",
       value: "0",
-      icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
+      icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
       description: "",
     },
     {

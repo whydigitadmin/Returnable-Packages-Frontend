@@ -21,9 +21,8 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen } from "react-icons/fa";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
+import { FaBoxOpen, FaUser } from "react-icons/fa";
+import { MdGroups } from "react-icons/md";
 import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import DashBoardComponent from "../master/DashBoardComponent";
@@ -33,19 +32,19 @@ const statsData = [
   {
     title: "No of Emitters",
     value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+    icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
     description: "",
   },
   {
     title: "Active Emitters",
     value: "0",
-    icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
+    icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
     description: "",
   },
   {
     title: "InActive Emitters",
     value: "0",
-    icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
+    icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
     description: "",
   },
   {

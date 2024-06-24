@@ -23,8 +23,7 @@ import {
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaBox } from "react-icons/fa";
-import { FaDatabase, FaRegObjectGroup } from "react-icons/fa6";
-import { LuTimerReset } from "react-icons/lu";
+import { FaRegObjectGroup } from "react-icons/fa6";
 import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import AddAsset from "./AddAsset";
@@ -121,7 +120,7 @@ function Asset() {
           {
             title: "In-Active Assets",
             value: inActiveAsset.toString(),
-            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            icon: <FaBox className="w-5 h-5 text-white dashicon-sm" />,
             description: "",
           },
           {

@@ -22,7 +22,7 @@ function DashBoardComponent({
   description,
   colorIndex,
 }) {
-  const COLORS = ["blue", "green", "primary", "gray"];
+  const COLORS = ["blue", "green", "red", "red"];
   const [lowVolume, setLowVolume] = useState(false);
   const [animatedValue, setAnimatedValue] = useState(0);
 
@@ -33,21 +33,6 @@ function DashBoardComponent({
       return "font-bold text-rose-500 dark:text-red-400";
     else return "";
   };
-
-  // useEffect(() => {
-  //   // if (lowVolume) {
-  //   let currentValue = 0;
-  //   const interval = setInterval(() => {
-  //     currentValue++;
-  //     setAnimatedValue(currentValue);
-  //     if (currentValue === value) {
-  //       clearInterval(interval);
-  //     }
-  //   }, 15); // Adjust interval time for smoother or faster animation
-  //   // } else {
-  //   //   setAnimatedValue(0); // Reset animation when closing dialog
-  //   // }
-  // }, [value]);
 
   const handleLowVolumeOpen = () => {
     setLowVolume(true);
@@ -76,12 +61,12 @@ function DashBoardComponent({
           </div>
           <div className="flex justify-between mt-4 mb-2">
             <div
-              className={`w-10 h-10 rounded dark:text-slate-300 bg-${COLORS[colorIndex]} text-${COLORS[colorIndex]}`}
+              className={`w-10 h-10 rounded dark:text-slate-300 bg-${COLORS[colorIndex]}-500 text-${COLORS[colorIndex]}-500`}
             >
               {icon}
             </div>
             <div
-              className={`font-semibold text-3xl mt-2 text-right dark:text-slate-100 text-${COLORS[colorIndex]}`}
+              className={`font-semibold text-3xl mt-2 text-right dark:text-slate-100 text-${COLORS[colorIndex]}-500`}
             >
               <CountUp end={value} duration={2} />
             </div>

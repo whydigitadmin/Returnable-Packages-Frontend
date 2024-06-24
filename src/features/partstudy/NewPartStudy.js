@@ -1,26 +1,21 @@
-import React, { useMemo, useEffect, useState } from "react";
-import axios from "axios";
-import Button from "@mui/material/Button";
-import Tabs from "@mui/material/Tabs";
-import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
+import Tab from "@mui/material/Tab";
+import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
-import PropTypes from "prop-types";
 import { styled } from "@mui/material/styles";
-import { TbListDetails } from "react-icons/tb";
-import { LuPackageOpen } from "react-icons/lu";
+import PropTypes from "prop-types";
+import React, { useEffect, useMemo, useState } from "react";
 import { FiTruck } from "react-icons/fi";
-import { TbBuildingWarehouse } from "react-icons/tb";
-import AddPartStudy from "./AddPartStudy";
-import AddPackage from "./AddPackage";
-import AddLogistics from "./AddLogistics";
-import AddStockKeeping from "./AddStockKeeping";
-import Checkbox from "@mui/material/Checkbox";
-import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import SelectPartStudy from "./SelectPartStudy";
 import { IoMdClose } from "react-icons/io";
+import { LuPackageOpen } from "react-icons/lu";
+import { TbBuildingWarehouse, TbListDetails } from "react-icons/tb";
+import AddLogistics from "./AddLogistics";
+import AddPackage from "./AddPackage";
+import AddPartStudy from "./AddPartStudy";
+import AddStockKeeping from "./AddStockKeeping";
+import SelectPartStudy from "./SelectPartStudy";
 
+import { keyframes } from "styled-components";
 function NewPartStudy({ addPS, editPSId }) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(0);
@@ -30,6 +25,38 @@ function NewPartStudy({ addPS, editPSId }) {
   const [refPsId, setRefPsId] = useState(null);
   const [emitter, setEmitter] = useState(null);
   const [emitterName, setEmitterName] = useState("");
+  const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+`;
+
+  // Ensure unique names for styled components
+  const StyledToggleContainer = styled(Box)`
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+  `;
+
+  const StyledToggleButton = styled(Box)`
+    padding: 8px 16px;
+    margin: 4px;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: ${(props) => (props.selected ? "#1976d2" : "#e0e0e0")};
+    color: ${(props) => (props.selected ? "#ffffff" : "#000000")};
+    animation: ${fadeIn} 0.3s ease-out;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  `;
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -244,30 +271,22 @@ function NewPartStudy({ addPS, editPSId }) {
           />
         </div>
         {/* <div className="border rounded w-50 mb-3"> */}
-        <div className="d-flex justify-content-center mb-3">
-          <FormGroup className="d-flex flex-row my-2">
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={ps}
-                  onChange={handlePs}
-                  inputProps={{ "aria-label": "primary checkbox" }}
-                />
-              }
-              label="New Part Study"
-              className="pe-2"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={!ps}
-                  onChange={handlePs}
-                  inputProps={{ "aria-label": "secondary checkbox" }}
-                />
-              }
-              label="Incomplete Part Study"
-            />
-          </FormGroup>
+        <div className="d-flex justify-content-center mb-2">
+          <StyledToggleContainer>
+            <StyledToggleButton
+              selected={ps}
+              onClick={() => handlePs({ target: { value: true } })}
+            >
+              <Typography>New Part Study</Typography>
+            </StyledToggleButton>{" "}
+            &nbsp;
+            <StyledToggleButton
+              selected={!ps}
+              onClick={() => handlePs({ target: { value: false } })}
+            >
+              <Typography>Incomplete Part Study</Typography>
+            </StyledToggleButton>
+          </StyledToggleContainer>
         </div>
         <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
           {ps ? (

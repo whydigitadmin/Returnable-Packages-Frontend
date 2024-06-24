@@ -21,16 +21,13 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen } from "react-icons/fa";
-import { LuWarehouse } from "react-icons/lu";
-import { TbWeight } from "react-icons/tb";
+import { FaUser } from "react-icons/fa";
+import { FaDatabase } from "react-icons/fa6";
+import { MdGroups } from "react-icons/md";
 import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import DashBoardComponent from "../master/DashBoardComponent";
 import OemCreation from "./OemCreation";
-import { FaUser } from "react-icons/fa";
-import { FaDatabase } from "react-icons/fa6";
-import { MdGroups } from "react-icons/md";
 
 const Oemuser = () => {
   const [addEmitter, setAddEmitter] = React.useState(false);
@@ -128,7 +125,7 @@ const Oemuser = () => {
           {
             title: "In-Active OEM",
             value: inActiveOem,
-            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
             description: "",
           },
           {

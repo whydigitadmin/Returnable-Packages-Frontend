@@ -68,6 +68,7 @@
     "react-webcam-barcode-scanner": "^0.0.2-rc2",
     "recharts": "^2.12.7",
     "source-map-loader": "^4.0.1",
+    "styled-components": "^6.1.11",
     "theme-change": "^2.2.0",
     "uid": "^2.0.2",
     "web-vitals": "^2.1.4"

@@ -122,7 +122,7 @@ export const UserDetails = () => {
           {
             title: "In-Active Users",
             value: inActiveUsers.toString(),
-            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
             description: "",
           },
           {

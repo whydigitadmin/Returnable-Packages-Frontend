@@ -230,6 +230,7 @@ function Partstudy() {
       startY: 50, // Adjust startY to account for the image and heading height
       head: [["Field", "Value"]],
       body: [
+        ["Emitter", basicData.emitterDisplayName],
         ["Part Study Id", basicData.refPsId],
         ["Part Study Date", basicData.partStudyDate],
         ["Part Name", basicData.partName],
