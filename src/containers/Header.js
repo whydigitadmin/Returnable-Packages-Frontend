@@ -158,7 +158,7 @@ function Header() {
           <p className="font-semibold me-2">
             <span>Welcome </span>
             <span className="text-uppercase">{loginUserDto.firstName}</span>
-            <span className="ms-1">({initCapUserDetails})</span>
+            <span className="text-uppercase ms-1">({initCapUserDetails})</span>
           </p>
           {/* Multiple theme selection, uncomment this if you want to enable multiple themes selection,
                 also includes corporate and retro themes in tailwind.config file */}
