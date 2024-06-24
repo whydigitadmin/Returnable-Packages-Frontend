@@ -183,31 +183,29 @@ export function AsstTagging({ addTagging, viewId }) {
 
   const getAllTagCode = async () => {
     const errors = {};
-    // if (!docId || !docId.trim()) {
-    //   errors.docId = "Document ID is required";
+
+    // if (!poNo) {
+    //   errors.poNo = "Po No is required";
     // }
-    if (!toDate) {
-      errors.toDate = "Doc Date is required";
-    }
+    // if (!poDate) {
+    //   errors.poDate = "Po Date is required";
+    // }
     if (!assetCode) {
       errors.assetCode = "Asset Code is required";
     }
     if (!assetCategory) {
       errors.assetCategory = "Asset Category is required";
     }
-    if (!assetName || !assetName.trim()) {
+    if (!assetName) {
       errors.assetName = "Asset Name is required";
     }
-    // if (!seqFrom || !seqFrom.trim()) {
-    //   errors.seqFrom = "Seq From is required";
-    // }
-    // if (!seqTo || !seqTo.trim()) {
-    //   errors.seqTo = "Seq To is required";
-    // }
+    if (!seqTo) {
+      errors.seqTo = "QTY is required";
+    }
+
     if (Object.keys(errors).length === 0) {
       try {
         const response = await axios.get(
-          // `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&category=${assetCategory}&endno=${seqTo}&startno=${seqFrom}`
           `${process.env.REACT_APP_API_URL}/api/master/Tagcode?asset=${assetName}&assetcode=${assetCode}&category=${assetCategory}&endno=${seqTo}`
         );
 
@@ -216,6 +214,7 @@ export function AsstTagging({ addTagging, viewId }) {
           setGenerateFlag(true);
           setShowTable(true);
           setErrors({});
+          setPoDate(null);
           if (Array.isArray(tagcodes)) {
             setTagCodeList(tagcodes);
           } else {
@@ -309,6 +308,11 @@ export function AsstTagging({ addTagging, viewId }) {
     getAssetCodeByCategory(event.target.value);
     setAssetCode("");
     setAssetName("");
+  };
+
+  const handlePoDateChange = (date) => {
+    setPoDate(dayjs(date).format("DD-MM-YYYY"));
+    console.log("THE SELECTED PODATE IS:", dayjs(date).format("DD-MM-YYYY"));
   };
 
   const handleChangeAssetCode = (e) => {
@@ -714,6 +718,7 @@ export function AsstTagging({ addTagging, viewId }) {
             value={poNo}
             name="poNo"
           />
+          {errors.poNo && <span className="error-text">{errors.poNo}</span>}
         </div>
         <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
           <label className="label">
@@ -727,16 +732,19 @@ export function AsstTagging({ addTagging, viewId }) {
           </label>
         </div>
         <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-          <input
-            className="form-control form-sz mb-2"
-            type={"text"}
-            placeholder={""}
-            name="poDate"
-            value={poDate}
-            onChange={(e) => {
-              setPoDate(e.target.value);
-            }}
-          />
+          <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DesktopDatePicker
+              value={poDate}
+              onChange={(date) => setPoDate(dayjs(date).format("DD-MM-YYYY"))}
+              // onChange={handlePoDateChange}
+              slotProps={{
+                textField: { size: "small", clearable: true },
+              }}
+              format="DD/MM/YYYY"
+            />
+          </LocalizationProvider>
+
+          {errors.poDate && <span className="error-text">{errors.poDate}</span>}
         </div>
 
         {/* ASSET CATEGORY FIELD */}
