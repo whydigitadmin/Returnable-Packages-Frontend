@@ -51,6 +51,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const [showTable, setShowTable] = useState(false);
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
+  const [transferQtyErrorMsg, setTransferQtyErrorMsg] = useState("");
 
   const [tableData, setTableData] = useState([
     {
@@ -864,13 +865,31 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
           </div>
           <div className="col-lg-3 col-md-3">
             <input
-              className="form-control form-sz"
-              type="number"
+              className="form-control form-sz mb-2"
+              name="transferqty"
               value={transferQty}
-              onChange={(e) => setTransferQty(e.target.value)}
+              onChange={(e) => {
+                const inputValue = e.target.value
+                  .toUpperCase()
+                  .replace(/[^0-9]/g, "");
+                const newValue = parseInt(inputValue, 10);
+                if (!isNaN(newValue)) {
+                  if (newValue <= availQty && newValue !== 0) {
+                    setTransferQty(newValue);
+                    setTransferQtyErrorMsg(false);
+                  } else {
+                    setTransferQty("");
+                    setTransferQtyErrorMsg(true);
+                  }
+                } else {
+                  setTransferQty("");
+                }
+              }}
             />
-            {errors.transferQty && (
-              <span className="error-text mb-4">{errors.transferQty}</span>
+            {transferQtyErrorMsg && (
+              <span className="error-text">
+                Transfer Qty is too low or exceed from Available Qty
+              </span>
             )}
           </div>
         </div>
