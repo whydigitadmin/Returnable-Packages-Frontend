@@ -371,6 +371,18 @@ const routes = [
         name: <span className="">Kit Card</span>,
       },
       {
+        path: "/app/FlowCard",
+        icon: (
+          <img
+            src="	https://cdn-icons-png.flaticon.com/128/2752/2752867.png"
+            alt="FlowCard"
+            style={{ width: "34px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Flow Card</span>,
+      },
+      {
         path: "/app/assetTaggingDetails",
         icon: (
           <img

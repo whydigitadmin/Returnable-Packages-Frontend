@@ -14,21 +14,27 @@
 }
 
 .loading-indicator:after {
-  content: " ";
+  content: "";
   position: fixed;
-  top: 40%;
-  left: 45%;
+  top: 43%;
+  left: 47%;
   z-index: 10010;
-  color: white;
-  text-align: center;
-  font-weight: bold;
-  font-size: 1.2rem;
-  border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #0474bf; /* Blue */
+  transform: translate(-50%, -50%);
+  width: 90px;
+  height: 90px;
+  background: url("/public/BeeLoader.gif") no-repeat center center;
+  background-size: contain;
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
   animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .table th:first-child {

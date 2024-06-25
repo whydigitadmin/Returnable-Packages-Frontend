@@ -22,7 +22,7 @@ function DashBoardComponent({
   description,
   colorIndex,
 }) {
-  const COLORS = ["blue", "green", "red", "red"];
+  const COLORS = ["blue", "green", "red", "yellow"];
   const [lowVolume, setLowVolume] = useState(false);
   const [animatedValue, setAnimatedValue] = useState(0);
 
@@ -45,7 +45,7 @@ function DashBoardComponent({
   return (
     <>
       <div className="stats shadow transition transform hover:scale-105 duration-500 cursor-pointer">
-        <div className="stat bg-green-200 text-green-800">
+        <div className="stat text-black-800" style={{ background: "#d2fbd0" }}>
           <div
             className={
               title === "low stock"

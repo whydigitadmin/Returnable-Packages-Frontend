@@ -1,5 +1,9 @@
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import DownloadingIcon from "@mui/icons-material/Downloading";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import axios from "axios";
 import { React, useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -10,16 +14,14 @@ import BadgeWithIcon from "../../utils/BadgeWithIcon";
 function InternalPage() {
   const dispatch = useDispatch();
 
-  const [totAllotedReq, setTotAllotedReq] = useState("");
-  const [totReq, setTotReq] = useState("");
-  const [data, setData] = useState("");
+  const [totAllotedReq, setTotAllotedReq] = useState([]);
+  const [data, setData] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [loginUserId, setLoginUserId] = useState(
     localStorage.getItem("userId")
   );
 
   useEffect(() => {
-    // dispatch(setPageTitle({ title: "Home" }));
     dispatch(setPageTitle({ title: "Dashboard" }));
     getAllBinAllotmentData();
     getAllBinRequest();
@@ -33,10 +35,6 @@ function InternalPage() {
 
       if (response.status === 200) {
         setTotAllotedReq(response.data.paramObjectsMap.binAllotmentNewVO);
-        console.log(
-          "TOTAL ALLOTED REQUEST COUNT:",
-          response.data.paramObjectsMap.binAllotmentNewVO.length
-        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -50,11 +48,7 @@ function InternalPage() {
       );
 
       if (response.status === 200) {
-        const allRequests = response.data.paramObjectsMap.issueRequestVO;
-        setData(allRequests);
-
-        const totalRequests = totAllotedReq + allRequests.length;
-        setTotReq(totalRequests);
+        setData(response.data.paramObjectsMap.issueRequestVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -62,10 +56,9 @@ function InternalPage() {
   };
 
   const cardStyle = {
-    width: "90%",
+    width: "100%",
     backgroundColor: "#d2fbd0",
-    marginBottom: "5px",
-    padding: "15px",
+    marginBottom: "20px",
     borderRadius: "10px",
     boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
   };
@@ -74,7 +67,8 @@ function InternalPage() {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    // marginBottom: "10px",
+    padding: "15px",
+    borderBottom: "1px solid #e0e0e0",
   };
 
   const cardIconStyle = {
@@ -90,20 +84,28 @@ function InternalPage() {
   };
 
   return (
-    <div className="container card w-9/12 p-4 bg-white-800 shadow-xl">
-      {/* <h1 className="text-2xl font-medium mb-4">Home</h1> */}
-      <div className="row">
-        <div className="col-lg-6 col-md-6 col-sm-12">
-          <Link to="/app/binallotmentdetails">
-            <div style={cardStyle}>
-              <div style={cardHeaderStyle}>
+    <div className="container card w-full p-6 bg-base-100 shadow-xl">
+      <Grid container spacing={3}>
+        <Grid item xs={12} sm={4}>
+          <Link
+            to="/app/binallotmentdetails"
+            style={{ textDecoration: "none" }}
+          >
+            <Card style={cardStyle}>
+              <CardContent style={cardHeaderStyle}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
                     src="/issue.png"
                     alt="Bin Allotment"
                     style={cardIconStyle}
                   />
-                  <h5 className="text-md font-semibold ">Bin Allotment</h5>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    style={{ fontSize: "1.2rem" }}
+                  >
+                    Bin Allotment
+                  </Typography>
                 </div>
                 <div style={badgeContainerStyle}>
                   <BadgeWithIcon
@@ -125,83 +127,124 @@ function InternalPage() {
                     page="DashboardCom"
                   />
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </Link>
-        </div>
-
-        <div className="col-lg-6 col-md-6 col-sm-12">
-          <Link to="/app/adminbinretrieval">
-            <div style={cardStyle}>
-              <div style={cardHeaderStyle}>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Link to="/app/adminbinretrieval" style={{ textDecoration: "none" }}>
+            <Card style={cardStyle}>
+              <CardContent style={cardHeaderStyle}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
                     src="/issue.png"
                     alt="Bin Retrieval"
                     style={cardIconStyle}
                   />
-                  <h5 className="text-md font-semibold ">
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    style={{ fontSize: "1.2rem" }}
+                  >
                     Bin Retrieval Inward
-                  </h5>
+                  </Typography>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </Link>
-        </div>
-
-        <h1 className="text-xl font-semibold mt-4 mb-3 col-12">
-          Asset Stock Transfer
-        </h1>
-
-        <div className="col-lg-6 col-md-6 col-sm-12">
-          <Link to="/app/inwardManifestDetails">
-            <div style={cardStyle}>
-              <div style={cardHeaderStyle}>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Link
+            to="/app/inwardManifestDetails"
+            style={{ textDecoration: "none" }}
+          >
+            <Card style={cardStyle}>
+              <CardContent style={cardHeaderStyle}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img
                     src="/incoming.png"
                     alt="Asset Inward"
                     style={cardIconStyle}
                   />
-                  <h5 className="text-md font-semibold ">Stock Transfer</h5>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    style={{ fontSize: "1.2rem" }}
+                  >
+                    Asset Stock Transfer
+                  </Typography>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </Link>
-        </div>
-
-        {/* <div className="col-lg-6 col-md-6 col-sm-12">
-          <Link to="/app/EmptyRetrievalManifest">
-            <div style={cardStyle}>
-              <div style={cardHeaderStyle}>
-                <div style={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/outgoing.png"
-                    alt="Asset Outward"
-                    style={cardIconStyle}
-                  />
-                  <h5 className="text-md font-semibold ">Asset Transfer</h5>
-                </div>
-              </div>
-            </div>
-          </Link>
-        </div> */}
-
-        <h1 className="text-xl font-semibold mt-4 mb-3 col-12">Reports</h1>
-
-        <div className="col-lg-6 col-md-6 col-sm-12">
-          <Link to="/app/reports">
-            <div style={cardStyle}>
-              <div style={cardHeaderStyle}>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Link to="/app/reports" style={{ textDecoration: "none" }}>
+            <Card style={cardStyle}>
+              <CardContent style={cardHeaderStyle}>
                 <div style={{ display: "flex", alignItems: "center" }}>
                   <img src="/stock.png" alt="Report" style={cardIconStyle} />
-                  <h5 className="text-md font-semibold ">Report</h5>
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    style={{ fontSize: "1.2rem" }}
+                  >
+                    Reports
+                  </Typography>
                 </div>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           </Link>
-        </div>
-      </div>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Link to="/app/KitCard" style={{ textDecoration: "none" }}>
+            <Card style={cardStyle}>
+              <CardContent style={cardHeaderStyle}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={
+                      "https://cdn-icons-png.flaticon.com/128/10468/10468543.png"
+                    }
+                    alt="Kit Card"
+                    style={cardIconStyle}
+                  />
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    style={{ fontSize: "1.2rem" }}
+                  >
+                    Kit Card
+                  </Typography>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </Grid>
+        <Grid item xs={12} sm={4}>
+          <Link to="/app/FlowCard" style={{ textDecoration: "none" }}>
+            <Card style={cardStyle}>
+              <CardContent style={cardHeaderStyle}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <img
+                    src={
+                      "https://cdn-icons-png.flaticon.com/128/10468/10468543.png"
+                    }
+                    alt="Flow Card"
+                    style={cardIconStyle}
+                  />
+                  <Typography
+                    variant="h6"
+                    component="div"
+                    style={{ fontSize: "1.2rem" }}
+                  >
+                    Flow Card
+                  </Typography>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        </Grid>
+      </Grid>
     </div>
   );
 }

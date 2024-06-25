@@ -118,6 +118,7 @@ const CityMaster = lazy(() => import("../pages/protected/CityMaster"));
 const State = lazy(() => import("../pages/protected/State"));
 const Country = lazy(() => import("../pages/protected/Country"));
 const KitCard = lazy(() => import("../pages/protected/KitCard"));
+const FlowCard = lazy(() => import("../pages/protected/FlowCard"));
 const Terms = lazy(() => import("../pages/protected/Terms"));
 const PoOrder = lazy(() => import("../pages/protected/PoOrder"));
 // const POD = lazy(() => import("../pages/protected/POD"));
@@ -584,6 +585,10 @@ const routes = [
   {
     path: "/adminbinretrieval",
     component: AdminBinRetrieval,
+  },
+  {
+    path: "/FlowCard",
+    component: FlowCard,
   },
 ];
 
