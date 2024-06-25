@@ -16,8 +16,8 @@
 .loading-indicator:after {
   content: "";
   position: fixed;
-  top: 43%;
-  left: 47%;
+  top: 38%;
+  left: 48%;
   z-index: 10010;
   transform: translate(-50%, -50%);
   width: 90px;
