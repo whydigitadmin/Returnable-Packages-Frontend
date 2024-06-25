@@ -311,12 +311,14 @@ function IssueReq() {
         //   kitQty: field.qty,
         // })),
         issueItemDTO: kitFields.map((field) => {
-          const kit = kitData.find((kit) => kit.kitName === field.kitNo);
+          const kit = partNoAndPartName.find(
+            (kit) => kit.kitNo === field.kitNo
+          );
           return {
             kitName: field.kitNo,
             kitQty: field.qty,
             partName: kit ? kit.partName : "N/A",
-            partNo: kit ? kit.partNumber : "N/A",
+            partNo: kit ? kit.partNo : "N/A",
             partQty: kit ? kit.partQty : 0,
           };
         }),
@@ -476,6 +478,7 @@ function IssueReq() {
 
         // Setting kitData in the state with unique kit names
         setKitData([...uniqueKits]);
+        console.log("first", [...uniqueKits]);
 
         const partDataArray =
           response.data.paramObjectsMap.flowVO.flowDetailVO.map((part) => ({
@@ -1162,13 +1165,13 @@ function IssueReq() {
                             </div>
                           )}
                         </div>
-                        {partNoAndPartName && (
+                        {selectedKit && (
                           <div className="col-lg-3 col-md-2 mt-6">
                             <Card style={{ border: "1px solid #000000" }}>
                               <CardContent>
-                                {partNoAndPartName && (
+                                {partNoAndPartName.length > 0 && (
                                   <Typography variant="outlined">
-                                    Part: {partNoAndPartName.partNo}
+                                    Part: {partNoAndPartName[0].partNo}
                                   </Typography>
                                 )}
                               </CardContent>
