@@ -556,7 +556,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
           setReqNo("");
           setRecKitQty("");
           setAllottedDate("");
-
+          getAllPendingBinInward();
           setReqKitQty("");
           setFlow("");
           setKitCode("");

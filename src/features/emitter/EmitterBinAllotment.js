@@ -261,7 +261,8 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   const getAvlQtyByBranch = async (selectedValue) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAvalkitqtyByBranch?branch=${selectedValue}&Kitname=${reqKitName}`
+        // `${process.env.REACT_APP_API_URL}/api/master/getAvalkitqtyByBranch?branch=${selectedValue}&Kitname=${reqKitName}`
+        `${process.env.REACT_APP_API_URL}/api/master/getAvalkitqtyByWarehouse?kitName=${reqKitName}&warehouse=${selectedValue}`
       );
 
       if (response.status === 200) {
@@ -953,7 +954,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               disabled={viewId ? true : false}
             >
               <option value="" disabled>
-                Select Stock Branch
+                Select a Warehouse
               </option>
               {stockBranchList &&
                 stockBranchList.map((list, index) => (
