@@ -27,34 +27,7 @@ import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import DashBoardComponent from "../master/DashBoardComponent";
 import EmitterCreation from "./EmitterCreation";
-
-const statsData = [
-  {
-    title: "No of Emitters",
-    value: "0",
-    icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-  {
-    title: "Active Emitters",
-    value: "0",
-    icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    title: "InActive Emitters",
-    value: "0",
-    icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-    description: "",
-  },
-  {
-    // title: "Average Transaction",
-    title: "--",
-    value: "0",
-    icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
-    description: "",
-  },
-];
+import { FaDatabase } from "react-icons/fa6";
 
 const EmitterDetails = () => {
   const [addEmitter, setAddEmitter] = React.useState(false);
@@ -67,6 +40,7 @@ const EmitterDetails = () => {
   const [userAddressData, setUserAddressData] = React.useState(null);
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [statsData, setStatsData] = useState([]);
 
   const handleViewClose = () => {
     setOpenView(false);
@@ -123,6 +97,43 @@ const EmitterDetails = () => {
             (user) => user.role === "ROLE_EMITTER"
           )
         );
+
+        const allEmitters = response.data.paramObjectsMap.userVO.filter(
+          (user) => user.role === "ROLE_EMITTER"
+        );
+        const totalEmitters = allEmitters.length;
+        const activeEmitters = allEmitters.filter(
+          (customer) => customer.active === "Active"
+        ).length;
+        const inActiveEmitters = allEmitters.filter(
+          (customer) => customer.active === "In-Active"
+        ).length;
+        setStatsData([
+          {
+            title: "All Emitters",
+            value: totalEmitters.toString(),
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active Emitters",
+            value: activeEmitters.toString(),
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "In-Active Emitters",
+            value: inActiveEmitters.toString(),
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
