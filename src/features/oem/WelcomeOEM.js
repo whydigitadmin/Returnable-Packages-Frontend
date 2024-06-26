@@ -63,6 +63,10 @@ function WelcomeOEM() {
         setDisplayName(
           response.data.paramObjectsMap.userVO.customersVO.displayName
         );
+        localStorage.setItem(
+          "receiverId",
+          response.data.paramObjectsMap.userVO.customersVO.id
+        );
         console.log("userVO", response.data.paramObjectsMap.userVO);
       }
     } catch (error) {}
