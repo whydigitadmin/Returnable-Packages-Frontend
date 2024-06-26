@@ -25,7 +25,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaBoxOpen } from "react-icons/fa";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
-import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
+import sampleFile from "../../assets/sampleFiles/branch.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import Branch from "./Branch";
 import DashBoardComponent from "./DashBoardComponent";
@@ -66,6 +66,8 @@ function BranchDetail() {
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
+
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/basicMaster/ExcelUploadForBranch`;
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -349,6 +351,7 @@ function BranchDetail() {
                   onSubmit={handleSubmit}
                   sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
                   handleFileUpload={handleFileUpload}
+                  apiUrl={apiUrl}
                 />
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
