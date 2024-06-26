@@ -4,7 +4,7 @@
 
 .loading-indicator:before {
   content: "";
-  background: #00000080;
+  background: #f5f1f180;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -16,19 +16,44 @@
 .loading-indicator:after {
   content: "";
   position: fixed;
-  top: 38%;
-  left: 48%;
+  top: 40%;
+  left: 49%;
   z-index: 10010;
   transform: translate(-50%, -50%);
-  width: 90px;
-  height: 90px;
+  width: 45px;
+  height: 45px;
   background: url("/public/BeeLoader.gif") no-repeat center center;
   background-size: contain;
   border-radius: 50%;
   animation: spin 2s linear infinite;
 }
 
+.loading-indicator::before {
+  content: "";
+  position: fixed;
+  top: 38%;
+  left: 48%;
+  z-index: 10005;
+  transform: translate(-50%, -50%);
+  width: 71px;
+  height: 71px;
+  border-radius: 50%;
+  border: 4px solid transparent;
+  border-top-color: #32de8a;
+  border-bottom-color: #32de8a;
+  animation: spinRing 1s infinite linear;
+}
+
 @keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes spinRing {
   0% {
     transform: rotate(0deg);
   }

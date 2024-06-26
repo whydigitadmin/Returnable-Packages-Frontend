@@ -38,6 +38,9 @@ const BulkUploadDialog = ({
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [successfulUploads, setSuccessfulUploads] = useState(0); // State for successful uploads count
+  const [userDetail, setUserDetail] = useState(
+    JSON.parse(localStorage.getItem("userDto"))
+  );
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -67,7 +70,7 @@ const BulkUploadDialog = ({
 
       try {
         const response = await axios.post(
-          `${apiUrl}?orgId=${orgId}`,
+          `${apiUrl}?orgId=${orgId}&createdBy=${userDetail.firstName}`,
           formData,
           {
             headers: {

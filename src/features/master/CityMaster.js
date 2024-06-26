@@ -1,10 +1,7 @@
-import { Box } from "@mui/material";
-import { MaterialReactTable } from "material-react-table";
-import React, { useEffect, useMemo, useState } from "react";
-import { FaStarOfLife } from "react-icons/fa";
 import CloseIcon from "@mui/icons-material/Close";
 import EditIcon from "@mui/icons-material/Edit";
 import {
+  Box,
   Paper,
   Table,
   TableBody,
@@ -16,14 +13,19 @@ import {
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
 import FormControlLabel from "@mui/material/FormControlLabel";
+import IconButton from "@mui/material/IconButton";
 import Switch from "@mui/material/Switch";
+import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import axios from "axios";
+import { MaterialReactTable } from "material-react-table";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaStarOfLife } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import sampleFile from "../../assets/sampleFiles/city.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import {
   codeFieldValidation,
   stringValidation,
@@ -103,6 +105,8 @@ export const CityMaster = () => {
   const [state, setState] = useState("");
   const [country, setCountry] = useState("");
 
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/basicMaster/ExcelUploadForCity`;
+
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.cityid);
     setEdit(true);
@@ -117,6 +121,25 @@ export const CityMaster = () => {
 
   const handleViewClose = () => {
     setOpenView(false);
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
   };
 
   const handleViewRow = (row) => {
@@ -511,6 +534,7 @@ export const CityMaster = () => {
               </span>
             </label>
           </div>
+
           <div className="col-lg-3 col-md-6 mb-2 ms-1">
             <FormControlLabel
               control={
@@ -522,6 +546,20 @@ export const CityMaster = () => {
                   }}
                 />
               }
+            />
+          </div>
+          <div className="col-lg-3 col-md-6 mb-2 items-end">
+            <BulkUploadDialog
+              open={open}
+              onOpenClick={handleClickOpen}
+              handleClose={handleClose}
+              dialogTitle="Upload File"
+              uploadText="Upload file"
+              downloadText="Sample File"
+              onSubmit={handleSubmit}
+              sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+              handleFileUpload={handleFileUpload}
+              apiUrl={apiUrl}
             />
           </div>
           {edit ? (

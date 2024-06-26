@@ -10,11 +10,8 @@ import {
   TableRow,
   Tooltip,
 } from "@mui/material";
-import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
@@ -25,14 +22,13 @@ import {
   useMaterialReactTable,
 } from "material-react-table";
 import React, { useEffect, useMemo, useState } from "react";
-import { FaBoxOpen, FaCloudUploadAlt } from "react-icons/fa";
-import { FiDownload } from "react-icons/fi";
-import { IoMdClose } from "react-icons/io";
+import { FaBoxOpen } from "react-icons/fa";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
+import sampleFile from "../../assets/sampleFiles/warehouse.xlsx";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import AddWarehouse from "./AddWarehouse";
 import DashBoardComponent from "./DashBoardComponent";
-
 const statsData = [];
 
 function Warehouse() {
@@ -44,6 +40,7 @@ function Warehouse() {
   const [edit, setEdit] = React.useState(false);
   const [selectedRowId, setSelectedRowId] = useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+
   const [statsData, setStatsData] = useState([
     {
       title: "No of warehouse",
@@ -72,6 +69,8 @@ function Warehouse() {
     },
   ]);
 
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/warehouse/ExcelUploadForWarehouse`;
+
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.warehouseId);
     console.log("setSelectedRowID", row.original.warehouseId);
@@ -94,6 +93,17 @@ function Warehouse() {
 
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
   };
 
   const handleAddOpen = () => {
@@ -326,29 +336,18 @@ function Warehouse() {
             </div>
             <div className="">
               <div className="flex justify-between mt-4">
-                <button
-                  className="btn btn-ghost btn-lg text-sm col-xs-1"
-                  style={{ color: "blue" }}
-                  onClick={handleClickOpen}
-                >
-                  <img
-                    src="/upload.png"
-                    alt="pending-status-icon"
-                    title="add"
-                    style={{
-                      width: 30,
-                      height: 30,
-                      margin: "auto",
-                      hover: "pointer",
-                    }}
-                  />
-                  <span
-                    className="text-form text-base"
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Bulk Upload
-                  </span>
-                </button>
+                <BulkUploadDialog
+                  open={open}
+                  onOpenClick={handleClickOpen}
+                  handleClose={handleClose}
+                  dialogTitle="Upload File"
+                  uploadText="Upload file"
+                  downloadText="Sample File"
+                  onSubmit={handleSubmit}
+                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                  handleFileUpload={handleFileUpload}
+                  apiUrl={apiUrl}
+                />
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -377,54 +376,7 @@ function Warehouse() {
             <div className="mt-4">
               <MaterialReactTable table={table} />
             </div>
-            <Dialog
-              fullWidth={true}
-              maxWidth={"sm"}
-              open={open}
-              onClose={handleClose}
-            >
-              <div className="d-flex justify-content-between">
-                <DialogTitle>Upload File</DialogTitle>
-                <IoMdClose
-                  onClick={handleClose}
-                  className="cursor-pointer w-8 h-8 mt-3 me-3"
-                />
-              </div>
-              <DialogContent>
-                <DialogContentText className="d-flex flex-column">
-                  Choose a file to upload
-                  <div className="d-flex justify-content-center">
-                    <div className="col-lg-4 text-center my-3">
-                      <Button
-                        component="label"
-                        variant="contained"
-                        startIcon={<FaCloudUploadAlt />}
-                      >
-                        Upload file
-                        <VisuallyHiddenInput type="file" />
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="col-lg-4 mt-3">
-                    <Button
-                      size="small"
-                      component="label"
-                      className="text-form"
-                      variant="contained"
-                      startIcon={<FiDownload />}
-                    >
-                      Download Sample File
-                    </Button>
-                  </div>
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions className="mb-2 me-2">
-                <Button onClick={handleClose}>Cancel</Button>
-                <Button component="label" variant="contained">
-                  Submit
-                </Button>
-              </DialogActions>
-            </Dialog>
+
             {/* VIEW MODAL */}
             <Dialog
               open={openView}
