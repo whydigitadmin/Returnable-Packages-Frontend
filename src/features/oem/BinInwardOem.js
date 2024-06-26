@@ -16,6 +16,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
+import { error } from "daisyui/src/colors";
 
 const BinInwardOem = ({}) => {
   const [docId, setDocId] = useState("");
@@ -180,6 +181,7 @@ const BinInwardOem = ({}) => {
     setOemInwardDate(null);
     setTableData({});
     setErrors({});
+    setEmitterOutwardList([]);
   };
 
   const handleSave = () => {
@@ -187,17 +189,17 @@ const BinInwardOem = ({}) => {
     if (!flow) {
       errors.flow = "Flow is required";
     }
-    if (!allotedId) {
-      errors.allotedId = "Dispatch is required";
-    }
+    // if (!allotedId) {
+    //   errors.allotedId = "Dispatch is required";
+    // }
     if (!oemInwardNo) {
       errors.oemInwardNo = "OEM Inward No is required";
     }
-    if (!oemInwardDate) {
-      errors.oemInwardDate = "OEM Inward Date is required";
-    }
     if (!invNo.trim()) {
       errors.invNo = "Invoice No is required";
+    }
+    if (oemInwardDate === null) {
+      errors.oemInwardDate = "OEM Inward Date is required";
     }
 
     const formData = {
@@ -255,14 +257,15 @@ const BinInwardOem = ({}) => {
               autoClose: 2000,
               theme: "colored",
             });
-            setFlow("");
-            setAllotedId("");
-            setInvNo("");
-            setInvDate("");
-            setOemInwardDate(null);
-            setOemInwardNo("");
-            setTableView(false);
-            setEmitterOutwardList([]);
+            // setFlow("");
+            // setAllotedId("");
+            // setInvNo("");
+            // setInvDate("");
+            // setOemInwardDate(null);
+            // setOemInwardNo("");
+            // setTableView(false);
+            // setEmitterOutwardList([]);
+            handleNew();
           }
         })
         .catch((error) => {
@@ -425,8 +428,12 @@ const BinInwardOem = ({}) => {
                   <select
                     name="Select Invoice"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="form-select form-sz"
-                    // onChange={handleAllotedIdChange}
+                    className={`form-select form-sz mb-2 ${
+                      errors.oemInwardDate && "border-red-500"
+                    }`}
+                    // className={`form-control form-sz mb-2 ${
+                    //   errors.oemInwardDate && "border-red-500"
+                    // }`}
                     onChange={handleInvNoChange}
                     value={invNo}
                   >
@@ -443,9 +450,6 @@ const BinInwardOem = ({}) => {
                         </option>
                       ))}
                   </select>
-                  {errors.invNo && (
-                    <span className="error-text">{errors.invNo}</span>
-                  )}
                 </div>
                 <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
@@ -456,9 +460,7 @@ const BinInwardOem = ({}) => {
                 </div>
                 <div className="col-lg-2 col-md-3">
                   <input
-                    className={`form-control form-sz mb-2 ${
-                      errors.oemInwardNo && "border-red-500"
-                    }`}
+                    className={"form-control form-sz mb-2"}
                     placeholder=""
                     value={allotedId}
                     disabled
@@ -473,9 +475,7 @@ const BinInwardOem = ({}) => {
                 </div>
                 <div className="col-lg-2 col-md-3">
                   <input
-                    className={`form-control form-sz mb-2 ${
-                      errors.oemInwardNo && "border-red-500"
-                    }`}
+                    className={"form-control form-sz mb-2"}
                     placeholder=""
                     value={invDate}
                     disabled
@@ -512,9 +512,18 @@ const BinInwardOem = ({}) => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
                       value={oemInwardDate}
-                      onChange={handleOemDateChange}
+                      onChange={(newDate) => setOemInwardDate(newDate)}
                       slotProps={{
-                        textField: { size: "small" },
+                        textField: {
+                          size: "small",
+                          error: !!errors.oemInwardDate,
+                          // helperText: errors.oemInwardDate,
+                          InputProps: {
+                            className: errors.oemInwardDate
+                              ? "border-red-500"
+                              : "",
+                          },
+                        },
                       }}
                       format="DD/MM/YYYY"
                     />

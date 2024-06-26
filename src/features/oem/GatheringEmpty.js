@@ -125,14 +125,19 @@ export const GatheringEmpty = () => {
   };
 
   const handleSave = () => {
-    // Validation
+    const updatedTableData = tableData.map((row) => ({
+      ...row,
+      errorMsg: "",
+    }));
+    setTableData(updatedTableData);
+
     const errors = {};
     if (!stockBranch.trim()) {
       errors.stockBranch = "Stock Branch is required";
     }
-    tableData.forEach((row) => {
-      if (!row.emptyQty.trim()) {
-        errors.emptyQty = "Empty Qty is required";
+    tableData.forEach((row, index) => {
+      if (!row.emptyQty) {
+        errors[`emptyQty${index}`] = "Empty Qty is required";
       }
     });
 
@@ -343,27 +348,87 @@ export const GatheringEmpty = () => {
                               <td>{row.category}</td>
                               <td>{row.assetCode}</td>
                               <td className="ps-5">{row.availQty}</td>
-                              <td>
+                              <td className="d-flex flex-column">
                                 <input
                                   type="text"
                                   value={row.emptyQty}
-                                  onChange={(e) =>
-                                    setTableData((prev) =>
-                                      prev.map((r, i) =>
-                                        i === index
-                                          ? { ...r, emptyQty: e.target.value }
-                                          : r
-                                      )
-                                    )
-                                  }
+                                  onChange={(e) => {
+                                    const inputValue = e.target.value.replace(
+                                      /[^0-9]/g,
+                                      ""
+                                    );
+                                    const newValue = parseInt(inputValue, 10);
+
+                                    if (!isNaN(newValue)) {
+                                      if (
+                                        newValue <= row.availQty &&
+                                        newValue > 0
+                                      ) {
+                                        setTableData((prev) =>
+                                          prev.map((r, i) =>
+                                            i === index
+                                              ? {
+                                                  ...r,
+                                                  emptyQty: newValue,
+                                                  errorMsg: "",
+                                                }
+                                              : r
+                                          )
+                                        );
+                                        setErrors((prev) => ({
+                                          ...prev,
+                                          [`emptyQty${index}`]: "",
+                                        }));
+                                      } else {
+                                        setTableData((prev) =>
+                                          prev.map((r, i) =>
+                                            i === index
+                                              ? {
+                                                  ...r,
+                                                  emptyQty: "",
+                                                  errorMsg: `Quantity must be between 1 and ${row.availQty}.`,
+                                                }
+                                              : r
+                                          )
+                                        );
+                                        setErrors((prev) => ({
+                                          ...prev,
+                                          [`emptyQty${index}`]: "",
+                                        }));
+                                      }
+                                    } else {
+                                      setTableData((prev) =>
+                                        prev.map((r, i) =>
+                                          i === index
+                                            ? {
+                                                ...r,
+                                                emptyQty: "",
+                                                errorMsg: "",
+                                              }
+                                            : r
+                                        )
+                                      );
+                                      setErrors((prev) => ({
+                                        ...prev,
+                                        [`emptyQty${index}`]: "",
+                                      }));
+                                    }
+                                  }}
                                   className={`form-control form-sz mb-2 ${
-                                    errors.emptyQty && "border-red-500"
+                                    errors[`emptyQty${index}`]
+                                      ? "border-red-500"
+                                      : ""
                                   }`}
                                   style={{ width: "50px" }}
                                 />
-                                {errors.emptyQty && (
+                                {row.errorMsg && (
                                   <span className="error-text mb-1">
-                                    {errors.emptyQty}
+                                    {row.errorMsg}
+                                  </span>
+                                )}
+                                {errors[`emptyQty${index}`] && (
+                                  <span className="error-text mb-1">
+                                    {errors[`emptyQty${index}`]}
                                   </span>
                                 )}
                               </td>

@@ -352,9 +352,9 @@ function BinOutwardOem({}) {
                       <table className="table table-hover w-full">
                         <thead>
                           <tr>
-                            <th>Category</th>
-                            <th>Asset Code</th>
-                            <th>Total Empty QTY</th>
+                            <th className="text-center">Category</th>
+                            <th className="text-center">Asset Code</th>
+                            <th className="text-center">Total Empty QTY</th>
                             <th>Outward QTY</th>
                           </tr>
                         </thead>
@@ -363,14 +363,13 @@ function BinOutwardOem({}) {
                             tableData.map((row, index) => (
                               <tr key={row.id}>
                                 {/* <td>{index + 1}</td> */}
-                                <td>{row.category}</td>
-                                <td>{row.assetCode}</td>
-                                <td>{row.availQty}</td>
+                                <td className="text-center">{row.category}</td>
+                                <td className="text-center">{row.assetCode}</td>
+                                <td className="text-center">{row.availQty}</td>
                                 <td>
                                   <input
-                                    type="number"
-                                    className="border border-black rounded ms-3"
-                                    style={{ width: 50 }}
+                                    type="text"
+                                    // style={{ width: 50 }}
                                     value={row.outQty}
                                     onChange={(e) => {
                                       setTableData((prev) =>
@@ -384,6 +383,10 @@ function BinOutwardOem({}) {
                                         )
                                       );
                                     }}
+                                    className={`form-control form-sz mb-2 ${
+                                      errors.outQty && "border-red-500"
+                                    }`}
+                                    style={{ width: "50px" }}
                                   />
 
                                   {errors.outQty && (
