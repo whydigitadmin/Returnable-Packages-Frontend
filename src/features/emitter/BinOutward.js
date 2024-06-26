@@ -36,6 +36,7 @@ function BinOutward() {
   const [partName, setPartName] = useState("");
   const [partCode, setPartCode] = useState("");
   const [partQty, setPartQty] = useState("");
+  const [filteredPartData, setFilteredPartData] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [emitterId, setEmitterId] = React.useState(
@@ -137,13 +138,36 @@ function BinOutward() {
     setFlow(selectedId);
     getFlowDetailsByFlowId(selectedId);
     getkitNameById(selectedId);
+    setKitNo("");
+    setPartCode("");
+    setPartName("");
+    setPartQty("");
+    setAvlQty("");
+    setOutwardKitQty("");
   };
 
-  const handleSelectedKit = (event) => {
-    const kitQty = event.target.value;
-    setKitNo(kitQty);
-    getAvailableKitQtyByEmitter(kitQty);
-    getEmitterOutwardList(kitQty);
+  const handleSelectedKit = async (event) => {
+    const selectedKitNo = event.target.value;
+    setKitNo(selectedKitNo);
+    await getEmitterOutwardList(selectedKitNo);
+    await getAvailableKitQtyByEmitter(selectedKitNo);
+  };
+
+  const getEmitterOutwardList = async (kitNo) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getEmitterOutwardList?flowId=${flow}&kitNo=${kitNo}`
+      );
+
+      if (response.status === 200) {
+        const filteredParts = response.data.paramObjectsMap.EmitterOutward;
+        setFilteredPartData(filteredParts);
+      } else {
+        toast.error("Error fetching data!");
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
   };
 
   const getAddressById = async () => {
@@ -191,16 +215,37 @@ function BinOutward() {
       );
 
       if (response.status === 200) {
-        const kitDataArray =
-          response.data.paramObjectsMap.flowVO.flowDetailVO.map((kit) => ({
-            id: kit.id,
-            kitNo: kit.kitNo,
-          }));
+        const kits = response.data.paramObjectsMap.flowVO.flowDetailVO;
 
-        setKitData([...kitDataArray]);
+        const uniqueKitsMap = new Map();
+        kits.forEach((kit) => {
+          if (!uniqueKitsMap.has(kit.kitNo)) {
+            uniqueKitsMap.set(kit.kitNo, {
+              partNumber: kit.partNumber,
+              kitNo: kit.kitNo,
+            });
+          }
+        });
+
+        const uniqueKitsArray = Array.from(uniqueKitsMap.values());
+
+        setKitData(uniqueKitsArray);
       }
     } catch (error) {
       // toast.error("Network Error!");
+    }
+  };
+
+  const handleSelectedPart = async (event) => {
+    const selectedPartNo = event.target.value;
+    setPartCode(selectedPartNo);
+
+    const selectedPart = filteredPartData.find(
+      (part) => part.partNo === selectedPartNo
+    );
+    if (selectedPart) {
+      setPartName(selectedPart.partName);
+      setPartQty(selectedPart.partQty);
     }
   };
 
@@ -241,22 +286,6 @@ function BinOutward() {
     }
   };
 
-  const getEmitterOutwardList = async (kitQty) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getEmitterOutwardList?flowId=${flow}&kitNo=${kitQty}`
-      );
-
-      if (response.status === 200) {
-        setPartName(response.data.paramObjectsMap.EmitterOutward[0].partName);
-        setPartCode(response.data.paramObjectsMap.EmitterOutward[0].partNo);
-        setPartQty(response.data.paramObjectsMap.EmitterOutward[0].partQty);
-      }
-    } catch (error) {
-      toast.error("Network Error!");
-    }
-  };
-
   const handleKitQty = (event) => {
     const inputValue = event.target.value.toUpperCase().replace(/[^0-9]/g, "");
     const newValue = parseInt(inputValue, 10);
@@ -288,6 +317,9 @@ function BinOutward() {
 
     if (!kitNo) {
       errors.kitNo = "Kit is required";
+    }
+    if (!partCode) {
+      errors.partCode = "Part Number is required";
     }
 
     if (!receiver) {
@@ -584,7 +616,6 @@ function BinOutward() {
                     <span className="error-text mb-1">{errors.kitNo}</span>
                   )}
                 </div>
-                {/* PART NAME FIELD */}
 
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
@@ -594,12 +625,24 @@ function BinOutward() {
                   </label>
                 </div>
                 <div className="col-lg-2 col-md-4">
-                  <input
-                    className="form-control form-sz mb-2"
-                    name="partcode"
+                  <select
+                    className="form-select form-sz w-full mb-2"
                     value={partCode}
-                    disabled
-                  />
+                    onChange={handleSelectedPart}
+                  >
+                    <option value="" disabled>
+                      Select a Part No
+                    </option>
+                    {filteredPartData &&
+                      filteredPartData.map((kit) => (
+                        <option key={kit.partNo} value={kit.partNo}>
+                          {kit.partNo}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.partCode && (
+                    <span className="error-text mb-1">{errors.partCode}</span>
+                  )}
                 </div>
                 <div className="col-lg-2 col-md-4">
                   <label className="label mb-4">
