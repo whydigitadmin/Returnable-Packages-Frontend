@@ -30,6 +30,7 @@ const BinInwardOem = ({}) => {
   const [savedRecordView, setSavedRecordView] = useState(false);
   const [allotedId, setAllotedId] = useState("");
   const [tableView, setTableView] = useState(false);
+  const [expandedRows, setExpandedRows] = useState([]);
   const [loginUserId, setLoginUserId] = useState(
     localStorage.getItem("userId")
   );
@@ -39,7 +40,7 @@ const BinInwardOem = ({}) => {
   const [flowList, setFlowList] = useState([]);
   const [emitterOutwardList, setEmitterOutwardList] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [ListViewTableData, setListViewTableData] = useState([]);
+  const [listViewTableData, setListViewTableData] = useState([]);
 
   useEffect(() => {
     getFlowByUserId();
@@ -47,7 +48,7 @@ const BinInwardOem = ({}) => {
     if (listViewButton) {
       getAllInwardedDetailsByOrgId();
     }
-  }, []);
+  }, [listViewButton]);
 
   const getFlowByUserId = async () => {
     try {
@@ -98,12 +99,12 @@ const BinInwardOem = ({}) => {
     }
   };
 
-  const handleSavedRecordView = (e) => {
-    setSavedRecordView(true);
-  };
-  const handleSavedRecordViewClose = (e) => {
-    setSavedRecordView(false);
-  };
+  // const handleSavedRecordView = (e) => {
+  //   setSavedRecordView(true);
+  // };
+  // const handleSavedRecordViewClose = (e) => {
+  //   setSavedRecordView(false);
+  // };
 
   const handleFlowChange = (e) => {
     setFlow(e.target.value);
@@ -171,9 +172,25 @@ const BinInwardOem = ({}) => {
     } catch (error) {}
   };
 
+  const handleRowClick = (rowId) => {
+    const isRowExpanded = expandedRows.includes(rowId);
+    const newExpandedRows = isRowExpanded
+      ? expandedRows.filter((id) => id !== rowId)
+      : [...expandedRows, rowId];
+    setExpandedRows(newExpandedRows);
+
+    const updatedListViewTableData = listViewTableData.map((row) => {
+      if (row.id === rowId) {
+        row.backgroundColor = isRowExpanded ? "" : "red";
+      }
+      return row;
+    });
+
+    setListViewTableData(updatedListViewTableData);
+  };
+
   const handleNew = () => {
     setTableView(false);
-    setFlow("");
     setInvNo("");
     setInvDate("");
     setAllotedId("");
@@ -181,7 +198,6 @@ const BinInwardOem = ({}) => {
     setOemInwardDate(null);
     setTableData({});
     setErrors({});
-    setEmitterOutwardList([]);
   };
 
   const handleSave = () => {
@@ -189,9 +205,6 @@ const BinInwardOem = ({}) => {
     if (!flow) {
       errors.flow = "Flow is required";
     }
-    // if (!allotedId) {
-    //   errors.allotedId = "Dispatch is required";
-    // }
     if (!oemInwardNo) {
       errors.oemInwardNo = "OEM Inward No is required";
     }
@@ -264,7 +277,7 @@ const BinInwardOem = ({}) => {
             // setOemInwardDate(null);
             // setOemInwardNo("");
             // setTableView(false);
-            // setEmitterOutwardList([]);
+            setEmitterOutwardList([]);
             handleNew();
           }
         })
@@ -308,33 +321,162 @@ const BinInwardOem = ({}) => {
                   <table className="table table-hover w-full">
                     <thead>
                       <tr>
-                        {/* <th>S.No</th> */}
                         <th>Inward ID</th>
                         <th>Date</th>
-                        <th>Kit No</th>
-                        <th>Rec Qty</th>
+                        <th>Flow</th>
+                        <th>Invoice No</th>
+                        <th>Invoice Date</th>
+                        <th>Dispatch ID</th>
+                        <th>OEM Inward No</th>
+                        <th>OEM Inward Date</th>
+                        <th>Details</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {ListViewTableData.map((row, index) => (
-                        <tr key={row.id}>
-                          {/* <td>{index + 1}</td> */}
-                          <td>
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleSavedRecordView(row.docId);
-                              }}
-                              style={{ cursor: "pointer", color: "blue" }}
-                            >
-                              {row.docId}
-                            </a>
-                          </td>
-                          <td>{row.docDate}</td>
-                          <td>{row.kitNo}</td>
-                          <td>{row.recievedKitQty}</td>
-                        </tr>
+                      {listViewTableData.map((row, index) => (
+                        <React.Fragment key={row.id}>
+                          <tr style={{ backgroundColor: "red" }}>
+                            <td>{row.docId}</td>
+                            <td>{row.docDate}</td>
+                            <td>{row.flow}</td>
+                            <td>{row.invoiceNo}</td>
+                            <td>{row.invoiceDate}</td>
+                            <td>{row.dispatchId}</td>
+                            <td>{row.oemInwardNo}</td>
+                            <td>{row.oemInwardDate}</td>
+                            <td>
+                              <a
+                                href="#"
+                                style={{ cursor: "pointer", color: "blue" }}
+                              >
+                                <button onClick={() => handleRowClick(row.id)}>
+                                  {expandedRows.includes(row.id)
+                                    ? "Hide Details"
+                                    : "Show Details"}
+                                </button>
+                              </a>
+                            </td>
+                          </tr>
+
+                          {expandedRows.includes(row.id) && (
+                            <tr>
+                              <td colSpan="10">
+                                <table className="table table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th
+                                        className="text-center"
+                                        style={{
+                                          backgroundColor: "green",
+                                        }}
+                                      >
+                                        Bin Out Docid
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Bin Out Doc Date
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Part Name
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Part No
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Kit No
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Alloted Kit QTY
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Received Kit QTY
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {row.oemBinInwardDetails.map((detail) => (
+                                      <tr key={detail.id}>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.outwardDocId}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.outwardDocDate}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.partName}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.partNo}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.kitNo}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.allotedQty}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.receivedKitQty}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
                       ))}
                     </tbody>
                   </table>
@@ -429,11 +571,8 @@ const BinInwardOem = ({}) => {
                     name="Select Invoice"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                     className={`form-select form-sz mb-2 ${
-                      errors.oemInwardDate && "border-red-500"
+                      errors.invNo && "border-red-500"
                     }`}
-                    // className={`form-control form-sz mb-2 ${
-                    //   errors.oemInwardDate && "border-red-500"
-                    // }`}
                     onChange={handleInvNoChange}
                     value={invNo}
                   >
@@ -565,68 +704,6 @@ const BinInwardOem = ({}) => {
                                 <td className="text-center">
                                   {row.allotedKitQty}
                                 </td>
-                                {/* <td className="text-center">
-                                  <div className="d-flex flex-column">
-                                    <input
-                                      type="number"
-                                      className="border border-black rounded"
-                                      style={{ width: 50 }}
-                                      value={row.receivedKitQty}
-                                      onChange={(e) => {
-                                        const inputValue = parseInt(
-                                          e.target.value,
-                                          10
-                                        );
-                                        if (isNaN(inputValue)) {
-                                          setTableData((prev) =>
-                                            prev.map((r, i) =>
-                                              i === index
-                                                ? {
-                                                    ...r,
-                                                    receivedKitQty: "",
-                                                  }
-                                                : r
-                                            )
-                                          );
-                                          setErrors((prevErrors) => ({
-                                            ...prevErrors,
-                                            receivedKitQty: "",
-                                          }));
-                                        } else if (
-                                          inputValue >= 0 &&
-                                          inputValue <= row.allotedKitQty
-                                        ) {
-                                          setTableData((prev) =>
-                                            prev.map((r, i) =>
-                                              i === index
-                                                ? {
-                                                    ...r,
-                                                    receivedKitQty: inputValue,
-                                                  }
-                                                : r
-                                            )
-                                          );
-                                          setErrors((prevErrors) => ({
-                                            ...prevErrors,
-                                            receivedKitQty: "",
-                                          }));
-                                        } else {
-                                          setErrors((prevErrors) => ({
-                                            ...prevErrors,
-                                            receivedKitQty:
-                                              "Can't Exceed with Allocated QTY",
-                                          }));
-                                        }
-                                      }}
-                                    />
-
-                                    {errors.receivedKitQty && (
-                                      <span className="error-text mb-1">
-                                        {errors.receivedKitQty}
-                                      </span>
-                                    )}
-                                  </div>
-                                </td> */}
                               </tr>
                             ))}
                           </tbody>
@@ -634,7 +711,6 @@ const BinInwardOem = ({}) => {
                       </div>
                     </div>
                   </div>
-                  {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
                   <div className="mt-4">
                     <button
                       type="button"
@@ -658,7 +734,7 @@ const BinInwardOem = ({}) => {
         </div>
         <ToastContainer />
         {/* VIEW MODAL */}
-        <Dialog
+        {/* <Dialog
           open={savedRecordView}
           onClose={handleSavedRecordViewClose}
           maxWidth="sm"
@@ -692,7 +768,7 @@ const BinInwardOem = ({}) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {ListViewTableData.map((row, index) => (
+                    {listViewTableData.map((row, index) => (
                       <tr key={row.id}>
                         <td> {row.docId}</td>
                         <td>{row.docDate}</td>
@@ -705,7 +781,7 @@ const BinInwardOem = ({}) => {
               </div>
             </div>
           </DialogContent>
-        </Dialog>
+        </Dialog> */}
       </div>
     </>
   );

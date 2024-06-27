@@ -25,6 +25,7 @@ import {
   TableRow,
 } from "@mui/material";
 import NoRecordsFound from "../../utils/NoRecordsFound";
+import WtTooltip from "../user/components/WtTooltip";
 
 function BinOutwardOem({}) {
   const [docId, setDocId] = useState("");
@@ -40,25 +41,31 @@ function BinOutwardOem({}) {
   const [selectedStockBranch, setSelectedStockBranch] = useState("");
   const [stockBranchList, setStockBranchList] = useState([]);
   const [tableData, setTableData] = useState([]);
-  const [ListViewTableData, setListViewTableData] = useState([
-    {
-      id: 1,
-      outwardId: "1000001",
-      date: "15-05-2024",
-      flow: "PUN-CH",
-      outQty: "8",
-      balQty: "42",
-    },
-  ]);
+  const [expandedRows, setExpandedRows] = useState([]);
+
+  const [listViewTableData, setListViewTableData] = useState([]);
 
   useEffect(() => {
     getOemStockBranchByUserId();
     getOutwardDocId();
     // getFlowByUserId();
-    // if (listViewButton) {
-    //   getAllInwardedDetailsByOrgId();
-    // }
-  }, []);
+    if (listViewButton) {
+      getAllOutwardedDetailsByOrgId();
+    }
+  }, [listViewButton]);
+
+  const getAllOutwardedDetailsByOrgId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getAllOemBinOutward?orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        setListViewTableData(response.data.paramObjectsMap.oemBinOutwardVO);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getOutwardDocId = async (doc) => {
     try {
@@ -107,10 +114,6 @@ function BinOutwardOem({}) {
   };
 
   const getOemStockDetailsForBinOutward = (branch) => {
-    // const errors = {};
-    // if (!selectedStockBranch) {
-    //   errors.selectedStockBranch = "Stock Branch is required";
-    // }
     if (Object.keys(errors).length === 0) {
       axios
         .get(
@@ -124,11 +127,6 @@ function BinOutwardOem({}) {
               theme: "colored",
             });
           } else {
-            // toast.success(response.data.paramObjectsMap.message, {
-            //   autoClose: 2000,
-            //   theme: "colored",
-            // });
-
             setTableData(response.data.paramObjectsMap.stockDetails);
             setTableView(true);
           }
@@ -148,6 +146,23 @@ function BinOutwardOem({}) {
     setSavedRecordView(false);
   };
 
+  const handleRowClick = (rowId) => {
+    const isRowExpanded = expandedRows.includes(rowId);
+    const newExpandedRows = isRowExpanded
+      ? expandedRows.filter((id) => id !== rowId)
+      : [...expandedRows, rowId];
+    setExpandedRows(newExpandedRows);
+
+    const updatedListViewTableData = listViewTableData.map((row) => {
+      if (row.id === rowId) {
+        row.backgroundColor = isRowExpanded ? "" : "red";
+      }
+      return row;
+    });
+
+    setListViewTableData(updatedListViewTableData);
+  };
+
   const handleNew = () => {
     setTableData({});
     setTableView(false);
@@ -156,16 +171,31 @@ function BinOutwardOem({}) {
   };
 
   const handleSave = () => {
-    // Validation
+    const updatedTableData = tableData.map((row) => ({
+      ...row,
+      errorMsg: "",
+    }));
+    setTableData(updatedTableData);
+
     const errors = {};
-    if (!selectedStockBranch) {
-      errors.selectedStockBranch = "Stock Branch is required";
+    if (!stockBranch) {
+      errors.stockBranch = "Stock Branch is required";
     }
+
+    const findEmptyOutQty = tableData.filter(
+      (row) => row.outQty !== undefined && row.outQty !== ""
+    );
+    console.log("THE FIND EMPTY QTY IS:", findEmptyOutQty);
+
+    if (findEmptyOutQty.length === 0) {
+      errors.outQty = "Atleast 1 Out Qty should be enter";
+    }
+
     const formData = {
       docDate: docDate.format("YYYY-MM-DD"),
       docId,
       id: 0,
-      oemBinOutwardDetails: tableData.map((row) => ({
+      oemBinOutwardDetails: findEmptyOutQty.map((row) => ({
         asset: row.assetName,
         assetCode: row.assetCode,
         availqty: row.availQty,
@@ -174,12 +204,13 @@ function BinOutwardOem({}) {
         outQty: row.outQty,
       })),
       orgId: orgId,
-      stockBranch: selectedStockBranch,
+      stockBranch: stockBranch,
       createdby: userName,
       receiverId: localStorage.getItem("receiverId"),
     };
 
     if (Object.keys(errors).length === 0) {
+      console.log("THE DATA TO SAVE IS:", formData);
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/oem/oemBinOutward`,
@@ -196,11 +227,11 @@ function BinOutwardOem({}) {
           getOutwardDocId();
         })
         .catch((error) => {
-          // Handle error
           console.error("Error:", error);
-          // Optionally, show an error message
           toast.error("Failed to save bin inward.");
         });
+    } else {
+      setErrors(errors);
     }
   };
 
@@ -230,7 +261,7 @@ function BinOutwardOem({}) {
           {listViewButton ? (
             <>
               {/* LISTVIEW TABLE */}
-              <div className="row mt-4">
+              {/* <div className="row mt-4">
                 <div className="overflow-x-auto w-full ">
                   <table className="table table-hover w-full">
                     <thead>
@@ -243,9 +274,9 @@ function BinOutwardOem({}) {
                       </tr>
                     </thead>
                     <tbody>
-                      {ListViewTableData.map((row, index) => (
+                      {listViewTableData.map((row, index) => (
                         <tr key={row.id}>
-                          {/* <td>{index + 1}</td> */}
+                    
                           <td>
                             <a
                               href="#"
@@ -267,6 +298,130 @@ function BinOutwardOem({}) {
                     </tbody>
                   </table>
                 </div>
+              </div> */}
+              <div className="row mt-4">
+                <div className="overflow-x-auto w-full ">
+                  <table className="table table-hover w-full">
+                    <thead>
+                      <tr>
+                        <th>Outward ID</th>
+                        <th>Outward Date</th>
+                        <th>Stock Branch</th>
+                        {/* <th>Invoice No</th>
+                        <th>Invoice Date</th>
+                        <th>Dispatch ID</th>
+                        <th>OEM Inward No</th>
+                        <th>OEM Inward Date</th> */}
+                        <th>Details</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {listViewTableData.map((row, index) => (
+                        <React.Fragment key={row.id}>
+                          <tr style={{ backgroundColor: "red" }}>
+                            <td>{row.docId}</td>
+                            <td>{row.docDate}</td>
+                            <td>{row.stockBranch}</td>
+                            {/* <td>{row.invoiceNo}</td>
+                            <td>{row.invoiceDate}</td>
+                            <td>{row.dispatchId}</td>
+                            <td>{row.oemInwardNo}</td>
+                            <td>{row.oemInwardDate}</td> */}
+                            <td>
+                              <a
+                                href="#"
+                                style={{ cursor: "pointer", color: "blue" }}
+                              >
+                                <button onClick={() => handleRowClick(row.id)}>
+                                  {expandedRows.includes(row.id)
+                                    ? "Hide Details"
+                                    : "Show Details"}
+                                </button>
+                              </a>
+                            </td>
+                          </tr>
+
+                          {expandedRows.includes(row.id) && (
+                            <tr>
+                              <td colSpan="10">
+                                <table className="table table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th
+                                        className="text-center"
+                                        style={{
+                                          backgroundColor: "green",
+                                        }}
+                                      >
+                                        Category
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Asset Code
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Asset
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        OutWard QTY
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {row.oemBinOutwardDetails.map((detail) => (
+                                      <tr key={detail.id}>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.category}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.assetCode}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.asset}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.outQty}
+                                        </td>
+                                      </tr>
+                                    ))}
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </>
           ) : (
@@ -277,7 +432,6 @@ function BinOutwardOem({}) {
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       Doc Id:
-                      {/* <FaStarOfLife className="must" /> */}
                     </span>
                   </label>
                 </div>
@@ -295,7 +449,6 @@ function BinOutwardOem({}) {
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
                       Doc Date:
-                      {/* <FaStarOfLife className="must" /> */}
                     </span>
                   </label>
                 </div>
@@ -324,7 +477,9 @@ function BinOutwardOem({}) {
                   <select
                     // name="Select Kit"
                     style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
-                    className="form-select form-sz"
+                    className={`form-select form-sz mb-2 ${
+                      errors.stockBranch && "border-red-500"
+                    }`}
                     onChange={handleSelectionChange}
                     value={stockBranch}
                   >
@@ -338,11 +493,6 @@ function BinOutwardOem({}) {
                         </option>
                       ))}
                   </select>
-                  {errors.selectedStockBranch && (
-                    <span className="error-text mb-1">
-                      {errors.selectedStockBranch}
-                    </span>
-                  )}
                 </div>
               </div>
               {tableView && (
@@ -366,34 +516,94 @@ function BinOutwardOem({}) {
                                 <td className="text-center">{row.category}</td>
                                 <td className="text-center">{row.assetCode}</td>
                                 <td className="text-center">{row.availQty}</td>
-                                <td>
+                                <td className="d-flex flex-row">
                                   <input
                                     type="text"
-                                    // style={{ width: 50 }}
                                     value={row.outQty}
                                     onChange={(e) => {
-                                      setTableData((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? {
-                                                ...r,
-                                                outQty: e.target.value,
-                                              }
-                                            : r
-                                        )
+                                      const inputValue = e.target.value.replace(
+                                        /[^0-9]/g,
+                                        ""
                                       );
+                                      const newValue = parseInt(inputValue, 10);
+
+                                      if (!isNaN(newValue)) {
+                                        if (
+                                          newValue <= row.availQty &&
+                                          newValue > 0
+                                        ) {
+                                          setTableData((prev) =>
+                                            prev.map((r, i) =>
+                                              i === index
+                                                ? {
+                                                    ...r,
+                                                    outQty: newValue,
+                                                    errorMsg: "",
+                                                  }
+                                                : r
+                                            )
+                                          );
+                                          setErrors((prev) => ({
+                                            ...prev,
+                                            [`outQty${index}`]: "",
+                                          }));
+                                        } else {
+                                          setTableData((prev) =>
+                                            prev.map((r, i) =>
+                                              i === index
+                                                ? {
+                                                    ...r,
+                                                    outQty: "",
+                                                    errorMsg:
+                                                      row.availQty === "2"
+                                                        ? `Quantity must be 1 or ${row.availQty}.`
+                                                        : row.availQty === "1"
+                                                        ? `Quantity must be ${row.availQty}`
+                                                        : `Quantity must be between 1 and ${row.availQty}.`,
+                                                  }
+                                                : r
+                                            )
+                                          );
+                                          // setErrors((prev) => ({
+                                          //   ...prev,
+                                          //   [`outQty${index}`]: "",
+                                          // }));
+                                        }
+                                      } else {
+                                        setTableData((prev) =>
+                                          prev.map((r, i) =>
+                                            i === index
+                                              ? {
+                                                  ...r,
+                                                  outQty: "",
+                                                  errorMsg: "",
+                                                }
+                                              : r
+                                          )
+                                        );
+                                        // setErrors((prev) => ({
+                                        //   ...prev,
+                                        //   [`outQty${index}`]: "",
+                                        // }));
+                                      }
                                     }}
                                     className={`form-control form-sz mb-2 ${
-                                      errors.outQty && "border-red-500"
+                                      errors[`outQty${index}`]
+                                        ? "border-red-500"
+                                        : ""
                                     }`}
                                     style={{ width: "50px" }}
                                   />
-
-                                  {errors.outQty && (
-                                    <span className="error-text mb-1">
-                                      {errors.outQty}
+                                  {row.errorMsg && (
+                                    <span className="error-text mb-1 ms-2">
+                                      {row.errorMsg}
                                     </span>
                                   )}
+                                  {/* {errors[`outQty${index}`] && (
+                                    <span className="error-text mb-1 ms-2">
+                                      {errors[`outQty${index}`]}
+                                    </span>
+                                  )} */}
                                 </td>
                               </tr>
                             ))
@@ -408,9 +618,13 @@ function BinOutwardOem({}) {
                           )}
                         </tbody>
                       </table>
+                      {errors.outQty && (
+                        <span className="error-text mb-1 ms-2">
+                          {errors.outQty}
+                        </span>
+                      )}
                     </div>
                   </div>
-                  {/* {errors.tableData && (<div className="error-text mt-2">{errors.tableData}</div>)} */}
                   <div className="mt-4">
                     <button
                       type="button"
@@ -435,7 +649,7 @@ function BinOutwardOem({}) {
         <ToastContainer />
         {/* VIEW MODAL */}
         <Dialog
-          // open={savedRecordView}
+          open={savedRecordView}
           onClose={handleSavedRecordViewClose}
           maxWidth="sm"
           fullWidth
@@ -472,12 +686,12 @@ function BinOutwardOem({}) {
                     <TableCell>PUN-CH</TableCell>
                   </TableRow>
 
-                  {tableData.map((row, index) => (
+                  {/* {listViewTableData.map((row, index) => (
                     <TableRow>
                       <TableCell>{row.assetCode}</TableCell>
                       <TableCell>{row.outQty}</TableCell>
                     </TableRow>
-                  ))}
+                  ))} */}
                 </TableBody>
               </Table>
             </TableContainer>

@@ -135,22 +135,24 @@ export const GatheringEmpty = () => {
     if (!stockBranch.trim()) {
       errors.stockBranch = "Stock Branch is required";
     }
-    tableData.forEach((row, index) => {
-      if (!row.emptyQty) {
-        errors[`emptyQty${index}`] = "Empty Qty is required";
-      }
-    });
+    const findEmptyQty = tableData.filter(
+      (row) => row.emptyQty !== undefined && row.emptyQty !== ""
+    );
+    console.log("THE EMPTY QTY FIELD INCLUDED DATA IS", findEmptyQty);
+
+    if (findEmptyQty.length === 0) {
+      errors.invalidEmptyQty = "Atleast 1 Empty Qty field should be enter";
+    }
 
     if (Object.keys(errors).length > 0) {
       setErrors(errors);
       return;
     }
-
     const formData = {
       createdBy: userName,
       docId,
       docDate: docDate.format("YYYY-MM-DD"),
-      gathereingEmptyDetailsDTO: tableData.map((row) => ({
+      gathereingEmptyDetailsDTO: findEmptyQty.map((row) => ({
         assetType: row.assetType,
         assetCode: row.assetCode,
         assetName: row.assetName,
@@ -162,6 +164,8 @@ export const GatheringEmpty = () => {
       stockBranch,
       receiverId: localStorage.getItem("receiverId"),
     };
+
+    console.log("THE DATA TO SAVE IS:", formData);
 
     axios
       .post(
@@ -348,7 +352,7 @@ export const GatheringEmpty = () => {
                               <td>{row.category}</td>
                               <td>{row.assetCode}</td>
                               <td className="ps-5">{row.availQty}</td>
-                              <td className="d-flex flex-column">
+                              <td className="d-flex flex-row">
                                 <input
                                   type="text"
                                   value={row.emptyQty}
@@ -375,10 +379,6 @@ export const GatheringEmpty = () => {
                                               : r
                                           )
                                         );
-                                        setErrors((prev) => ({
-                                          ...prev,
-                                          [`emptyQty${index}`]: "",
-                                        }));
                                       } else {
                                         setTableData((prev) =>
                                           prev.map((r, i) =>
@@ -386,15 +386,16 @@ export const GatheringEmpty = () => {
                                               ? {
                                                   ...r,
                                                   emptyQty: "",
-                                                  errorMsg: `Quantity must be between 1 and ${row.availQty}.`,
+                                                  errorMsg:
+                                                    row.availQty === "2"
+                                                      ? `Quantity must be 1 or ${row.availQty}.`
+                                                      : row.availQty === "1"
+                                                      ? `Quantity must be ${row.availQty}`
+                                                      : `Quantity must be between 1 and ${row.availQty}.`,
                                                 }
                                               : r
                                           )
                                         );
-                                        setErrors((prev) => ({
-                                          ...prev,
-                                          [`emptyQty${index}`]: "",
-                                        }));
                                       }
                                     } else {
                                       setTableData((prev) =>
@@ -408,10 +409,6 @@ export const GatheringEmpty = () => {
                                             : r
                                         )
                                       );
-                                      setErrors((prev) => ({
-                                        ...prev,
-                                        [`emptyQty${index}`]: "",
-                                      }));
                                     }
                                   }}
                                   className={`form-control form-sz mb-2 ${
@@ -424,11 +421,6 @@ export const GatheringEmpty = () => {
                                 {row.errorMsg && (
                                   <span className="error-text mb-1">
                                     {row.errorMsg}
-                                  </span>
-                                )}
-                                {errors[`emptyQty${index}`] && (
-                                  <span className="error-text mb-1">
-                                    {errors[`emptyQty${index}`]}
                                   </span>
                                 )}
                               </td>
@@ -445,6 +437,11 @@ export const GatheringEmpty = () => {
                         )}
                       </tbody>
                     </table>
+                    {errors.invalidEmptyQty && (
+                      <span className="error-text mb-1 ms-2">
+                        {errors.invalidEmptyQty}
+                      </span>
+                    )}
                   </div>
                 </div>
 

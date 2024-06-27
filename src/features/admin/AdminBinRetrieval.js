@@ -25,16 +25,18 @@ export const AdminBinRetrieval = () => {
   const [transporterDocId, setTransporterDocId] = useState("");
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState(dayjs());
-  const [stockBranchList, setStockBranchList] = useState([
-    { id: 1, branchCode: "ch-pun" },
-    { id: 2, branchCode: "tn-dl" },
-  ]);
-  const [transporterDocIdList, setTransporterDocIdList] = useState([
-    { docId: "doc1" },
-    { docId: "doc2" },
-  ]);
-  const [listViewTableView, setListViewTableView] = useState(false);
+  const [fromStockBranch, setfromStockBranch] = useState("");
+  const [toStockBranch, setToStockBranch] = useState("");
+  const [transportPickDate, setTransportPickDate] = useState("");
+  const [transporter, setTransporter] = useState("");
+  const [transporterDocNo, setTransporterDocNo] = useState("");
+  const [handoverBy, setHandoverBy] = useState("");
+  const [driver, setDriver] = useState("");
+  const [driverPhNo, setDriverPhNo] = useState("");
+  const [vehicleNo, setVehicleNo] = useState("");
+  const [tableDataView, setTableDataView] = useState(false);
 
+  const [listViewTableView, setListViewTableView] = useState(false);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userName, setUserName] = React.useState(
     localStorage.getItem("userName")
@@ -44,6 +46,14 @@ export const AdminBinRetrieval = () => {
   const [loginUserId, setLoginUserId] = React.useState(
     localStorage.getItem("userId")
   );
+  const [stockBranchList, setStockBranchList] = useState([
+    { id: 1, branchCode: "ch-pun" },
+    { id: 2, branchCode: "tn-dl" },
+  ]);
+  const [transporterDocIdList, setTransporterDocIdList] = useState([
+    { docId: "doc1" },
+    { docId: "doc2" },
+  ]);
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -204,6 +214,7 @@ export const AdminBinRetrieval = () => {
   };
   const handleTransporterDocIdChange = (e) => {
     setTransporterDocId(e.target.value);
+    setTableDataView(true);
   };
 
   // const handleNew = () => {
@@ -463,78 +474,230 @@ export const AdminBinRetrieval = () => {
                   </span>
                 )}
               </div>
+              {tableDataView && (
+                <>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        From Stock Branch:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={fromStockBranch}
+                      onChange={(e) => setfromStockBranch(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        To Stock Branch:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={toStockBranch}
+                      onChange={(e) => setToStockBranch(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Transporter Pickup Date:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={transportPickDate}
+                      onChange={(e) => setTransportPickDate(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Transporter:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={transporter}
+                      onChange={(e) => setTransporter(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Transporter Doc No:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={transporterDocNo}
+                      onChange={(e) => setTransporterDocNo(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Handover By:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={handoverBy}
+                      onChange={(e) => setHandoverBy(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Driver:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={driver}
+                      onChange={(e) => setDriver(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Driver PhNo:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={driverPhNo}
+                      onChange={(e) => setDriverPhNo(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <label className="label mb-4">
+                      <span className="label-text label-font-size text-base-content d-flex flex-row">
+                        Vehicle No:
+                      </span>
+                    </label>
+                  </div>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      placeholder=""
+                      value={vehicleNo}
+                      onChange={(e) => setVehicleNo(e.target.value)}
+                      disabled
+                    />
+                  </div>
+                </>
+              )}
             </div>
 
-            <div className="row mt-4">
-              <div className="col-lg-12">
-                <div className="overflow-x-auto">
-                  <table className="table table-hover w-full">
-                    <thead>
-                      <tr>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ width: "15%" }}
-                        >
-                          Category
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Asset Code
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Asset
-                        </th>
+            {tableDataView && (
+              <>
+                <div className="row mt-4">
+                  <div className="col-lg-12">
+                    <div className="overflow-x-auto">
+                      <table className="table table-hover w-full">
+                        <thead>
+                          <tr>
+                            <th
+                              className="px-2 text-black border text-center"
+                              style={{ width: "15%" }}
+                            >
+                              Category
+                            </th>
+                            <th
+                              className="px-2 text-black border text-center"
+                              style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                            >
+                              Asset Code
+                            </th>
+                            <th
+                              className="px-2 text-black border text-center"
+                              style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                            >
+                              Asset
+                            </th>
 
-                        <th className="px-2 text-black border text-center">
-                          Asset QTY
-                        </th>
-                        <th className="px-2 text-black border text-center">
-                          Reterive Qty
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tableData && tableData.length > 0 ? (
-                        tableData.map((row) => (
-                          <tr key={row.id}>
-                            <td className="border px-2 py-2 text-center">
-                              {row.category}
-                            </td>
-
-                            <td className="border px-2 py-2 text-center">
-                              {row.assetCode}
-                            </td>
-                            <td className="border px-2 py-2 text-center">
-                              {row.asset}
-                            </td>
-                            <td className="border px-2 py-2 text-center">
-                              {row.assetQty}
-                            </td>
-
-                            <td className="border px-2 py-2 text-center">
-                              {row.reteriveQty}
-                            </td>
+                            <th className="px-2 text-black border text-center">
+                              Asset QTY
+                            </th>
+                            <th className="px-2 text-black border text-center">
+                              Reterive Qty
+                            </th>
                           </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={10}>
-                            <NoRecordsFound
-                              message={"Pending Bin Inward not found"}
-                            />
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                        </thead>
+                        <tbody>
+                          {tableData && tableData.length > 0 ? (
+                            tableData.map((row) => (
+                              <tr key={row.id}>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.category}
+                                </td>
+
+                                <td className="border px-2 py-2 text-center">
+                                  {row.assetCode}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.asset}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.assetQty}
+                                </td>
+
+                                <td className="border px-2 py-2 text-center">
+                                  {row.reteriveQty}
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={10}>
+                                <NoRecordsFound
+                                  message={"Pending Bin Inward not found"}
+                                />
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            )}
 
             <div className="mt-4">
               <button
