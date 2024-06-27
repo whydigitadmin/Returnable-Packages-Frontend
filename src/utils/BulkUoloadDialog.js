@@ -114,12 +114,12 @@ const BulkUploadDialog = ({
   return (
     <div>
       <Button
-        className="btn btn-ghost btn-lg text-sm col-xs-1"
+        className="btn btn-primary btn-md text-sm col-xs-1"
         style={{ color: "blue" }}
         onClick={onOpenClick}
       >
         <img
-          src="/upload.png"
+          src="https://cdn-icons-png.flaticon.com/128/1091/1091885.png"
           alt="pending-status-icon"
           title="add"
           style={{
@@ -129,7 +129,10 @@ const BulkUploadDialog = ({
             cursor: "pointer",
           }}
         />
-        <span className="text-form text-base" style={{ marginLeft: "10px" }}>
+        <span
+          className="text-form text-black font-semibold"
+          style={{ marginLeft: "5px" }}
+        >
           Bulk Upload
         </span>
       </Button>

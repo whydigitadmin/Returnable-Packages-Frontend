@@ -154,8 +154,7 @@ function Users() {
         <div className="card w-full p-6 bg-base-100 shadow-xl">
           <div className="flex justify-end">
             <button
-              className="btn btn-ghost btn-sm text-sm col-xs-1"
-              style={{ color: "blue" }}
+              className="btn btn-ghost btn-sm text-sm text-black col-xs-1"
               onClick={handleAddOpen}
             >
               <IoIosAdd style={{ fontSize: 30, color: "blue" }} />

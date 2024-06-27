@@ -8,9 +8,9 @@ const routes = [
     path: "/app/welcome",
     icon: (
       <img
-        src="/dashboard.png"
+        src="https://cdn-icons-png.flaticon.com/128/8899/8899687.png"
         alt="Dashboard"
-        style={{ width: "25px", height: "auto", marginRight: "5px" }}
+        style={{ width: "27px", height: "auto", marginRight: "0px" }}
         className={iconClasses}
       />
     ),
@@ -20,7 +20,7 @@ const routes = [
     path: "", //no URL needed as this has submenu
     icon: (
       <img
-        src="/admin.png"
+        src="https://cdn-icons-png.flaticon.com/128/12153/12153844.png"
         alt="Admin"
         style={{ width: "34px", height: "auto" }}
         className={`${iconClasses} inline`}
@@ -33,9 +33,9 @@ const routes = [
         path: "/app/companydetails",
         icon: (
           <img
-            src="/usercreation.png"
+            src="	https://cdn-icons-png.flaticon.com/128/4413/4413528.png"
             alt="Usercreation"
-            style={{ width: "30px", height: "auto" }}
+            style={{ width: "32px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
@@ -47,7 +47,7 @@ const routes = [
     path: "", //no URL needed as this has submenu
     icon: (
       <img
-        src="/admin.png"
+        src="https://cdn-icons-png.flaticon.com/128/3685/3685367.png"
         alt="Admin"
         style={{ width: "34px", height: "auto" }}
         className={`${iconClasses} inline`}
@@ -60,7 +60,7 @@ const routes = [
         path: "/app/UserDetails",
         icon: (
           <img
-            src="/usercreation.png"
+            src="	https://cdn-icons-png.flaticon.com/128/863/863823.png"
             alt="Usercreation"
             style={{ width: "30px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -72,7 +72,7 @@ const routes = [
         path: "/app/EmitterDetails",
         icon: (
           <img
-            src="/emittercreation.png"
+            src="	https://cdn-icons-png.flaticon.com/128/9708/9708965.png"
             alt="Emittercreation"
             style={{ width: "30px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -84,7 +84,7 @@ const routes = [
         path: "/app/OemUser",
         icon: (
           <img
-            src="/OemUser.png"
+            src="https://cdn-icons-png.flaticon.com/128/1585/1585199.png"
             alt="OemUser"
             style={{ width: "31px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -115,7 +115,7 @@ const routes = [
     path: "", //no url needed as this has submenu
     icon: (
       <img
-        src="/master.png"
+        src="https://cdn-icons-png.flaticon.com/128/5610/5610258.png"
         alt="Master"
         style={{ width: "32px", height: "auto" }}
         className={`${iconClasses} inline`}
@@ -176,7 +176,7 @@ const routes = [
         path: "/app/Branch",
         icon: (
           <img
-            src="https://cdn-icons-png.flaticon.com/128/11743/11743089.png"
+            src="https://cdn-icons-png.flaticon.com/128/4363/4363836.png"
             alt="StockBranch"
             style={{ width: "34px", height: "auto" }}
             className={`${iconClasses} inline`}
@@ -189,7 +189,7 @@ const routes = [
         path: "/app/StockBranch", //no url needed as this has submenu
         icon: (
           <img
-            src="/report.png"
+            src="https://cdn-icons-png.flaticon.com/128/8890/8890383.png"
             alt="StockBranch"
             style={{ width: "34px", height: "auto" }}
             className={`${iconClasses} inline`}
@@ -201,7 +201,7 @@ const routes = [
         path: "/app/Country",
         icon: (
           <img
-            src="https://cdn-icons-png.flaticon.com/128/2947/2947721.png"
+            src="	https://cdn-icons-png.flaticon.com/128/9746/9746676.png"
             alt="Country"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -213,7 +213,7 @@ const routes = [
         path: "/app/State",
         icon: (
           <img
-            src="/city.png"
+            src="	https://cdn-icons-png.flaticon.com/128/3663/3663073.png"
             alt="Unit"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -225,7 +225,7 @@ const routes = [
         path: "/app/CityMaster",
         icon: (
           <img
-            src="/city.png "
+            src="	https://cdn-icons-png.flaticon.com/128/2994/2994305.png"
             alt="Unit"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -238,7 +238,7 @@ const routes = [
         path: "/app/warehouse",
         icon: (
           <img
-            src="/warehouse.png"
+            src="https://cdn-icons-png.flaticon.com/128/3061/3061160.png"
             alt="Warehouse"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -250,9 +250,9 @@ const routes = [
         path: "/app/unit",
         icon: (
           <img
-            src="/unit.png"
+            src="https://cdn-icons-png.flaticon.com/128/10751/10751369.png"
             alt="Unit"
-            style={{ width: "34px", height: "auto" }}
+            style={{ width: "36px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
@@ -265,7 +265,7 @@ const routes = [
     path: "", //no url needed as this has submenu
     icon: (
       <img
-        src="/master.png"
+        src="https://cdn-icons-png.flaticon.com/128/12819/12819713.png"
         alt="Master"
         style={{ width: "32px", height: "auto" }}
         className={`${iconClasses} inline`}
@@ -277,7 +277,7 @@ const routes = [
         path: "/app/assetcategory",
         icon: (
           <img
-            src="/asset.png"
+            src="	https://cdn-icons-png.flaticon.com/128/16314/16314349.png"
             alt="AssetGroup"
             style={{ width: "32px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -289,7 +289,7 @@ const routes = [
         path: "/app/createasset",
         icon: (
           <img
-            src="/createAsset.png"
+            src="	https://cdn-icons-png.flaticon.com/128/1792/1792411.png"
             alt="CreateAssets"
             style={{ width: "33px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -302,7 +302,7 @@ const routes = [
         path: "/app/customer",
         icon: (
           <img
-            src="/customer.png"
+            src="https://cdn-icons-png.flaticon.com/128/5455/5455723.png"
             alt="Customer"
             style={{ width: "32px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -314,7 +314,7 @@ const routes = [
         path: "/app/vendors",
         icon: (
           <img
-            src="/vendor.png"
+            src="https://cdn-icons-png.flaticon.com/128/14785/14785229.png"
             alt="Vendors"
             style={{ width: "33px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -326,7 +326,7 @@ const routes = [
         path: "/app/createkit",
         icon: (
           <img
-            src="/createkit.png"
+            src="https://cdn-icons-png.flaticon.com/128/5001/5001087.png"
             alt="CreateKit"
             style={{ width: "31px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -338,9 +338,9 @@ const routes = [
         path: "/app/partstudy", //no url needed as this has submenu
         icon: (
           <img
-            src="/part.png"
+            src="https://cdn-icons-png.flaticon.com/128/8787/8787090.png"
             alt="PartStudy"
-            style={{ width: "30px", height: "auto" }}
+            style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
@@ -350,9 +350,9 @@ const routes = [
         path: "/app/flows",
         icon: (
           <img
-            src="/flow.png"
+            src="https://cdn-icons-png.flaticon.com/128/854/854932.png"
             alt="Flows"
-            style={{ width: "26px", height: "auto" }}
+            style={{ width: "32px", height: "auto" }}
             className={{ submenuIconClasses }}
           />
         ),
@@ -362,7 +362,7 @@ const routes = [
         path: "/app/KitCard",
         icon: (
           <img
-            src="	https://cdn-icons-png.flaticon.com/128/2752/2752867.png"
+            src="https://cdn-icons-png.flaticon.com/128/10989/10989830.png"
             alt="KitCard"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -374,7 +374,8 @@ const routes = [
         path: "/app/FlowCard",
         icon: (
           <img
-            src="	https://cdn-icons-png.flaticon.com/128/2752/2752867.png"
+            src="https://cdn-icons-png.flaticon.com/128/15202/15202850.png
+"
             alt="FlowCard"
             style={{ width: "34px", height: "auto" }}
             className={{ submenuIconClasses }}
@@ -573,7 +574,7 @@ const routes = [
     path: "/app/binallotmentdetails", //no url needed as this has submenu
     icon: (
       <img
-        src="/issuemanifest1.png"
+        src="https://cdn-icons-png.flaticon.com/128/8947/8947854.png"
         alt="Issuemanifest"
         style={{ width: "30px", height: "auto" }}
         className={{ submenuIconClasses }}
@@ -585,7 +586,7 @@ const routes = [
     path: "/app/adminbinretrieval", //no url needed as this has submenu
     icon: (
       <img
-        src="/issuemanifest1.png"
+        src="https://cdn-icons-png.flaticon.com/128/8552/8552084.png"
         alt="Issuemanifest"
         style={{ width: "30px", height: "auto" }}
         className={{ submenuIconClasses }}
@@ -598,7 +599,7 @@ const routes = [
     path: "", //no url needed as this has submenu
     icon: (
       <img
-        src="/inwardAdmin.png"
+        src="	https://cdn-icons-png.flaticon.com/128/11392/11392546.png"
         alt="Inward"
         style={{ width: "29px", height: "auto" }}
         className={`${iconClasses} inline`}
@@ -610,7 +611,7 @@ const routes = [
         path: "/app/inwardmanifestdetails", //no url needed as this has submenu
         icon: (
           <img
-            src="/inward1.png"
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
             alt="Inwardmanifest"
             style={{ width: "36px", height: "auto" }}
             className={{ submenuIconClasses }}
