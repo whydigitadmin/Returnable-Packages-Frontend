@@ -36,26 +36,25 @@ export const GatheringEmpty = () => {
   const [listViewButton, setListViewButton] = useState(false);
   const [savedRecordView, setSavedRecordView] = useState(false);
   const [tableData, setTableData] = useState([]);
-  const [ListViewTableData, setListViewTableData] = useState([
-    {
-      id: 1,
-      gatheredId: "1000001",
-      gatheredDate: "15-05-2024",
-      flow: "PUN-CH",
-      recQty: "8",
-      balQty: "42",
-    },
-  ]);
+  const [expandedRows, setExpandedRows] = useState([]);
+
+  const [listViewTableData, setListViewTableData] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [userName, setUserName] = React.useState(
     localStorage.getItem("userName")
   );
+  const [receiverId, setReceiverId] = React.useState(
+    localStorage.getItem("receiverId")
+  );
 
   useEffect(() => {
     getOemStockBranchByUserId();
     getDocIdByGatheringEmpty();
-  }, []);
+    if (listViewButton) {
+      getAllGatheringByReceiverId();
+    }
+  }, [listViewButton]);
 
   const getDocIdByGatheringEmpty = async () => {
     try {
@@ -67,6 +66,19 @@ export const GatheringEmpty = () => {
         setDocId(response.data.paramObjectsMap.gatheringDocId);
       } else {
         console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAllGatheringByReceiverId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getAllGatheringEmptyByReceiverId?receiverId=${receiverId}`
+      );
+      if (response.status === 200) {
+        setListViewTableData(response.data.paramObjectsMap.gatheringEmptyVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -115,6 +127,23 @@ export const GatheringEmpty = () => {
   };
   const handleSavedRecordViewClose = (e) => {
     setSavedRecordView(false);
+  };
+
+  const handleRowClick = (rowId) => {
+    const isRowExpanded = expandedRows.includes(rowId);
+    const newExpandedRows = isRowExpanded
+      ? expandedRows.filter((id) => id !== rowId)
+      : [...expandedRows, rowId];
+    setExpandedRows(newExpandedRows);
+
+    const updatedListViewTableData = listViewTableData.map((row) => {
+      if (row.id === rowId) {
+        row.backgroundColor = isRowExpanded ? "" : "red";
+      }
+      return row;
+    });
+
+    setListViewTableData(updatedListViewTableData);
   };
 
   const handleNew = () => {
@@ -214,7 +243,6 @@ export const GatheringEmpty = () => {
             </button>
           </div>
         </div>
-        {/* </div> */}
 
         {listViewButton ? (
           <>
@@ -223,35 +251,113 @@ export const GatheringEmpty = () => {
                 <table className="table table-hover w-full">
                   <thead>
                     <tr>
-                      <th>S.No</th>
                       <th>Gathered ID</th>
                       <th>Date</th>
-                      {/* <th>Flow</th> */}
-                      <th>REC QTY</th>
-                      <th>Bal QTY</th>
+                      <th>Rec Branch</th>
+                      <th>Details</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {ListViewTableData.map((row, index) => (
-                      <tr key={row.id}>
-                        <td>{index + 1}</td>
-                        <td>
-                          <a
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              handleSavedRecordView(row.gatheredId);
-                            }}
-                            style={{ cursor: "pointer", color: "blue" }}
-                          >
-                            {row.gatheredId}
-                          </a>
-                        </td>
-                        <td>{row.gatheredDate}</td>
-                        {/* <td>{row.flow}</td> */}
-                        <td>{row.recQty}</td>
-                        <td>{row.balQty}</td>
-                      </tr>
+                    {listViewTableData.map((row, index) => (
+                      <React.Fragment key={row.id}>
+                        <tr style={{ backgroundColor: "red" }}>
+                          <td>{row.docId}</td>
+                          <td>{row.docDate}</td>
+                          <td>{row.stockBranch}</td>
+
+                          <td>
+                            <a
+                              href="#"
+                              style={{ cursor: "pointer", color: "blue" }}
+                            >
+                              <button onClick={() => handleRowClick(row.id)}>
+                                {expandedRows.includes(row.id)
+                                  ? "Hide Details"
+                                  : "Show Details"}
+                              </button>
+                            </a>
+                          </td>
+                        </tr>
+
+                        {expandedRows.includes(row.id) && (
+                          <tr>
+                            <td colSpan="10">
+                              <table className="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th
+                                      className="text-center"
+                                      style={{
+                                        backgroundColor: "green",
+                                      }}
+                                    >
+                                      Category
+                                    </th>
+                                    <th
+                                      className="text-center"
+                                      style={{ backgroundColor: "green" }}
+                                    >
+                                      Asset Name
+                                    </th>
+                                    <th
+                                      className="text-center"
+                                      style={{ backgroundColor: "green" }}
+                                    >
+                                      Asset Code
+                                    </th>
+                                    <th
+                                      className="text-center"
+                                      style={{ backgroundColor: "green" }}
+                                    >
+                                      Empty QTY
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {row.gathereingEmptyDetailsVO.map(
+                                    (detail) => (
+                                      <tr key={detail.id}>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.category}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.assetName}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.assetCode}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.emptyQty}
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
                     ))}
                   </tbody>
                 </table>

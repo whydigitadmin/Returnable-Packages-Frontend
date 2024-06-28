@@ -218,93 +218,52 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
               </div>
             </div>
 
-            <div className="row -flex mt-2 flex-row flex-wrap">
-              <table className="table">
-                <tbody>
-                  <tr>
-                    <td className="fw-bold">Transaction No:</td>
-                    <td className="px-3">24BA10056</td>
-                    <td className="fw-bold">Transaction Date:</td>
-                    <td className="px-3">2024-06-12 </td>
-                    <td className="fw-bold">Dispatch Date:</td>
-                    <td className="px-3">2024-06-12</td>
-                  </tr>
-                </tbody>
-              </table>
-              {/* </div> */}
+            <div className="flex justify-evenly">
+              <div className="font-semibold">Transaction No:</div>
+              <div>{headerData.allotno}</div>
+              <div className=" font-semibold">Transaction Date:</div>
+              <div>{headerData.allotDate}</div>
+              <div className=" font-semibold">Dispatch Date:</div>
+              <div>{headerData.binreqdate}</div>
             </div>
 
             {/* Sender and Receiver details */}
-            <div className="row mt-2">
-              <div className="col-md-6 ">
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <td style={{ textAlign: "right" }}>
-                        <strong>Sender:</strong>
-                      </td>
-                      <td style={{ textAlign: "left" }}>
-                        {/* {headerData.senderName} */}
-                        SCM AI-PACKS PVT LIMITED
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ textAlign: "right" }}>
-                        <strong>Address:</strong>
-                      </td>
-                      <td style={{ textAlign: "left" }}>
-                        #8, 03rd Main, 3rd Cross, Hoysala Nagar
-                        {/* {headerData.senderAddress}, {headerData.senderCity} */}
-                        <br />
-                        Ramamurthy Nagar, Bengaluru - 560016
-                        {/* {headerData.senderState} */}
-                        <br />
-                        Karnataka
-                        {/* {headerData.senderPinCode} */}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ textAlign: "right" }}>
-                        <strong>GST:</strong>
-                      </td>
-                      <td style={{ textAlign: "left" }}>
-                        29ABMCS1982P1ZA
-                        {/* {headerData.senderGst} */}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            <div className="row mt-4">
+              <div className="col-lg-6 col-md-6 col-sm-12">
+                <div className="d-flex justify-content-between">
+                  <div className="d-flex flex-column justify-content-between ms-3 me-4">
+                    <div className="mb-3 font-semibold">Sender:</div>
+                    <div className="mb-3 font-semibold">Address:</div>
+                    <div className="mb-3 font-semibold">GST:</div>
+                  </div>
+                  <div className="d-flex flex-column">
+                    <div className="mb-3">{headerData.senderName}</div>
+                    <div className="mb-3">
+                      {headerData.senderAddress} <br />
+                      {headerData.senderCity}
+                      <br />
+                    </div>
+                    <div className="mb-3"> {headerData.senderGst}</div>
+                  </div>
+                </div>
               </div>
-              <div className="col-md-6 ">
-                <table className="table">
-                  <tbody>
-                    <tr>
-                      <td style={{ textAlign: "right" }}>
-                        <strong>Receiver:</strong>
-                      </td>
-                      <td style={{ textAlign: "left" }}>
-                        BAXY LIMITED
-                        {/* {headerData.receiverName} */}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ textAlign: "right" }}>
-                        <strong>Address:</strong>
-                      </td>
-                      <td style={{ textAlign: "left" }}>
-                        A-88 Industrial Area, Bhiwadi, Alwar,
-                        <br />
-                        Rajasthan 301019
-                      </td>
-                    </tr>
-                    <tr>
-                      <td style={{ textAlign: "right" }}>
-                        <strong>GST:</strong>{" "}
-                      </td>
-                      <td style={{ textAlign: "left" }}>08AAGCB9029H1Z1</td>
-                    </tr>
-                  </tbody>
-                </table>
+              <div className="col-lg-6 col-md-6 col-sm-12">
+                <div className="d-flex">
+                  <div className="d-flex flex-column justify-content-between ms-3 me-4">
+                    <div className="mb-3 font-semibold">Receiver:</div>
+                    <div className="mb-3 font-semibold">Address:</div>
+                    <div className="mb-3 font-semibold">GST:</div>
+                  </div>
+                  <div className="d-flex flex-column">
+                    <div className="mb-3">{headerData.receiverName}</div>
+                    <div className="mb-3">
+                      {headerData.senderAddress} <br />
+                      {headerData.senderCity}
+                      <br />
+                    </div>
+                    <div className="mb-3"> {headerData.senderGst}</div>
+                  </div>
+                </div>
               </div>
             </div>
 

@@ -70,7 +70,7 @@ export const RetrivalManifest = () => {
   const getAllRetrievalDetailsByReceiverId = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllReterivalByReceiverId?receiverId=1000000053`
+        `${process.env.REACT_APP_API_URL}/api/oem/getAllReterivalByReceiverId?receiverId=${receiverId}`
       );
       if (response.status === 200) {
         setListViewTableData(response.data.paramObjectsMap.retreivalVO);
@@ -467,41 +467,6 @@ export const RetrivalManifest = () => {
             </>
           ) : (
             <>
-              {/* <div className="row mt-4">
-                <div className="overflow-x-auto w-full ">
-                  <table className="table table-hover w-full">
-                    <thead>
-                      <tr>
-                        
-                        <th>RM No</th>
-                        <th>Date</th>
-                        <th>Retrieval QTY</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {retrievalTableData && retrievalTableData.length > 0 ? (
-                        retrievalTableData.map((row, index) => (
-                          <tr key={row.id}>
-                            
-                            <td>{row.rmNo}</td>
-                            <td>{row.date}</td>
-                            <td>{row.rQty}</td>
-                           
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={9}>
-                            <NoRecordsFound
-                              message={"Retrieval Manifest Not Found.!"}
-                            />
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div> */}
               <div className="row mt-4">
                 <div className="overflow-x-auto w-full ">
                   <table className="table table-hover w-full">
@@ -511,10 +476,6 @@ export const RetrivalManifest = () => {
                         <th>Retrieval Date</th>
                         <th>From Branch</th>
                         <th>Retrieval Branch</th>
-                        {/* <th>Invoice Date</th>
-                        <th>Dispatch ID</th>
-                        <th>OEM Inward No</th>
-                        <th>OEM Inward Date</th> */}
                         <th>Details</th>
                       </tr>
                     </thead>
@@ -526,10 +487,6 @@ export const RetrivalManifest = () => {
                             <td>{row.docDate}</td>
                             <td>{row.fromStockBranch}</td>
                             <td>{row.toStockBranch}</td>
-                            {/* <td>{row.invoiceDate}</td>
-                            <td>{row.dispatchId}</td>
-                            <td>{row.oemInwardNo}</td>
-                            <td>{row.oemInwardDate}</td> */}
                             <td>
                               <a
                                 href="#"

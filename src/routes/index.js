@@ -579,7 +579,7 @@ const routes = [
     component: EmitterDispatch,
   },
   {
-    path: "/RetrievalManifest-Report",
+    path: "/retrievalmanifestreport",
     component: RetrievalManifestReport,
   },
   {

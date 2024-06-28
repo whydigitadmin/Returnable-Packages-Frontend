@@ -27,6 +27,8 @@ const TransporterPickup = ({}) => {
   const [transporterList, setTransporterList] = useState([]);
   const [pickupData, setPickupData] = useState([]);
   const [retrievalDetailsData, setRetrievalDetailsData] = useState([]);
+  const [listViewTableData, setListViewTableData] = useState([]);
+  const [expandedRows, setExpandedRows] = useState([]);
   const [errors, setErrors] = useState({});
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
@@ -38,7 +40,10 @@ const TransporterPickup = ({}) => {
     getDocIdByTransportPickup();
     getAllVendorByOrgId();
     getRetrievalDetails();
-  }, []);
+    if (listViewButton) {
+      getAllTransporterPickupByReceiverId();
+    }
+  }, [listViewButton]);
 
   const getDocIdByTransportPickup = async () => {
     try {
@@ -50,6 +55,19 @@ const TransporterPickup = ({}) => {
         setDocId(response.data.paramObjectsMap.transportPickupDocid);
       } else {
         console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  const getAllTransporterPickupByReceiverId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getAllTranportPickupByReceiverId?receiverId=${receiverId}`
+      );
+      if (response.status === 200) {
+        setListViewTableData(response.data.paramObjectsMap.transportPickupVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -116,6 +134,23 @@ const TransporterPickup = ({}) => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
+  };
+
+  const handleRowClick = (rowId) => {
+    const isRowExpanded = expandedRows.includes(rowId);
+    const newExpandedRows = isRowExpanded
+      ? expandedRows.filter((id) => id !== rowId)
+      : [...expandedRows, rowId];
+    setExpandedRows(newExpandedRows);
+
+    const updatedListViewTableData = listViewTableData.map((row) => {
+      if (row.id === rowId) {
+        row.backgroundColor = isRowExpanded ? "" : "red";
+      }
+      return row;
+    });
+
+    setListViewTableData(updatedListViewTableData);
   };
 
   const handleNew = () => {
@@ -283,7 +318,7 @@ const TransporterPickup = ({}) => {
 
         {listViewButton && (
           <>
-            <div className="row mt-4">
+            {/* <div className="row mt-4">
               <div className="overflow-x-auto w-full ">
                 <table className="table table-hover w-full">
                   <thead>
@@ -310,6 +345,130 @@ const TransporterPickup = ({}) => {
                         <td className="text-center">{row.phNo}</td>
                         <td className="text-center">{row.vehicle}</td>
                       </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div> */}
+            <div className="row mt-4">
+              <div className="overflow-x-auto w-full ">
+                <table className="table table-hover w-full">
+                  <thead>
+                    <tr>
+                      <th className="text-center">Pickup ID</th>
+                      <th className="text-center">Date & Time</th>
+                      <th className="text-center">Handover To</th>
+                      <th className="text-center">Handover By</th>
+                      <th className="text-center">Driver</th>
+                      <th className="text-center">Ph No</th>
+                      <th className="text-center">Vehicle</th>
+                      <th className="text-center">Details</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {listViewTableData.map((row, index) => (
+                      <React.Fragment key={row.id}>
+                        <tr style={{ backgroundColor: "red" }}>
+                          <td>{row.docId}</td>
+                          <td>{row.docDate}</td>
+                          <td>{row.transPorter}</td>
+                          <td>{row.handoverby}</td>
+                          <td>{row.driverName}</td>
+                          <td>{row.driverPhoneNo}</td>
+                          <td>{row.vechicleNo}</td>
+                          <td>
+                            <a
+                              href="#"
+                              style={{ cursor: "pointer", color: "blue" }}
+                            >
+                              <button onClick={() => handleRowClick(row.id)}>
+                                {expandedRows.includes(row.id)
+                                  ? "Hide Details"
+                                  : "Show Details"}
+                              </button>
+                            </a>
+                          </td>
+                        </tr>
+
+                        {expandedRows.includes(row.id) && (
+                          <tr>
+                            <td colSpan="10">
+                              <table className="table table-bordered">
+                                <thead>
+                                  <tr>
+                                    <th
+                                      className="text-center"
+                                      style={{
+                                        backgroundColor: "green",
+                                      }}
+                                    >
+                                      Category
+                                    </th>
+                                    <th
+                                      className="text-center"
+                                      style={{ backgroundColor: "green" }}
+                                    >
+                                      Asset Name
+                                    </th>
+                                    <th
+                                      className="text-center"
+                                      style={{ backgroundColor: "green" }}
+                                    >
+                                      Asset Code
+                                    </th>
+                                    <th
+                                      className="text-center"
+                                      style={{ backgroundColor: "green" }}
+                                    >
+                                      Pick QTY
+                                    </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {row.transportPickupDetailsVO.map(
+                                    (detail) => (
+                                      <tr key={detail.id}>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.category}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.asset}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.assetCode}
+                                        </td>
+                                        <td
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "yellow",
+                                          }}
+                                        >
+                                          {detail.pickQty}
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                                </tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
                     ))}
                   </tbody>
                 </table>
