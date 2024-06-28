@@ -3,7 +3,6 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
-import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
@@ -208,7 +207,6 @@ const TransporterPickup = ({}) => {
           requestData
         )
         .then((response) => {
-          console.log("requestData", requestData);
           setDriver("");
           setDriverPhoneNo("");
           setTransPortDocNo("");
@@ -318,158 +316,136 @@ const TransporterPickup = ({}) => {
 
         {listViewButton && (
           <>
-            {/* <div className="row mt-4">
-              <div className="overflow-x-auto w-full ">
-                <table className="table table-hover w-full">
-                  <thead>
-                    <tr>
-                      <th className="text-center">S.No</th>
-                      <th className="text-center">Pickup ID</th>
-                      <th className="text-center">Date & Time</th>
-                      <th className="text-center">Handover To</th>
-                      <th className="text-center">Handover By</th>
-                      <th className="text-center">Driver</th>
-                      <th className="text-center">Ph No</th>
-                      <th className="text-center">Vehicle</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {retrievalDetailsData.map((row, index) => (
-                      <tr key={row.id}>
-                        <td className="text-center">{index + 1}</td>
-                        <td className="text-center">{row.pickId}</td>
-                        <td className="text-center">{row.date}</td>
-                        <td className="text-center">{row.handTo}</td>
-                        <td className="text-center">{row.handBy}</td>
-                        <td className="text-center">{row.driver}</td>
-                        <td className="text-center">{row.phNo}</td>
-                        <td className="text-center">{row.vehicle}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div> */}
             <div className="row mt-4">
               <div className="overflow-x-auto w-full ">
                 <table className="table table-hover w-full">
                   <thead>
                     <tr>
-                      <th className="text-center">Pickup ID</th>
-                      <th className="text-center">Date & Time</th>
-                      <th className="text-center">Handover To</th>
-                      <th className="text-center">Handover By</th>
-                      <th className="text-center">Driver</th>
-                      <th className="text-center">Ph No</th>
-                      <th className="text-center">Vehicle</th>
-                      <th className="text-center">Details</th>
+                      <th>Pickup ID</th>
+                      <th>Date & Time</th>
+                      <th>Handover To</th>
+                      <th>Handover By</th>
+                      <th>Driver</th>
+                      <th>Ph No</th>
+                      <th>Vehicle</th>
+                      <th>Details</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {listViewTableData.map((row, index) => (
-                      <React.Fragment key={row.id}>
-                        <tr style={{ backgroundColor: "red" }}>
-                          <td>{row.docId}</td>
-                          <td>{row.docDate}</td>
-                          <td>{row.transPorter}</td>
-                          <td>{row.handoverby}</td>
-                          <td>{row.driverName}</td>
-                          <td>{row.driverPhoneNo}</td>
-                          <td>{row.vechicleNo}</td>
-                          <td>
-                            <a
-                              href="#"
-                              style={{ cursor: "pointer", color: "blue" }}
-                            >
-                              <button onClick={() => handleRowClick(row.id)}>
-                                {expandedRows.includes(row.id)
-                                  ? "Hide Details"
-                                  : "Show Details"}
-                              </button>
-                            </a>
-                          </td>
-                        </tr>
-
-                        {expandedRows.includes(row.id) && (
-                          <tr>
-                            <td colSpan="10">
-                              <table className="table table-bordered">
-                                <thead>
-                                  <tr>
-                                    <th
-                                      className="text-center"
-                                      style={{
-                                        backgroundColor: "green",
-                                      }}
-                                    >
-                                      Category
-                                    </th>
-                                    <th
-                                      className="text-center"
-                                      style={{ backgroundColor: "green" }}
-                                    >
-                                      Asset Name
-                                    </th>
-                                    <th
-                                      className="text-center"
-                                      style={{ backgroundColor: "green" }}
-                                    >
-                                      Asset Code
-                                    </th>
-                                    <th
-                                      className="text-center"
-                                      style={{ backgroundColor: "green" }}
-                                    >
-                                      Pick QTY
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {row.transportPickupDetailsVO.map(
-                                    (detail) => (
-                                      <tr key={detail.id}>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.category}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.asset}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.assetCode}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.pickQty}
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
-                                </tbody>
-                              </table>
+                    {listViewTableData && listViewTableData.length > 0 ? (
+                      listViewTableData.map((row, index) => (
+                        <React.Fragment key={row.id}>
+                          <tr style={{ backgroundColor: "red" }}>
+                            <td>{row.docId}</td>
+                            <td>{row.docDate}</td>
+                            <td>{row.transPorter}</td>
+                            <td>{row.handoverby}</td>
+                            <td>{row.driverName}</td>
+                            <td>{row.driverPhoneNo}</td>
+                            <td>{row.vechicleNo}</td>
+                            <td>
+                              <a
+                                href="#"
+                                style={{ cursor: "pointer", color: "blue" }}
+                              >
+                                <button onClick={() => handleRowClick(row.id)}>
+                                  {expandedRows.includes(row.id)
+                                    ? "Hide"
+                                    : "Show"}
+                                </button>
+                              </a>
                             </td>
                           </tr>
-                        )}
-                      </React.Fragment>
-                    ))}
+
+                          {expandedRows.includes(row.id) && (
+                            <tr>
+                              <td colSpan="10">
+                                <table className="table table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th
+                                        className="text-center"
+                                        style={{
+                                          backgroundColor: "green",
+                                        }}
+                                      >
+                                        Category
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Asset Name
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Asset Code
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Pick QTY
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {row.transportPickupDetailsVO.map(
+                                      (detail) => (
+                                        <tr key={detail.id}>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.category}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.asset}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.assetCode}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.pickQty}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={9}>
+                          <NoRecordsFound
+                            message={"Transporter Pickup Details Not Found..!"}
+                          />
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>

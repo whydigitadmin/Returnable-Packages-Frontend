@@ -21,27 +21,18 @@ export const RetrivalManifest = () => {
     localStorage.getItem("receiverId")
   );
   const [stockBranch, setStockBranch] = useState("");
-  const [selectedStockBranch, setSelectedStockBranch] = useState("");
   const [stockBranchList, setStockBranchList] = useState([]);
   const [toStockBranch, setToStockBranch] = React.useState("");
   const [warehouseLocationVO, setWarehouseLocationVO] = useState([]);
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [errors, setErrors] = useState({});
   const [tableData, setTableData] = useState([]);
-  const [retrievalTableData, setRetrievalTableData] = useState([
-    {
-      rmNo: "1000001",
-      date: "15-06-2024",
-      rQty: "10",
-    },
-  ]);
   const [tableView, setTableView] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [selectedRowData, setSelectedRowData] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
   const [listViewButton, setListViewButton] = useState(false);
   const [listViewTableData, setListViewTableData] = useState([]);
-  const [viewId, setViewId] = useState("");
   const [expandedRows, setExpandedRows] = useState([]);
 
   useEffect(() => {
@@ -159,15 +150,7 @@ export const RetrivalManifest = () => {
   };
 
   const handleListViewButtonChange = () => {
-    // getAllDispatchDetail();
     setListViewButton(!listViewButton);
-    setViewId("");
-    // setTableData("");
-  };
-
-  const handleSavedRecordView = (rowId) => {
-    setViewId(rowId);
-    setListViewButton(false);
   };
 
   const getOemStockBranchByUserId = async () => {
@@ -194,10 +177,9 @@ export const RetrivalManifest = () => {
       (branch) => branch.stockBranch === selectedStockBranch
     );
     if (selectedBranch) {
-      setSelectedStockBranch(selectedBranch.stockBranch);
       getOemOutwardDetailsForRetreival(selectedBranch.stockBranch);
     } else {
-      setSelectedStockBranch("");
+      // setSelectedStockBranch("");
     }
   };
 
@@ -232,7 +214,6 @@ export const RetrivalManifest = () => {
       createdby: userName,
       orgId: orgId,
     };
-    console.log("createRetreival", requestData);
     if (Object.keys(errors).length === 0) {
       axios
         .post(
@@ -480,91 +461,105 @@ export const RetrivalManifest = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData.map((row, index) => (
-                        <React.Fragment key={row.id}>
-                          <tr style={{ backgroundColor: "red" }}>
-                            <td>{row.docId}</td>
-                            <td>{row.docDate}</td>
-                            <td>{row.fromStockBranch}</td>
-                            <td>{row.toStockBranch}</td>
-                            <td>
-                              <a
-                                href="#"
-                                style={{ cursor: "pointer", color: "blue" }}
-                              >
-                                <button onClick={() => handleRowClick(row.id)}>
-                                  {expandedRows.includes(row.id)
-                                    ? "Hide Details"
-                                    : "Show Details"}
-                                </button>
-                              </a>
-                            </td>
-                          </tr>
-
-                          {expandedRows.includes(row.id) && (
-                            <tr>
-                              <td colSpan="10">
-                                <table className="table table-bordered">
-                                  <thead>
-                                    <tr>
-                                      <th
-                                        className="text-center"
-                                        style={{
-                                          backgroundColor: "green",
-                                        }}
-                                      >
-                                        Bin Out DocId
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Bin OutDoc Date
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Outward Stock Branch
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {row.retreivalDetailsVO.map((detail) => (
-                                      <tr key={detail.id}>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.outwardDocId}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.outwardDocDate}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.outwardStockBranch}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                      {listViewTableData && listViewTableData.length > 0 ? (
+                        listViewTableData.map((row, index) => (
+                          <React.Fragment key={row.id}>
+                            <tr style={{ backgroundColor: "red" }}>
+                              <td>{row.docId}</td>
+                              <td>{row.docDate}</td>
+                              <td>{row.fromStockBranch}</td>
+                              <td>{row.toStockBranch}</td>
+                              <td>
+                                <a
+                                  href="#"
+                                  style={{ cursor: "pointer", color: "blue" }}
+                                >
+                                  <button
+                                    onClick={() => handleRowClick(row.id)}
+                                  >
+                                    {expandedRows.includes(row.id)
+                                      ? "Hide"
+                                      : "Show"}
+                                  </button>
+                                </a>
                               </td>
                             </tr>
-                          )}
-                        </React.Fragment>
-                      ))}
+
+                            {expandedRows.includes(row.id) && (
+                              <tr>
+                                <td colSpan="10">
+                                  <table className="table table-bordered">
+                                    <thead>
+                                      <tr>
+                                        <th
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "green",
+                                          }}
+                                        >
+                                          Bin Out DocId
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Bin OutDoc Date
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Outward Stock Branch
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {row.retreivalDetailsVO.map((detail) => (
+                                        <tr key={detail.id}>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.outwardDocId}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.outwardDocDate}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.outwardStockBranch}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9}>
+                            <NoRecordsFound
+                              message={
+                                "Retrieval Manifest Details Not Found..!"
+                              }
+                            />
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>

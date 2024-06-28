@@ -34,7 +34,6 @@ export const GatheringEmpty = () => {
   const [stockBranchList, setStockBranchList] = useState([]);
   const [tableView, setTableView] = useState(false);
   const [listViewButton, setListViewButton] = useState(false);
-  const [savedRecordView, setSavedRecordView] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
 
@@ -120,13 +119,6 @@ export const GatheringEmpty = () => {
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
-
-  const handleSavedRecordView = (e) => {
-    setSavedRecordView(true);
-  };
-  const handleSavedRecordViewClose = (e) => {
-    setSavedRecordView(false);
   };
 
   const handleRowClick = (rowId) => {
@@ -258,107 +250,117 @@ export const GatheringEmpty = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {listViewTableData.map((row, index) => (
-                      <React.Fragment key={row.id}>
-                        <tr style={{ backgroundColor: "red" }}>
-                          <td>{row.docId}</td>
-                          <td>{row.docDate}</td>
-                          <td>{row.stockBranch}</td>
+                    {listViewTableData && listViewTableData.length > 0 ? (
+                      listViewTableData.map((row, index) => (
+                        <React.Fragment key={row.id}>
+                          <tr style={{ backgroundColor: "red" }}>
+                            <td>{row.docId}</td>
+                            <td>{row.docDate}</td>
+                            <td>{row.stockBranch}</td>
 
-                          <td>
-                            <a
-                              href="#"
-                              style={{ cursor: "pointer", color: "blue" }}
-                            >
-                              <button onClick={() => handleRowClick(row.id)}>
-                                {expandedRows.includes(row.id)
-                                  ? "Hide Details"
-                                  : "Show Details"}
-                              </button>
-                            </a>
-                          </td>
-                        </tr>
-
-                        {expandedRows.includes(row.id) && (
-                          <tr>
-                            <td colSpan="10">
-                              <table className="table table-bordered">
-                                <thead>
-                                  <tr>
-                                    <th
-                                      className="text-center"
-                                      style={{
-                                        backgroundColor: "green",
-                                      }}
-                                    >
-                                      Category
-                                    </th>
-                                    <th
-                                      className="text-center"
-                                      style={{ backgroundColor: "green" }}
-                                    >
-                                      Asset Name
-                                    </th>
-                                    <th
-                                      className="text-center"
-                                      style={{ backgroundColor: "green" }}
-                                    >
-                                      Asset Code
-                                    </th>
-                                    <th
-                                      className="text-center"
-                                      style={{ backgroundColor: "green" }}
-                                    >
-                                      Empty QTY
-                                    </th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {row.gathereingEmptyDetailsVO.map(
-                                    (detail) => (
-                                      <tr key={detail.id}>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.category}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.assetName}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.assetCode}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.emptyQty}
-                                        </td>
-                                      </tr>
-                                    )
-                                  )}
-                                </tbody>
-                              </table>
+                            <td>
+                              <a
+                                href="#"
+                                style={{ cursor: "pointer", color: "blue" }}
+                              >
+                                <button onClick={() => handleRowClick(row.id)}>
+                                  {expandedRows.includes(row.id)
+                                    ? "Hide"
+                                    : "Show"}
+                                </button>
+                              </a>
                             </td>
                           </tr>
-                        )}
-                      </React.Fragment>
-                    ))}
+
+                          {expandedRows.includes(row.id) && (
+                            <tr>
+                              <td colSpan="10">
+                                <table className="table table-bordered">
+                                  <thead>
+                                    <tr>
+                                      <th
+                                        className="text-center"
+                                        style={{
+                                          backgroundColor: "green",
+                                        }}
+                                      >
+                                        Category
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Asset Name
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Asset Code
+                                      </th>
+                                      <th
+                                        className="text-center"
+                                        style={{ backgroundColor: "green" }}
+                                      >
+                                        Empty QTY
+                                      </th>
+                                    </tr>
+                                  </thead>
+                                  <tbody>
+                                    {row.gathereingEmptyDetailsVO.map(
+                                      (detail) => (
+                                        <tr key={detail.id}>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.category}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.assetName}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.assetCode}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.emptyQty}
+                                          </td>
+                                        </tr>
+                                      )
+                                    )}
+                                  </tbody>
+                                </table>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan={9}>
+                          <NoRecordsFound
+                            message={"Empty Bin's Not Found..!"}
+                          />
+                        </td>
+                      </tr>
+                    )}
                   </tbody>
                 </table>
               </div>
@@ -571,57 +573,6 @@ export const GatheringEmpty = () => {
             )}
           </>
         )}
-
-        {/* VIEW MODAL */}
-        <Dialog
-          open={savedRecordView}
-          onClose={handleSavedRecordViewClose}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
-            <div className="row">
-              <div className="col-md-11">
-                <Typography variant="h6">Detailed View</Typography>
-              </div>
-              <div className="col-md-1">
-                <IconButton
-                  onClick={handleSavedRecordViewClose}
-                  aria-label="close"
-                >
-                  <CloseIcon />
-                </IconButton>
-              </div>
-            </div>
-          </DialogTitle>
-          <DialogContent className="mt-4">
-            <TableContainer component={Paper}>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Gathered ID</TableCell>
-                    <TableCell>1000001</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Gathered Date</TableCell>
-                    <TableCell>15-05-2024</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Flow</TableCell>
-                    <TableCell>PUN-CH</TableCell>
-                  </TableRow>
-                  {tableData.map((row, index) => (
-                    <TableRow>
-                      <TableCell>{row.assetType}</TableCell>
-                      <TableCell>{row.assetCode}</TableCell>
-                      <TableCell>{row.emptyQty}</TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </DialogContent>
-        </Dialog>
       </div>
       <ToastContainer />
       {/* </div> */}

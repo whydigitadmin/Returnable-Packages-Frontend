@@ -277,116 +277,142 @@ export const EmitterDispatch = () => {
                         <th>Flow</th>
                         <th>Invoice No</th>
                         <th>Invoice Date</th>
+                        <th>Grn No</th>
+                        <th>Grn Date</th>
                         <th>Details</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData.map((row, index) => (
-                        <React.Fragment key={row.id}>
-                          <tr style={{ backgroundColor: "red" }}>
-                            <td>{row.docId}</td>
-                            <td>{row.docDate}</td>
-                            <td>{row.flow}</td>
-                            <td>{row.invoiceNo}</td>
-                            <td>{row.invoiceDate}</td>
-                            <td>
-                              <a
-                                href="#"
-                                style={{ cursor: "pointer", color: "blue" }}
-                              >
-                                <button onClick={() => handleRowClick(row.id)}>
-                                  {expandedRows.includes(row.id)
-                                    ? "Hide Details"
-                                    : "Show Details"}
-                                </button>
-                              </a>
-                            </td>
-                          </tr>
-
-                          {expandedRows.includes(row.id) && (
-                            <tr>
-                              <td colSpan="6">
-                                <table className="table table-bordered">
-                                  <thead>
-                                    <tr>
-                                      <th
-                                        style={{
-                                          backgroundColor: "green",
-                                        }}
-                                      >
-                                        Bin Out Docid
-                                      </th>
-                                      <th style={{ backgroundColor: "green" }}>
-                                        Bin Out Doc Date
-                                      </th>
-                                      <th style={{ backgroundColor: "green" }}>
-                                        Part Name
-                                      </th>
-                                      <th style={{ backgroundColor: "green" }}>
-                                        Part No
-                                      </th>
-                                      <th style={{ backgroundColor: "green" }}>
-                                        Kit No
-                                      </th>
-                                      <th style={{ backgroundColor: "green" }}>
-                                        Qty
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {row.dispatchDetailsVO.map((detail) => (
-                                      <tr key={detail.id}>
-                                        <td
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.binOutDocid}
-                                        </td>
-                                        <td
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.binOutDocDate}
-                                        </td>
-                                        <td
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.partName}
-                                        </td>
-                                        <td
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.partNo}
-                                        </td>
-                                        <td
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.kitNo}
-                                        </td>
-                                        <td
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.qty}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                      {listViewTableData && listViewTableData.length > 0 ? (
+                        listViewTableData.map((row, index) => (
+                          <React.Fragment key={row.id}>
+                            <tr style={{ backgroundColor: "red" }}>
+                              <td>{row.docId}</td>
+                              <td>{row.docDate}</td>
+                              <td>{row.flow}</td>
+                              <td>{row.invoiceNo}</td>
+                              <td>{row.invoiceDate}</td>
+                              <td>{row.oemInwardNo}</td>
+                              <td>{row.oemInwardDate}</td>
+                              <td>
+                                <a
+                                  href="#"
+                                  style={{ cursor: "pointer", color: "blue" }}
+                                >
+                                  <button
+                                    onClick={() => handleRowClick(row.id)}
+                                  >
+                                    {expandedRows.includes(row.id)
+                                      ? "Hide"
+                                      : "Show"}
+                                  </button>
+                                </a>
                               </td>
                             </tr>
-                          )}
-                        </React.Fragment>
-                      ))}
+
+                            {expandedRows.includes(row.id) && (
+                              <tr>
+                                <td colSpan="9">
+                                  <table className="table table-bordered">
+                                    <thead>
+                                      <tr>
+                                        <th
+                                          style={{
+                                            backgroundColor: "green",
+                                          }}
+                                        >
+                                          Bin Out Docid
+                                        </th>
+                                        <th
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Bin Out Doc Date
+                                        </th>
+                                        <th
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Part Name
+                                        </th>
+                                        <th
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Part No
+                                        </th>
+                                        <th
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Kit No
+                                        </th>
+                                        <th
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Qty
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {row.dispatchDetailsVO.map((detail) => (
+                                        <tr key={detail.id}>
+                                          <td
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.binOutDocid}
+                                          </td>
+                                          <td
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.binOutDocDate}
+                                          </td>
+                                          <td
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.partName}
+                                          </td>
+                                          <td
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.partNo}
+                                          </td>
+                                          <td
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.kitNo}
+                                          </td>
+                                          <td
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.qty}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9}>
+                            <NoRecordsFound
+                              message={"Emitter Dispatch Details Not Found..!"}
+                            />
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -623,7 +649,9 @@ export const EmitterDispatch = () => {
                             <tr>
                               <td colSpan={9}>
                                 <NoRecordsFound
-                                  message={"Emitter Dispatch Details Not Found"}
+                                  message={
+                                    "Emitter Dispatch Details Not Found..!"
+                                  }
                                 />
                               </td>
                             </tr>

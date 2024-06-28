@@ -10,13 +10,7 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaStarOfLife } from "react-icons/fa";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
-import { error } from "daisyui/src/colors";
+import NoRecordsFound from "../../utils/NoRecordsFound";
 
 const BinInwardOem = ({}) => {
   const [docId, setDocId] = useState("");
@@ -27,7 +21,6 @@ const BinInwardOem = ({}) => {
   const [oemInwardNo, setOemInwardNo] = useState("");
   const [oemInwardDate, setOemInwardDate] = useState(null);
   const [listViewButton, setListViewButton] = useState(false);
-  const [savedRecordView, setSavedRecordView] = useState(false);
   const [allotedId, setAllotedId] = useState("");
   const [tableView, setTableView] = useState(false);
   const [expandedRows, setExpandedRows] = useState([]);
@@ -99,28 +92,11 @@ const BinInwardOem = ({}) => {
     }
   };
 
-  // const handleSavedRecordView = (e) => {
-  //   setSavedRecordView(true);
-  // };
-  // const handleSavedRecordViewClose = (e) => {
-  //   setSavedRecordView(false);
-  // };
-
   const handleFlowChange = (e) => {
     setFlow(e.target.value);
     getEmitterOutwardDetailsByFlowId(e.target.value);
   };
 
-  const handleOemDateChange = (newDate) => {
-    const originalDateString = newDate;
-    const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
-    setOemInwardDate(formattedDate);
-  };
-
-  const handleAllotedIdChange = (e) => {
-    setAllotedId(e.target.value);
-    getBininwardListByDocId(e.target.value);
-  };
   const handleInvNoChange = (e) => {
     setInvNo(e.target.value);
     const selectedInvNo = emitterOutwardList.find(
@@ -238,7 +214,6 @@ const BinInwardOem = ({}) => {
       createdBy: userName,
       receiverId: localStorage.getItem("receiverId"),
     };
-    console.log("THE DATA TO SAVE IS oemBinInward:", formData);
     const token = localStorage.getItem("token");
     let headers = {
       "Content-Type": "application/json",
@@ -270,13 +245,6 @@ const BinInwardOem = ({}) => {
               autoClose: 2000,
               theme: "colored",
             });
-            // setFlow("");
-            // setAllotedId("");
-            // setInvNo("");
-            // setInvDate("");
-            // setOemInwardDate(null);
-            // setOemInwardNo("");
-            // setTableView(false);
             setEmitterOutwardList([]);
             handleNew();
           }
@@ -333,151 +301,163 @@ const BinInwardOem = ({}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData.map((row, index) => (
-                        <React.Fragment key={row.id}>
-                          <tr style={{ backgroundColor: "red" }}>
-                            <td>{row.docId}</td>
-                            <td>{row.docDate}</td>
-                            <td>{row.flow}</td>
-                            <td>{row.invoiceNo}</td>
-                            <td>{row.invoiceDate}</td>
-                            <td>{row.dispatchId}</td>
-                            <td>{row.oemInwardNo}</td>
-                            <td>{row.oemInwardDate}</td>
-                            <td>
-                              <a
-                                href="#"
-                                style={{ cursor: "pointer", color: "blue" }}
-                              >
-                                <button onClick={() => handleRowClick(row.id)}>
-                                  {expandedRows.includes(row.id)
-                                    ? "Hide Details"
-                                    : "Show Details"}
-                                </button>
-                              </a>
-                            </td>
-                          </tr>
-
-                          {expandedRows.includes(row.id) && (
-                            <tr>
-                              <td colSpan="10">
-                                <table className="table table-bordered">
-                                  <thead>
-                                    <tr>
-                                      <th
-                                        className="text-center"
-                                        style={{
-                                          backgroundColor: "green",
-                                        }}
-                                      >
-                                        Bin Out Docid
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Bin Out Doc Date
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Part Name
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Part No
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Kit No
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Alloted Kit QTY
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Received Kit QTY
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {row.oemBinInwardDetails.map((detail) => (
-                                      <tr key={detail.id}>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.outwardDocId}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.outwardDocDate}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.partName}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.partNo}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.kitNo}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.allotedQty}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.receivedKitQty}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                      {listViewTableData && listViewTableData.length > 0 ? (
+                        listViewTableData.map((row, index) => (
+                          <React.Fragment key={row.id}>
+                            <tr style={{ backgroundColor: "red" }}>
+                              <td>{row.docId}</td>
+                              <td>{row.docDate}</td>
+                              <td>{row.flow}</td>
+                              <td>{row.invoiceNo}</td>
+                              <td>{row.invoiceDate}</td>
+                              <td>{row.dispatchId}</td>
+                              <td>{row.oemInwardNo}</td>
+                              <td>{row.oemInwardDate}</td>
+                              <td>
+                                <a
+                                  href="#"
+                                  style={{ cursor: "pointer", color: "blue" }}
+                                >
+                                  <button
+                                    onClick={() => handleRowClick(row.id)}
+                                  >
+                                    {expandedRows.includes(row.id)
+                                      ? "Hide"
+                                      : "Show"}
+                                  </button>
+                                </a>
                               </td>
                             </tr>
-                          )}
-                        </React.Fragment>
-                      ))}
+
+                            {expandedRows.includes(row.id) && (
+                              <tr>
+                                <td colSpan="10">
+                                  <table className="table table-bordered">
+                                    <thead>
+                                      <tr>
+                                        <th
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "green",
+                                          }}
+                                        >
+                                          Bin Out Docid
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Bin Out Doc Date
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Part Name
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Part No
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Kit No
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Alloted Kit QTY
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Received Kit QTY
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {row.oemBinInwardDetails.map((detail) => (
+                                        <tr key={detail.id}>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.outwardDocId}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.outwardDocDate}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.partName}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.partNo}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.kitNo}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.allotedQty}
+                                          </td>
+                                          <td
+                                            className="text-center"
+                                            style={{
+                                              backgroundColor: "yellow",
+                                            }}
+                                          >
+                                            {detail.receivedKitQty}
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9}>
+                            <NoRecordsFound
+                              message={"Bin Inward Details Not Found..!"}
+                            />
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -733,55 +713,6 @@ const BinInwardOem = ({}) => {
           )}
         </div>
         <ToastContainer />
-        {/* VIEW MODAL */}
-        {/* <Dialog
-          open={savedRecordView}
-          onClose={handleSavedRecordViewClose}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
-            <div className="row">
-              <div className="col-md-11">
-                <Typography variant="h6">Detailed View</Typography>
-              </div>
-              <div className="col-md-1">
-                <IconButton
-                  onClick={handleSavedRecordViewClose}
-                  aria-label="close"
-                >
-                  <CloseIcon />
-                </IconButton>
-              </div>
-            </div>
-          </DialogTitle>
-          <DialogContent className="mt-3">
-            <div className="row">
-              <div className="overflow-x-auto w-full ">
-                <table className="table table-hover w-full">
-                  <thead>
-                    <tr>
-                      <th>Inward ID</th>
-                      <th>Date</th>
-                      <th>Kit No</th>
-                      <th>Rec Kit QTY</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {listViewTableData.map((row, index) => (
-                      <tr key={row.id}>
-                        <td> {row.docId}</td>
-                        <td>{row.docDate}</td>
-                        <td>{row.kitNo}</td>
-                        <td>{row.recievedKitQty}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </DialogContent>
-        </Dialog> */}
       </div>
     </>
   );

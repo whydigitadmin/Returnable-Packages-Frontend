@@ -10,22 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import DialogTitle from "@mui/material/DialogTitle";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import CloseIcon from "@mui/icons-material/Close";
-import {
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
-} from "@mui/material";
 import NoRecordsFound from "../../utils/NoRecordsFound";
-import WtTooltip from "../user/components/WtTooltip";
 
 function BinOutwardOem({}) {
   const [docId, setDocId] = useState("");
@@ -33,7 +18,6 @@ function BinOutwardOem({}) {
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [errors, setErrors] = useState({});
   const [listViewButton, setListViewButton] = useState(false);
-  const [savedRecordView, setSavedRecordView] = useState(false);
   const [tableView, setTableView] = useState(false);
   const [userId, setUserId] = useState(localStorage.getItem("userId"));
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
@@ -42,13 +26,11 @@ function BinOutwardOem({}) {
   const [stockBranchList, setStockBranchList] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
-
   const [listViewTableData, setListViewTableData] = useState([]);
 
   useEffect(() => {
     getOemStockBranchByUserId();
     getOutwardDocId();
-    // getFlowByUserId();
     if (listViewButton) {
       getAllOutwardedDetailsByOrgId();
     }
@@ -121,7 +103,6 @@ function BinOutwardOem({}) {
         )
         .then((response) => {
           if (response.data.status === "Error") {
-            console.error("Error creating kit:", response.data.paramObjectsMap);
             toast.error(response.data.paramObjectsMap.errorMessage, {
               autoClose: 2000,
               theme: "colored",
@@ -137,13 +118,6 @@ function BinOutwardOem({}) {
     } else {
       setErrors(errors);
     }
-  };
-
-  const handleSavedRecordView = (e) => {
-    setSavedRecordView(true);
-  };
-  const handleSavedRecordViewClose = (e) => {
-    setSavedRecordView(false);
   };
 
   const handleRowClick = (rowId) => {
@@ -185,7 +159,6 @@ function BinOutwardOem({}) {
     const findEmptyOutQty = tableData.filter(
       (row) => row.outQty !== undefined && row.outQty !== ""
     );
-    console.log("THE FIND EMPTY QTY IS:", findEmptyOutQty);
 
     if (findEmptyOutQty.length === 0) {
       errors.outQty = "Atleast 1 Out Qty should be enter";
@@ -210,14 +183,12 @@ function BinOutwardOem({}) {
     };
 
     if (Object.keys(errors).length === 0) {
-      console.log("THE DATA TO SAVE IS:", formData);
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/oem/oemBinOutward`,
           formData
         )
         .then((response) => {
-          console.log("Response:", response.data);
           toast.success("Bin Outward saved successfully!");
           setDocDate(dayjs());
           setStockBranch("");
@@ -260,45 +231,6 @@ function BinOutwardOem({}) {
           </div>
           {listViewButton ? (
             <>
-              {/* LISTVIEW TABLE */}
-              {/* <div className="row mt-4">
-                <div className="overflow-x-auto w-full ">
-                  <table className="table table-hover w-full">
-                    <thead>
-                      <tr>
-                        <th>Outward ID</th>
-                        <th>Date</th>
-                        <th>Flow</th>
-                        <th>Out Qty</th>
-                        <th>Bal Qty</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {listViewTableData.map((row, index) => (
-                        <tr key={row.id}>
-                    
-                          <td>
-                            <a
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleSavedRecordView(row.gatheredId);
-                              }}
-                              style={{ cursor: "pointer", color: "blue" }}
-                            >
-                              {row.outwardId}
-                            </a>
-                          </td>
-                          <td>{row.date}</td>
-                          <td>{row.flow}</td>
-                          <td>{row.outQty}</td>
-                          <td>{row.balQty}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div> */}
               <div className="row mt-4">
                 <div className="overflow-x-auto w-full ">
                   <table className="table table-hover w-full">
@@ -307,118 +239,122 @@ function BinOutwardOem({}) {
                         <th>Outward ID</th>
                         <th>Outward Date</th>
                         <th>Stock Branch</th>
-                        {/* <th>Invoice No</th>
-                        <th>Invoice Date</th>
-                        <th>Dispatch ID</th>
-                        <th>OEM Inward No</th>
-                        <th>OEM Inward Date</th> */}
                         <th>Details</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData.map((row, index) => (
-                        <React.Fragment key={row.id}>
-                          <tr style={{ backgroundColor: "red" }}>
-                            <td>{row.docId}</td>
-                            <td>{row.docDate}</td>
-                            <td>{row.stockBranch}</td>
-                            {/* <td>{row.invoiceNo}</td>
-                            <td>{row.invoiceDate}</td>
-                            <td>{row.dispatchId}</td>
-                            <td>{row.oemInwardNo}</td>
-                            <td>{row.oemInwardDate}</td> */}
-                            <td>
-                              <a
-                                href="#"
-                                style={{ cursor: "pointer", color: "blue" }}
-                              >
-                                <button onClick={() => handleRowClick(row.id)}>
-                                  {expandedRows.includes(row.id)
-                                    ? "Hide Details"
-                                    : "Show Details"}
-                                </button>
-                              </a>
-                            </td>
-                          </tr>
-
-                          {expandedRows.includes(row.id) && (
-                            <tr>
-                              <td colSpan="10">
-                                <table className="table table-bordered">
-                                  <thead>
-                                    <tr>
-                                      <th
-                                        className="text-center"
-                                        style={{
-                                          backgroundColor: "green",
-                                        }}
-                                      >
-                                        Category
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Asset Code
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Asset
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        OutWard QTY
-                                      </th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {row.oemBinOutwardDetails.map((detail) => (
-                                      <tr key={detail.id}>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.category}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.assetCode}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.asset}
-                                        </td>
-                                        <td
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "yellow",
-                                          }}
-                                        >
-                                          {detail.outQty}
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                      {listViewTableData && listViewTableData.length > 0 ? (
+                        listViewTableData.map((row, index) => (
+                          <React.Fragment key={row.id}>
+                            <tr style={{ backgroundColor: "red" }}>
+                              <td>{row.docId}</td>
+                              <td>{row.docDate}</td>
+                              <td>{row.stockBranch}</td>
+                              <td>
+                                <a
+                                  href="#"
+                                  style={{ cursor: "pointer", color: "blue" }}
+                                >
+                                  <button
+                                    onClick={() => handleRowClick(row.id)}
+                                  >
+                                    {expandedRows.includes(row.id)
+                                      ? "Hide"
+                                      : "Show"}
+                                  </button>
+                                </a>
                               </td>
                             </tr>
-                          )}
-                        </React.Fragment>
-                      ))}
+
+                            {expandedRows.includes(row.id) && (
+                              <tr>
+                                <td colSpan="10">
+                                  <table className="table table-bordered">
+                                    <thead>
+                                      <tr>
+                                        <th
+                                          className="text-center"
+                                          style={{
+                                            backgroundColor: "green",
+                                          }}
+                                        >
+                                          Category
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Asset Code
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          Asset
+                                        </th>
+                                        <th
+                                          className="text-center"
+                                          style={{ backgroundColor: "green" }}
+                                        >
+                                          OutWard QTY
+                                        </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {row.oemBinOutwardDetails.map(
+                                        (detail) => (
+                                          <tr key={detail.id}>
+                                            <td
+                                              className="text-center"
+                                              style={{
+                                                backgroundColor: "yellow",
+                                              }}
+                                            >
+                                              {detail.category}
+                                            </td>
+                                            <td
+                                              className="text-center"
+                                              style={{
+                                                backgroundColor: "yellow",
+                                              }}
+                                            >
+                                              {detail.assetCode}
+                                            </td>
+                                            <td
+                                              className="text-center"
+                                              style={{
+                                                backgroundColor: "yellow",
+                                              }}
+                                            >
+                                              {detail.asset}
+                                            </td>
+                                            <td
+                                              className="text-center"
+                                              style={{
+                                                backgroundColor: "yellow",
+                                              }}
+                                            >
+                                              {detail.outQty}
+                                            </td>
+                                          </tr>
+                                        )
+                                      )}
+                                    </tbody>
+                                  </table>
+                                </td>
+                              </tr>
+                            )}
+                          </React.Fragment>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={9}>
+                            <NoRecordsFound
+                              message={"Bin Outward Details Not Found..!"}
+                            />
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
@@ -647,56 +583,6 @@ function BinOutwardOem({}) {
           )}
         </div>
         <ToastContainer />
-        {/* VIEW MODAL */}
-        <Dialog
-          open={savedRecordView}
-          onClose={handleSavedRecordViewClose}
-          maxWidth="sm"
-          fullWidth
-        >
-          <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
-            <div className="row">
-              <div className="col-md-11">
-                <Typography variant="h6">Detailed View</Typography>
-              </div>
-              <div className="col-md-1">
-                <IconButton
-                  onClick={handleSavedRecordViewClose}
-                  aria-label="close"
-                >
-                  <CloseIcon />
-                </IconButton>
-              </div>
-            </div>
-          </DialogTitle>
-          <DialogContent className="mt-3">
-            <TableContainer component={Paper}>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Outward ID</TableCell>
-                    <TableCell>1000001</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Date</TableCell>
-                    <TableCell>15-05-2024</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Flow</TableCell>
-                    <TableCell>PUN-CH</TableCell>
-                  </TableRow>
-
-                  {/* {listViewTableData.map((row, index) => (
-                    <TableRow>
-                      <TableCell>{row.assetCode}</TableCell>
-                      <TableCell>{row.outQty}</TableCell>
-                    </TableRow>
-                  ))} */}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </DialogContent>
-        </Dialog>
       </div>
     </>
   );
