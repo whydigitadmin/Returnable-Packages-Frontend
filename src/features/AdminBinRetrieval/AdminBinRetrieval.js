@@ -98,7 +98,10 @@ export const AdminBinRetrieval = () => {
     if (editId) {
       getNewDocId();
     }
-  }, [editId]);
+    if (tableData.damageQty) {
+      console.log("THE SHORTAGE QTY IS:", tableData.damageQty);
+    }
+  }, [editId, tableData.damageQty, tableData.shortQty]);
   useEffect(() => {
     console.log("Pending Data:", pendingData);
   }, [pendingData]);
@@ -420,6 +423,111 @@ export const AdminBinRetrieval = () => {
     setViewId("");
   };
 
+  const handleRetrievalQtyChange = (e, row, index) => {
+    console.log("THE TYPED ROW IS:", row);
+
+    const inputValue = e.target.value.replace(/[^0-9]/g, "");
+    const newValue = parseInt(inputValue, 10);
+
+    if (!isNaN(newValue)) {
+      if (newValue <= row.invQty && newValue > 0) {
+        setTableData((prev) =>
+          prev.map((r, i) =>
+            i === index
+              ? {
+                  ...r,
+                  reteriveQty: newValue,
+                  errorMsg: "",
+                  // tempCalc: row.invQty - newValue,
+                  shortQty: row.invQty - newValue,
+                }
+              : r
+          )
+        );
+      } else {
+        setTableData((prev) =>
+          prev.map((r, i) =>
+            i === index
+              ? {
+                  ...r,
+                  reteriveQty: "",
+                  errorMsg:
+                    row.invQty === 1
+                      ? `Quantity must be ${row.invQty}`
+                      : `Quantity must be between 1 and ${row.invQty}.`,
+                }
+              : r
+          )
+        );
+      }
+    } else {
+      setTableData((prev) =>
+        prev.map((r, i) =>
+          i === index
+            ? {
+                ...r,
+                reteriveQty: "",
+                errorMsg: "",
+              }
+            : r
+        )
+      );
+    }
+    console.log("AFTER TYPED THE RET QTY THEN ROW IS:", row);
+  };
+
+  const handleDamageQtyChange = (e, row, index) => {
+    const inputValue = e.target.value.replace(/[^0-9]/g, "");
+    const newValue = parseInt(inputValue, 10);
+
+    if (!isNaN(newValue)) {
+      if (newValue <= row.reteriveQty && newValue > 0) {
+        setTableData(
+          (prev) =>
+            prev.map((r, i) =>
+              i === index
+                ? {
+                    ...r,
+                    damageQty: newValue,
+                    // shotQty: row.reteriveQty - newValue,
+                    damageErrorMsg: "",
+                  }
+                : r
+            ),
+          console.log("karupu", row.shortQty)
+        );
+      } else {
+        setTableData((prev) =>
+          prev.map((r, i) =>
+            i === index
+              ? {
+                  ...r,
+                  damageQty: "",
+                  damageErrorMsg:
+                    row.reteriveQty === 1
+                      ? `Quantity must be ${row.reteriveQty}`
+                      : `Quantity must be between 1 and ${row.reteriveQty}.`,
+                }
+              : r
+          )
+        );
+      }
+    } else {
+      setTableData((prev) =>
+        prev.map((r, i) =>
+          i === index
+            ? {
+                ...r,
+                damageQty: "",
+                damageErrorMsg: "",
+              }
+            : r
+        )
+      );
+    }
+    console.log("AFTER TYPED DAMAGE QTY THEN ROW IS:", row);
+  };
+
   const handleSave = () => {
     const errors = {};
     if (!docId) {
@@ -432,7 +540,7 @@ export const AdminBinRetrieval = () => {
       assetCode: row.assetCode,
       invqty: row.invQty,
       recqty: row.reteriveQty,
-      shotQty: row.shortQty,
+      shortQty: row.shortQty,
     }));
 
     const formData = {
@@ -818,7 +926,7 @@ export const AdminBinRetrieval = () => {
                           className="px-2 text-black border text-center"
                           style={{ paddingTop: "1%", paddingBottom: "1%" }}
                         >
-                          Inv Quantity
+                          Inv Qty
                         </th>
                         <th
                           className="px-2 text-black border text-center"
@@ -830,7 +938,13 @@ export const AdminBinRetrieval = () => {
                           className="px-2 text-black border text-center"
                           style={{ paddingTop: "1%", paddingBottom: "1%" }}
                         >
-                          Short / Damage Qty
+                          Damage Qty
+                        </th>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                        >
+                          short Qty
                         </th>
                       </tr>
                     </thead>
@@ -850,64 +964,14 @@ export const AdminBinRetrieval = () => {
                             <td className="border px-2 py-2 text-center">
                               {row.invQty}
                             </td>
+
                             <td>
                               <input
                                 type="text"
                                 value={row.reteriveQty}
-                                onChange={(e) => {
-                                  const inputValue = e.target.value.replace(
-                                    /[^0-9]/g,
-                                    ""
-                                  );
-                                  const newValue = parseInt(inputValue, 10);
-
-                                  if (!isNaN(newValue)) {
-                                    if (
-                                      newValue <= row.invQty &&
-                                      newValue > 0
-                                    ) {
-                                      setTableData((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? {
-                                                ...r,
-                                                reteriveQty: newValue,
-                                                errorMsg: "",
-                                                tempCalc: row.invQty - newValue,
-                                              }
-                                            : r
-                                        )
-                                      );
-                                    } else {
-                                      setTableData((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? {
-                                                ...r,
-                                                reteriveQty: "",
-                                                errorMsg:
-                                                  row.invQty === 1
-                                                    ? `Quantity must be ${row.invQty}`
-                                                    : `Quantity must be between 1 and ${row.invQty}.`,
-                                              }
-                                            : r
-                                        )
-                                      );
-                                    }
-                                  } else {
-                                    setTableData((prev) =>
-                                      prev.map((r, i) =>
-                                        i === index
-                                          ? {
-                                              ...r,
-                                              reteriveQty: "",
-                                              errorMsg: "",
-                                            }
-                                          : r
-                                      )
-                                    );
-                                  }
-                                }}
+                                onChange={(e) =>
+                                  handleRetrievalQtyChange(e, row, index)
+                                }
                                 className="border px-2 py-2 text-center"
                                 style={{ width: "50px" }}
                               />
@@ -918,64 +982,15 @@ export const AdminBinRetrieval = () => {
                               )}
                             </td>
 
-                            <td className="d-flex flex-row">
+                            {/* <td className="d-flex flex-row"> */}
+                            <td>
                               <input
                                 type="text"
                                 value={row.damageQty}
-                                disabled={row.tempCalc > 0 ? false : true}
-                                onChange={(e) => {
-                                  const inputValue = e.target.value.replace(
-                                    /[^0-9]/g,
-                                    ""
-                                  );
-                                  const newValue = parseInt(inputValue, 10);
-
-                                  if (!isNaN(newValue)) {
-                                    if (
-                                      newValue <= row.tempCalc &&
-                                      newValue > 0
-                                    ) {
-                                      setTableData((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? {
-                                                ...r,
-                                                damageQty: newValue,
-                                                damageErrorMsg: "",
-                                              }
-                                            : r
-                                        )
-                                      );
-                                    } else {
-                                      setTableData((prev) =>
-                                        prev.map((r, i) =>
-                                          i === index
-                                            ? {
-                                                ...r,
-                                                damageQty: "",
-                                                damageErrorMsg:
-                                                  row.tempCalc === 1
-                                                    ? `Quantity must be ${row.tempCalc}`
-                                                    : `Quantity must be between 1 and ${row.tempCalc}.`,
-                                              }
-                                            : r
-                                        )
-                                      );
-                                    }
-                                  } else {
-                                    setTableData((prev) =>
-                                      prev.map((r, i) =>
-                                        i === index
-                                          ? {
-                                              ...r,
-                                              damageQty: "",
-                                              damageErrorMsg: "",
-                                            }
-                                          : r
-                                      )
-                                    );
-                                  }
-                                }}
+                                // disabled={row.tempCalc > 0 ? false : true}
+                                onChange={(e) =>
+                                  handleDamageQtyChange(e, row, index)
+                                }
                                 className="border px-2 py-2 text-center"
                                 style={{ width: "50px" }}
                               />
@@ -984,6 +999,15 @@ export const AdminBinRetrieval = () => {
                                   {row.damageErrorMsg}
                                 </span>
                               )}
+                            </td>
+                            <td className="">
+                              <input
+                                type="text"
+                                value={row.shortQty}
+                                disabled
+                                className="border px-2 py-2 text-center"
+                                style={{ width: "50px" }}
+                              />
                             </td>
                           </tr>
                         ))
