@@ -131,14 +131,14 @@ export const BinAllotmentDetails = () => {
             description: "",
           },
           {
-            title: "Pending Requests",
-            value: allRequests.length,
+            title: "Completed Requests",
+            value: totAllotedReq,
             icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
           {
-            title: "Completed Requests",
-            value: totAllotedReq,
+            title: "Pending Requests",
+            value: allRequests.length,
             icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
             description: "",
           },

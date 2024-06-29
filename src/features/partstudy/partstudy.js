@@ -67,14 +67,14 @@ function Partstudy() {
 
     {
       // title: "Cycle Time",
-      title: "Completed",
+      title: "InComplete",
       value: "0",
       icon: <LuTimerReset className="w-5 h-5 text-white dashicon-sm" />,
       description: "",
     },
     {
       // title: "Unique Item/Item group",
-      title: "InComplete",
+      title: "Completed",
       value: "0",
       icon: <FaBoxes className="w-5 h-5 text-white dashicon-sm" />,
       description: "",
@@ -588,7 +588,7 @@ function Partstudy() {
                   return <DashBoardComponent key={k} {...d} colorIndex={k} />;
                 })}
               </div>
-              <div className="d-flex justify-content-end mb-2">
+              <div className="d-flex justify-content-end my-3">
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

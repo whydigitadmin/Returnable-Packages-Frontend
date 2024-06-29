@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setPageTitle } from "../../features/common/headerSlice";
-import AdminBinRetrieval from "../../features/admin/AdminBinRetrieval";
+import AdminBinRetrieval from "../../features/AdminBinRetrieval/AdminBinRetrieval";
 
 function InternalPage() {
   const dispatch = useDispatch();

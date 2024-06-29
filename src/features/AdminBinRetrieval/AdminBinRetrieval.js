@@ -68,25 +68,25 @@ export const AdminBinRetrieval = () => {
   const [listViewTableData, setListViewTableData] = useState([]);
   const [statsData, setStatsData] = useState([
     {
-      title: "No of Vendors",
+      title: "Total Bin Retrievals",
       value: "0",
       icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
       description: "",
     },
     {
-      title: "Active Vendors",
+      title: "Completed Bin Retrievals",
       value: "0",
       icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
       description: "",
     },
     {
-      title: "Average PO Per Vendor",
+      title: "Pending Bin Retrievals",
       value: "0",
       icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
       description: "",
     },
     {
-      title: "Idle Vendors",
+      title: "--",
       value: "0",
       icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
       description: "",
@@ -255,7 +255,7 @@ export const AdminBinRetrieval = () => {
       {
         accessorKey: "fromStockBranch",
         header: "From",
-        size: 50,
+        size: 150,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -266,7 +266,7 @@ export const AdminBinRetrieval = () => {
       {
         accessorKey: "toStockBranch",
         header: "To",
-        size: 50,
+        size: 150,
         muiTableHeadCellProps: {
           align: "center",
         },

@@ -172,14 +172,14 @@ function AllotedBinsTable({ viewAllotedTable }) {
             description: "",
           },
           {
-            title: "Total Pending Requests",
-            value: pendingBinReq,
+            title: "Completed Requests",
+            value: allRequests,
             icon: <LuWarehouse className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
           {
-            title: "Completed Requests",
-            value: allRequests,
+            title: "Total Pending Requests",
+            value: pendingBinReq,
             icon: <TbWeight className="w-7 h-7 text-white dashicon" />,
             description: "",
           },
