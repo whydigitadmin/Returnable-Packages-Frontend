@@ -12,7 +12,75 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
   const [headerData, setHeaderData] = useState([]);
   const [gridData, setGridData] = useState([]);
   const [qrCodeValue, setQrCodeValue] = useState([]);
-  const [watermarkPosition, setWatermarkPosition] = useState("bottom-left"); // Default to bottom left
+  const [watermarkPosition, setWatermarkPosition] = useState("bottom-left");
+  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+
+  useEffect(() => {
+    getHeaderDetailsByDocId();
+  }, []);
+
+  const getHeaderDetailsByDocId = async () => {
+    try {
+      const headerResponse = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getReterivalManifestHeaderPdf?docId=${docId}&orgId=${orgId}`
+      );
+      console.log("API headerResponse:", headerResponse);
+
+      if (headerResponse.status === 200) {
+        console.log(
+          "API headerResponse:",
+          headerResponse.data.paramObjectsMap.reterivalManifestDetailsPdf[0]
+        );
+        setHeaderData(
+          headerResponse.data.paramObjectsMap.reterivalManifestDetailsPdf[0]
+        );
+        try {
+          const gridResponse = await axios.get(
+            `${process.env.REACT_APP_API_URL}/api/oem/getRetrievalDeatilsforPickupFillgrid?orgId=${orgId}&rmNo=${docId}`
+          );
+          console.log("API gridResponse:", gridResponse);
+
+          if (gridResponse.status === 200) {
+            console.log(
+              "API gridResponse for Grid:",
+              gridResponse.data.paramObjectsMap.retrievalDetails
+            );
+            setGridData(gridResponse.data.paramObjectsMap.retrievalDetails);
+
+            // Concatenate relevant fields from header and grid data
+            const concatenatedData = JSON.stringify({
+              // headerData: headerResponse.data.paramObjectsMap.HeaderDetails[0],
+              TransactionNo:
+                headerResponse.data.paramObjectsMap
+                  .reterivalManifestDetailsPdf[0].rmNo,
+              TransactionDate:
+                headerResponse.data.paramObjectsMap
+                  .reterivalManifestDetailsPdf[0].rmDate,
+              DispatchDate:
+                headerResponse.data.paramObjectsMap
+                  .reterivalManifestDetailsPdf[0].dispatchDate,
+              Receiver:
+                headerResponse.data.paramObjectsMap
+                  .reterivalManifestDetailsPdf[0].receiver,
+              // Kit: gridResponse.data.paramObjectsMap.allotDetails[0].kitcode,
+              // gridData: gridResponse.data.paramObjectsMap.allotDetails,
+            });
+
+            setQrCodeValue(concatenatedData);
+            console.log("THE QRCODE DATA IS:", concatenatedData);
+          } else {
+            console.error("API Error:", gridResponse.data);
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      } else {
+        console.error("API Error:", headerResponse.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
@@ -181,21 +249,21 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
           </button>
         </div>
 
-        <div className="mt-2">
-          <Link to="/app/retrivalmanifest">
+        <div className="">
+          {/* <Link to="/app/retrivalmanifest">
             <IoMdClose className="cursor-pointer w-8 h-8 mb-3" />
-          </Link>
-          {/* <IoMdClose
+          </Link> */}
+          <IoMdClose
             onClick={handleReportClose}
             className="cursor-pointer w-8 h-8 mb-3"
-          /> */}
+          />
         </div>
       </div>
       <div className="abc" ref={componentRef}>
         {/* 1ST  */}
         <div className="container-sm">
           <div className="card bg-base-100 shadow-xl p-4">
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between mb-3">
               <div>
                 <img
                   src="/AI_Packs.png"
@@ -213,18 +281,18 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                   <strong>Retrival Manifest</strong>
                 </h3>
               </div>
-              <div className="mr-3 mt-5">
+              <div className="mr-3 mt-2">
                 {qrCodeValue && <QRCode value={qrCodeValue} size={150} />}
               </div>
             </div>
 
             <div className="flex justify-evenly">
               <div className="font-semibold">Transaction No:</div>
-              <div>{headerData.allotno}</div>
+              <div>{headerData.rmNo}</div>
               <div className=" font-semibold">Transaction Date:</div>
-              <div>{headerData.allotDate}</div>
+              <div>{headerData.rmDate}</div>
               <div className=" font-semibold">Dispatch Date:</div>
-              <div>{headerData.binreqdate}</div>
+              <div>{headerData.dispatchDate}</div>
             </div>
 
             {/* Sender and Receiver details */}
@@ -237,13 +305,13 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                     <div className="mb-3 font-semibold">GST:</div>
                   </div>
                   <div className="d-flex flex-column">
-                    <div className="mb-3">{headerData.senderName}</div>
+                    <div className="mb-3">{headerData.sender}</div>
                     <div className="mb-3">
                       {headerData.senderAddress} <br />
                       {headerData.senderCity}
                       <br />
                     </div>
-                    <div className="mb-3"> {headerData.senderGst}</div>
+                    <div className="mb-3"> {headerData.senderGstin}</div>
                   </div>
                 </div>
               </div>
@@ -255,13 +323,13 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                     <div className="mb-3 font-semibold">GST:</div>
                   </div>
                   <div className="d-flex flex-column">
-                    <div className="mb-3">{headerData.receiverName}</div>
+                    <div className="mb-3">{headerData.receiver}</div>
                     <div className="mb-3">
-                      {headerData.senderAddress} <br />
-                      {headerData.senderCity}
+                      {headerData.receiverAddress}
+                      {/* {headerData.senderCity} */}
                       <br />
                     </div>
-                    <div className="mb-3"> {headerData.senderGst}</div>
+                    <div className="mb-3"> {headerData.receiverGstin}</div>
                   </div>
                 </div>
               </div>
@@ -282,31 +350,7 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                           textAlign: "center",
                         }}
                       >
-                        Kit ID
-                      </th>
-                      <th
-                        style={{
-                          border: "2px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        Kit Name
-                      </th>
-                      <th
-                        style={{
-                          border: "2px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        KIT QTY
-                      </th>
-                      <th
-                        style={{
-                          border: "2px solid black",
-                          textAlign: "center",
-                        }}
-                      >
-                        HSN Code
+                        Category
                       </th>
                       <th
                         style={{
@@ -345,8 +389,8 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                               textAlign: "center",
                             }}
                           >
-                            {/* {row.kitcode} */}
-                            KIT1103
+                            {/* PP1411 */}
+                            {gridData.category}
                           </td>
                           <td
                             style={{
@@ -354,41 +398,8 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                               textAlign: "center",
                             }}
                           >
-                            Cylinder Head (H280A)
-                          </td>
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {/* {row.allotkitqty} */}
-                            73293
-                          </td>
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {/* {row.allotkitqty} */}
-                            73293
-                          </td>
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            PP1411
-                          </td>
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            Pallet
+                            {gridData.assetCode}
+                            {/* Pallet */}
                             {/* {row.productCode} */}
                           </td>
 
@@ -398,7 +409,17 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                               textAlign: "center",
                             }}
                           >
-                            {/* {row.productQty} */}7
+                            {gridData.asset}
+                            {/* {row.productQty} */}
+                          </td>
+                          <td
+                            style={{
+                              border: "2px solid black",
+                              textAlign: "center",
+                            }}
+                          >
+                            {gridData.pickQty}
+                            {/* {row.productQty} */}
                           </td>
                         </tr>
                       </>
@@ -424,7 +445,7 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                       <td>
                         <strong>Transporter:</strong>
                       </td>
-                      <td>Safe Express</td>
+                      <td>--</td>
                     </tr>
                     <tr>
                       <td>

@@ -4,6 +4,8 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
 import PropTypes from "prop-types";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
 import React, { useEffect, useState } from "react";
 import { FaStarOfLife } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
@@ -11,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import NoRecordsFound from "../../utils/NoRecordsFound";
+import RetrievalManifestReport from "./RetrievalManifestReport/RetrievalManifestReport";
 
 export const RetrivalManifest = () => {
   const [docId, setDocId] = useState("");
@@ -34,6 +37,8 @@ export const RetrivalManifest = () => {
   const [listViewButton, setListViewButton] = useState(false);
   const [listViewTableData, setListViewTableData] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
+  const [downloadDocId, setDownloadDocId] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
     getDocIdByRetreival();
@@ -121,6 +126,10 @@ export const RetrivalManifest = () => {
     setTableView(false);
   };
 
+  const handleBack = () => {
+    setOpenDialog(false);
+  };
+
   const checkboxStyle = {
     width: "15px",
     height: "15px",
@@ -185,6 +194,16 @@ export const RetrivalManifest = () => {
 
   const handleWarehouseChange = (e) => {
     setToStockBranch(e.target.value);
+  };
+
+  const handleDownloadClick = (selectedDocId) => {
+    setOpenDialog(true);
+    setDownloadDocId(selectedDocId);
+    console.log("Download Doc ID:", selectedDocId);
+  };
+
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
   };
 
   const createRetreival = () => {
@@ -465,7 +484,26 @@ export const RetrivalManifest = () => {
                         listViewTableData.map((row, index) => (
                           <React.Fragment key={row.id}>
                             <tr style={{ backgroundColor: "red" }}>
-                              <td>{row.docId}</td>
+                              <td
+                                className="border px-2 py-2 text-center d-flex justify-content-center"
+                                style={{
+                                  cursor: "pointer",
+                                  color: "black",
+                                }}
+                              >
+                                <img
+                                  src="/RetrivalManifest-download.png"
+                                  alt="pending-status-icon"
+                                  title="add"
+                                  onClick={() => handleDownloadClick(row.docId)}
+                                  style={{
+                                    width: 30,
+                                    height: 30,
+                                    margin: "auto",
+                                    hover: "pointer",
+                                  }}
+                                />
+                              </td>
                               <td>{row.docDate}</td>
                               <td>{row.fromStockBranch}</td>
                               <td>{row.toStockBranch}</td>
@@ -568,6 +606,19 @@ export const RetrivalManifest = () => {
           )}
         </div>
         <ToastContainer />
+        <Dialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          fullWidth
+          maxWidth="lg"
+        >
+          <DialogContent>
+            <RetrievalManifestReport
+              goBack={handleBack}
+              docId={downloadDocId}
+            />
+          </DialogContent>
+        </Dialog>
       </div>
     </>
   );
