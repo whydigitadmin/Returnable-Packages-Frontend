@@ -68,32 +68,7 @@ export const AdminBinRetrieval = () => {
 
   const [listViewTableData, setListViewTableData] = useState([]);
   const [pendingCount, setPendingCount] = useState("");
-  const [statsData, setStatsData] = useState([
-    {
-      title: "Total Bin Retrievals",
-      value: "0",
-      icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
-      description: "",
-    },
-    {
-      title: "Completed Bin Retrievals",
-      value: "0",
-      icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-      description: "",
-    },
-    {
-      title: "Pending Bin Retrievals",
-      value: "0",
-      icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-      description: "",
-    },
-    {
-      title: "--",
-      value: "0",
-      icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
-      description: "",
-    },
-  ]);
+  const [statsData, setStatsData] = useState([]);
 
   useEffect(() => {
     getAllPendingBinRetrievalData();
@@ -175,32 +150,32 @@ export const AdminBinRetrieval = () => {
         console.log("THE pending LENGTH IS:", pendingCount);
         console.log("THE COMPLETED LENGTH IS:", completedCount + pendingCount);
 
-        // setStatsData(
-        //   {
-        //     title: "Total Bin Retrievals",
-        //     value: completedCount + pendingCount,
-        //     icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
-        //     description: "",
-        //   },
-        //   {
-        //     title: "Completed Bin Retrievals",
-        //     value: completedCount,
-        //     icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-        //     description: "",
-        //   },
-        //   {
-        //     title: "Pending Bin Retrievals",
-        //     value: pendingCount,
-        //     icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
-        //     description: "",
-        //   },
-        //   {
-        //     title: "--",
-        //     value: "0",
-        //     icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
-        //     description: "",
-        //   }
-        // );
+        setStatsData([
+          {
+            title: "Total Bin Retrievals",
+            value: completedCount + pendingCount,
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Completed Bin Retrievals",
+            value: completedCount,
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "Pending Bin Retrievals",
+            value: pendingCount,
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -667,10 +642,9 @@ export const AdminBinRetrieval = () => {
           <>
             {/* DASHBOARD COMPONENT */}
             <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-              {statsData.length &&
-                statsData.map((d, k) => (
-                  <DashBoardComponent key={k} {...d} colorIndex={k} />
-                ))}
+              {statsData.map((d, k) => (
+                <DashBoardComponent key={k} {...d} colorIndex={k} />
+              ))}
             </div>
 
             <div className="">
