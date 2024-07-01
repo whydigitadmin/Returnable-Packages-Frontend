@@ -62,8 +62,6 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
               Receiver:
                 headerResponse.data.paramObjectsMap
                   .reterivalManifestDetailsPdf[0].receiver,
-              // Kit: gridResponse.data.paramObjectsMap.allotDetails[0].kitcode,
-              // gridData: gridResponse.data.paramObjectsMap.allotDetails,
             });
 
             setQrCodeValue(concatenatedData);
@@ -274,7 +272,7 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
 
               <div className="text-center mt-5">
                 <h1 className="text-xl">
-                  <strong>SCM AIPACKS Private Limited</strong>
+                  <strong>SCM AI-PACKS PVT LIMITED</strong>
                 </h1>
                 <br />
                 <h3>
@@ -379,52 +377,49 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {gridData && (
-                      // gridData.map((row) =>
-                      <>
-                        <tr>
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {/* PP1411 */}
-                            {gridData.category}
-                          </td>
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {gridData.assetCode}
-                            {/* Pallet */}
-                            {/* {row.productCode} */}
-                          </td>
+                    {gridData.length > 0 &&
+                      gridData.map(
+                        (row) => (
+                          <>
+                            <tr>
+                              <td
+                                style={{
+                                  border: "2px solid black",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {row.category}
+                              </td>
+                              <td
+                                style={{
+                                  border: "2px solid black",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {row.assetCode}
+                              </td>
 
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {gridData.asset}
-                            {/* {row.productQty} */}
-                          </td>
-                          <td
-                            style={{
-                              border: "2px solid black",
-                              textAlign: "center",
-                            }}
-                          >
-                            {gridData.pickQty}
-                            {/* {row.productQty} */}
-                          </td>
-                        </tr>
-                      </>
-                      // )
-                    )}
+                              <td
+                                style={{
+                                  border: "2px solid black",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {row.asset}
+                              </td>
+                              <td
+                                style={{
+                                  border: "2px solid black",
+                                  textAlign: "center",
+                                }}
+                              >
+                                {row.pickQty}
+                              </td>
+                            </tr>
+                          </>
+                        )
+                        // )
+                      )}
                   </tbody>
                 </table>
               </div>

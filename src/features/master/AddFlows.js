@@ -222,6 +222,7 @@ function AddFlows({ addFlows, editFlowId }) {
           response.data.paramObjectsMap.flowVO.flowDetailVO
         );
         editDestinationList(response.data.paramObjectsMap.flowVO.orgin);
+        getPartStudyId(response.data.paramObjectsMap.flowVO.emitterId);
         editRetrivalList(response.data.paramObjectsMap.flowVO.warehouseId);
         if (response.data.paramObjectsMap.flowVO.active === "In-Active") {
           setActive(false);
@@ -736,7 +737,7 @@ function AddFlows({ addFlows, editFlowId }) {
             );
           } else {
             const newKitDetails = {
-              id,
+              id: 0,
               orgId,
               kitNo,
               kitDesc,

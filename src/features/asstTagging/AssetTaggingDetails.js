@@ -61,7 +61,8 @@ export const AssetTaggingDetails = () => {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.assetTaggingVO);
+        const assetTagging = response.data.paramObjectsMap.assetTaggingVO;
+        setData(assetTagging.reverse());
         console.log(response.data.paramObjectsMap.assetTaggingVO);
       }
     } catch (error) {

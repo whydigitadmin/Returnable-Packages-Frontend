@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 
 const ratioData = [
-  { id: 1, title: "Allotment vs Request", value1: 40, value2: 60 },
-  { id: 2, title: "Bin's Allotted vs Bin's Request", value1: 80, value2: 20 },
+  { id: 1, title: "Allotment vs Request (Files)", value1: 40, value2: 60 },
+  {
+    id: 2,
+    title: "Bin's Allotted vs Bin's Request (Bins)",
+    value1: 80,
+    value2: 20,
+  },
   { id: 3, title: "Actual vs Agreed.(days)", value1: 30, value2: 40 },
 ];
 

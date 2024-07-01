@@ -269,7 +269,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
             {/* Sender and Receiver details */}
             <div className="row mt-4">
               <div className="col-lg-6 col-md-6 col-sm-12">
-                <div className="d-flex justify-content-between">
+                <div className="d-flex justify-content-start">
                   <div className="d-flex flex-column justify-content-between ms-3 me-4">
                     <div className="mb-3 font-semibold">Sender:</div>
                     <div className="mb-3 font-semibold">Address:</div>
@@ -441,7 +441,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                       <td>
                         <strong>Transporter:</strong>
                       </td>
-                      <td>Safe Express</td>
+                      <td>---</td>
                     </tr>
                     <tr>
                       <td>

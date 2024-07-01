@@ -99,10 +99,13 @@ function AddKit({ addItem, kitEditId }) {
   useEffect(() => {
     getCustomersList();
     getAllAssetType();
+  }, [assetCodeList]);
+
+  useEffect(() => {
     if (kitEditId) {
       getKitById();
     }
-  }, [assetCodeList]);
+  }, [kitEditId]);
 
   const handleEmitterChange = (event) => {
     setEmitter(event.target.value);
@@ -415,6 +418,11 @@ function AddKit({ addItem, kitEditId }) {
     if (kitAssetDTO.length === 0) {
       errors.kitAssetDTO = "Please add at least one asset detail";
     }
+    const isAnyAssetEditable = kitAssetDTO.some((asset) => asset.isEditable);
+    if (isAnyAssetEditable) {
+      errors.kitAssetDTO =
+        "Please save all asset changes before updating the kit";
+    }
     if (Object.keys(errors).length === 0) {
       try {
         const kitData = {
@@ -477,6 +485,12 @@ function AddKit({ addItem, kitEditId }) {
     }
     if (kitAssetDTO.length === 0) {
       errors.kitAssetDTO = "Please add at least one asset detail";
+    }
+
+    const isAnyAssetEditable = kitAssetDTO.some((asset) => asset.isEditable);
+    if (isAnyAssetEditable) {
+      errors.kitAssetDTO =
+        "Please save all asset changes before updating the kit";
     }
 
     if (Object.keys(errors).length === 0) {
@@ -701,9 +715,6 @@ function AddKit({ addItem, kitEditId }) {
                 </span>
               </button>
             </div>
-            {errors.kitAssetDTO && (
-              <span className="error-text">{errors.kitAssetDTO}</span>
-            )}
           </div>
         </div>
         {kitAssetDTO.length > 0 && (
@@ -777,6 +788,9 @@ function AddKit({ addItem, kitEditId }) {
               </table>
             </div>
           </div>
+        )}
+        {errors.kitAssetDTO && (
+          <span className="error-text my-2">{errors.kitAssetDTO}</span>
         )}
         {kitEditId ? (
           <div className="d-flex flex-row mt-3">
@@ -966,7 +980,7 @@ function AddKit({ addItem, kitEditId }) {
                   </span>
                 </label>
               </div>
-              <div className="col-lg-3 col-md-6">
+              <div className="col-lg-3 col-md-6 mb-2">
                 <input
                   className="form-control form-sz"
                   onChange={handleEmitterChange}
@@ -990,7 +1004,7 @@ function AddKit({ addItem, kitEditId }) {
               </div>
               <div className="col-lg-3 col-md-6">
                 <input
-                  className="form-control form-sz"
+                  className="form-control form-sz mb-2"
                   onChange={handlePartCode}
                   value={partCode}
                   disabled

@@ -20,6 +20,7 @@ import { MdPrint } from "react-icons/md";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { IoMdClose } from "react-icons/io";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -96,10 +97,12 @@ export function AsstTagging({ addTagging, viewId }) {
   const [seqFrom, setSeqFrom] = useState("");
   const [seqTo, setSeqTo] = useState("");
   const [generateFlag, setGenerateFlag] = useState(false);
+  const [disableFlag, setDisableFlag] = useState(false);
   const [showTable, setShowTable] = useState(false);
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [selectedBarcodeRows, setSelectedBarcodeRows] = useState([]);
   const [selectedQRCodeRows, setSelectedQRCodeRows] = useState([]);
   const [cancelledAssets, setCancelledAssets] = useState([]);
@@ -212,9 +215,11 @@ export function AsstTagging({ addTagging, viewId }) {
         if (response.status === 200) {
           const tagcodes = response.data.paramObjectsMap.tagcode;
           setGenerateFlag(true);
+          setDisableFlag(true);
           setShowTable(true);
           setErrors({});
-          setPoDate(null);
+          // setPoDate(null);
+
           if (Array.isArray(tagcodes)) {
             setTagCodeList(tagcodes);
           } else {
@@ -376,10 +381,12 @@ export function AsstTagging({ addTagging, viewId }) {
           assetCode: assetCode,
           asset: assetName,
           // seqFrom: seqFrom,
+          poNo,
+          poDate,
           seqTo: seqTo,
           taggingDetailsDTO: taggingDetailsDTO,
-          orgId: userDetail.orgId,
-          createdBy: userDetail.firstName,
+          orgId: orgId,
+          createdBy: userName,
         };
 
         axios
@@ -389,16 +396,18 @@ export function AsstTagging({ addTagging, viewId }) {
           )
           .then((response) => {
             if (response.data.statusFlag === "Error") {
-              toast.error(response.data.paramObjectsMap.errorMessage, {
-                autoClose: 2000,
-                theme: "colored",
-              });
+              showErrorToast(response.data.paramObjectsMap.errorMessage);
+              // toast.error(response.data.paramObjectsMap.errorMessage, {
+              //   autoClose: 2000,
+              //   theme: "colored",
+              // });
             } else {
               console.log("Response:", response.data);
-              toast.success(response.data.paramObjectsMap.message, {
-                autoClose: 2000,
-                theme: "colored",
-              });
+              showSuccessToast(response.data.paramObjectsMap.message);
+              // toast.success(response.data.paramObjectsMap.message, {
+              //   autoClose: 2000,
+              //   theme: "colored",
+              // });
               setTimeout(() => {
                 handleCancelAsset();
                 addTagging(false);
@@ -409,18 +418,20 @@ export function AsstTagging({ addTagging, viewId }) {
         console.error("Error:", error);
       }
     } else {
-      setErrors(errors);
+      // setErrors(errors);
+      showErrorToast(errors);
     }
   };
 
   const handleCancelAsset = () => {
     // Clear all input fields
-    setDocId("");
     setToDate(currentDate);
     setAssetCode("");
     setAssetName("");
     setSeqFrom("");
     setSeqTo("");
+    setPoNo("");
+    setPoDate(null);
     setAssetCategory("");
     // Clear table fields
     setTagCodeList([]);
@@ -431,6 +442,8 @@ export function AsstTagging({ addTagging, viewId }) {
     // Clear cancelled assets
     setCancelledAssets([]);
     setGenerateFlag(false);
+    setDisableFlag(false);
+    setShowTable(false);
   };
 
   const handleGenerateTagcode = () => {
@@ -676,7 +689,7 @@ export function AsstTagging({ addTagging, viewId }) {
             type="text"
             value={docId}
             // onChange={(e) => setDocId(e.target.value)}
-            readOnly
+            disabled
           />
           {/* {errors.docId && <span className="error-text">{errors.docId}</span>} */}
         </div>
@@ -699,7 +712,7 @@ export function AsstTagging({ addTagging, viewId }) {
           />
         </div>
 
-        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+        <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
           <label className="label">
             <span
               className={
@@ -707,36 +720,40 @@ export function AsstTagging({ addTagging, viewId }) {
               }
             >
               Po No
-              <FaStarOfLife className="must" />
+              {/* <FaStarOfLife className="must" /> */}
             </span>
           </label>
         </div>
-        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+        <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
           <input
             className="form-control form-sz"
             onChange={(e) => setPoNo(e.target.value)}
             value={poNo}
             name="poNo"
+            disabled={disableFlag || viewId ? true : false}
+            onInput={(e) => {
+              e.target.value = e.target.value.toUpperCase();
+            }}
           />
           {errors.poNo && <span className="error-text">{errors.poNo}</span>}
         </div>
-        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+        <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
           <label className="label">
             <span
               className={
                 "label-text label-font-size text-base-content d-flex flex-row"
               }
             >
-              PO Date <FaStarOfLife className="must" />
+              PO Date
             </span>
           </label>
         </div>
-        <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
+        <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               value={poDate}
-              onChange={(date) => setPoDate(dayjs(date).format("DD-MM-YYYY"))}
-              // onChange={handlePoDateChange}
+              disabled={disableFlag || viewId ? true : false}
+              onChange={(newDate) => setPoDate(newDate)}
               slotProps={{
                 textField: { size: "small", clearable: true },
               }}
@@ -765,10 +782,10 @@ export function AsstTagging({ addTagging, viewId }) {
             className="input input-bordered ps-2"
             onChange={handleAssetCategoryChange}
             value={assetCategory}
-            disabled={viewId ? true : false}
+            disabled={disableFlag || viewId ? true : false}
           >
             <option value="" selected>
-              Select an Asset Category
+              Select a Asset Category
             </option>
             {assetCategoryList.length > 0 &&
               assetCategoryList.map((list) => (
@@ -796,9 +813,9 @@ export function AsstTagging({ addTagging, viewId }) {
             className="form-select form-sz w-full mb-2"
             value={assetCode}
             onChange={handleChangeAssetCode}
-            disabled={viewId ? true : false}
+            disabled={disableFlag || viewId ? true : false}
           >
-            <option value="">Select code</option>
+            <option value="">Select a code</option>
             {assetList.map((code) => (
               <option key={code.id} value={code.assetCodeId}>
                 {code.assetCodeId}
@@ -866,7 +883,7 @@ export function AsstTagging({ addTagging, viewId }) {
             type="text"
             value={seqTo}
             onChange={(e) => setSeqTo(e.target.value)}
-            disabled={viewId ? true : false}
+            disabled={disableFlag || viewId ? true : false}
           />
           {errors.seqTo && <span className="error-text">{errors.seqTo}</span>}
         </div>

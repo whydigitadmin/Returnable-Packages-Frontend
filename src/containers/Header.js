@@ -219,7 +219,7 @@ function Header() {
               <BellIcon className="h-6 w-6" />
               {noOfNotifications > 0 ? (
                 <span className="indicator-item badge badge-secondary badge-sm">
-                  {/* {noOfNotifications} */}1
+                  {/* {noOfNotifications} */}
                 </span>
               ) : null}
             </div>
