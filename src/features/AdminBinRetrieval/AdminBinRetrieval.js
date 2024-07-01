@@ -49,7 +49,7 @@ export const AdminBinRetrieval = () => {
   const [tableDataView, setTableDataView] = useState(true);
   const [retrievaledData, setRetrievaledData] = useState(false);
   const [pendingData, setPendingData] = useState([]);
-
+  const [retDate, setRetDate] = useState("");
   const [listViewTableView, setListViewTableView] = useState(false);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userName, setUserName] = React.useState(
@@ -64,8 +64,10 @@ export const AdminBinRetrieval = () => {
     localStorage.getItem("userName")
   );
   const [tableData, setTableData] = useState([]);
+  const [reterivedData, setReterivedData] = useState([]);
 
   const [listViewTableData, setListViewTableData] = useState([]);
+  const [pendingCount, setPendingCount] = useState("");
   const [statsData, setStatsData] = useState([
     {
       title: "Total Bin Retrievals",
@@ -95,13 +97,16 @@ export const AdminBinRetrieval = () => {
 
   useEffect(() => {
     getAllPendingBinRetrievalData();
+    getAllBinRetrievalData();
     if (editId) {
       getNewDocId();
+      // setViewId("");
     }
+
     if (tableData.damageQty) {
       console.log("THE SHORTAGE QTY IS:", tableData.damageQty);
     }
-  }, [editId, tableData.damageQty, tableData.shortQty]);
+  }, [editId, viewId, pendingCount]);
   useEffect(() => {
     console.log("Pending Data:", pendingData);
   }, [pendingData]);
@@ -135,6 +140,14 @@ export const AdminBinRetrieval = () => {
 
       if (response.status === 200) {
         setPendingData(response.data.paramObjectsMap.pendingBinRetrieval);
+        setPendingCount(
+          response.data.paramObjectsMap.pendingBinRetrieval.length
+        );
+        console.log(
+          "THE pending LENGTH IS:",
+          response.data.paramObjectsMap.pendingBinRetrieval.length
+        );
+
         console.log(
           "THE PENDING DATA FROM API IS",
           response.data.paramObjectsMap.pendingBinRetrieval
@@ -147,13 +160,47 @@ export const AdminBinRetrieval = () => {
   const getAllBinRetrievalData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequestreportByOrgId?OrgId=${orgId}&userId=${loginUserId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getBinReterivalByOrgId?orgId=${orgId}`
       );
 
       if (response.status === 200) {
-        const allRequests = response.data.paramObjectsMap.issueRequestVO;
-        setData(allRequests.reverse());
-        setListViewTableView(!listViewTableView);
+        setListViewTableData(response.data.paramObjectsMap.binRetrievalVO);
+        console.log(
+          "THE RETERIVAL BIN DATA FROM API IS",
+          response.data.paramObjectsMap.binRetrievalVO
+        );
+        const completedCount =
+          response.data.paramObjectsMap.binRetrievalVO.length;
+
+        console.log("THE pending LENGTH IS:", pendingCount);
+        console.log("THE COMPLETED LENGTH IS:", completedCount + pendingCount);
+
+        // setStatsData(
+        //   {
+        //     title: "Total Bin Retrievals",
+        //     value: completedCount + pendingCount,
+        //     icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+        //     description: "",
+        //   },
+        //   {
+        //     title: "Completed Bin Retrievals",
+        //     value: completedCount,
+        //     icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+        //     description: "",
+        //   },
+        //   {
+        //     title: "Pending Bin Retrievals",
+        //     value: pendingCount,
+        //     icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+        //     description: "",
+        //   },
+        //   {
+        //     title: "--",
+        //     value: "0",
+        //     icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+        //     description: "",
+        //   }
+        // );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -167,9 +214,9 @@ export const AdminBinRetrieval = () => {
     setfromStockBranch(row.original.fromStockBranch);
     setToStockBranch(row.original.toStockBranch);
     setTransportPickDate(row.original.pickupDate);
-    setTransporter("no original data");
+    setTransporter(row.original.transporter);
     setTransporterDocNo(row.original.transportDocNo);
-    setHandoverBy("no original data");
+    setHandoverBy(row.original.handoverBy);
     setDriver(row.original.driverName);
     setDriverPhNo(row.original.driverPhoneNo);
     setVehicleNo(row.original.vehicleNo);
@@ -183,32 +230,42 @@ export const AdminBinRetrieval = () => {
           "THE TABLE DATA IS:",
           response.data.paramObjectsMap.transportPickpDetails
         );
+
         setTableData(response.data.paramObjectsMap.transportPickpDetails);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
+  const handleViewRow = async (row) => {
+    console.log("the reterived row data is:", row.original);
+    setViewId(row.original.docId);
+    setRetDate(row.original.docDate);
+    setTransporterDocId(row.original.pickupDocId);
+    setfromStockBranch(row.original.fromStockBranch);
+    setToStockBranch(row.original.toStockBranch);
+    setTransportPickDate(row.original.pickupDate);
+    setTransporter(row.original.transPorter);
+    setHandoverBy(row.original.handOverBy);
+    setTransporterDocNo(row.original.transPortDocNo);
+    setHandoverBy(row.original.handOverBy);
+    setDriver(row.original.driverName);
+    setDriverPhNo(row.original.driverPhoneNo);
+    setVehicleNo(row.original.vechicleNo);
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getBinReterivalByDocId?docId=24BRI10000`
+      );
 
-  // const handleEditRow = useCallback(
-  //   (row) => {
-  //     console.log("Row data:", row.original);
-
-  //     const editData = pendingData.find(
-  //       (item) => item.pickupNo === row.original.pickupNo
-  //     );
-
-  //     console.log("edit data is :", editData);
-
-  //     if (editData) {
-  //       setEditId(editData.pickupNo);
-  //       setTransporterDocId(editData.pickupNo);
-  //     } else {
-  //       console.error("No matching data found for row:", row);
-  //     }
-  //   },
-  //   [pendingData]
-  // );
+      if (response.status === 200) {
+        setReterivedData(
+          response.data.paramObjectsMap.binRetrievalVO[0].binRetrievalDetailsVO
+        );
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const pendingColumns = useMemo(
     () => [
@@ -314,7 +371,7 @@ export const AdminBinRetrieval = () => {
     ],
     []
   );
-  const retrievaledColumns = useMemo(
+  const listViewColumns = useMemo(
     () => [
       {
         accessorKey: "actions",
@@ -331,17 +388,15 @@ export const AdminBinRetrieval = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <IconButton
-            // onClick={() => handleEditRow(row)}
-            >
+            <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
           </div>
         ),
       },
       {
-        accessorKey: "reqKitQty",
-        header: "Completed",
+        accessorKey: "docId",
+        header: "DocId",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -351,8 +406,8 @@ export const AdminBinRetrieval = () => {
         },
       },
       {
-        accessorKey: "reqNo",
-        header: "Req No",
+        accessorKey: "docDate",
+        header: "DocDate",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -362,8 +417,8 @@ export const AdminBinRetrieval = () => {
         },
       },
       {
-        accessorKey: "reqDate",
-        header: "Req Date",
+        accessorKey: "fromStockBranch",
+        header: "Stock From",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -373,8 +428,19 @@ export const AdminBinRetrieval = () => {
         },
       },
       {
-        accessorKey: "emitter",
-        header: "Emitter",
+        accessorKey: "retrievalWarehouse",
+        header: "Retrieval Warehouse",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "transPortDocNo",
+        header: "Transport DocNO",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -385,20 +451,9 @@ export const AdminBinRetrieval = () => {
       },
 
       {
-        accessorKey: "flow",
-        header: "Flow",
+        accessorKey: "pickupDocId",
+        header: "pickup DocId",
         size: 250,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "kitCode",
-        header: "Kit No",
-        size: 50,
         muiTableHeadCellProps: {
           align: "center",
         },
@@ -411,8 +466,8 @@ export const AdminBinRetrieval = () => {
   );
 
   const table = useMaterialReactTable({
-    data: listViewTableView ? retrievaledData : pendingData,
-    columns: listViewTableView ? retrievaledColumns : pendingColumns,
+    data: listViewTableView ? listViewTableData : pendingData,
+    columns: listViewTableView ? listViewColumns : pendingColumns,
   });
 
   const handleListViewButtonChange = () => {
@@ -533,13 +588,21 @@ export const AdminBinRetrieval = () => {
     if (!docId) {
       errors.docId = "DocID is required";
     }
-
+    tableData.forEach((row, index) => {
+      if (row.reteriveQty === "" || row.reteriveQty === undefined) {
+        errors[index] = {
+          ...errors[index],
+          reteriveQty: "Retrieved QTY is required",
+        };
+      }
+    });
     const tableFormData = tableData.map((row) => ({
       category: row.category,
       asset: row.asset,
       assetCode: row.assetCode,
       invqty: row.invQty,
       recqty: row.reteriveQty,
+      damageQty: row.damageQty === undefined ? 0 : row.damageQty,
       shortQty: row.shortQty,
     }));
 
@@ -560,63 +623,41 @@ export const AdminBinRetrieval = () => {
       transPorter: transporter,
       vechicleNo: vehicleNo,
     };
+
     if (Object.keys(errors).length === 0) {
       console.log("Data to save is:", formData);
+
+      axios
+        .post(
+          `${process.env.REACT_APP_API_URL}/api/master/createBinRetrieval`,
+          formData
+        )
+        .then((response) => {
+          console.log("After save Response:", response.data);
+          const responseDocId =
+            response.data.paramObjectsMap.binRetrievalVO.docId;
+          // handleNew();
+          toast.success(
+            `Bin Retrieval ${responseDocId} Created Successfully!`,
+            {
+              autoClose: 2000,
+              theme: "colored",
+            }
+          );
+
+          setTimeout(() => {
+            handleTransactionViewClose();
+          }, 2000);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          toast.error(
+            "Failed to Create Emitter Bin Retrieval. Please try again."
+          );
+        });
     } else {
       setErrors(errors);
     }
-
-    // if (Object.keys(errors).length === 0) {
-    //   const formData = {
-    //     binRetrievalDetailsDTO: tableFormData,
-    //     createdby: loginUserName,
-    //     docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-    //     driverName: driver,
-    //     driverPhoneNo: driverPhNo,
-    //     fromStockBranch: fromStockBranch,
-    //     handOverBy: handoverBy,
-    //     orgId: orgId,
-    //     pickupDate: transportPickDate,
-    //     pickupDocId: transporterDocId,
-    //     retrievalWarehouse: toStockBranch,
-    //     toStockBranch: toStockBranch,
-    //     transPortDocNo: transporterDocNo,
-    //     transPorter: transporter,
-    //     vechicleNo: vehicleNo,
-    //   };
-    //   console.log("Data to save is:", formData);
-
-    //   axios
-    //     .post(
-    //       `${process.env.REACT_APP_API_URL}/api/master/createBinRetrieval`,
-    //       formData
-    //     )
-    //     .then((response) => {
-    //       console.log("After save Response:", response.data);
-    //       const responseDocId =
-    //         response.data.paramObjectsMap.binRetrievalVO.docId;
-    //       // handleNew();
-    //       toast.success(
-    //         `Bin Retrieval ${responseDocId} Created Successfully!`,
-    //         {
-    //           autoClose: 2000,
-    //           theme: "colored",
-    //         }
-    //       );
-
-    //       setTimeout(() => {
-    //         handleTransactionViewClose();
-    //       }, 2000);
-    //     })
-    //     .catch((error) => {
-    //       console.error("Error:", error);
-    //       toast.error(
-    //         "Failed to Create Emitter Bin Retrieval. Please try again."
-    //       );
-    //     });
-    // } else {
-    //   setErrors(errors);
-    // }
   };
 
   return (
@@ -626,9 +667,10 @@ export const AdminBinRetrieval = () => {
           <>
             {/* DASHBOARD COMPONENT */}
             <div className="grid lg:grid-cols-4 mt-2 md:grid-cols-2 grid-cols-1 gap-6">
-              {statsData.map((d, k) => (
-                <DashBoardComponent key={k} {...d} colorIndex={k} />
-              ))}
+              {statsData.length &&
+                statsData.map((d, k) => (
+                  <DashBoardComponent key={k} {...d} colorIndex={k} />
+                ))}
             </div>
 
             <div className="">
@@ -675,6 +717,441 @@ export const AdminBinRetrieval = () => {
             </div>
           </>
         ) : (
+          <>
+            <div className="d-flex justify-content-end">
+              <IoMdClose
+                onClick={handleTransactionViewClose}
+                className="cursor-pointer w-8 h-8 mb-3"
+              />
+            </div>
+
+            <div className="row mt-3">
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Doc Id:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  value={viewId ? viewId : docId}
+                  disabled
+                />
+                {errors.docId && (
+                  <span className="error-text mb-1">{errors.docId}</span>
+                )}
+              </div>
+
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Doc Date:
+                  </span>
+                </label>
+              </div>
+
+              {editId ? (
+                <>
+                  <div className="col-lg-3 col-md-6">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        value={docDate}
+                        onChange={(date) => setDocDate(date)}
+                        slotProps={{
+                          textField: { size: "small", clearable: true },
+                        }}
+                        format="DD/MM/YYYY"
+                        disabled
+                      />
+                    </LocalizationProvider>
+                    {errors.docDate && (
+                      <span className="error-text mb-1">{errors.docDate}</span>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="col-lg-3 col-md-6">
+                    <input
+                      className="form-control form-sz mb-2"
+                      value={retDate}
+                      disabled
+                    />
+                  </div>
+                </>
+              )}
+
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Transporter DocId
+                    <FaStarOfLife className="must" />
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={transporterDocId}
+                  disabled
+                />
+                {errors.transporterDocId && (
+                  <span className="error-text mb-1">
+                    {errors.transporterDocId}
+                  </span>
+                )}
+              </div>
+
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    From Stock Branch:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={fromStockBranch}
+                  onChange={(e) => setfromStockBranch(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    To Stock Branch:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={toStockBranch}
+                  onChange={(e) => setToStockBranch(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Transporter Pickup Date:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={transportPickDate}
+                  onChange={(e) => setTransportPickDate(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Transporter:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={transporter}
+                  onChange={(e) => setTransporter(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Transporter Doc No:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={transporterDocNo}
+                  onChange={(e) => setTransporterDocNo(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Handover By:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={handoverBy}
+                  onChange={(e) => setHandoverBy(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Driver:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={driver}
+                  onChange={(e) => setDriver(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Driver PhNo:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={driverPhNo}
+                  onChange={(e) => setDriverPhNo(e.target.value)}
+                  disabled
+                />
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Vehicle No:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder=""
+                  value={vehicleNo}
+                  onChange={(e) => setVehicleNo(e.target.value)}
+                  disabled
+                />
+              </div>
+            </div>
+
+            <div className="row mt-4">
+              <div className="col-lg-12">
+                <div className="overflow-x-auto">
+                  <table className="table table-hover w-full">
+                    <thead>
+                      <tr>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ width: "15%" }}
+                        >
+                          Category
+                        </th>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                        >
+                          Asset Code
+                        </th>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                        >
+                          Asset
+                        </th>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                        >
+                          Retrieval Qty
+                        </th>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                        >
+                          Inward Qty
+                        </th>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                        >
+                          Damage Qty
+                        </th>
+                        <th
+                          className="px-2 text-black border text-center"
+                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
+                        >
+                          Short Landing Qty
+                        </th>
+                      </tr>
+                    </thead>
+                    {viewId ? (
+                      <>
+                        <tbody>
+                          {reterivedData && reterivedData.length > 0 ? (
+                            reterivedData.map((row, index) => (
+                              <tr key={row.id}>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.category}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.assetCode}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.asset}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.invqty}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.recqty}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.damageQty}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.shortQty}
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={10}>
+                                <NoRecordsFound
+                                  message={"Pending Bin Inward not found"}
+                                />
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </>
+                    ) : (
+                      <>
+                        <tbody>
+                          {tableData && tableData.length > 0 ? (
+                            tableData.map((row, index) => (
+                              <tr key={row.id}>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.category}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.assetCode}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.asset}
+                                </td>
+                                <td className="border px-2 py-2 text-center">
+                                  {row.invQty}
+                                </td>
+
+                                <td>
+                                  <input
+                                    type="text"
+                                    value={row.reteriveQty}
+                                    onChange={(e) =>
+                                      handleRetrievalQtyChange(e, row, index)
+                                    }
+                                    className="border px-2 py-2 text-center"
+                                    style={{ width: "50px" }}
+                                  />
+                                  {row.errorMsg && (
+                                    <span className="error-text mb-1 ms-2">
+                                      {row.errorMsg}
+                                    </span>
+                                  )}
+                                  {errors[index] &&
+                                    errors[index].reteriveQty && (
+                                      <span className="error-text mb-1 ms-2">
+                                        {errors[index].reteriveQty}
+                                      </span>
+                                    )}
+                                </td>
+
+                                {/* <td className="d-flex flex-row"> */}
+                                <td>
+                                  <input
+                                    type="text"
+                                    value={row.damageQty}
+                                    // disabled={row.tempCalc > 0 ? false : true}
+                                    onChange={(e) =>
+                                      handleDamageQtyChange(e, row, index)
+                                    }
+                                    className="border px-2 py-2 text-center"
+                                    style={{ width: "50px" }}
+                                  />
+                                  {row.damageErrorMsg && (
+                                    <span className="error-text mb-1 ms-2">
+                                      {row.damageErrorMsg}
+                                    </span>
+                                  )}
+                                </td>
+                                <td className="">
+                                  <input
+                                    type="text"
+                                    value={row.shortQty}
+                                    disabled
+                                    className="border px-2 py-2 text-center"
+                                    style={{ width: "50px" }}
+                                  />
+                                </td>
+                              </tr>
+                            ))
+                          ) : (
+                            <tr>
+                              <td colSpan={10}>
+                                <NoRecordsFound
+                                  message={"Pending Bin Inward not found"}
+                                />
+                              </td>
+                            </tr>
+                          )}
+                        </tbody>
+                      </>
+                    )}
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {editId && (
+              <>
+                <div className="mt-4">
+                  <button
+                    type="button"
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                    onClick={handleSave}
+                  >
+                    Save
+                  </button>
+                  <button
+                    type="button"
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                    // onClick={handleNew}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </>
+            )}
+          </>
+        )}
+        {/* {editId && (
           <>
             <div className="d-flex justify-content-end">
               <IoMdClose
@@ -926,13 +1403,13 @@ export const AdminBinRetrieval = () => {
                           className="px-2 text-black border text-center"
                           style={{ paddingTop: "1%", paddingBottom: "1%" }}
                         >
-                          Inv Qty
+                          Retrieval Qty
                         </th>
                         <th
                           className="px-2 text-black border text-center"
                           style={{ paddingTop: "1%", paddingBottom: "1%" }}
                         >
-                          Retrieve Qty
+                          Inward Qty
                         </th>
                         <th
                           className="px-2 text-black border text-center"
@@ -944,7 +1421,7 @@ export const AdminBinRetrieval = () => {
                           className="px-2 text-black border text-center"
                           style={{ paddingTop: "1%", paddingBottom: "1%" }}
                         >
-                          short Qty
+                          Short Landing Qty
                         </th>
                       </tr>
                     </thead>
@@ -982,7 +1459,6 @@ export const AdminBinRetrieval = () => {
                               )}
                             </td>
 
-                            {/* <td className="d-flex flex-row"> */}
                             <td>
                               <input
                                 type="text"
@@ -1044,6 +1520,11 @@ export const AdminBinRetrieval = () => {
             </div>
           </>
         )}
+        {viewId && (
+          <>
+            <p>view only </p>
+          </>
+        )} */}
       </div>
     </>
   );

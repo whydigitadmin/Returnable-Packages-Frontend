@@ -7,7 +7,7 @@ function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Bin Retrieval" }));
+    dispatch(setPageTitle({ title: "Bin Retrieval Inward" }));
   }, []);
 
   return <AdminBinRetrieval />;
