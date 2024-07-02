@@ -306,8 +306,8 @@ const Oemuser = () => {
 
             {/* BULK UPLPOAD AND NEW EMITTER  */}
             <div className="">
-              <div className="flex justify-between mt-4">
-                <BulkUploadDialog
+              <div className="d-flex justify-content-end mt-4">
+                {/* <BulkUploadDialog
                   open={open}
                   onOpenClick={handleClickOpen}
                   handleClose={handleClose}
@@ -317,7 +317,7 @@ const Oemuser = () => {
                   onSubmit={handleSubmit}
                   sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
                   handleFileUpload={handleFileUpload}
-                />
+                /> */}
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

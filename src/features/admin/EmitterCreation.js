@@ -220,9 +220,8 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     setRole("ROLE_EMITTER");
     setErrors({});
     setOpenShippingModal(false);
-    setEmitter(null);
+    setEmitter("");
     setFlow([]);
-    setEmitterCustomersVO([]);
     setOrgId(localStorage.getItem("orgId"));
     setSelectedFlows([]);
   };
@@ -233,7 +232,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
       errors.emitter = "Emitter is required";
     }
     if (selectedFlows.length === 0) {
-      errors.selectedFlows = "Please select atleast one flow";
+      errors.selectedFlows = "Please select atleast one Flow";
     }
     if (!firstName) {
       errors.firstName = "First Name is required";
@@ -439,6 +438,9 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     if (!emitter) {
       errors.emitter = "Emitter is required";
     }
+    if (!Array.isArray(selectedFlows) || selectedFlows.length === 0) {
+      errors.selectedFlows = "Please select atleast one Flow";
+    }
     if (selectedFlows.length === 0) {
       errors.selectedFlows = "Please select atleast one flow";
     }
@@ -577,8 +579,8 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           />
         </div>
         <div className="row">
-          <div className="col-lg-3 col-md-6">
-            <label className="label mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
+            <label className="label">
               <span
                 className={
                   "label-text label-font-size text-base-content d-flex flex-row"
@@ -589,7 +591,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
+          <div className="col-lg-3 col-md-6 mb-2">
             <select
               className="form-select form-sz w-full mb-2"
               onChange={handleEmitterChange}
@@ -610,7 +612,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
             )}
           </div>
 
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <label className="label">
               <span
                 className={
@@ -621,7 +623,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
+          <div className="col-lg-3 col-md-6 mb-2">
             <div className="d-flex flex-column">
               <button
                 type="button"

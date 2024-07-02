@@ -215,6 +215,18 @@ function UserCreation({ addUser, userEditId }) {
         return prevWarehouse;
       }
 
+      if (warehouseId === "selectAll") {
+        if (isChecked) {
+          const allWarehouseIds = warehouseLocationVO.map(
+            (location) => location.warehouseId
+          );
+          console.log("Select All Warehouses:", allWarehouseIds);
+          return allWarehouseIds;
+        } else {
+          return [];
+        }
+      }
+
       if (isChecked) {
         const updatedWarehouse = [...prevWarehouse, warehouseId];
         console.log("Updated Warehouse State (Added):", updatedWarehouse);
@@ -348,7 +360,7 @@ function UserCreation({ addUser, userEditId }) {
       errors.pincode = "Pincode must be 6 Digit";
     }
     if (warehouse.length === 0) {
-      errors.warehouse = "Warehouse is required";
+      errors.warehouse = "Please select atleast one Warehouse";
     }
 
     const token = localStorage.getItem("token");
@@ -459,47 +471,48 @@ function UserCreation({ addUser, userEditId }) {
     } else if (pincode.length < 6) {
       errors.pincode = "Pincode must be 6 Digit";
     }
-    if (warehouse.length === 0) {
-      errors.warehouse = "Warehouse is required";
+    if (!Array.isArray(warehouse) || warehouse.length === 0) {
+      errors.warehouse = "Please select atleast one Warehouse";
     }
-    const userPayload = {
-      accessRightsRoleId: 2,
-      accessWarehouse: warehouse,
-      // accessaddId: 0,
-      active: active,
-      createdBy: userName,
-      email: email,
-      emitterId: 0,
-      firstName: firstName,
-      orgId: orgId,
-      role: role,
-      pno: phone,
-      userAddressDTO: {
-        address1: address,
-        address2: "",
-        country: country,
-        location: "Location",
-        pin: pincode,
-        state: state,
-        city: city,
-      },
-      userName: email,
-      userId: userEditId,
-    };
 
-    const token = localStorage.getItem("token");
-    let headers = {
-      "Content-Type": "application/json",
-    };
-    if (token) {
-      headers = {
-        ...headers,
-        Authorization: `Bearer ${token}`,
-      };
-    }
-    const hashedPassword = encryptPassword(password);
-    console.log("Update Payload is:", userPayload);
     if (Object.keys(errors).length === 0) {
+      const userPayload = {
+        accessRightsRoleId: 2,
+        accessWarehouse: warehouse,
+        active: active,
+        createdBy: userName,
+        email: email,
+        emitterId: 0,
+        firstName: firstName,
+        orgId: orgId,
+        role: role,
+        pno: phone,
+        userAddressDTO: {
+          address1: address,
+          address2: "",
+          country: country,
+          location: "Location",
+          pin: pincode,
+          state: state,
+          city: city,
+        },
+        userName: email,
+        userId: userEditId,
+      };
+
+      const token = localStorage.getItem("token");
+      let headers = {
+        "Content-Type": "application/json",
+      };
+      if (token) {
+        headers = {
+          ...headers,
+          Authorization: `Bearer ${token}`,
+        };
+      }
+      const hashedPassword = encryptPassword(password);
+      console.log("Update Payload is:", userPayload);
+
       axios
         .put(
           `${process.env.REACT_APP_API_URL}/api/auth/updateUser`,
@@ -674,8 +687,15 @@ function UserCreation({ addUser, userEditId }) {
           </div>
           {/* COUNTRY FIELD */}
           <div className="col-lg-3 col-md-6 mb-2">
-            <label className="label label-text label-font-size text-base-content">
-              Country
+            <label className="label">
+              <span
+                className={
+                  "label-text label-font-size text-base-content d-flex flex-row"
+                }
+              >
+                Country
+                <FaStarOfLife className="must" />
+              </span>
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2">
@@ -822,20 +842,23 @@ function UserCreation({ addUser, userEditId }) {
                 }
               >
                 Warehouse
+                <FaStarOfLife className="must" />
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6 mb-4">
-            <button
-              type="button"
-              onClick={handleShippingClickOpen}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Assign Warehouse
-            </button>
-            {errors.warehouse && (
-              <span className="error-text">{errors.warehouse}</span>
-            )}
+          <div className="col-lg-3 col-md-6 mb-2">
+            <div className="d-flex flex-column">
+              <button
+                type="button"
+                onClick={handleShippingClickOpen}
+                className="bg-blue me-5 mb-2 inline-block rounded bg-primary w-fit h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Assign Warehouse
+              </button>
+              {errors.warehouse && (
+                <span className="error-text">{errors.warehouse}</span>
+              )}
+            </div>
           </div>
           {/* ALLOW INFORMATION FIELD */}
           {/* <div className="col-lg-3 col-md-6 mb-2">
@@ -898,7 +921,7 @@ function UserCreation({ addUser, userEditId }) {
               onClick={handleUserCreation}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
-              Save
+              Create User
             </button>
             <button
               type="button"
@@ -924,12 +947,34 @@ function UserCreation({ addUser, userEditId }) {
             className="cursor-pointer w-8 h-8 mt-3 me-3"
           />
         </div>
+
         <DialogContent>
           <DialogContentText className="d-flex flex-column">
             <div className="row mb-3">
               <div className="col-lg-12 col-md-12">
                 {warehouseLocationVO.length > 0 ? (
                   <div>
+                    <div className="form-check mb-2">
+                      <input
+                        className="form-check-input"
+                        type="checkbox"
+                        id="selectAll"
+                        value="selectAll"
+                        checked={
+                          Array.isArray(warehouse) &&
+                          warehouse.length === warehouseLocationVO.length
+                        }
+                        onChange={(e) =>
+                          handleLocationChange("selectAll", e.target.checked)
+                        }
+                      />
+                      <label
+                        className="form-check-label fw-bold"
+                        htmlFor="selectAll"
+                      >
+                        SELECT ALL WAREHOUSE
+                      </label>
+                    </div>
                     {warehouseLocationVO.map((location) => (
                       <div className="form-check" key={location.warehouseId}>
                         <input
