@@ -88,6 +88,7 @@ function OemCreation({ addEmitter, oemEditId }) {
     localStorage.getItem("userName")
   );
   const [selectedFlows, setSelectedFlows] = useState([]);
+  const [selectAll, setSelectAll] = useState(false);
   const [oemData, setOemData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [countryList, setCountryList] = useState([]);
@@ -498,23 +499,32 @@ function OemCreation({ addEmitter, oemEditId }) {
       setErrors(errors);
     }
   };
-  const handleFlowSelection = (flow, isChecked) => {
-    setSelectedFlows((prevFlow) => {
-      if (!Array.isArray(prevFlow)) {
-        console.error("flow state is not an array:", prevFlow);
-        return prevFlow;
-      }
 
+  const handleFlowSelection = (flow, isChecked) => {
+    if (flow === "selectAll") {
       if (isChecked) {
-        const updatedFlow = [...prevFlow, flow];
-        console.log("Updated flow State (Added):", updatedFlow);
-        return updatedFlow;
+        const allFlowIds = flow.map((flowItem) => flowItem.id);
+        setSelectedFlows(allFlowIds);
+        setSelectAll(true);
       } else {
-        const updatedFlow = prevFlow.filter((id) => id !== flow);
-        console.log("Updated flow State (Removed):", updatedFlow);
-        return updatedFlow;
+        setSelectedFlows([]);
+        setSelectAll(false);
       }
-    });
+    } else {
+      setSelectedFlows((prevFlow) => {
+        if (isChecked) {
+          const updatedFlow = [...prevFlow, flow];
+          if (updatedFlow.length === flow.length) {
+            setSelectAll(true);
+          }
+          return updatedFlow;
+        } else {
+          const updatedFlow = prevFlow.filter((id) => id !== flow);
+          setSelectAll(false);
+          return updatedFlow;
+        }
+      });
+    }
   };
 
   // GET USER DETAILS
@@ -963,6 +973,24 @@ function OemCreation({ addEmitter, oemEditId }) {
             <div className="col-lg-12 col-md-12">
               {flow.length > 0 ? (
                 <div>
+                  <div className="form-check mb-2">
+                    <input
+                      type="checkbox"
+                      className="form-check-input"
+                      id="selectAll"
+                      value="selectAll"
+                      checked={selectAll}
+                      onChange={(e) =>
+                        handleFlowSelection("selectAll", e.target.checked)
+                      }
+                    />
+                    <label
+                      className="form-check-label ms-1"
+                      htmlFor="selectAll"
+                    >
+                      Select All
+                    </label>
+                  </div>
                   {flow.map((flowItem) => (
                     <div className="form-check mb-2" key={flowItem.id}>
                       <input
