@@ -283,7 +283,7 @@ export const UserDetails = () => {
 
             {/* BULK UPLOAD AND ADD NEW BUTTON */}
             <div className="">
-              <div className="flex justify-between mt-4">
+              <div className="d-flex justify-content-end mt-4">
                 {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -308,7 +308,7 @@ export const UserDetails = () => {
                   </span>
                 </button> */}
 
-                <BulkUploadDialog
+                {/* <BulkUploadDialog
                   open={open}
                   onOpenClick={handleClickOpen}
                   handleClose={handleClose}
@@ -319,7 +319,7 @@ export const UserDetails = () => {
                   sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
                   handleFileUpload={handleFileUpload}
                   apiUrl={apiUrl}
-                />
+                /> */}
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

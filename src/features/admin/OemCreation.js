@@ -283,9 +283,8 @@ function OemCreation({ addEmitter, oemEditId }) {
     setRole("ROLE_OEM");
     setErrors({});
     setOpenShippingModal(false);
-    setReceiver(null);
+    setReceiver("");
     setFlow([]);
-    setReceiverCustomersVO([]);
     setOrgId(localStorage.getItem("orgId"));
     setSelectedFlows([]);
     // notify();
