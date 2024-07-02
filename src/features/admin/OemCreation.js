@@ -88,7 +88,6 @@ function OemCreation({ addEmitter, oemEditId }) {
     localStorage.getItem("userName")
   );
   const [selectedFlows, setSelectedFlows] = useState([]);
-  const [selectAll, setSelectAll] = useState(false);
   const [oemData, setOemData] = useState({});
   const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [countryList, setCountryList] = useState([]);
@@ -501,30 +500,19 @@ function OemCreation({ addEmitter, oemEditId }) {
   };
 
   const handleFlowSelection = (flow, isChecked) => {
-    if (flow === "selectAll") {
-      if (isChecked) {
-        const allFlowIds = flow.map((flowItem) => flowItem.id);
-        setSelectedFlows(allFlowIds);
-        setSelectAll(true);
-      } else {
-        setSelectedFlows([]);
-        setSelectAll(false);
+    setSelectedFlows((prevFlow) => {
+      if (!Array.isArray(prevFlow)) {
+        return prevFlow;
       }
-    } else {
-      setSelectedFlows((prevFlow) => {
-        if (isChecked) {
-          const updatedFlow = [...prevFlow, flow];
-          if (updatedFlow.length === flow.length) {
-            setSelectAll(true);
-          }
-          return updatedFlow;
-        } else {
-          const updatedFlow = prevFlow.filter((id) => id !== flow);
-          setSelectAll(false);
-          return updatedFlow;
-        }
-      });
-    }
+
+      if (isChecked) {
+        const updatedFlow = [...prevFlow, flow];
+        return updatedFlow;
+      } else {
+        const updatedFlow = prevFlow.filter((id) => id !== flow);
+        return updatedFlow;
+      }
+    });
   };
 
   // GET USER DETAILS
@@ -943,7 +931,7 @@ function OemCreation({ addEmitter, oemEditId }) {
               onClick={handleOemCreation}
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
             >
-              Save
+              Create
             </button>
             <button
               type="button"
@@ -973,24 +961,6 @@ function OemCreation({ addEmitter, oemEditId }) {
             <div className="col-lg-12 col-md-12">
               {flow.length > 0 ? (
                 <div>
-                  <div className="form-check mb-2">
-                    <input
-                      type="checkbox"
-                      className="form-check-input"
-                      id="selectAll"
-                      value="selectAll"
-                      checked={selectAll}
-                      onChange={(e) =>
-                        handleFlowSelection("selectAll", e.target.checked)
-                      }
-                    />
-                    <label
-                      className="form-check-label ms-1"
-                      htmlFor="selectAll"
-                    >
-                      Select All
-                    </label>
-                  </div>
                   {flow.map((flowItem) => (
                     <div className="form-check mb-2" key={flowItem.id}>
                       <input
