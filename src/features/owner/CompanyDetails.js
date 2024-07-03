@@ -133,12 +133,12 @@ export const CompanyDetails = () => {
     setOpenView(true);
   };
 
-  const handleEditRow = (row) => {
-    setSelectedRowId(row.original.userId);
-    console.log("setSelectedRowID", row.original.userId);
-    setEditCompany(true);
-    // setNewCompany(true);
-  };
+  // const handleEditRow = (row) => {
+  //   setSelectedRowId(row.original.userId);
+  //   console.log("setSelectedRowID", row.original.userId);
+  //   setEditCompany(true);
+  //   // setNewCompany(true);
+  // };
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -172,9 +172,9 @@ export const CompanyDetails = () => {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <IconButton onClick={() => handleEditRow(row)}>
+            {/* <IconButton onClick={() => handleEditRow(row)}>
               <EditIcon />
-            </IconButton>
+            </IconButton> */}
           </div>
         ),
       },
@@ -275,8 +275,8 @@ export const CompanyDetails = () => {
 
             {/* BULK UPLOAD AND ADD NEW BUTTON */}
             <div className="">
-              <div className="flex justify-between mt-4">
-                <button
+              <div className="d-flex justify-content-end mt-4">
+                {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
                   onClick={handleClickOpen}
@@ -298,7 +298,7 @@ export const CompanyDetails = () => {
                   >
                     Bulk Upload
                   </span>
-                </button>
+                </button> */}
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
