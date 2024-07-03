@@ -82,7 +82,7 @@ const TransporterPickup = ({}) => {
       if (response.status === 200) {
         setTransporterList(
           response.data.paramObjectsMap.vendorVO.filter(
-            (user) => user.venderType === "Transport"
+            (user) => user.venderType === "TRANSPORT"
           )
         );
       }

@@ -107,20 +107,12 @@ export const CompanyDetails = () => {
   const getAllUsersData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/auth/userByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/company/getAllCompany`
       );
 
       if (response.status === 200) {
-        setData(
-          response.data.paramObjectsMap.userVO.filter(
-            (user) => user.role === "ROLE_ADMIN"
-          )
-        );
-        console.log(
-          response.data.paramObjectsMap.userVO.filter(
-            (user) => user.role === "ROLE_ADMIN"
-          )
-        );
+        setData(response.data.paramObjectsMap.organizationVO);
+        console.log("setData", response.data.paramObjectsMap.organizationVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -190,7 +182,7 @@ export const CompanyDetails = () => {
       //   },
       // },
       {
-        accessorKey: "firstName",
+        accessorKey: "name",
         header: "User Name",
         size: 50,
         muiTableHeadCellProps: {
@@ -212,7 +204,7 @@ export const CompanyDetails = () => {
         },
       },
       {
-        accessorKey: "pno",
+        accessorKey: "phoneNumber",
         header: "Phone",
         size: 50,
         muiTableHeadCellProps: {
@@ -410,43 +402,45 @@ export const CompanyDetails = () => {
                     <TableCell>{selectedRowData.firstName}</TableCell>
                   </TableRow> */}
                   <TableRow>
-                    <TableCell>Email ID</TableCell>
+                    <TableCell>Company Name</TableCell>
+                    <TableCell>{selectedRowData.name}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Company Code</TableCell>
+                    <TableCell>{selectedRowData.code}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Admin Email</TableCell>
                     <TableCell>{selectedRowData.email}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Phone</TableCell>
-                    <TableCell>{selectedRowData.pno}</TableCell>
+                    <TableCell>{selectedRowData.phoneNumber}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Address</TableCell>
-                    <TableCell>
-                      {selectedRowData.userAddressVO.address1}
-                    </TableCell>
+                    <TableCell>{selectedRowData.address}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>City</TableCell>
-                    {selectedRowData.userAddressVO.city ? (
-                      <TableCell>
-                        {selectedRowData.userAddressVO.city}
-                      </TableCell>
+                    {selectedRowData.city ? (
+                      <TableCell>{selectedRowData.city}</TableCell>
                     ) : (
                       <TableCell>-</TableCell>
                     )}
-                    {/* <TableCell>{selectedRowData.userAddressVO.city}</TableCell> */}
+                    {/* <TableCell>{selectedRowData.city}</TableCell> */}
                   </TableRow>
                   <TableRow>
                     <TableCell>State</TableCell>
-                    <TableCell>{selectedRowData.userAddressVO.state}</TableCell>
+                    <TableCell>{selectedRowData.state}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Country</TableCell>
-                    <TableCell>
-                      {selectedRowData.userAddressVO.country}
-                    </TableCell>
+                    <TableCell>{selectedRowData.country}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>PinCode</TableCell>
-                    <TableCell>{selectedRowData.userAddressVO.pin}</TableCell>
+                    <TableCell>{selectedRowData.pinCode}</TableCell>
                   </TableRow>
                   {/* <TableRow>
                                         <TableCell>Status</TableCell>
