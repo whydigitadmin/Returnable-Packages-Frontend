@@ -738,7 +738,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               disabled={viewAssetInwardId ? true : false}
             >
               <option value="" disabled>
-                Select Stock Branch
+                Select Warehouse
               </option>
               <option value="AI POOL">AI POOL</option>
 
@@ -928,17 +928,19 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
                 <table className="w-full">
                   <thead>
                     <tr>
-                      <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
-                      <th className="px-2 py-2 bg-blue-500 text-white">
+                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                        S.No
+                      </th>
+                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         Tag Code
                       </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white">
+                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         RF ID
                       </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white">
+                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         Asset Code
                       </th>
-                      <th className="px-2 py-2 bg-blue-500 text-white">
+                      <th className="px-2 py-2 bg-blue-500 text-white text-center">
                         Asset
                       </th>
                     </tr>
@@ -946,11 +948,17 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
                   <tbody>
                     {assetTaggingDetails.map((item, index) => (
                       <tr key={index}>
-                        <td className="px-2 py-2">{item.serialNumber}</td>
-                        <td className="px-2 py-2">{item.tagCode}</td>
-                        <td className="px-2 py-2">{item.rfId}</td>
-                        <td className="px-2 py-2">{item.assetCode}</td>
-                        <td className="px-2 py-2">{item.asset}</td>
+                        <td className="px-2 py-2 text-center">
+                          {item.serialNumber}
+                        </td>
+                        <td className="px-2 py-2 text-center">
+                          {item.tagCode}
+                        </td>
+                        <td className="px-2 py-2 text-center">{item.rfId}</td>
+                        <td className="px-2 py-2 text-center">
+                          {item.assetCode}
+                        </td>
+                        <td className="px-2 py-2 text-center">{item.asset}</td>
                       </tr>
                     ))}
                   </tbody>

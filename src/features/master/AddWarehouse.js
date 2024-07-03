@@ -253,9 +253,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
   // SAVE WAREHOUSE
   const handleWarehouse = () => {
     const errors = {};
-    // if (!name) {
-    //   errors.name = "Warehouse Name is required";
-    // }
     if (!locationName) {
       errors.locationName = "Location Name is required";
     }
@@ -279,10 +276,18 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     }
     if (!pincode) {
       errors.pincode = "Pincode is required";
+    } else if (pincode.length !== 6) {
+      errors.pincode = "Pincode must be exactly 6 characters";
     }
     if (!stock) {
       errors.stock = "Stock branch is required";
     }
+    if (!gst) {
+      errors.gst = "GST is required";
+    } else if (gst.length !== 15) {
+      errors.gst = "GST must be exactly 15 characters";
+    }
+
     if (Object.keys(errors).length === 0) {
       const formData = {
         code,
@@ -326,7 +331,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             autoClose: 2000,
             theme: "colored",
           });
-          // Handle error response
           if (error.response) {
             console.log("Response status:", error.response.status);
             console.log("Response data:", error.response.data);
@@ -340,9 +344,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
   // Update
   const handleUpdateWarehouse = () => {
     const errors = {};
-    // if (!name) {
-    //   errors.name = "Warehouse Name is required";
-    // }
     if (!locationName) {
       errors.locationName = "Location Name is required";
     }
@@ -360,6 +361,13 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     }
     if (!pincode) {
       errors.pincode = "Pincode is required";
+    } else if (pincode.length !== 6) {
+      errors.pincode = "Pincode must be exactly 6 characters";
+    }
+    if (!gst) {
+      errors.gst = "GST is required";
+    } else if (gst.length !== 15) {
+      errors.gst = "GST must be exactly 15 characters";
     }
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -470,7 +478,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              // placeholder={"Enter"}
               name="locationName"
               onInput={stringAndNoAndSpecialCharValidation}
               value={locationName}
@@ -495,7 +502,6 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              // placeholder={"Enter"}
               onInput={(e) => {
                 e.target.value = e.target.value.toUpperCase();
               }}
@@ -521,12 +527,10 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              // placeholder={"Enter"}
               onInput={codeFieldValidation}
               name="name"
               value={name}
               disabled
-              // disabled={editWarehouseId ? true : false}
               onChange={handleInputChange}
             />
             {errors.name && <span className="error-text">{errors.name}</span>}
@@ -724,12 +728,14 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              // placeholder={"Enter"}
               name="gst"
               value={gst}
               onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
+                e.target.value = e.target.value
+                  .toUpperCase()
+                  .replace(/[^a-zA-Z0-9]/g, "");
               }}
+              maxLength={15}
               onChange={handleInputChange}
             />
             {errors.gst && <span className="error-text">{errors.gst}</span>}

@@ -60,6 +60,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
   const [allocateErrorMsg, setAllocateErrorMsg] = useState(false);
+  const [tableView, setTableView] = useState(false);
 
   const [tableData, setTableData] = useState([
     {
@@ -86,9 +87,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
       };
       setTableData([...tableData, newRow]);
     }
-    // else {
-    //     toast.error("Please fill in the Asset Code for the existing row before adding a new one.");
-    // }
   };
 
   const [tableData1, setTableData1] = useState([
@@ -109,8 +107,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     console.log("VIEWID is:", viewId);
     getNewDocId();
     getBinRequestByReqNo();
-    // getAvlQtyByBranch();
-    // getAllBinRequest()
     viewAllotedBinByDocId();
     getStockBranch();
   }, [tableData.assetCode, avlQty, flowId]);
@@ -159,7 +155,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
         setEmitterId(response.data.paramObjectsMap.BinAllotment[0].emitterid);
         setFlow(response.data.paramObjectsMap.BinAllotment[0].flow);
         setFlowId(response.data.paramObjectsMap.BinAllotment[0].flowid);
-        // setReqPartNo(response.data.paramObjectsMap.BinAllotment[0].emitterid);
       } else {
         console.error("API Error:", response.data);
       }
@@ -171,13 +166,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   const handleStockFromChange = (e) => {
     const selectedValue = e.target.value;
     setStockFrom(selectedValue);
-
-    // const filteredBranches = stockBranchList.filter(
-    //   (branch) => branch.branchCode !== selectedValue
-    // );
-    // setStockTo("");
-    // setFilteredStockBranch(filteredBranches);
-    // console.log("TO STOCK BRANCH IS:", filteredBranches);
     getAvlQtyByBranch(selectedValue);
   };
   const handleStockToChange = (e) => {
@@ -261,7 +249,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   const getAvlQtyByBranch = async (selectedValue) => {
     try {
       const response = await axios.get(
-        // `${process.env.REACT_APP_API_URL}/api/master/getAvalkitqtyByBranch?branch=${selectedValue}&Kitname=${reqKitName}`
         `${process.env.REACT_APP_API_URL}/api/master/getAvalkitqtyByWarehouse?kitName=${reqKitName}&warehouse=${selectedValue}`
       );
 
@@ -333,7 +320,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     }
 
     if (!stockFrom) {
-      errors.stockFrom = "Stock Branch is required";
+      errors.stockFrom = "Stock From is required";
     }
 
     if (!reqNo) {
@@ -439,13 +426,11 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     );
 
     if (field === "rfId") {
-      // Check if the value was pasted (assume pasting takes more than 200ms)
       const isPasted =
         value.length > 1 &&
         value !== tableData.find((row) => row.id === id).rfId;
 
       if (isPasted) {
-        // Store the previous RF ID value
         const prevRfId = value;
 
         try {
@@ -470,11 +455,10 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                     assetCode: assetCode || "",
                     qty: 1,
                     rfId: prevRfId,
-                  } // Retain RF ID value
+                  }
                 : r
             );
 
-            // Check if the last row has RF ID filled; if not, add a new row
             const lastRow = updatedTableData[updatedTableData.length - 1];
             if (!lastRow || lastRow.rfId !== "") {
               const newRow = {
@@ -510,13 +494,11 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     );
 
     if (field === "assetId") {
-      // Check if the value was pasted (assume pasting takes more than 200ms)
       const isPasted =
         value.length > 1 &&
         value !== tableData.find((row) => row.id === id).assetId;
 
       if (isPasted) {
-        // Store the previous RF ID value
         const prevAssetId = value;
 
         try {
@@ -541,11 +523,10 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                     assetCode: assetCode || "",
                     qty: 1,
                     assetId: prevAssetId,
-                  } // Retain RF ID value
+                  }
                 : r
             );
 
-            // Check if the last row has RF ID filled; if not, add a new row
             const lastRow = updatedTableData[updatedTableData.length - 1];
             if (!lastRow || lastRow.assetId !== "") {
               const newRow = {
@@ -573,106 +554,48 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
     }
   };
 
-  // PROPERLY WORKING FN
-  // const handleAllotedQtyChange = async (e) => {
-  //     if (e.key === 'Tab') {
-  //         try {
-  //             const response = await axios.get(
-  //                 `${process.env.REACT_APP_API_URL}/api/master/getRandomStockAssetDetails?branchCode=${stockFrom}&kitCode=${reqKitName}&qty=${alotQty}`
-  //             );
-  //             if (response.status === 200) {
-  //                 console.log("API Response:", response.data.paramObjectsMap.StockDetails);
-  //                 const viewTableData =
-  //                     response.data.paramObjectsMap.StockDetails.map(
-  //                         (row, index) => ({
-  //                             id: index + 1,
-  //                             assetId: row.tagCode,
-  //                             rfId: row.rfId,
-  //                             asset: row.asset,
-  //                             // assetCode: row.assetCode,
-  //                             qty: 1,
-  //                         })
-  //                     );
-  //                 setTableData(viewTableData);
-
-  //             } else {
-  //                 console.error("API Error:", response.data);
-  //             }
-  //         } catch (error) {
-  //             console.error("Error fetching data:", error);
-  //         }
-  //     }
-  // };
-
   const handleAllotedQtyChange = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getRandomStockAssetDetails?branchCode=${stockFrom}&kitCode=${reqKitName}&qty=${alotQty}`
-      );
-      if (response.status === 200) {
-        console.log(
-          "API Response:",
-          response.data.paramObjectsMap.StockDetails
+    const handleCheckErrors = {};
+    if (!stockFrom) {
+      handleCheckErrors.stockFrom = "Stock From is required";
+    }
+    if (!alotQty) {
+      handleCheckErrors.alotQty = "Allot QTY is required";
+    }
+
+    if (Object.keys(handleCheckErrors).length === 0) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/master/getRandomStockAssetDetails?branchCode=${stockFrom}&kitCode=${reqKitName}&qty=${alotQty}`
         );
-        const viewTableData = response.data.paramObjectsMap.StockDetails.map(
-          (row, index) => ({
-            id: index + 1,
-            assetId: row.tagCode,
-            rfId: row.rfId,
-            asset: row.asset,
-            assetCode: row.assetCode,
-            qty: 1,
-          })
-        );
-        setTableData(viewTableData);
-      } else {
-        console.error("API Error:", response.data);
+        if (response.status === 200) {
+          console.log(
+            "API Response:",
+            response.data.paramObjectsMap.StockDetails
+          );
+          const viewTableData = response.data.paramObjectsMap.StockDetails.map(
+            (row, index) => ({
+              id: index + 1,
+              assetId: row.tagCode,
+              rfId: row.rfId,
+              asset: row.asset,
+              assetCode: row.assetCode,
+              qty: 1,
+            })
+          );
+          setTableView(true);
+          setTableData(viewTableData);
+          setErrors({});
+        } else {
+          console.error("API Error:", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } else {
+      setErrors(handleCheckErrors);
     }
   };
-
-  // const handleAllotedQtyChange = async (e) => {
-  //   if (e.key === "Tab" || e.key === "Enter") {
-  //     e.preventDefault(); // Prevent the default behavior of the key press (Tab or Enter)
-
-  //     const inputValue = parseInt(alotQty + e.key, 10); // Parse the input value as an integer with the new key pressed
-  //     if (!isNaN(inputValue) && inputValue <= minQty) {
-  //       setAlotQty(inputValue.toString());
-
-  //       if (e.key === "Tab") {
-  //         try {
-  //           const response = await axios.get(
-  //             `${process.env.REACT_APP_API_URL}/api/master/getRandomStockAssetDetails?branchCode=${stockFrom}&kitCode=${reqKitName}&qty=${inputValue}`
-  //           );
-  //           if (response.status === 200) {
-  //             console.log(
-  //               "API Response:",
-  //               response.data.paramObjectsMap.StockDetails
-  //             );
-  //             const viewTableData =
-  //               response.data.paramObjectsMap.StockDetails.map(
-  //                 (row, index) => ({
-  //                   id: index + 1,
-  //                   assetId: row.tagCode,
-  //                   rfId: row.rfId,
-  //                   asset: row.asset,
-  //                   assetCode: row.assetCode,
-  //                   qty: 1,
-  //                 })
-  //               );
-  //             setTableData(viewTableData);
-  //           } else {
-  //             console.error("API Error:", response.data);
-  //           }
-  //         } catch (error) {
-  //           console.error("Error fetching data:", error);
-  //         }
-  //       }
-  //     }
-  //   }
-  // };
 
   return (
     <>
@@ -733,7 +656,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                     <label className="label mb-4">
                       <span className="label-text label-font-size text-base-content d-flex flex-row">
                         Alloted Date:
-                        {/* <FaStarOfLife className="must" /> */}
                       </span>
                     </label>
                   </div>
@@ -742,7 +664,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                       className="form-control form-sz mb-2"
                       placeholder="Auto Gen"
                       value={allotDate}
-                      // onChange={(e) => setDocId(e.target.value)}
                       disabled
                     />
                     {errors.allotDate && (
@@ -758,7 +679,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                     <label className="label mb-4">
                       <span className="label-text label-font-size text-base-content d-flex flex-row">
                         Doc Date:
-                        {/* <FaStarOfLife className="must" /> */}
                       </span>
                     </label>
                   </div>
@@ -783,30 +703,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             </>
           )}
 
-          {/* <div className="col-lg-3 col-md-6">
-                        <label className="label mb-4">
-                            <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                Doc Date:
-                            </span>
-                        </label>
-                    </div>
-                    <div className="col-lg-3 col-md-6">
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DesktopDatePicker
-                                value={docDate}
-                                onChange={(date) => setDocDate(date)}
-                                slotProps={{
-                                    textField: { size: "small", clearable: true },
-                                }}
-                                format="DD/MM/YYYY"
-                                disabled
-                            />
-                        </LocalizationProvider>
-                        {errors.docDate && (
-                            <span className="error-text mb-1">{errors.docDate}</span>
-                        )}
-                    </div> */}
-
           {/* REQ NO FIELD */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
@@ -830,7 +726,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
                 Req Date:
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -850,7 +745,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
                 Emitter
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -870,7 +764,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
                 Flow
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -888,7 +781,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
                 Kit
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -900,28 +792,11 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               disabled
             />
           </div>
-          {/* PART NAME FIELD */}
-          {/* <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Part
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <input
-                                    className="form-control form-sz mb-2"
-                                    name="partName"
-                                    value={reqPartName}
-                                    disabled
-                                />
-                            </div> */}
           {/* REQ QTY FIELD */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
                 Req QTY
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -931,7 +806,6 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               name="reqQTY"
               value={reqQty}
               disabled
-              // onChange={(e) => setReqQty(e.target.value)}
             />
             {errors.reqQty && (
               <span className="error-text">{errors.reqQty}</span>
@@ -946,63 +820,47 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleStockFromChange}
-              value={stockFrom}
-              disabled={viewId ? true : false}
-            >
-              <option value="" disabled>
-                Select a Warehouse
-              </option>
-              {stockBranchList &&
-                stockBranchList.map((list, index) => (
-                  <option key={index} value={list.branchCode}>
-                    {list.branchCode}
+          {viewId ? (
+            <>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  name="stockFrom"
+                  value={stockFrom}
+                  disabled
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="col-lg-3 col-md-6">
+                <select
+                  className="form-select form-sz w-full mb-2"
+                  onChange={handleStockFromChange}
+                  value={stockFrom}
+                >
+                  <option value="" disabled>
+                    Select a Warehouse
                   </option>
-                ))}
-            </select>
-            {errors.stockFrom && (
-              <span className="error-text mb-1">{errors.stockFrom}</span>
-            )}
-          </div>
-          {/* STOCK TO FIELD */}
-          {/* <div className="col-lg-3 col-md-6">
-                                <label className="label mb-4">
-                                    <span className="label-text label-font-size text-base-content d-flex flex-row">
-                                        Stock To
-                                        <FaStarOfLife className="must" />
-                                    </span>
-                                </label>
-                            </div>
-                            <div className="col-lg-3 col-md-6">
-                                <select
-                                    className="form-select form-sz w-full mb-2"
-                                    onChange={handleStockToChange}
-                                    value={stockTo}
-                                    disabled={selectedRowId ? true : false}
-                                >
-                                    <option value="" disabled>
-                                        Select Stock To Branch
-                                    </option>
-                                    {filteredStockBranch.length > 0 &&
-                                        filteredStockBranch.map((list) => (
-                                            <option key={list.id} value={list.branchCode}>
-                                                {list.branchCode}
-                                            </option>
-                                        ))}
-                                </select>
-                                {errors.stockTo && (
-                                    <span className="error-text mb-1">{errors.stockTo}</span>
-                                )}
-                            </div> */}
+                  {stockBranchList &&
+                    stockBranchList.map((list, index) => (
+                      <option key={index} value={list.branchCode}>
+                        {list.branchCode}
+                      </option>
+                    ))}
+                </select>
+                {errors.stockFrom && (
+                  <span className="error-text mb-1">{errors.stockFrom}</span>
+                )}
+              </div>
+            </>
+          )}
+
           {/* AVL QTY FIELD */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
                 Avl QTY
-                {/* <FaStarOfLife className="must" /> */}
               </span>
             </label>
           </div>
@@ -1035,7 +893,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
               onChange={(e) => {
                 const inputValue = e.target.value
                   .toUpperCase()
-                  .replace(/[^0-9]/g, ""); // Only allow numeric input
+                  .replace(/[^0-9]/g, "");
                 const newValue = parseInt(inputValue, 10);
                 if (!isNaN(newValue)) {
                   if (newValue <= minQty && newValue !== 0) {
@@ -1049,13 +907,15 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                   setAlotQty("");
                 }
               }}
-              // onKeyDown={(e) => handleAllotedQtyChange(e)}
               disabled={viewId ? true : false}
             />
             {allocateErrorMsg && (
               <span className="error-text">
                 Allocate Qty is too low or exceed from Available Qty
               </span>
+            )}
+            {errors.alotQty && (
+              <span className="error-text">{errors.alotQty}</span>
             )}
           </div>
         </div>
@@ -1068,221 +928,57 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             Check
           </button>
         </div>
-        {/* {!selectedRowId && (
-                            <>
-                                <div className="mt-2">
-                                    <button
-                                        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
-                                        onClick={handleAddRow}
-                                    >
-                                        + Add
-                                    </button>
-                                </div>
-                            </>
-                        )} */}
-        {/* <div className="row mt-2">
-                            <div className="col-lg-12">
-                                <div className="overflow-x-auto">
-                                    <table className="w-full">
-                                        <thead>
-                                            <tr>
-                                                {!viewId && (
-                                                    <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                        Action
-                                                    </th>
-                                                )}
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    S.No
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    Tag Code
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    RF ID
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    Asset
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    Asset Code
-                                                </th>
-                                                <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                    QTY
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {tableData &&
-                                                tableData.map((row) => (
-                                                    <tr key={row.id}>
-                                                        {!viewId && (
-                                                            <>
-                                                                <td className="border px-2 py-2">
-                                                                    <button
-                                                                        onClick={() => handleDeleteRow(row.id)}
-                                                                        className="text-red-500"
-                                                                    >
-                                                                        <FaTrash style={{ fontSize: "18px" }} />
-                                                                    </button>
-                                                                </td>
-                                                            </>
-                                                        )}
-                                                        <td className="border px-2 py-2">{row.id}</td>
-                                                        <td>
-                                                            <input
-                                                                type="text"
-                                                                name="assetId"
-                                                                value={row.assetId}
-                                                                onChange={(e) =>
-                                                                    handleTagCodeChange(
-                                                                        row.id,
-                                                                        "assetId",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                disabled={selectedRowId ? true : false}
-                                                                ref={assetIdInputRef}
-                                                            />
-                                                        </td>
-                                                        <td>
-                                                            <input
-                                                                type="text"
-                                                                name="rfId"
-                                                                value={row.rfId}
-                                                                onChange={(e) =>
-                                                                    handleRfIdChange(
-                                                                        row.id,
-                                                                        "rfId",
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                ref={rfIdInputRef}
-                                                                disabled={selectedRowId ? true : false}
-                                                                style={{ width: "100%" }}
-                                                            />
-                                                        </td>
-                                                        <td>{row.asset}</td>
-                                                        <td>{row.assetCode}</td>
-                                                        <td>{row.qty}</td>
-                                                    </tr>
-                                                ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                        {errors.tableData && (
-                            <div className="error-text mt-2">{errors.tableData}</div>
-                        )} */}
 
-        <div className="row mt-4">
-          <div className="col-lg-12">
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr>
-                    {/* {!viewId && (
-                                                    <th className="px-2 py-2 bg-blue-500 text-white text-center">
-                                                        Action
-                                                    </th>
-                                                )} */}
-                    <th className="px-2 py-2 bg-blue-500 text-white">S.No</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Tag Code
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">RF ID</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">Asset</th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">
-                      Asset Code
-                    </th>
-                    <th className="px-2 py-2 bg-blue-500 text-white">QTY</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {tableData &&
-                    tableData.map((row) => (
-                      <tr key={row.id}>
-                        {/* {!viewId && (
-                                                            <>
-                                                                <td className="border px-2 py-2">
-                                                                    <button
-                                                                        onClick={() => handleDeleteRow(row.id)}
-                                                                        className="text-red-500"
-                                                                    >
-                                                                        <FaTrash style={{ fontSize: "18px" }} />
-                                                                    </button>
-                                                                </td>
-                                                            </>
-                                                        )} */}
-                        <td className="border px-2 py-2">{row.id}</td>
-                        <td>
-                          {/* <input
-                                                        type="text"
-                                                        name="assetId"
-                                                        value={row.assetId}
-                                                        onChange={(e) =>
-                                                            handleTagCodeChange(
-                                                                row.id,
-                                                                "assetId",
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        disabled={viewId ? true : false}
-                                                        ref={assetIdInputRef}
-                                                    /> */}
-                          {row.assetId}
-                        </td>
-                        <td>
-                          {/* <input
-                                                        type="text"
-                                                        name="rfId"
-                                                        value={row.rfId}
-                                                        onChange={(e) =>
-                                                            handleRfIdChange(
-                                                                row.id,
-                                                                "rfId",
-                                                                e.target.value
-                                                            )
-                                                        }
-                                                        ref={rfIdInputRef}
-                                                        disabled={viewId ? true : false}
-                                                        style={{ width: "100%" }}
-                                                    /> */}
-                          {row.rfId}
-                        </td>
-                        <td>{row.asset}</td>
-                        <td>{row.assetCode}</td>
-                        <td>{row.qty}</td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-        {errors.tableData && (
-          <div className="error-text mt-2">{errors.tableData}</div>
-        )}
-        {/* {!viewId && (
+        {tableView && (
           <>
-            <div className="mt-4">
-              <button
-                type="button"
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                onClick={handleSave}
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                onClick={handleNew}
-              >
-                Cancel
-              </button>
+            <div className="row mt-4">
+              <div className="col-lg-12">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          S.No
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Tag Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          RF ID
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Asset
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          Asset Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white">
+                          QTY
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tableData &&
+                        tableData.map((row) => (
+                          <tr key={row.id}>
+                            <td className="border px-2 py-2">{row.id}</td>
+                            <td>{row.assetId}</td>
+                            <td>{row.rfId}</td>
+                            <td>{row.asset}</td>
+                            <td>{row.assetCode}</td>
+                            <td>{row.qty}</td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
             </div>
+            {errors.tableData && (
+              <div className="error-text mt-2">{errors.tableData}</div>
+            )}
           </>
-        )} */}
+        )}
       </div>
       <ToastContainer />
     </>

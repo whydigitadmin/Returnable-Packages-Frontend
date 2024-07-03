@@ -219,6 +219,9 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
   // SAVE API
   const handleAssetCategory = () => {
     const errors = {};
+    if (!assetCategory) {
+      errors.assetCategory = "Type is required";
+    }
     if (!assetCodeId) {
       errors.assetCodeId = "Code is required";
     }
@@ -415,6 +418,9 @@ function AddAssetCategory({ addItemSpecification, editItemSpecificationId }) {
                   </option>
                 ))}
             </select>
+            {errors.assetCategory && (
+              <span className="error-text">{errors.assetCategory}</span>
+            )}
           </div>
           <div className="col-lg-6 col-md-12 mb-2"></div>
           <div className="col-lg-3 col-md-6 mb-2">

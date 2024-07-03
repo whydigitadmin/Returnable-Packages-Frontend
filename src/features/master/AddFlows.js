@@ -565,6 +565,7 @@ function AddFlows({ addFlows, editFlowId }) {
     setPartName("");
     setPartNumber("");
     setCycleTime("");
+    setKitDesc("");
     setErrors({});
   };
   // OLD CODE

@@ -438,6 +438,13 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       if (newAddress && newAddress.gstRegistrationStatus.trim() === "") {
         updatedErrors.gstRegistrationStatus = true;
       }
+      if (newAddress && newAddress.gstRegistrationStatus === "Registered") {
+        if (newAddress && newAddress.gstNumber.trim() === "") {
+          updatedErrors.gstNo = true;
+        } else if (newAddress && newAddress.gstNumber.length !== 15) {
+          updatedErrors.gstNoLength = true;
+        }
+      }
       if (newAddress && newAddress.street1.trim() === "") {
         updatedErrors.street1 = true;
       }
@@ -452,9 +459,13 @@ function AddCustomer({ addcustomer, editCustomerId }) {
       }
       if (newAddress && newAddress.pinCode.trim() === "") {
         updatedErrors.pinCode = true;
+      } else if (newAddress && newAddress.pinCode.length !== 6) {
+        updatedErrors.pinCodeLength = true;
       }
       if (newAddress && newAddress.phoneNumber.trim() === "") {
         updatedErrors.phoneNumber = true;
+      } else if (newAddress && newAddress.phoneNumber.length !== 10) {
+        updatedErrors.phoneNumberLength = true;
       }
       if (newAddress && newAddress.email.trim() === "") {
         updatedErrors.email = true;
@@ -1983,10 +1994,25 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                       }}
                       type={"text"}
                       value={newAddress.gstNumber}
+                      onInput={(e) => {
+                        e.target.value = e.target.value
+                          .toUpperCase()
+                          .replace(/[^a-zA-Z0-9]/g, "");
+                      }}
+                      maxLength={15}
                       onChange={(e) => handleAddressInputChange(e, "gstNumber")}
                       className="input input-bordered p-2"
-                      onInput={stringAndNoAndSpecialCharValidation}
                     />
+                    {errors1.gstNo && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        GST Registration Status is required
+                      </span>
+                    )}
+                    {errors1.gstNoLength && (
+                      <span style={{ color: "red", fontSize: "12px" }}>
+                        GST No must be 15 Characters
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
@@ -2184,6 +2210,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     Pin Code is required
                   </span>
                 )}
+                {errors1.pinCodeLength && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Pin Code must be 6 Digit
+                  </span>
+                )}
               </div>
             </div>
             {/* Contact Name */}
@@ -2235,6 +2266,11 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                 {errors1.phoneNumber && (
                   <span style={{ color: "red", fontSize: "12px" }}>
                     Phone Number is required
+                  </span>
+                )}
+                {errors1.phoneNumberLength && (
+                  <span style={{ color: "red", fontSize: "12px" }}>
+                    Phone No must be 10 digit
                   </span>
                 )}
               </div>
@@ -2395,6 +2431,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
                     e.target.value = e.target.value.replace(/\D/g, "");
                   }}
                   type={"text"}
+                  maxLength={20}
                   value={newBankAddress.accountNo}
                   onChange={(e) => handleBankInputChange(e, "accountNo")}
                   className="input input-bordered p-2"

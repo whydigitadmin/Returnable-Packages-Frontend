@@ -376,11 +376,11 @@ function AddKit({ addItem, kitEditId }) {
     if (!assetType) {
       errors.assetType = "Asset Type is required";
     }
-    if (!assetCodeId) {
-      errors.assetCodeId = "Code is required";
-    }
     if (!assetName) {
-      errors.assetName = "Name is required";
+      errors.assetName = "Category is required";
+    }
+    if (!assetCode) {
+      errors.assetCode = "Asset Code is required";
     }
     if (!assetQty) {
       errors.assetQty = "Asset Quantity is required";

@@ -87,10 +87,10 @@ export function AsstTagging({ addTagging, viewId }) {
   const [selectedQRCode, setSelectedQRCode] = useState("");
   const [tagCodeList, setTagCodeList] = useState([]);
   const [viewTagCodeList, setViewTagCodeList] = useState([]);
-  const [assetValue, setAssetValue] = useState(""); // Example of defining assetValue state
-  const [assetCodeValue, setAssetCodeValue] = useState(""); // Example of defining assetCodeValue state
-  const [endNoValue, setEndNoValue] = useState(""); // Example of defining endNoValue state
-  const [startNoValue, setStartNoValue] = useState(""); // Example of defining startNoValue state
+  const [assetValue, setAssetValue] = useState("");
+  const [assetCodeValue, setAssetCodeValue] = useState("");
+  const [endNoValue, setEndNoValue] = useState("");
+  const [startNoValue, setStartNoValue] = useState("");
   const [docId, setDocId] = useState("");
   const [docDate, setDocDate] = useState("");
   const [assetCode, setAssetCode] = useState("");
@@ -200,7 +200,7 @@ export function AsstTagging({ addTagging, viewId }) {
       errors.assetCategory = "Asset Category is required";
     }
     if (!assetName) {
-      errors.assetName = "Asset Name is required";
+      errors.assetName = "Asset Description is required";
     }
     if (!seqTo) {
       errors.seqTo = "QTY is required";
@@ -215,7 +215,6 @@ export function AsstTagging({ addTagging, viewId }) {
         if (response.status === 200) {
           const tagcodes = response.data.paramObjectsMap.tagcode;
           setGenerateFlag(true);
-          setDisableFlag(true);
           setShowTable(true);
           setErrors({});
           // setPoDate(null);
@@ -883,7 +882,7 @@ export function AsstTagging({ addTagging, viewId }) {
             type="text"
             value={seqTo}
             onChange={(e) => setSeqTo(e.target.value)}
-            disabled={disableFlag || viewId ? true : false}
+            disabled={viewId ? true : false}
           />
           {errors.seqTo && <span className="error-text">{errors.seqTo}</span>}
         </div>

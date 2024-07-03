@@ -68,7 +68,7 @@ const IOSSwitch = styled((props) => (
 function AddAsset({ addItem, editItemId }) {
   const [value, setValue] = useState("");
   const [assetTypeVO, setAssetTypeVO] = useState([]);
-  const [assetType, setAssetType] = useState([]);
+  const [assetType, setAssetType] = useState("");
   const [assetTypeSelected, setAssetTypeSelected] = useState(false);
   const [assetCodeId, setAssetCodeId] = useState("");
   const [category, setCategory] = useState("");
@@ -447,9 +447,21 @@ function AddAsset({ addItem, editItemId }) {
 
   const handleAsset = () => {
     const errors = {};
-    // if (!weight) {
-    //   errors.weight = "Weight Name is required";
-    // }
+    if (!assetType) {
+      errors.assetType = "Asset Type is required";
+    }
+    if (!category) {
+      errors.category = "Category is required";
+    }
+    if (!categoryCode) {
+      errors.categoryCode = "Category Code is required";
+    }
+    if (!assetCodeId) {
+      errors.assetCodeId = "Category Code ID is required";
+    }
+    if (!assetName) {
+      errors.assetName = "Asset Description is required";
+    }
     if (!taxRate) {
       errors.taxRate = "Tax Rate is required";
     }
@@ -518,9 +530,21 @@ function AddAsset({ addItem, editItemId }) {
 
   const handleUpdateAsset = () => {
     const errors = {};
-    // if (!weight) {
-    //   errors.weight = "Weight Name is required";
-    // }
+    if (!assetType) {
+      errors.assetType = "Asset Type is required";
+    }
+    if (!category) {
+      errors.category = "Category is required";
+    }
+    if (!categoryCode) {
+      errors.categoryCode = "Category Code is required";
+    }
+    if (!assetCodeId) {
+      errors.assetCodeId = "Category Code ID is required";
+    }
+    if (!assetName) {
+      errors.assetName = "Asset Description is required";
+    }
     if (!taxRate) {
       errors.taxRate = "Tax Rate is required";
     }
@@ -659,7 +683,6 @@ function AddAsset({ addItem, editItemId }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleAssetTypeChange}
               value={assetType}
-              // disabled={assetTypeSelected}
             >
               <option value="" disabled>
                 Select an Type
@@ -671,6 +694,9 @@ function AddAsset({ addItem, editItemId }) {
                   </option>
                 ))}
             </select>
+            {errors.assetType && (
+              <span className="error-text">{errors.assetType}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -701,6 +727,9 @@ function AddAsset({ addItem, editItemId }) {
                   </option>
                 ))}
             </select>
+            {errors.category && (
+              <span className="error-text">{errors.category}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -715,19 +744,6 @@ function AddAsset({ addItem, editItemId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-            {/* <select
-              className="form-select form-sz w-full mb-2"
-            //   onChange={handleAssetCodeChange}
-              value={categoryCode}
-              disabled
-            >
-              {categoryCodeVO.length > 0 &&
-                categoryCodeVO.map((name) => (
-                  <option key={name.id} value={name}>
-                    {name}
-                  </option>
-                ))}
-            </select> */}
             <input
               className="form-control form-sz mb-2"
               value={categoryCode}
@@ -755,6 +771,9 @@ function AddAsset({ addItem, editItemId }) {
               onChange={handleCategoryChange}
               onInput={stringAndNoAndSpecialCharValidation}
             />
+            {errors.assetCodeId && (
+              <span className="error-text">{errors.assetCodeId}</span>
+            )}
           </div>
           <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
             <label className="label">
@@ -777,6 +796,9 @@ function AddAsset({ addItem, editItemId }) {
               onChange={handleCategoryChange}
               onInput={stringAndNoAndSpecialCharValidation}
             />
+            {errors.assetName && (
+              <span className="error-text">{errors.assetName}</span>
+            )}
           </div>
 
           {/* <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
