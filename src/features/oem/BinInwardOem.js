@@ -194,7 +194,7 @@ const BinInwardOem = ({}) => {
     const formData = {
       docDate: docDate.format("YYYY-MM-DD"),
       flowId: flow,
-      docId: docId,
+      // docId: docId,
       docDate: docDate,
       invoiceNo: invNo,
       invoiceDate: invDate,

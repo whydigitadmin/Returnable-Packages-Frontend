@@ -166,7 +166,7 @@ function BinOutwardOem({}) {
 
     const formData = {
       docDate: docDate.format("YYYY-MM-DD"),
-      docId,
+      // docId,
       id: 0,
       oemBinOutwardDetails: findEmptyOutQty.map((row) => ({
         asset: row.assetName,

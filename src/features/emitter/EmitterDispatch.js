@@ -292,8 +292,14 @@ export const EmitterDispatch = () => {
                               <td>{row.flow}</td>
                               <td>{row.invoiceNo}</td>
                               <td>{row.invoiceDate}</td>
-                              <td>{row.oemInwardNo}</td>
-                              <td>{row.oemInwardDate}</td>
+                              <td>
+                                {row.oemInwardNo ? row.oemInwardNo : "Pending"}
+                              </td>
+                              <td>
+                                {row.oemInwardDate
+                                  ? row.oemInwardDate
+                                  : "Pending"}
+                              </td>
                               <td>
                                 <a
                                   href="#"
