@@ -519,8 +519,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
       returnQty: row.returnQty,
     }));
 
-    // Check if any table fields are empty
-
     if (Object.keys(errors).length === 0) {
       const formData = {
         binInwardDetailsDTO: tableFormData,
@@ -548,74 +546,95 @@ function EmitterInwardNew({ addInwardManifeast }) {
           formData
         )
         .then((response) => {
-          console.log("Response:", response.data);
-          // setAleartState(true);
-          setDocDate(null);
-          setDocId("");
-          setReqDate("");
-          setReqNo("");
-          setRecKitQty("");
-          setAllottedDate("");
-          getAllPendingBinInward();
-          setReqKitQty("");
-          setFlow("");
-          setKitCode("");
-          setAllottedQty("");
-          setErrors({});
-          setReturnQty("");
-          setReturnRemarks("");
-          setView2(false);
-          setView1(true);
-          setTableData([
-            {
-              id: 1,
-              tagCode: "",
-              asset: "",
-              assetCode: "",
-              allotQty: "",
-              recQty: "",
-              returnQty: "",
-            },
-          ]);
-
-          const formData1 = new FormData();
-          for (let i = 0; i < uploadedFiles.length; i++) {
-            formData1.append("file", uploadedFiles[i]);
-          }
-          formData1.append("allotNo", allotmentNo);
-
-          axios
-            .post(
-              `${process.env.REACT_APP_API_URL}/api/emitter/uploadPodFilePath`,
-              formData1,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            )
-            .then((uploadResponse) => {
-              console.log("File Upload Response:", uploadResponse.data);
-              setAllotmentNo("");
-              setSelectedFiles("");
-              getAllPendingBinInward();
-              // window.location.reload();
-              // toast.success("Proof of Delivery Saved Successfully!", {
-              //   autoClose: 2000,
-              //   theme: "colored",
-              // });
-            })
-            .catch((uploadError) => {
-              console.error("File Upload Error:", uploadError);
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
             });
-          toast.success("Bin Inward Updated Successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          } else {
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            setAllotmentNo("");
+            setSelectedFiles("");
+            getAllPendingBinInward();
+            console.log("Response:", response.data);
+            // setAleartState(true);
+            setDocDate(null);
+            setDocId("");
+            setReqDate("");
+            setReqNo("");
+            setRecKitQty("");
+            setAllottedDate("");
+            getAllPendingBinInward();
+            setReqKitQty("");
+            setFlow("");
+            setKitCode("");
+            setAllottedQty("");
+            setErrors({});
+            setReturnQty("");
+            setReturnRemarks("");
+            setView2(false);
+            setView1(true);
+            setTableData([
+              {
+                id: 1,
+                tagCode: "",
+                asset: "",
+                assetCode: "",
+                allotQty: "",
+                recQty: "",
+                returnQty: "",
+              },
+            ]);
+
+            const formData1 = new FormData();
+            for (let i = 0; i < uploadedFiles.length; i++) {
+              formData1.append("file", uploadedFiles[i]);
+            }
+            formData1.append("allotNo", allotmentNo);
+
+            axios
+              .post(
+                `${process.env.REACT_APP_API_URL}/api/emitter/uploadPodFilePath`,
+                formData1,
+                {
+                  headers: {
+                    "Content-Type": "multipart/form-data",
+                  },
+                }
+              )
+              .then((uploadResponse) => {
+                if (uploadResponse.data.statusFlag === "Error") {
+                  toast.error(
+                    uploadResponse.data.paramObjectsMap.errorMessage,
+                    {
+                      autoClose: 2000,
+                      theme: "colored",
+                    }
+                  );
+                }
+                //  else {
+                //   console.log("File Upload Response:", uploadResponse.data);
+                //   setAllotmentNo("");
+                //   setSelectedFiles("");
+                //   getAllPendingBinInward();
+                //   toast.success(response.data.paramObjectsMap.message, {
+                //     autoClose: 2000,
+                //     theme: "colored",
+                //   });
+                // }
+              })
+              .catch((uploadError) => {
+                console.error("File Upload Error:", uploadError);
+                toast.error("Error saving upload: " + uploadError.message);
+              });
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Failed to update user. Please try again.");
+          toast.error("Error saving inward: " + error.message);
         });
     } else {
       setErrors(errors);
@@ -1101,6 +1120,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                       {fileName}
                     </div>
                   ))}
+                  <span>PDF only*</span>
                   {/* Display upload error */}
                   {errors.uploadError && (
                     <span className="error-text mb-1">
