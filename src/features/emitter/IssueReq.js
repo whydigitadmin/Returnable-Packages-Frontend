@@ -1,22 +1,4 @@
-import CloseIcon from "@material-ui/icons/Close";
-
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import HighlightOffIcon from "@mui/icons-material/HighlightOff";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Chip } from "@mui/material";
 import Box from "@mui/material/Box";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
@@ -28,13 +10,9 @@ import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import axios from "axios";
 import dayjs from "dayjs";
-import moment from "moment";
 import PropTypes from "prop-types";
 import React, { useEffect, useRef, useState } from "react";
 import { FaArrowCircleLeft } from "react-icons/fa";
-import { FaPallet } from "react-icons/fa6";
-import { MdPallet } from "react-icons/md";
-import { TbReport } from "react-icons/tb";
 import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -43,8 +21,62 @@ import kit1 from "../../assets/images.jpg";
 import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
+import RequestSummaryTable from "./RequestSummaryTable";
+
+import { styled } from "@mui/material/styles";
 
 const ItemsPerPage = 10;
+
+const IOSSwitch = styled((props) => (
+  <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
+))(({ theme }) => ({
+  width: 42,
+  height: 26,
+  padding: 0,
+  "& .MuiSwitch-switchBase": {
+    padding: 0,
+    margin: 2,
+    transitionDuration: "300ms",
+    "&.Mui-checked": {
+      transform: "translateX(16px)",
+      color: "#fff",
+      "& + .MuiSwitch-track": {
+        backgroundColor: theme.palette.mode === "dark" ? "#2ECA45" : "#65C466",
+        opacity: 1,
+        border: 0,
+      },
+      "&.Mui-disabled + .MuiSwitch-track": {
+        opacity: 0.5,
+      },
+    },
+    "&.Mui-focusVisible .MuiSwitch-thumb": {
+      color: "#33cf4d",
+      border: "6px solid #fff",
+    },
+    "&.Mui-disabled .MuiSwitch-thumb": {
+      color:
+        theme.palette.mode === "light"
+          ? theme.palette.grey[100]
+          : theme.palette.grey[600],
+    },
+    "&.Mui-disabled + .MuiSwitch-track": {
+      opacity: theme.palette.mode === "light" ? 0.7 : 0.3,
+    },
+  },
+  "& .MuiSwitch-thumb": {
+    boxSizing: "border-box",
+    width: 22,
+    height: 22,
+  },
+  "& .MuiSwitch-track": {
+    borderRadius: 26 / 2,
+    backgroundColor: theme.palette.mode === "light" ? "#E9E9EA" : "#39393D",
+    opacity: 1,
+    transition: theme.transitions.create(["background-color"], {
+      duration: 500,
+    }),
+  },
+}));
 
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
@@ -90,6 +122,18 @@ function IssueReq() {
   const [selectedKit, setSelectedKit] = useState(null);
   const [selectedPart, setSelectedPart] = useState(null);
   const [kitQtyy, setKitQtyy] = useState("");
+  const [partNoAndPartNames, setPartNoAndPartNames] = useState({});
+  const [selectedParts, setSelectedParts] = useState({});
+
+  const today = dayjs();
+  const maxDate = today.add(30, "day");
+
+  const itemsPerPage = 5;
+
+  const handleDetailsClick = (issue) => {
+    setSelectedIssue(issue);
+    setIsDialogOpen(true);
+  };
 
   // useEffect(() => {
   //   // Initialize mode and value when component mounts
@@ -188,6 +232,13 @@ function IssueReq() {
 
   const getPriorityColor = () => {
     return priorityStatus === "High Priority" ? "red" : "green";
+  };
+
+  const updatePartNoAndPartNames = (kitNo, partNoAndPartName) => {
+    setPartNoAndPartNames((prev) => ({
+      ...prev,
+      [kitNo]: partNoAndPartName,
+    }));
   };
 
   useEffect(() => {
@@ -381,6 +432,11 @@ function IssueReq() {
       return; // Prevent further execution
     }
     if (Object.keys(errors).length === 0) {
+      const issueItemDTO = partFields.map((field, index) => ({
+        partNo: field.partNo,
+        partQty: field.qty,
+        kitQty: kitQtyy[index],
+      }));
       const formData = {
         createdBy: userName,
         demandDate: selectedDate1,
@@ -388,12 +444,7 @@ function IssueReq() {
         orgId,
         flowTo: selectedFlowId,
         irType: "IR_PART",
-        issueItemDTO: partFields.map((field) => ({
-          partNo: field.partNo,
-          partQty: field.qty,
-          kitQty: kitQtyy,
-          // partName: field.partValue,
-        })),
+        issueItemDTO: issueItemDTO,
       };
       console.log("test1", formData);
       axios
@@ -548,14 +599,17 @@ function IssueReq() {
     const newFields = [...partFields];
     newFields[index].qty = e.target.value;
     setPartFields(newFields);
-    qtyInputRef.current.focus();
 
-    const kitQty = selectedPart.partQty;
-    console.log("asdfda", e.target.value);
-    console.log("kit qty testing", kitQty);
-    const calculatedKitQty = Math.floor(e.target.value / kitQty);
+    const selectedPart = selectedParts[index];
+    if (selectedPart) {
+      const kitQty = selectedPart.partQty;
+      const calculatedKitQty = Math.floor(e.target.value / kitQty);
 
-    setKitQtyy(calculatedKitQty);
+      setKitQtyy((prevQty) => ({
+        ...prevQty,
+        [index]: calculatedKitQty,
+      }));
+    }
   };
 
   const handleQtyChange = (e, index) => {
@@ -638,16 +692,10 @@ function IssueReq() {
   //   });
   // };
 
-  const handleKitNoChange = (e, index) => {
+  const handleKitNoChange = async (e, index) => {
     const selectedKitNo = e.target.value;
-    getPartNoAndPartName(e.target.value);
 
     // Check if the selected kit already exists
-
-    const selectedKitName = e.target.value;
-    const kit = kitData.find((kit) => kit.kitName === selectedKitName);
-    setSelectedKit(kit);
-
     const isDuplicate = kitFields.some(
       (field, i) => index !== i && field.kitNo === selectedKitNo
     );
@@ -657,13 +705,31 @@ function IssueReq() {
       toast.error("The selected kit already exists", {
         position: toast.POSITION.TOP_CENTER,
       });
-    } else {
-      setDuplicateKitError(false);
-      setKitFields((prevFields) => {
-        const newFields = [...prevFields];
-        newFields[index].kitNo = selectedKitNo;
-        return newFields;
-      });
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getPartNoAndPartName?emitterId=${emitterId}&flowId=${selectedFlowId}&kitNo=${selectedKitNo}`
+      );
+      if (response.status === 200) {
+        const partNoAndPartName =
+          response.data.paramObjectsMap.partNoAndPartName;
+
+        // Update partNoAndPartNames state
+        updatePartNoAndPartNames(selectedKitNo, partNoAndPartName);
+
+        // Update kitFields with selectedKitNo
+        setKitFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[index].kitNo = selectedKitNo;
+          return newFields;
+        });
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
@@ -688,10 +754,10 @@ function IssueReq() {
 
   const handlePartNoChange = (e, index) => {
     const selectedPartNo = e.target.value;
-    // Find the selected part
     const selectedPart = partData.find(
       (part) => part.partName === selectedPartNo
     );
+
     // Check for duplicate part numbers
     const isDuplicate = partFields.some(
       (field, i) => index !== i && field.partNo === selectedPartNo
@@ -710,8 +776,18 @@ function IssueReq() {
         newFields[index].qty = "";
         return newFields;
       });
-      setSelectedPart(selectedPart);
-      setKitQtyy("");
+
+      // Store selected part details
+      setSelectedParts((prevParts) => ({
+        ...prevParts,
+        [index]: selectedPart,
+      }));
+
+      setKitQtyy((prevQty) => ({
+        ...prevQty,
+        [index]: "", // Reset the kit quantity when part number changes
+      }));
+
       console.log("SELECTED PART FROM DROPDOWN IS:", selectedPart);
     }
   };
@@ -791,7 +867,7 @@ function IssueReq() {
   const getIssueRequest = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest?orgId=${orgId}&emitterId=${emitterId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getIssueRequest?orgId=${orgId}&emitterId=${emitterId}&flowId=${selectedFlowId}`
       );
 
       if (response.status === 200) {
@@ -902,7 +978,7 @@ function IssueReq() {
               />
             </div> */}
           <div
-            className="row d-flex flex-row card bg-base-100 shadow-xl m-auto"
+            className="row d-flex flex-row card bg-base-100 m-auto"
             style={{ width: "auto", height: "auto" }}
           >
             <div className="col-md-5">
@@ -913,18 +989,20 @@ function IssueReq() {
                     style={{ marginTop: 11 }}
                   /> */}
                   <img
-                    src="/destination.png"
+                    src={
+                      "https://cdn-icons-png.flaticon.com/128/854/854932.png"
+                    }
                     alt="Favorite"
                     style={{
-                      width: "25px",
-                      height: "25px",
+                      width: "32px",
+                      height: "32px",
                       marginRight: "6px",
-                      marginTop: "12px",
+                      marginTop: "9px",
                     }}
                   />
                   <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
                     Flow To <span style={{ color: "red" }}>*</span>
-                  </h4>
+                  </h4>{" "}
                   <div className="d-flex flex-column">
                     <select
                       className="form-select w-56 h-10 mt-1 mb-2"
@@ -970,8 +1048,9 @@ function IssueReq() {
                   <DesktopDatePicker
                     value={selectedDate1}
                     onChange={handleIssueDateChange}
-                    minDate={currentDate}
+                    minDate={today}
                     disableCloseOnSelect={true}
+                    maxDate={maxDate}
                     slotProps={{
                       textField: {
                         size: "small",
@@ -985,15 +1064,18 @@ function IssueReq() {
               </div>
 
               {selectedDate1 ? ( // Only show the priority input table if a date is selected
-                <span
+                <Chip
+                  label={priorityStatus}
+                  size="small"
                   style={{
-                    color: getPriorityColor(),
+                    backgroundColor: getPriorityColor(priorityStatus),
+                    color: "white",
                     marginTop: "5px",
-                    display: "inline-block",
+                    marginBottom: "5px",
+                    marginLeft: "1%",
+                    fontSize: "11px",
                   }}
-                >
-                  {priorityStatus}
-                </span>
+                />
               ) : (
                 errors.selectedDate1 && (
                   <span className="error-text">{errors.selectedDate1}</span>
@@ -1004,10 +1086,11 @@ function IssueReq() {
             <div className="col-md-3 mt-4">
               <FormControlLabel
                 control={
-                  <Switch
+                  <IOSSwitch
                     checked={mode === "PART"}
                     onChange={toggleMode}
                     color="primary"
+                    sx={{ m: 1 }}
                   />
                 }
                 labelPlacement="start"
@@ -1048,7 +1131,13 @@ function IssueReq() {
                   {mode === "KIT" && (
                     <Tab
                       label="KIT WISE"
-                      icon={<MdPallet className="w-16 h-6" />}
+                      icon={
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/128/3301/3301036.png"
+                          width={30}
+                          height={30}
+                        ></img>
+                      }
                       {...a11yProps(0)}
                       value={0}
                       // onClick={() => handleTabClick(0)}
@@ -1057,7 +1146,13 @@ function IssueReq() {
                   {mode === "PART" && (
                     <Tab
                       label="PART WISE"
-                      icon={<FaPallet className="w-16 h-6" />}
+                      icon={
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/128/11594/11594341.png"
+                          width={30}
+                          height={30}
+                        ></img>
+                      }
                       {...a11yProps(1)}
                       value={1}
 
@@ -1066,7 +1161,13 @@ function IssueReq() {
                   )}
                   <Tab
                     label="REQ SUMMARY"
-                    icon={<TbReport className="w-16 h-6" />}
+                    icon={
+                      <img
+                        src="https://cdn-icons-png.flaticon.com/128/3875/3875980.png"
+                        width={30}
+                        height={30}
+                      ></img>
+                    }
                     {...a11yProps(2)}
                     value={2}
 
@@ -1086,7 +1187,7 @@ function IssueReq() {
                       <div className="row" key={index}>
                         <div className="col-lg-3 col-md-6 mb-2">
                           <label className="label">
-                            <span className="label-text label-font-size text-base-content">
+                            <span className="label-text font-semibold label-font-size text-base-content">
                               KIT{" "}
                               <b>
                                 <span
@@ -1121,7 +1222,7 @@ function IssueReq() {
 
                         <div className="col-lg-3 col-md-6 mb-2">
                           <label className="label">
-                            <span className="label-text label-font-size text-base-content">
+                            <span className="label-text label-font-size font-semibold text-base-content">
                               QTY{" "}
                               <b>
                                 <span
@@ -1138,7 +1239,6 @@ function IssueReq() {
                             className="form-control form-sz mb-2"
                             name="kitQty"
                             type="text"
-                            // value={field.qty}
                             value={field.qty}
                             onChange={(e) => handleQtyChange(e, index)}
                           />
@@ -1154,33 +1254,52 @@ function IssueReq() {
                               onClick={handleAddField}
                               style={{ marginTop: "42px" }}
                             >
-                              <AddCircleOutlineIcon className="cursor-pointer" />
+                              <img
+                                src="https://cdn-icons-png.flaticon.com/128/10995/10995791.png"
+                                width={33}
+                                height={33}
+                                style={{ cursor: "pointer" }}
+                              ></img>
                             </div>
                           ) : (
                             <div
                               onClick={() => handleRemoveField(index)}
                               style={{ marginTop: "42px" }}
                             >
-                              <HighlightOffIcon className="cursor-pointer" />
+                              <img
+                                src="https://cdn-icons-png.flaticon.com/128/8564/8564014.png"
+                                width={28}
+                                height={28}
+                                style={{ cursor: "pointer" }}
+                              ></img>
                             </div>
                           )}
                         </div>
-                        {selectedKit && (
-                          <div className="col-lg-3 col-md-2 mt-6">
-                            <Card style={{ border: "1px solid #000000" }}>
-                              <CardContent>
-                                {partNoAndPartName.length > 0 && (
-                                  <Typography variant="outlined">
-                                    Part: {partNoAndPartName[0].partNo}
-                                  </Typography>
-                                )}
-                              </CardContent>
-                            </Card>
+                        {field.kitNo && (
+                          <div className="col-lg-3 col-md-2 mt-10">
+                            {partNoAndPartNames[field.kitNo] &&
+                              partNoAndPartNames[field.kitNo].map(
+                                (partInfo, i) => (
+                                  <Chip
+                                    key={i}
+                                    label={`Part: ${partInfo.partNo}`}
+                                    variant="outlined"
+                                    className="part-chip"
+                                    style={{
+                                      backgroundColor: "rgb(101 196 102)",
+                                      borderColor: "#000000",
+                                      color: "#000000",
+                                    }}
+                                  />
+                                )
+                              )}
                           </div>
                         )}
-                        <DisplaySelectedPartInfo
-                          selectedPartNo={selectedPartNumbers[index]}
-                        />
+                        {field.kitNo && (
+                          <DisplaySelectedPartInfo
+                            selectedPartNo={selectedPartNumbers[index]}
+                          />
+                        )}
                       </div>
                     ))}
                     <button
@@ -1208,7 +1327,7 @@ function IssueReq() {
                           <label className="label">
                             <span
                               className={
-                                "label-text label-font-size text-base-content"
+                                "label-text label-font-size text-base-content font-semibold"
                               }
                             >
                               Part{" "}
@@ -1251,7 +1370,7 @@ function IssueReq() {
                           <label className="label">
                             <span
                               className={
-                                "label-text label-font-size text-base-content"
+                                "label-text label-font-size text-base-content font-semibold"
                               }
                             >
                               QTY{" "}
@@ -1283,35 +1402,61 @@ function IssueReq() {
                               onClick={handleAddPartField}
                               style={{ marginTop: "42px" }}
                             >
-                              <AddCircleOutlineIcon className="cursor-pointer" />
+                              <img
+                                src="https://cdn-icons-png.flaticon.com/128/10995/10995791.png"
+                                width={33}
+                                height={33}
+                                style={{ cursor: "pointer" }}
+                              ></img>
                             </div>
                           ) : (
                             <div
                               onClick={() => handleRemovePartField(index)}
                               style={{ marginTop: "42px" }}
                             >
-                              <HighlightOffIcon className="cursor-pointer" />
+                              <img
+                                src="https://cdn-icons-png.flaticon.com/128/8564/8564014.png"
+                                width={28}
+                                height={28}
+                                style={{ cursor: "pointer" }}
+                              ></img>
                             </div>
                           )}
                         </div>
-                        {selectedPart && (
-                          <div className="col-lg-3 col-md-2 mt-4">
-                            <Card style={{ border: "1px solid #000000" }}>
-                              <CardContent>
-                                {selectedPart && (
-                                  <Typography variant="outlined">
-                                    Kit: {selectedPart.kitName} <br />
-                                    Parts per Kit: {selectedPart.partQty}
-                                  </Typography>
-                                )}
-                                <br />
-                                {kitQtyy && kitQtyy > 0 && (
-                                  <Typography variant="outlined">
-                                    Kit QTY: <b>{kitQtyy}</b>
-                                  </Typography>
-                                )}
-                              </CardContent>
-                            </Card>
+                        {field.partNo && selectedParts[index] && (
+                          <div className="col-lg-5 col-md-2 mt-11">
+                            <Chip
+                              label={`Kit: ${selectedParts[index].kitName}`}
+                              variant="outlined"
+                              className="part-chip "
+                              style={{
+                                backgroundColor: "rgb(101 196 102)",
+                                borderColor: "#000000",
+                                color: "#000000",
+                              }}
+                            />
+                            <Chip
+                              label={`Parts per Kit: ${selectedParts[index].partQty}`}
+                              variant="outlined"
+                              className="part-chip ml-2"
+                              style={{
+                                backgroundColor: "rgb(101 196 102)",
+                                borderColor: "#000000",
+                                color: "#000000",
+                              }}
+                            />
+                            {kitQtyy[index] && kitQtyy[index] > 0 && (
+                              <Chip
+                                label={`Kit QTY: ${kitQtyy[index]}`}
+                                variant="outlined"
+                                className="part-chip ml-2"
+                                style={{
+                                  backgroundColor: "rgb(101 196 102)",
+                                  borderColor: "#000000",
+                                  color: "#000000",
+                                }}
+                              />
+                            )}
                           </div>
                         )}
                         <DisplaySelectedPartInfo
@@ -1330,367 +1475,12 @@ function IssueReq() {
                   </CustomTabPanel>
                 </div>
               )}
+
               {value === 2 && (
                 <div>
                   <CustomTabPanel value={value} index={2}>
                     <>
-                      <div
-                        className="w-full p-2 bg-base-100 shadow-xl"
-                        style={{ borderRadius: 16 }}
-                      >
-                        <div className="text-xl font-semibold p-3">
-                          Bin Request Summary
-                        </div>
-                        <div className="divider mt-0 mb-0"></div>
-                        <div className="overflow-x-auto w-full "></div>
-                        {/* Invoice list in table format loaded constant */}
-                        <div className="overflow-x-auto w-full ">
-                          <table className="table w-full">
-                            <thead>
-                              <tr>
-                                {/* <th>Details</th> */}
-                                <th>Status</th>
-                                <th>Req No</th>
-                                <th>Req Date</th>
-                                <th>Demand Date</th>
-                                <th>PART NAME</th>
-                                <th>PART No</th>
-                                <th>PART QTY</th>
-                                <th>Kit No</th>
-                                <th>KIT QTY</th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {/* Iterate over the bills array */}
-                              {bills
-                                // Slice the bills array based on pagination
-                                .slice(startIndex, endIndex)
-                                // Map over each issueRequest object
-                                .map((issueRequest, index) => (
-                                  <React.Fragment key={index}>
-                                    {/* Render rows with issueStatus 0 or 1 */}
-                                    {issueRequest.issueItemVO
-                                      .filter(
-                                        (item) =>
-                                          item.issueStatus === 0 ||
-                                          item.issueStatus === 1
-                                      )
-                                      .map((item, subIndex) => (
-                                        <tr key={`${index}-${subIndex}`}>
-                                          {/* Render common row data for the first subIndex */}
-                                          {subIndex === 0 && (
-                                            <>
-                                              <td>
-                                                {" "}
-                                                <img
-                                                  src={
-                                                    issueRequest.issueStatus ===
-                                                    2
-                                                      ? "/checked1.png"
-                                                      : "/pending.png"
-                                                  }
-                                                  alt="Favorite"
-                                                  style={{
-                                                    width: "25px",
-                                                    height: "auto",
-                                                    marginRight: "6px",
-                                                    cursor: "not-allowed",
-                                                  }}
-                                                />
-                                              </td>
-                                              <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {issueRequest.docId}
-                                              </td>
-                                              <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {moment(
-                                                  issueRequest.requestedDate
-                                                ).format("DD-MM-YY")}
-                                              </td>
-                                              <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {moment(
-                                                  issueRequest.demandDate
-                                                ).format("DD-MM-YY")}
-                                              </td>
-                                              {/* <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {issueRequest.flowName}
-                                              </td> */}
-                                            </>
-                                          )}
-                                          {/* Render data for each item */}
-                                          <td>{item.partName}</td>
-                                          <td>{item.partNo}</td>
-                                          <td className="text-center">
-                                            {item.partQty}
-                                          </td>
-                                          <td>{item.kitName}</td>
-                                          <td className="text-center">
-                                            {item.kitQty}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                    {/* Render remaining rows */}
-                                    {issueRequest.issueItemVO
-                                      .filter(
-                                        (item) =>
-                                          item.issueStatus !== 0 &&
-                                          item.issueStatus !== 1
-                                      )
-                                      .map((item, subIndex) => (
-                                        <tr
-                                          key={`${index}-remaining-${subIndex}`}
-                                        >
-                                          {/* Render common row data for the first subIndex */}
-                                          {subIndex === 0 && (
-                                            <>
-                                              <td>
-                                                {" "}
-                                                <img
-                                                  src={
-                                                    issueRequest.issueStatus ===
-                                                    2
-                                                      ? "/checked1.png"
-                                                      : "/pending.png"
-                                                  }
-                                                  alt="Favorite"
-                                                  style={{
-                                                    width: "25px",
-                                                    height: "auto",
-                                                    marginRight: "6px",
-                                                    cursor: "not-allowed",
-                                                  }}
-                                                />
-                                              </td>
-                                              <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {issueRequest.docId}
-                                              </td>
-                                              <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {moment(
-                                                  issueRequest.requestedDate
-                                                ).format("DD-MM-YY")}
-                                              </td>
-                                              <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {moment(
-                                                  issueRequest.demandDate
-                                                ).format("DD-MM-YY")}
-                                              </td>
-                                              {/* <td
-                                                rowSpan={
-                                                  issueRequest.issueItemVO
-                                                    .length
-                                                }
-                                              >
-                                                {issueRequest.flowName}
-                                              </td> */}
-                                            </>
-                                          )}
-                                          {/* Render data for each item */}
-                                          <td>{item.partName}</td>
-                                          <td>{item.partNo}</td>
-                                          <td className="text-center">
-                                            {item.partQty}
-                                          </td>
-                                          <td>{item.kitName}</td>
-                                          <td className="text-center">
-                                            {item.kitQty}
-                                          </td>
-                                        </tr>
-                                      ))}
-                                  </React.Fragment>
-                                ))}
-                            </tbody>
-                          </table>
-                          <div className="pagination">
-                            <button
-                              onClick={() => handlePageChange(currentPage - 1)}
-                              disabled={currentPage === 1}
-                            >
-                              Previous
-                            </button>
-                            {Array.from({ length: totalPages }).map(
-                              (_, index) => (
-                                <button
-                                  key={index}
-                                  onClick={() => handlePageChange(index + 1)}
-                                  className={
-                                    currentPage === index + 1 ? "active" : ""
-                                  }
-                                >
-                                  {index + 1}
-                                </button>
-                              )
-                            )}
-                            <button
-                              onClick={() => handlePageChange(currentPage + 1)}
-                              disabled={currentPage === totalPages}
-                            >
-                              Next
-                            </button>
-                          </div>
-                        </div>
-
-                        <Dialog
-                          open={isDialogOpen}
-                          onClose={() => setIsDialogOpen(false)}
-                          maxWidth="sm" // You can adjust the size by changing "md" to other values like "sm", "lg", "xl", or a specific pixel value
-                          fullWidth
-                        >
-                          <DialogTitle>
-                            Details for RM No.{" "}
-                            {selectedIssue && selectedIssue.id}
-                            <IconButton
-                              aria-label="close"
-                              onClick={() => setIsDialogOpen(false)}
-                              style={{
-                                position: "absolute",
-                                right: 8,
-                                top: 8,
-                              }}
-                            >
-                              <CloseIcon />
-                            </IconButton>
-                          </DialogTitle>
-                          <DialogContent
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              alignItems: "flex-start",
-                            }}
-                          >
-                            <p>
-                              <strong>RM Date:</strong>{" "}
-                              {selectedIssue &&
-                                moment(selectedIssue.requestedDate).format(
-                                  "DD-MM-YY"
-                                )}
-                            </p>
-                            <p>
-                              <strong>Demand Date:</strong>{" "}
-                              {selectedIssue &&
-                                moment(selectedIssue.demandDate).format(
-                                  "DD-MM-YY"
-                                )}
-                            </p>
-                            <p>
-                              <strong>Flow Name:</strong>{" "}
-                              {selectedIssue && selectedIssue.flowName}
-                            </p>
-
-                            {/* Display issueItemVO details in a table */}
-                            <br></br>
-                            <TableContainer component={Paper}>
-                              <Table>
-                                <TableHead>
-                                  <TableRow>
-                                    {selectedIssue &&
-                                    selectedIssue.irType === "IR_PART" ? (
-                                      <>
-                                        <TableCell>
-                                          <b>Part No</b>
-                                        </TableCell>
-                                        <TableCell>
-                                          <b>Kit No</b>{" "}
-                                        </TableCell>
-                                        <TableCell>
-                                          <b>Quantity</b>
-                                        </TableCell>
-                                      </>
-                                    ) : (
-                                      <>
-                                        <TableCell>
-                                          <b>Kit No </b>
-                                        </TableCell>
-                                        <TableCell>
-                                          <b>Quantity</b>
-                                        </TableCell>
-                                      </>
-                                    )}
-
-                                    <TableCell>
-                                      <b>Status</b>
-                                    </TableCell>
-                                    {/* Add more columns if needed */}
-                                  </TableRow>
-                                </TableHead>
-                                <TableBody>
-                                  {selectedIssue &&
-                                    selectedIssue.issueItemVO.map((item) => (
-                                      <TableRow key={item.id}>
-                                        {selectedIssue.irType === "IR_PART" ? (
-                                          <>
-                                            <TableCell>{item.partNo}</TableCell>
-                                            <TableCell>
-                                              {item.kitName}
-                                            </TableCell>
-                                            <TableCell>
-                                              {item.partQty}
-                                            </TableCell>
-                                          </>
-                                        ) : (
-                                          <>
-                                            <TableCell>
-                                              {item.kitName}
-                                            </TableCell>
-                                            <TableCell>{item.kitQty}</TableCell>
-                                          </>
-                                        )}
-
-                                        {/* Add more cells for additional columns */}
-                                        <TableCell style={{ width: 100 }}>
-                                          {getPaymentStatus(
-                                            item.issueItemStatus
-                                          )}
-                                        </TableCell>
-                                      </TableRow>
-                                    ))}
-                                </TableBody>
-                              </Table>
-                            </TableContainer>
-                          </DialogContent>
-                          {/* <DialogActions>
-                        <Button
-                          onClick={() => setIsDialogOpen(false)}
-                          color="primary"
-                        >
-                          Close
-                        </Button>
-                      </DialogActions> */}
-                        </Dialog>
-                      </div>
+                      <RequestSummaryTable bills={bills} />
                     </>
                   </CustomTabPanel>
                 </div>
