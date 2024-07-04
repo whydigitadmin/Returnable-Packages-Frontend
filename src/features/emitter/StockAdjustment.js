@@ -1,65 +1,176 @@
-import React, { useState } from "react";
-import { FaLocationDot } from "react-icons/fa6";
-import { MdDoubleArrow } from "react-icons/md";
-import { FaArrowCircleLeft } from "react-icons/fa";
+import React, { useEffect, useState, useRef, useMemo } from "react";
+import Datepicker from "react-tailwindcss-datepicker";
+import { FaStarOfLife } from "react-icons/fa";
 import { Link } from "react-router-dom";
-
-const BILLS = [
-  {
-    imno: "1001",
-    imdate: "16-01-2024",
-    kitno: "1072",
-    issueqty: "10",
-    outwardno: "101",
-    outwarddate: "18-01-2024",
-    openqty: "10",
-    owqty: "5",
-    cqty: "5",
-    pno: "ABC001",
-    pname: "PISTON",
-    pqty: "1000",
-    inv: "INV001",
-  },
-  {
-    imno: "1002",
-    imdate: "17-01-2024",
-    kitno: "1075",
-    issueqty: "10",
-    outwardno: "-",
-    outwarddate: "-",
-    openqty: "20",
-    owqty: "-",
-    cqty: "20",
-    pno: "-",
-    pname: "-",
-    pqty: "-",
-    inv: "-",
-  },
-  {
-    imno: "1006",
-    imdate: "12-01-2024",
-    kitno: "1078",
-    issueqty: "0",
-    outwardno: "102",
-    outwarddate: "14-01-2024",
-    openqty: "20",
-    owqty: "10",
-    cqty: "10",
-    pno: "ABC001",
-    pname: "PISTON",
-    pqty: "2000",
-    inv: "INV003",
-  },
-];
+import {
+  MaterialReactTable,
+  useMaterialReactTable,
+} from "material-react-table";
+import { Box, Button } from "@mui/material";
+import { mkConfig, generateCsv, download } from "export-to-csv";
+import axios from "axios";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { FaArrowCircleLeft } from "react-icons/fa";
 
 function StockAdjustment() {
-  const [bills, setBills] = useState(BILLS);
+  const [dateValue, setDateValue] = useState({
+    startDate: "",
+    endDate: "",
+  });
+  const [stockBranch, setStockBranch] = useState([]);
+  const [data, setData] = useState([]);
+  const [errors, setErrors] = useState("");
+  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
+  const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [tableView, setTableView] = useState(false);
+
+  const csvConfig = mkConfig({
+    fieldSeparator: ",",
+    decimalSeparator: ".",
+    useKeysAsHeaders: true,
+  });
+
+  useEffect(() => {
+    getStockBranchByUserId();
+  }, []);
+
+  // const handleClearData = () => {
+  //   setDateValue({
+  //     startDate: null,
+  //     endDate: null,
+  //   });
+  //   setFlow("");
+  //   setTableView(false);
+  // };
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "category",
+        header: "Category",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "assetCode",
+        header: "Asset Code",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "assetName",
+        header: "Asset Desc",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "availQty",
+        header: "Available QTY",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+    ],
+    []
+  );
+
+  const handleExportRows = (rows) => {
+    const rowData = rows.map((row) => row.original);
+    const csv = generateCsv(csvConfig)(rowData);
+    download(csvConfig)(csv);
+  };
+  const handleExportData = () => {
+    const csv = generateCsv(csvConfig)(data);
+    download(csvConfig)(csv);
+  };
+
+  const table = useMaterialReactTable({
+    columns,
+    data,
+    // enableRowSelection: true,
+    // columnFilterDisplayMode: "popover",
+    // paginationDisplayMode: "pages",
+    // positionToolbarAlertBanner: "bottom",
+    // renderTopToolbarCustomActions: ({ table }) => (
+    //   <Box
+    //     sx={{
+    //       display: "flex",
+    //       gap: "16px",
+    //       padding: "8px",
+    //       flexWrap: "wrap",
+    //     }}
+    //   >
+    //     <button
+    //       className="btn btn-ghost btn-sm normal-case"
+    //       onClick={handleExportData}
+    //     >
+    //       <CloudDownloadOutlinedIcon className="w-4 mr-2" />
+    //       Download
+    //     </button>
+    //   </Box>
+    // ),
+  });
+
+  const handleSelectedStockBranch = (event) => {
+    const selectedId = event.target.value;
+    // setStockBranch(selectedId);
+    stockBranchReport(selectedId);
+  };
+
+  const getStockBranchByUserId = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/emitter/getStockBranchByUserId?userId=${userId}&orgId=${orgId}`
+      );
+
+      if (response.status === 200) {
+        setStockBranch(response.data.paramObjectsMap.branch);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
+  };
+
+  const stockBranchReport = async (stockBranch) => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getEmptyAssetDetailsForGathering?orgId=${orgId}&stockBranch=${stockBranch}`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.oemEmptyDetails);
+        setTableView(true);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
+  };
 
   return (
     <>
       <div className="container-sm">
-        <div className="card bg-base-100 shadow-xl">
-          <div className="row p-4">
+        <div className="card bg-base-100 shadow-xl p-4">
+          <div className="row">
             <div className="col-md-12">
               <p className="text-2xl flex items-center">
                 <Link to="/app/welcomeemitter">
@@ -71,127 +182,56 @@ function StockAdjustment() {
               </p>
             </div>
           </div>
-          <div className="row">
-            {/* <p className="ml-5 mt-3 text-2xl">
-              <strong>Stock Report</strong>
-            </p> */}
-
-            {/* <div className="col-lg-1">
-              <div className="d-flex justify-content-center">
-                <Link to="/app/welcomeemitter">
-                  <FaArrowCircleLeft className="cursor-pointer w-8 h-8 mt-4" />
-                </Link>
-              </div>
-            </div> */}
-            <div className="col-lg-1"></div>
-
-            <div className="col-lg-6 card bg-base-100 shadow-sm ms-4 mt-3 me-2">
-              <div className="p-1">
-                <div className="d-flex flex-row">
-                  {/* <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 11 }}
-                  /> */}
-                  <img
-                    src="/destination.png"
-                    alt="Favorite"
-                    style={{
-                      width: "30px",
-                      height: "25px",
-                      marginRight: "6px",
-                      marginTop: "12px",
-                    }}
-                  />
-                  <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
-                    Issued To
-                  </h4>
-                  <select className="form-select w-52 h-10 mt-1 mb-2">
-                    <option value="">Select a Flow</option>
-                  </select>
-                </div>
-
-                <h4 className="text-xl dark:text-slate-300 font-semibold ms-1 mb-2">
-                  -
-                </h4>
-              </div>
+          <div className="row mt-4">
+            <div className="col-lg-2 col-md-4">
+              <label className="label mb-4">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Stock Branch
+                  <FaStarOfLife className="must" />
+                </span>
+              </label>
             </div>
-            {/* <div className="col-lg-1">
-              <MdDoubleArrow
-                className="text-xl font-semibold w-16  h-16 "
-                style={{ marginTop: 50 }}
-              />
-            </div> */}
-            {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-2 mt-3">
-              <div className="p-1">
-                <div className="d-flex flex-row">
-                  <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 11 }}
-                  />
-                  <h4 className="text-xl font-semibold mt-2 ms-1 me-1 mb-2">
-                    Issued To -
-                  </h4>
-                  <h4 className="text-2xl font-semibold mt-1">
-                    Tata Motors- Pune
-                  </h4>
-                </div>
-
-                <p className="ms-1 mb-2">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p>
-              </div>
-            </div> */}
-          </div>
-          <div
-            className="w-full p-6 bg-base-100 shadow-xl"
-            style={{ borderRadius: 16 }}
-          >
-            <div className="text-xl font-semibold">Stock Report</div>
-            <div className="divider mt-2"></div>
-            <div className="overflow-x-auto w-full ">
-              <table className="table w-full">
-                <thead>
-                  <tr>
-                    <th>IM No</th>
-                    <th>Issue Date</th>
-                    <th>KIT No</th>
-                    <th>Issue Qty</th>
-                    <th>Outward No</th>
-                    <th>Outward Date</th>
-                    <th>Opening Qty</th>
-                    <th>O/W Qty</th>
-                    <th>Closing Qty</th>
-                    <th>Part No</th>
-                    <th>Part Name</th>
-                    <th>Part Qty</th>
-                    <th>Invoice</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {/* {bills.map((l, k) => {
-                    return (
-                      <tr key={k}>
-                        <td>{l.imno}</td>
-                        <td>{l.imdate}</td>
-                        <td>{l.kitno}</td>
-                        <td className="text-center">{l.issueqty}</td>
-                        <td className="text-center">{l.outwardno}</td>
-                        <td>{l.outwarddate}</td>
-                        <td className="text-center">{l.openqty}</td>
-                        <td className="text-center">{l.owqty}</td>
-                        <td className="text-center">{l.cqty}</td>
-                        <td>{l.pno}</td>
-                        <td>{l.pname}</td>
-                        <td className="text-center">{l.pqty}</td>
-                        <td>{l.inv}</td>
-                      </tr>
-                    );
-                  })} */}
-                </tbody>
-              </table>
+            <div className="col-lg-3 col-md-6">
+              <select
+                className="form-select form-sz w-full mb-2"
+                value={stockBranch}
+                onChange={handleSelectedStockBranch}
+              >
+                <option value="">Select a Stock Branch</option>
+                {stockBranch.map((branch, index) => (
+                  <option key={index} value={branch.stockBranch}>
+                    {branch.stockBranch}
+                  </option>
+                ))}
+              </select>
+              {/* {errors.flow && (
+                <span className="error-text mb-1">{errors.flow}</span>
+              )} */}
             </div>
           </div>
+          {/* <div className="">
+            <button
+              type="button"
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              onClick={handleSave}
+            >
+              Search
+            </button>
+            <button
+              type="button"
+              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              onClick={handleClearData}
+            >
+              Clear
+            </button>
+          </div> */}
+          {tableView && (
+            <>
+              <div className="mt-4">
+                <MaterialReactTable table={table} />
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
