@@ -24,14 +24,10 @@ function EmitterStockLedgerReport() {
   //   startDate: new Date(),
   //   endDate: new Date(),
   // });
-  const [emitter, setEmitter] = useState("");
-  const [kit, setKit] = useState("");
   const [flow, setFlow] = useState("");
+  const [flowData, setFlowData] = useState("");
   const [errors, setErrors] = useState("");
   const [data, setData] = useState([]);
-  const [stockBranch, setStockBranch] = useState("");
-  const [selectedStockBranch, setSelectedStockBranch] = useState("");
-  const [stockBranchList, setStockBranchList] = useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [tableView, setTableView] = useState(false);
@@ -43,7 +39,7 @@ function EmitterStockLedgerReport() {
   });
 
   useEffect(() => {
-    getStockBranchByUserId();
+    getAddressById();
   }, []);
 
   const handleDatePickerValueChange = (newValue) => {
@@ -56,17 +52,36 @@ function EmitterStockLedgerReport() {
       startDate: null,
       endDate: null,
     });
-    setEmitter("");
     setFlow("");
-    setKit("");
     setTableView(false);
+  };
+
+  const getAddressById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/flow/getFlowByUserId?userId=${userId}`
+      );
+
+      if (response.status === 200) {
+        const validFlows = response.data.paramObjectsMap.flowVO
+          .filter(
+            (flow) =>
+              typeof flow.flowName === "string" && flow.flowName.trim() !== ""
+          )
+          .map((flow) => ({ id: flow.id, flow: flow.flowName }));
+        setFlowData(validFlows);
+        // setUserName(userDetail.firstName);
+      }
+    } catch (error) {
+      toast.error("Network Error!");
+    }
   };
 
   const columns = useMemo(
     () => [
       {
-        accessorKey: "category",
-        header: "Category",
+        accessorKey: "kitNo",
+        header: "Kit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -76,8 +91,8 @@ function EmitterStockLedgerReport() {
         },
       },
       {
-        accessorKey: "assetCode",
-        header: "Asset Code",
+        accessorKey: "oqty",
+        header: "Opening QTY",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -87,8 +102,8 @@ function EmitterStockLedgerReport() {
         },
       },
       {
-        accessorKey: "stockBranch",
-        header: "Stock Branch",
+        accessorKey: "rqty",
+        header: "Received QTY",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -98,29 +113,7 @@ function EmitterStockLedgerReport() {
         },
       },
       {
-        accessorKey: "openQty",
-        header: "Opening Qty",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "rQty",
-        header: "Received Qty",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "dQty",
+        accessorKey: "dqty",
         header: "Dispatch QTY",
         size: 50,
         muiTableHeadCellProps: {
@@ -131,7 +124,7 @@ function EmitterStockLedgerReport() {
         },
       },
       {
-        accessorKey: "closingQty",
+        accessorKey: "cqty",
         header: "Closing QTY",
         size: 50,
         muiTableHeadCellProps: {
@@ -182,43 +175,16 @@ function EmitterStockLedgerReport() {
     // ),
   });
 
-  const getStockBranchByUserId = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getStockBranchByUserId?orgId=${orgId}&userId=${userId}`
-      );
-      if (response.status === 200) {
-        console.log(
-          "getStockBranchByUserId:",
-          response.data.paramObjectsMap.branch
-        );
-        setStockBranchList(response.data.paramObjectsMap.branch);
-      } else {
-        console.error("API Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleSelectionChange = (event) => {
-    const selectedOrigin = event.target.value;
-    setStockBranch(selectedOrigin);
-
-    const selectedBranch = stockBranchList.find(
-      (branch) => branch.orgin === selectedOrigin
-    );
-    if (selectedBranch) {
-      setSelectedStockBranch(selectedBranch.stockBranch);
-    } else {
-      setSelectedStockBranch("");
-    }
+  const handleSelectedFlow = (event) => {
+    const selectedId = event.target.value;
+    setFlow(selectedId);
+    // getFlowDetailsByFlowId(selectedId);
   };
 
   const handleSave = () => {
     const errors = {};
-    if (!selectedStockBranch) {
-      errors.selectedStockBranch = "Stock Branch is required";
+    if (!flow) {
+      errors.flow = "Flow is required";
     }
     if (!dateValue.startDate || !dateValue.endDate) {
       errors.dateValue = "Date is required";
@@ -226,7 +192,7 @@ function EmitterStockLedgerReport() {
     if (Object.keys(errors).length === 0) {
       axios
         .get(
-          `${process.env.REACT_APP_API_URL}/api/emitter/getStockLedgerByEmitter?endDate=${dateValue.endDate}&startDate=${dateValue.startDate}&stockBranch=${selectedStockBranch}`
+          `${process.env.REACT_APP_API_URL}/api/emitter/getKitLedgerByEmitter?endDate=${dateValue.endDate}&startDate=${dateValue.startDate}&flowId=${flow}&orgId=${orgId}`
         )
         .then((response) => {
           if (response.data.status === "Error") {
@@ -241,7 +207,8 @@ function EmitterStockLedgerReport() {
               theme: "colored",
             });
 
-            setData(response.data.paramObjectsMap.stockLedger);
+            setData(response.data.paramObjectsMap.kitLedger);
+            setErrors({});
             setTableView(true);
           }
         })
@@ -301,37 +268,29 @@ function EmitterStockLedgerReport() {
               )}
             </div>
             <div className="col-lg-2 col-md-4">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Stock Branch
+              <label className="label mb-4">
+                <span className="label-text label-font-size text-base-content d-flex flex-row">
+                  Flow
                   <FaStarOfLife className="must" />
                 </span>
               </label>
             </div>
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-3 col-md-6">
               <select
                 className="form-select form-sz w-full mb-2"
-                onChange={handleSelectionChange}
-                value={stockBranch}
+                value={flow}
+                onChange={handleSelectedFlow}
               >
-                <option value="" disabled>
-                  Select a Stock Branch
-                </option>
-                {stockBranchList.length > 0 &&
-                  stockBranchList.map((list) => (
-                    <option key={list.stockBranch} value={list.orgin}>
-                      {list.orgin}
+                <option value="">Select a Flow</option>
+                {flowData &&
+                  flowData.map((flowName) => (
+                    <option key={flowName.id} value={flowName.id}>
+                      {flowName.flow}
                     </option>
                   ))}
               </select>
-              {errors.selectedStockBranch && (
-                <span className="error-text mb-1">
-                  {errors.selectedStockBranch}
-                </span>
+              {errors.flow && (
+                <span className="error-text mb-1">{errors.flow}</span>
               )}
             </div>
           </div>
