@@ -929,6 +929,10 @@ function IssueReq() {
     setSelectedSubIndex(subIndex);
   };
 
+  const replaceSpacesWithHyphen = (partNo) => {
+    return partNo.replace(/\s+/g, " - "); // Replace all occurrences of whitespace with '-'
+  };
+
   return (
     <>
       <div>
@@ -1282,7 +1286,9 @@ function IssueReq() {
                                 (partInfo, i) => (
                                   <Chip
                                     key={i}
-                                    label={`Part: ${partInfo.partNo}`}
+                                    label={`Part: ${replaceSpacesWithHyphen(
+                                      partInfo.partNo
+                                    )}`}
                                     variant="outlined"
                                     className="part-chip"
                                     style={{
