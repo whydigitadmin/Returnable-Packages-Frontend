@@ -247,6 +247,7 @@ const BinInwardOem = ({}) => {
             });
             setEmitterOutwardList([]);
             handleNew();
+            getInwardDocId();
           }
         })
         .catch((error) => {
@@ -332,51 +333,24 @@ const BinInwardOem = ({}) => {
                             {expandedRows.includes(row.id) && (
                               <tr>
                                 <td colSpan="10">
-                                  <table className="table table-bordered">
+                                  <table className="table table-bordered table-success">
                                     <thead>
                                       <tr>
-                                        <th
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "green",
-                                          }}
-                                        >
+                                        <th className="text-center">
                                           Bin Out Docid
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">
                                           Bin Out Doc Date
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">
                                           Part Name
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Part No
-                                        </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Kit No
-                                        </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">Part No</th>
+                                        <th className="text-center">Kit No</th>
+                                        <th className="text-center">
                                           Alloted Kit QTY
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">
                                           Received Kit QTY
                                         </th>
                                       </tr>
@@ -384,60 +358,25 @@ const BinInwardOem = ({}) => {
                                     <tbody>
                                       {row.oemBinInwardDetails.map((detail) => (
                                         <tr key={detail.id}>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.outwardDocId}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.outwardDocDate}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.partName}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.partNo}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.kitNo}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.allotedQty}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.receivedKitQty}
                                           </td>
                                         </tr>
@@ -645,6 +584,8 @@ const BinInwardOem = ({}) => {
                         },
                       }}
                       format="DD/MM/YYYY"
+                      minDate={dayjs().subtract(15, "day")} // Minimum date is 30 days before today
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </div>
