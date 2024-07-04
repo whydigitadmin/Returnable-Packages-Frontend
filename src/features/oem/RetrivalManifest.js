@@ -69,7 +69,9 @@ export const RetrivalManifest = () => {
         `${process.env.REACT_APP_API_URL}/api/oem/getAllReterivalByReceiverId?receiverId=${receiverId}`
       );
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.retreivalVO);
+        setListViewTableData(
+          response.data.paramObjectsMap.retreivalVO.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -124,6 +126,8 @@ export const RetrivalManifest = () => {
     setSelectedRowData("");
     setTableData("");
     setTableView(false);
+    setStockBranch("");
+    setErrors({});
   };
 
   const handleBack = () => {
@@ -240,12 +244,23 @@ export const RetrivalManifest = () => {
           requestData
         )
         .then((response) => {
-          handleNew();
-          toast.success("Create Retreival Done Successfully!");
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            handleNew();
+            getDocIdByRetreival();
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Network Error!");
+          toast.error("Error saving: " + error.message);
         });
     } else {
       setErrors(errors);
@@ -485,7 +500,7 @@ export const RetrivalManifest = () => {
                           <React.Fragment key={row.id}>
                             <tr style={{ backgroundColor: "red" }}>
                               <td
-                                className="border px-2 py-2 text-center d-flex justify-content-center"
+                                className="px-2 py-2 text-center d-flex justify-content-center"
                                 style={{
                                   cursor: "pointer",
                                   color: "black",
@@ -526,27 +541,16 @@ export const RetrivalManifest = () => {
                             {expandedRows.includes(row.id) && (
                               <tr>
                                 <td colSpan="10">
-                                  <table className="table table-bordered">
+                                  <table className="table table-success">
                                     <thead>
                                       <tr>
-                                        <th
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "green",
-                                          }}
-                                        >
+                                        <th className="text-center">
                                           Bin Out DocId
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">
                                           Bin OutDoc Date
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">
                                           Outward Stock Branch
                                         </th>
                                       </tr>
@@ -554,28 +558,13 @@ export const RetrivalManifest = () => {
                                     <tbody>
                                       {row.retreivalDetailsVO.map((detail) => (
                                         <tr key={detail.id}>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.outwardDocId}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.outwardDocDate}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.outwardStockBranch}
                                           </td>
                                         </tr>

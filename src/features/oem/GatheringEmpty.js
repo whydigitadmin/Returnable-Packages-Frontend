@@ -194,17 +194,28 @@ export const GatheringEmpty = () => {
         formData
       )
       .then((response) => {
-        console.log("/api/oem/createGatheringEmpty:", response.data);
-        setDocDate(dayjs());
-        setStockBranch("");
-        setTableView(false);
-        setTableData([]);
-        setErrors({});
-        getDocIdByGatheringEmpty();
+        if (response.data.statusFlag === "Error") {
+          toast.error(response.data.paramObjectsMap.errorMessage, {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        } else {
+          setDocDate(dayjs());
+          setStockBranch("");
+          setTableView(false);
+          setTableData([]);
+          setErrors({});
+          getDocIdByGatheringEmpty();
+          console.log("Response:", response.data);
+          toast.success(response.data.paramObjectsMap.message, {
+            autoClose: 2000,
+            theme: "colored",
+          });
+        }
       })
       .catch((error) => {
         console.error("Error:", error);
-        toast.error("Failed to save bin inward.");
+        toast.error("Error Saving." + error.message);
       });
   };
 
@@ -275,71 +286,33 @@ export const GatheringEmpty = () => {
                           {expandedRows.includes(row.id) && (
                             <tr>
                               <td colSpan="10">
-                                <table className="table table-bordered">
+                                <table className="table  table-success">
                                   <thead>
                                     <tr>
-                                      <th
-                                        className="text-center"
-                                        style={{
-                                          backgroundColor: "green",
-                                        }}
-                                      >
-                                        Category
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
+                                      <th className="text-center">Category</th>
+                                      <th className="text-center">
                                         Asset Name
                                       </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
+                                      <th className="text-center">
                                         Asset Code
                                       </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Empty QTY
-                                      </th>
+                                      <th className="text-center">Empty QTY</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {row.gathereingEmptyDetailsVO.map(
                                       (detail) => (
                                         <tr key={detail.id}>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.category}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.assetName}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.assetCode}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.emptyQty}
                                           </td>
                                         </tr>

@@ -42,7 +42,9 @@ function BinOutwardOem({}) {
         `${process.env.REACT_APP_API_URL}/api/oem/getAllOemBinOutward?orgId=${orgId}`
       );
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.oemBinOutwardVO);
+        setListViewTableData(
+          response.data.paramObjectsMap.oemBinOutwardVO.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -189,17 +191,28 @@ function BinOutwardOem({}) {
           formData
         )
         .then((response) => {
-          toast.success("Bin Outward saved successfully!");
-          setDocDate(dayjs());
-          setStockBranch("");
-          setTableData([]);
-          setTableView(false);
-          setErrors({});
-          getOutwardDocId();
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            setDocDate(dayjs());
+            setStockBranch("");
+            setTableData([]);
+            setTableView(false);
+            setErrors({});
+            getOutwardDocId();
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Failed to save bin inward.");
+          toast.error("Error saving: " + error.message);
         });
     } else {
       setErrors(errors);
@@ -269,33 +282,17 @@ function BinOutwardOem({}) {
                             {expandedRows.includes(row.id) && (
                               <tr>
                                 <td colSpan="10">
-                                  <table className="table table-bordered">
+                                  <table className="table table-success">
                                     <thead>
                                       <tr>
-                                        <th
-                                          className="text-center"
-                                          style={{
-                                            backgroundColor: "green",
-                                          }}
-                                        >
+                                        <th className="text-center">
                                           Category
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">
                                           Asset Code
                                         </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Asset
-                                        </th>
-                                        <th
-                                          className="text-center"
-                                          style={{ backgroundColor: "green" }}
-                                        >
+                                        <th className="text-center">Asset</th>
+                                        <th className="text-center">
                                           OutWard QTY
                                         </th>
                                       </tr>
@@ -304,36 +301,16 @@ function BinOutwardOem({}) {
                                       {row.oemBinOutwardDetails.map(
                                         (detail) => (
                                           <tr key={detail.id}>
-                                            <td
-                                              className="text-center"
-                                              style={{
-                                                backgroundColor: "yellow",
-                                              }}
-                                            >
+                                            <td className="text-center">
                                               {detail.category}
                                             </td>
-                                            <td
-                                              className="text-center"
-                                              style={{
-                                                backgroundColor: "yellow",
-                                              }}
-                                            >
+                                            <td className="text-center">
                                               {detail.assetCode}
                                             </td>
-                                            <td
-                                              className="text-center"
-                                              style={{
-                                                backgroundColor: "yellow",
-                                              }}
-                                            >
+                                            <td className="text-center">
                                               {detail.asset}
                                             </td>
-                                            <td
-                                              className="text-center"
-                                              style={{
-                                                backgroundColor: "yellow",
-                                              }}
-                                            >
+                                            <td className="text-center">
                                               {detail.outQty}
                                             </td>
                                           </tr>

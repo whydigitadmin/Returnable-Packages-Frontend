@@ -272,7 +272,7 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
 
               <div className="text-center mt-5">
                 <h1 className="text-xl">
-                  <strong>SCM AI-PACKS PVT LIMITED</strong>
+                  <strong>{headerData.receiver}</strong>
                 </h1>
                 <br />
                 <h3>
