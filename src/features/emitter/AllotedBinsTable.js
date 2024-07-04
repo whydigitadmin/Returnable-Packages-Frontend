@@ -184,8 +184,8 @@ function AllotedBinsTable({ viewAllotedTable }) {
             description: "",
           },
           {
-            title: "low stock",
-            subTitle: "priority Pending",
+            title: "Low Stock",
+            subTitle: "Priority Pending",
             value: "0",
             icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
             description: "",

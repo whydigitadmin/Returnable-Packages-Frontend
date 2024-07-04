@@ -551,8 +551,7 @@ function WelcomeEmitter() {
               </div>
 
               <div className="col-lg-4 col-md-6 col-sm-4">
-                {/* <Link to="/app/StockAdjustment"> */}
-                <Link to="#">
+                <Link to="/app/StockAdjustment">
                   <div
                     className="card bg-base-100 shadow-xl mb-4 pt-3 pb-3 pl-3 mt-3 transition duration-300 ease-in-out hover:scale-105 duration-500"
                     style={{

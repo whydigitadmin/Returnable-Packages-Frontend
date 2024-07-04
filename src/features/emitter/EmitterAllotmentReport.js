@@ -152,8 +152,8 @@ function EmitterAllotmentReport() {
   };
   const handleClearData = () => {
     setDateValue({
-      startDate: "",
-      endDate: "",
+      startDate: null,
+      endDate: null,
     });
     setFlow("");
     setKit("");

@@ -18,7 +18,12 @@ import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Link } from "react-router-dom";
 
-function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
+function EmitterBinAllotment({
+  addBinAllotment,
+  editBinRequestId,
+  viewId,
+  editBinKidId,
+}) {
   const [addInwardManifeast, setAddInwardManifeast] = useState("");
   const [stockFrom, setStockFrom] = useState("");
   const [stockTo, setStockTo] = useState("");
@@ -135,7 +140,7 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   const getBinRequestByReqNo = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgid=${orgId}&reqNo=${editBinRequestId}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getReqDetailsByOrgId?orgid=${orgId}&reqNo=${editBinRequestId}&kitNo=${editBinKidId}`
       );
       console.log("API Response:", response);
 

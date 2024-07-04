@@ -49,6 +49,7 @@ export const BinAllotmentDetails = () => {
   );
   const [selectedRowData, setSelectedRowData] = useState(null);
   const [selectedRowId, setSelectedRowId] = useState(null);
+  const [selectedKidId, setSelectedKidId] = useState(null);
   const [viewAllotedBins, setViewAllotedBins] = useState(false);
   const [allotedBinTableView, setAllotedBinTableView] = useState(false);
   const [visibleCard, setVisibleCard] = useState(false);
@@ -143,8 +144,8 @@ export const BinAllotmentDetails = () => {
             description: "",
           },
           {
-            title: "low stock",
-            subTitle: "priority Pending",
+            title: "Low Stock",
+            subTitle: "Priority Pending",
             value: "0",
             icon: <FaBoxOpen className="w-7 h-7 text-white dashicon" />,
             description: "",
@@ -158,6 +159,8 @@ export const BinAllotmentDetails = () => {
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.reqNo);
+    console.log("row.original.reqNo", row.original.kitCode);
+    setSelectedKidId(row.original.kitCode);
     setEditBinRequest(true);
   };
 
@@ -275,6 +278,7 @@ export const BinAllotmentDetails = () => {
           <EmitterBinAllotment
             addBinAllotment={handleBack}
             editBinRequestId={selectedRowId}
+            editBinKidId={selectedKidId}
           />
         )) || (
           <div className="card w-full p-6 bg-base-100 shadow-xl">
