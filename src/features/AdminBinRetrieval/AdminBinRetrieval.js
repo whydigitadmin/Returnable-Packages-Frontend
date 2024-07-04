@@ -558,6 +558,18 @@ export const AdminBinRetrieval = () => {
     console.log("AFTER TYPED DAMAGE QTY THEN ROW IS:", row);
   };
 
+  const handleNew = () => {
+    setErrors({});
+    const updatedTableData = tableData.map((row) => ({
+      ...row,
+      reteriveQty: "",
+      damageQty: "",
+      shortQty: "",
+      errorMsg: "",
+    }));
+    setTableData(updatedTableData);
+  };
+
   const handleSave = () => {
     const errors = {};
     if (!docId) {
@@ -981,25 +993,25 @@ export const AdminBinRetrieval = () => {
                           {reterivedData && reterivedData.length > 0 ? (
                             reterivedData.map((row, index) => (
                               <tr key={row.id}>
-                                <td className="border px-2 py-2 text-center">
+                                <td className="px-3 py-3 text-center">
                                   {row.category}
                                 </td>
-                                <td className="border px-2 py-2 text-center">
+                                <td className="px-3 py-3 text-center">
                                   {row.assetCode}
                                 </td>
-                                <td className="border px-2 py-2 text-center">
+                                <td className="px-3 py-3 text-center">
                                   {row.asset}
                                 </td>
-                                <td className="border px-2 py-2 text-center">
+                                <td className="px-3 py-3 text-center">
                                   {row.invqty}
                                 </td>
-                                <td className="border px-2 py-2 text-center">
+                                <td className="px-3 py-3 text-center">
                                   {row.recqty}
                                 </td>
-                                <td className="border px-2 py-2 text-center">
+                                <td className="px-3 py-3 text-center">
                                   {row.damageQty}
                                 </td>
-                                <td className="border px-2 py-2 text-center">
+                                <td className="px-3 py-3 text-center">
                                   {row.shortQty}
                                 </td>
                               </tr>
@@ -1034,7 +1046,7 @@ export const AdminBinRetrieval = () => {
                                   {row.invQty}
                                 </td>
 
-                                <td>
+                                <td className="text-center">
                                   <input
                                     type="text"
                                     value={row.reteriveQty}
@@ -1057,12 +1069,11 @@ export const AdminBinRetrieval = () => {
                                     )}
                                 </td>
 
-                                {/* <td className="d-flex flex-row"> */}
-                                <td>
+                                <td className="text-center">
                                   <input
                                     type="text"
                                     value={row.damageQty}
-                                    // disabled={row.tempCalc > 0 ? false : true}
+                                    disabled={row.reteriveQty ? false : true}
                                     onChange={(e) =>
                                       handleDamageQtyChange(e, row, index)
                                     }
@@ -1075,7 +1086,7 @@ export const AdminBinRetrieval = () => {
                                     </span>
                                   )}
                                 </td>
-                                <td className="">
+                                <td className="text-center">
                                   <input
                                     type="text"
                                     value={row.shortQty}
@@ -1111,394 +1122,20 @@ export const AdminBinRetrieval = () => {
                     className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                     onClick={handleSave}
                   >
-                    Save
+                    Save to Retrieval
                   </button>
                   <button
                     type="button"
                     className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    // onClick={handleNew}
+                    onClick={handleNew}
                   >
-                    Cancel
+                    Clear
                   </button>
                 </div>
               </>
             )}
           </>
         )}
-        {/* {editId && (
-          <>
-            <div className="d-flex justify-content-end">
-              <IoMdClose
-                onClick={handleTransactionViewClose}
-                className="cursor-pointer w-8 h-8 mb-3"
-              />
-            </div>
-
-            <div className="row mt-3">
-              <div className="col-lg-3 col-md-6">
-                <label className="label mb-4">
-                  <span className="label-text label-font-size text-base-content d-flex flex-row">
-                    Doc Id:
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <input
-                  className="form-control form-sz mb-2"
-                  // placeholder="Auto Gen"
-                  value={viewId ? viewId : docId}
-                  // onChange={(e) => setDocId(e.target.value)}
-                  disabled
-                />
-                {errors.docId && (
-                  <span className="error-text mb-1">{errors.docId}</span>
-                )}
-              </div>
-
-              <div className="col-lg-3 col-md-6">
-                <label className="label mb-4">
-                  <span className="label-text label-font-size text-base-content d-flex flex-row">
-                    Doc Date:
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DesktopDatePicker
-                    value={docDate}
-                    onChange={(date) => setDocDate(date)}
-                    slotProps={{
-                      textField: { size: "small", clearable: true },
-                    }}
-                    format="DD/MM/YYYY"
-                    disabled
-                  />
-                </LocalizationProvider>
-                {errors.docDate && (
-                  <span className="error-text mb-1">{errors.docDate}</span>
-                )}
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <label className="label mb-4">
-                  <span className="label-text label-font-size text-base-content d-flex flex-row">
-                    Transporter DocId
-                    <FaStarOfLife className="must" />
-                  </span>
-                </label>
-              </div>
-              <div className="col-lg-3 col-md-6">
-                <input
-                  className="form-control form-sz mb-2"
-                  placeholder=""
-                  value={transporterDocId}
-                  disabled
-                />
-                {errors.transporterDocId && (
-                  <span className="error-text mb-1">
-                    {errors.transporterDocId}
-                  </span>
-                )}
-              </div>
-              {tableDataView && (
-                <>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        From Stock Branch:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={fromStockBranch}
-                      onChange={(e) => setfromStockBranch(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        To Stock Branch:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={toStockBranch}
-                      onChange={(e) => setToStockBranch(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        Transporter Pickup Date:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={transportPickDate}
-                      onChange={(e) => setTransportPickDate(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        Transporter:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={transporter}
-                      onChange={(e) => setTransporter(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        Transporter Doc No:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={transporterDocNo}
-                      onChange={(e) => setTransporterDocNo(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        Handover By:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={handoverBy}
-                      onChange={(e) => setHandoverBy(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        Driver:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={driver}
-                      onChange={(e) => setDriver(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        Driver PhNo:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={driverPhNo}
-                      onChange={(e) => setDriverPhNo(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <label className="label mb-4">
-                      <span className="label-text label-font-size text-base-content d-flex flex-row">
-                        Vehicle No:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder=""
-                      value={vehicleNo}
-                      onChange={(e) => setVehicleNo(e.target.value)}
-                      disabled
-                    />
-                  </div>
-                </>
-              )}
-            </div>
-
-            <div className="row mt-4">
-              <div className="col-lg-12">
-                <div className="overflow-x-auto">
-                  <table className="table table-hover w-full">
-                    <thead>
-                      <tr>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ width: "15%" }}
-                        >
-                          Category
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Asset Code
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Asset
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Retrieval Qty
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Inward Qty
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Damage Qty
-                        </th>
-                        <th
-                          className="px-2 text-black border text-center"
-                          style={{ paddingTop: "1%", paddingBottom: "1%" }}
-                        >
-                          Short Landing Qty
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {tableData && tableData.length > 0 ? (
-                        tableData.map((row, index) => (
-                          <tr key={row.id}>
-                            <td className="border px-2 py-2 text-center">
-                              {row.category}
-                            </td>
-                            <td className="border px-2 py-2 text-center">
-                              {row.assetCode}
-                            </td>
-                            <td className="border px-2 py-2 text-center">
-                              {row.asset}
-                            </td>
-                            <td className="border px-2 py-2 text-center">
-                              {row.invQty}
-                            </td>
-
-                            <td>
-                              <input
-                                type="text"
-                                value={row.reteriveQty}
-                                onChange={(e) =>
-                                  handleRetrievalQtyChange(e, row, index)
-                                }
-                                className="border px-2 py-2 text-center"
-                                style={{ width: "50px" }}
-                              />
-                              {row.errorMsg && (
-                                <span className="error-text mb-1 ms-2">
-                                  {row.errorMsg}
-                                </span>
-                              )}
-                            </td>
-
-                            <td>
-                              <input
-                                type="text"
-                                value={row.damageQty}
-                                // disabled={row.tempCalc > 0 ? false : true}
-                                onChange={(e) =>
-                                  handleDamageQtyChange(e, row, index)
-                                }
-                                className="border px-2 py-2 text-center"
-                                style={{ width: "50px" }}
-                              />
-                              {row.damageErrorMsg && (
-                                <span className="error-text mb-1 ms-2">
-                                  {row.damageErrorMsg}
-                                </span>
-                              )}
-                            </td>
-                            <td className="">
-                              <input
-                                type="text"
-                                value={row.shortQty}
-                                disabled
-                                className="border px-2 py-2 text-center"
-                                style={{ width: "50px" }}
-                              />
-                            </td>
-                          </tr>
-                        ))
-                      ) : (
-                        <tr>
-                          <td colSpan={10}>
-                            <NoRecordsFound
-                              message={"Pending Bin Inward not found"}
-                            />
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4">
-              <button
-                type="button"
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                onClick={handleSave}
-              >
-                Save
-              </button>
-              <button
-                type="button"
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                // onClick={handleNew}
-              >
-                Cancel
-              </button>
-            </div>
-          </>
-        )}
-        {viewId && (
-          <>
-            <p>view only </p>
-          </>
-        )} */}
       </div>
     </>
   );

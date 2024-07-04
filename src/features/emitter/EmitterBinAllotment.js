@@ -101,8 +101,9 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
   ]);
 
   useEffect(() => {
-    {
-      viewId && viewAllotedBinByDocId();
+    if (viewId) {
+      setTableView(true);
+      viewAllotedBinByDocId();
     }
     console.log("VIEWID is:", viewId);
     getNewDocId();
@@ -919,15 +920,19 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
             )}
           </div>
         </div>
-        <div className="mt-4">
-          <button
-            type="button"
-            className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            onClick={handleAllotedQtyChange}
-          >
-            Check
-          </button>
-        </div>
+        {!viewId && (
+          <>
+            <div className="mt-4">
+              <button
+                type="button"
+                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={handleAllotedQtyChange}
+              >
+                Check
+              </button>
+            </div>
+          </>
+        )}
 
         {tableView && (
           <>
@@ -937,22 +942,22 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                   <table className="w-full">
                     <thead>
                       <tr>
-                        <th className="px-2 py-2 bg-blue-500 text-white">
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
                           S.No
                         </th>
-                        <th className="px-2 py-2 bg-blue-500 text-white">
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
                           Tag Code
                         </th>
-                        <th className="px-2 py-2 bg-blue-500 text-white">
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
                           RF ID
                         </th>
-                        <th className="px-2 py-2 bg-blue-500 text-white">
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
                           Asset
                         </th>
-                        <th className="px-2 py-2 bg-blue-500 text-white">
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
                           Asset Code
                         </th>
-                        <th className="px-2 py-2 bg-blue-500 text-white">
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
                           QTY
                         </th>
                       </tr>
@@ -961,12 +966,21 @@ function EmitterBinAllotment({ addBinAllotment, editBinRequestId, viewId }) {
                       {tableData &&
                         tableData.map((row) => (
                           <tr key={row.id}>
-                            <td className="border px-2 py-2">{row.id}</td>
-                            <td>{row.assetId}</td>
-                            <td>{row.rfId}</td>
-                            <td>{row.asset}</td>
-                            <td>{row.assetCode}</td>
-                            <td>{row.qty}</td>
+                            {/* <td className="border px-2 py-2">{row.id}</td> */}
+                            <td className="px-2 py-2 text-center">{row.id}</td>
+                            <td className="px-2 py-2 text-center">
+                              {row.assetId}
+                            </td>
+                            <td className="px-2 py-2 text-center">
+                              {row.rfId}
+                            </td>
+                            <td className="px-2 py-2 text-center">
+                              {row.asset}
+                            </td>
+                            <td className="px-2 py-2 text-center">
+                              {row.assetCode}
+                            </td>
+                            <td className="px-2 py-2 text-center">{row.qty}</td>
                           </tr>
                         ))}
                     </tbody>
