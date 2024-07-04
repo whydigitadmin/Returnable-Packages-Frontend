@@ -76,14 +76,12 @@ const TransporterPickup = ({}) => {
   const getAllVendorByOrgId = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getVendorByOrgId?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getVendorList?orgId=${orgId}`
       );
 
       if (response.status === 200) {
         setTransporterList(
-          response.data.paramObjectsMap.vendorVO.filter(
-            (user) => user.venderType === "TRANSPORT"
-          )
+          response.data.paramObjectsMap.vendorVO.transportVendorVO
         );
       }
     } catch (error) {
@@ -176,6 +174,8 @@ const TransporterPickup = ({}) => {
 
     if (!driverPhoneNo) {
       errors.driverPhoneNo = "Driver Ph No is required";
+    } else if (driverPhoneNo.length !== 10) {
+      errors.driverPhoneNo = "Driver Ph No must be 10 digit";
     }
 
     if (!vehicleNo) {
@@ -207,22 +207,32 @@ const TransporterPickup = ({}) => {
           requestData
         )
         .then((response) => {
-          setDriver("");
-          setDriverPhoneNo("");
-          setTransPortDocNo("");
-          setVehicleNo("");
-          setHandoverTo("");
-          setPickupData("");
-          setTransactionView(false);
-          setPendingView(true);
-          setErrors("");
-          getDocIdByTransportPickup();
-          getRetrievalDetails();
-          // toast.success("Outward Qty updated");
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            setDriver("");
+            setDriverPhoneNo("");
+            setTransPortDocNo("");
+            setVehicleNo("");
+            setHandoverTo("");
+            setPickupData("");
+            setTransactionView(false);
+            setPendingView(true);
+            setErrors("");
+            getDocIdByTransportPickup();
+            getRetrievalDetails();
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Network Error!");
+          toast.error("Error saving: " + error.message);
         });
     } else {
       setErrors(errors);
@@ -629,23 +639,24 @@ const TransporterPickup = ({}) => {
                   name="Select Transporter"
                   style={{ height: 40, fontSize: "0.800rem", width: "100%" }}
                   className="form-select form-sz"
-                  onChange={(e) => {
-                    const selectedOption = e.target.value;
-                    const selectedTransporter = transporterList.find(
-                      (transporter) => transporter.displyName === selectedOption
-                    );
-                    setHandoverTo(selectedOption);
-                    setTransPorterId(
-                      selectedTransporter ? selectedTransporter.id : null
-                    );
-                  }}
+                  // onChange={(e) => {
+                  //   const selectedOption = e.target.value;
+                  //   const selectedTransporter = transporterList.find(
+                  //     (transporter) => transporter.displyName === selectedOption
+                  //   );
+                  //   setHandoverTo(selectedOption);
+                  //   setTransPorterId(
+                  //     selectedTransporter ? selectedTransporter.id : null
+                  //   );
+                  // }}
                   value={handoverTo}
+                  onChange={(e) => setHandoverTo(e.target.value)}
                 >
                   <option value="" selected>
                     Select a Transporter
                   </option>
                   {transporterList.length > 0 &&
-                    transporterList.map((list) => (
+                    transporterList.map((list, index) => (
                       <option key={list.id} value={list.displyName}>
                         {list.displyName}
                       </option>
@@ -703,7 +714,11 @@ const TransporterPickup = ({}) => {
                   }`}
                   placeholder=""
                   value={driver}
-                  onChange={(e) => setDriver(e.target.value)}
+                  onChange={(e) => {
+                    setDriver(
+                      e.target.value.toUpperCase().replace(/[^A-Z\s]/g, "")
+                    );
+                  }}
                 />
                 {errors.driver && (
                   <span className="error-text mb-1">{errors.driver}</span>
@@ -723,7 +738,12 @@ const TransporterPickup = ({}) => {
                   }`}
                   placeholder=""
                   value={driverPhoneNo}
-                  onChange={(e) => setDriverPhoneNo(e.target.value)}
+                  maxLength={10}
+                  onChange={(e) =>
+                    setDriverPhoneNo(
+                      e.target.value.toUpperCase().replace(/[^0-9]/g, "")
+                    )
+                  }
                 />
                 {errors.driverPhoneNo && (
                   <span className="error-text mb-1">
@@ -745,7 +765,12 @@ const TransporterPickup = ({}) => {
                   }`}
                   placeholder=""
                   value={vehicleNo}
-                  onChange={(e) => setVehicleNo(e.target.value)}
+                  maxLength={15}
+                  onChange={(e) =>
+                    setVehicleNo(
+                      e.target.value.toUpperCase().replace(/[^a-zA-Z0-9]/g, "")
+                    )
+                  }
                 />
                 {errors.vehicleNo && (
                   <span className="error-text mb-1">{errors.vehicleNo}</span>

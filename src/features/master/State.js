@@ -172,7 +172,7 @@ export const State = () => {
   const getStateData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/state?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/state/Country?orgId=${orgId}`
       );
       console.log("API Response:", response);
 

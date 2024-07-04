@@ -127,7 +127,7 @@ export const Country = () => {
   const getCountryData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/country/orgId?orgId=${orgId}`
       );
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.countryVO);
@@ -139,6 +139,21 @@ export const Country = () => {
       console.error("Error fetching data:", error);
     }
   };
+  // const getCountryData = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
+  //     );
+  //     if (response.status === 200) {
+  //       setData(response.data.paramObjectsMap.countryVO);
+  //       setTableData(response.data.paramObjectsMap.countryVO);
+  //     } else {
+  //       console.error("API Error:", response.data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
