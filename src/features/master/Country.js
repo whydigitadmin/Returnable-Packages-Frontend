@@ -127,7 +127,7 @@ export const Country = () => {
   const getCountryData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/country`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/country?orgId=${orgId}`
       );
       if (response.status === 200) {
         setData(response.data.paramObjectsMap.countryVO);
