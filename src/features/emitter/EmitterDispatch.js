@@ -178,6 +178,24 @@ export const EmitterDispatch = () => {
       createdby: userName,
       orgId: orgId,
     };
+    // if (Object.keys(errors).length === 0) {
+    //   axios
+    //     .post(
+    //       `${process.env.REACT_APP_API_URL}/api/emitter/createDispatch`,
+    //       requestData
+    //     )
+    //     .then((response) => {
+    //       handleNew();
+    //       toast.success("Dispatch Completed Successfully!");
+    //     })
+    //     .catch((error) => {
+    //       console.error("Error:", error);
+    //       toast.error("Network Error!");
+    //     });
+    // } else {
+    //   setErrors(errors);
+    // }
+
     if (Object.keys(errors).length === 0) {
       axios
         .post(
@@ -185,8 +203,20 @@ export const EmitterDispatch = () => {
           requestData
         )
         .then((response) => {
-          handleNew();
-          toast.success("Dispatch Completed Successfully!");
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+            handleNew();
+            getDocIdByDispatch();
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -536,6 +566,8 @@ export const EmitterDispatch = () => {
                         textField: { size: "small" },
                       }}
                       format="DD/MM/YYYY"
+                      minDate={dayjs().subtract(15, "day")} // Minimum date is 30 days before today
+                      maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                   {errors.invDate && (
