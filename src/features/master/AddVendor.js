@@ -170,6 +170,9 @@ function AddVendor({ addVendors, editVendorId }) {
     city: false,
     pincode: false,
   });
+  const [userName, setUserName] = React.useState(
+    localStorage.getItem("userName")
+  );
 
   const isValidAddress = () => {
     return (
@@ -336,6 +339,13 @@ function AddVendor({ addVendors, editVendorId }) {
       // Check if newAddress exists before accessing its properties
       if (newAddress && newAddress.gstRegistrationStatus.trim() === "") {
         updatedErrors.gstRegistrationStatus = true;
+      }
+      if (newAddress && newAddress.gstRegistrationStatus === "Registered") {
+        if (newAddress && newAddress.gstNumber.trim() === "") {
+          updatedErrors.gstNo = true;
+        } else if (newAddress && newAddress.gstNumber.length !== 15) {
+          updatedErrors.gstNoLength = true;
+        }
       }
       if (newAddress && newAddress.street1.trim() === "") {
         updatedErrors.street1 = true;
@@ -792,7 +802,9 @@ function AddVendor({ addVendors, editVendorId }) {
         phoneNumber,
         active,
         orgId,
-        id: 0,
+        // id: 0,
+        createdBy: userName,
+        // modifiedby: userName,
         venderActivePortal,
         vendorAddressDTO: shippingAddresses,
         vendorBankDetailsDTO: [
@@ -887,6 +899,8 @@ function AddVendor({ addVendors, editVendorId }) {
         active,
         orgId,
         id: venderIdVO,
+        createdBy: userName,
+        // modifiedby: userName,
         venderActivePortal,
         vendorAddressDTO: vendorAddressVO,
       };
@@ -961,8 +975,8 @@ function AddVendor({ addVendors, editVendorId }) {
               <option value="" disabled>
                 Select a vendor
               </option>
-              <option value="Transport">TRANSPORT</option>
-              <option value="Supplier">SUPPLIER</option>
+              <option value="TRANSPORT">TRANSPORT</option>
+              <option value="SUPPLIER">SUPPLIER</option>
             </select>
             {errors.venderType && (
               <div className="error-text">{errors.venderType}</div>
@@ -1594,7 +1608,7 @@ function AddVendor({ addVendors, editVendorId }) {
                           onInput={(e) => {
                             e.target.value = e.target.value.replace(/\D/g, "");
                           }}
-                          maxLength={30}
+                          maxLength={20}
                           disabled={isSubmitting}
                         />
                         {errors.accountNo && (
@@ -1737,7 +1751,7 @@ function AddVendor({ addVendors, editVendorId }) {
                       onInput={(e) => {
                         e.target.value = e.target.value.replace(/\D/g, "");
                       }}
-                      maxLength={30}
+                      maxLength={20}
                       disabled={isSubmitting}
                     />
                     {errors.accountNo && (
@@ -2158,13 +2172,29 @@ function AddVendor({ addVendors, editVendorId }) {
                           fontSize: "0.800rem",
                           width: "100%",
                         }}
+                        type={"text"}
                         value={newAddress.gstNumber}
-                        onInput={stringAndNoAndSpecialCharValidation}
+                        onInput={(e) => {
+                          e.target.value = e.target.value
+                            .toUpperCase()
+                            .replace(/[^a-zA-Z0-9]/g, "");
+                        }}
+                        maxLength={15}
                         onChange={(e) =>
                           handleAddressInputChange(e, "gstNumber")
                         }
                         className="input input-bordered p-2"
                       />
+                      {errors1.gstNo && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          GST Registration Status is required
+                        </span>
+                      )}
+                      {errors1.gstNoLength && (
+                        <span style={{ color: "red", fontSize: "12px" }}>
+                          GST No must be 15 Characters
+                        </span>
+                      )}
                     </div>
                   </div>
                 )}

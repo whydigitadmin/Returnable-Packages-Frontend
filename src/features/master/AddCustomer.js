@@ -1001,7 +1001,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
         email,
         active,
         orgId,
-        createdby: userName,
+        createdBy: userName,
         customerAddressDTO: shippingAddresses,
         customerBankDetailsDTO: bankAddresses,
       };
@@ -1139,7 +1139,7 @@ function AddCustomer({ addcustomer, editCustomerId }) {
         email,
         active,
         orgId,
-        createdby: userName,
+        createdBy: userName,
         customerAddressDTO: customerAddressVO,
         customerBankDetailsDTO: customerBankAddressVO,
       };
