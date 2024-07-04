@@ -14,6 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { stringValidation } from "../../utils/userInputValidation";
 import { encryptPassword } from "../user/components/utils";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -352,7 +353,7 @@ function OemCreation({ addEmitter, oemEditId }) {
       active: active,
       createdBy: userName,
       email: email,
-      receiverId: receiver,
+      emitterId: receiver,
       firstName: firstName,
       lastName: "",
       orgId: orgId,
@@ -383,14 +384,11 @@ function OemCreation({ addEmitter, oemEditId }) {
           { headers }
         )
         .then((response) => {
-          toast.success("OEM saved successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          showSuccessToast(response.data.paramObjectsMap.message);
           handleNew();
         })
         .catch((error) => {
-          toast.error("Failed to save OEM. Please try again.");
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
         });
     } else {
       setErrors(errors);
@@ -446,7 +444,7 @@ function OemCreation({ addEmitter, oemEditId }) {
       active: active,
       createdBy: userName,
       email: email,
-      receiverId: receiver,
+      emitterId: receiver,
       firstName: firstName,
       orgId: orgId,
       role: role,
@@ -483,16 +481,13 @@ function OemCreation({ addEmitter, oemEditId }) {
         )
         .then((response) => {
           setErrors("");
-          toast.success("OEM Updated successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          showSuccessToast(response.data.paramObjectsMap.message);
           setTimeout(() => {
             addEmitter(false);
           }, 3000);
         })
         .catch((error) => {
-          toast.error("Failed to update OEM. Please try again.");
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
         });
     } else {
       setErrors(errors);

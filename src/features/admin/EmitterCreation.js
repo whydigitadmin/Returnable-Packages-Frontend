@@ -14,6 +14,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { encryptPassword } from "../user/components/utils";
 import { stringValidation } from "../../utils/userInputValidation";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -319,15 +320,12 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
           { headers }
         )
         .then((response) => {
-          toast.success("Emitter saved successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          showSuccessToast(response.data.paramObjectsMap.message);
           handleNew();
         })
         .catch((error) => {
           console.error("Error saving emitter:", error.message);
-          toast.error("Failed to create emitter. Please try again.");
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
         });
     } else {
       setErrors(errors);
@@ -524,16 +522,13 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
         )
         .then((response) => {
           setErrors("");
-          toast.success("Emitter updated successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          showSuccessToast(response.data.paramObjectsMap.message);
           setTimeout(() => {
             addEmitter(false);
           }, 3000);
         })
         .catch((error) => {
-          toast.error("Failed to update emitter. Please try again.");
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
         });
     } else {
       setErrors(errors);
