@@ -276,7 +276,7 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                 </h1>
                 <br />
                 <h3>
-                  <strong>Retrival Manifest</strong>
+                  <strong>Retrieval Manifest</strong>
                 </h3>
               </div>
               <div className="mr-3 mt-2">
@@ -430,17 +430,17 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
               <div className="col-md-9">
                 <table className="table">
                   <tbody>
-                    <tr>
+                    {/* <tr>
                       <td>
                         <strong>Amount In Words:</strong>
                       </td>
                       <td>----</td>
-                    </tr>
+                    </tr> */}
                     <tr>
                       <td>
                         <strong>Transporter:</strong>
                       </td>
-                      <td>--</td>
+                      <td></td>
                     </tr>
                     <tr>
                       <td>
@@ -460,12 +460,12 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
               <div className="col-md-3">
                 <table className="table">
                   <tbody>
-                    <tr>
+                    {/* <tr>
                       <td>
                         <strong>Amount:</strong>
                       </td>
                       <td>----</td>
-                    </tr>
+                    </tr> */}
                   </tbody>
                 </table>
               </div>
@@ -512,6 +512,9 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                   Amendment) Rules, 2018.
                 </p>
               </div>
+            </div>
+            <div className="d-flex justify-content-end mt-5 me-5">
+              <strong>Aknowledged By</strong>
             </div>
             <div className={`watermark cross`}>{watermark}</div>
           </div>
