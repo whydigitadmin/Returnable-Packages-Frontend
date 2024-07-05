@@ -84,7 +84,7 @@ export const InwardManifestDetails = () => {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.assetInwardVO);
+        setData(response.data.paramObjectsMap.assetInwardVO.reverse());
         console.log(response.data.paramObjectsMap.assetInwardVO);
       }
     } catch (error) {

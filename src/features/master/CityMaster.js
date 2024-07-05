@@ -194,7 +194,7 @@ export const CityMaster = () => {
   const getCityData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/cityByOrgid?orgId=${orgId}`
       );
       console.log("API Response:", response);
 

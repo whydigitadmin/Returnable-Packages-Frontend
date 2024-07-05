@@ -56,6 +56,8 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const [viewStockTo, setViewStockTo] = useState("");
   const [viewAssetCode, setViewAssetCode] = useState("");
 
+  const [viewTable, setviewTable] = useState([]);
+
   const [tableData, setTableData] = useState([
     {
       id: 1,
@@ -245,7 +247,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
         setViewAssetCode(response.data.paramObjectsMap.assetInwardVO.assetCode);
         setTransferQty(response.data.paramObjectsMap.assetInwardVO.qty);
         const tempAssetInwardTable =
-          response.data.paramObjectsMap.assetInwardDetailVO.map(
+          response.data.paramObjectsMap.assetInwardVO.assetInwardDetailVO.map(
             (row, index) => ({
               id: index + 1,
               assetId: row.tagCode,
@@ -258,8 +260,8 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               binLoc: row.binLocation,
             })
           );
-        setTableData(tempAssetInwardTable);
-        // console.log("API:", extractedAssets);
+
+        setviewTable(tempAssetInwardTable);
       } else {
         console.error("API Error:", response.data);
       }
@@ -509,6 +511,15 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
     }
   };
 
+  const handleNew = () => {
+    setDocData(DOCDATA);
+    setDocDate(null);
+    setDocId("");
+    setStockFrom("");
+    setStockTo("");
+    setErrors({});
+  };
+
   const handleSave = () => {
     const errors = {};
 
@@ -557,22 +568,26 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
         )
         .then((response) => {
           console.log("Response for POST assetInward:", response.data);
-          // setAleartState(true);
-          setDocData(DOCDATA);
-          setDocDate(null);
-          setDocId("");
-          setStockFrom("");
-          setStockTo("");
-          setErrors({});
-          handleInwardmanifeastClose();
-          toast.success("Stock Branch Updated Successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            toast.error(response.data.paramObjectsMap.errorMessage, {
+              autoClose: 2000,
+              theme: "colored",
+            });
+          } else {
+            console.log("Response:", response.data);
+            toast.success(response.data.paramObjectsMap.message, {
+              autoClose: 3000,
+              theme: "colored",
+            });
+            handleNew();
+            setTimeout(() => {
+              addInwardManifeast(false);
+            }, 3000);
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Failed to update user. Please try again.");
+          toast.error("Error saving user: " + error.message);
         });
     } else {
       setErrors(errors);
@@ -736,7 +751,10 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               className="input input-bordered ps-2"
               onChange={handleAssetCategoryChange}
               value={assetCategory}
-              disabled={viewAssetInwardId ? true : false}
+              // disabled={viewAssetInwardId ? true : false}
+              disabled={
+                viewAssetInwardId || !stockFrom || !stockTo ? true : false
+              }
             >
               <option value="" selected>
                 Select an Asset Category
@@ -920,7 +938,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
           </div>
         )}
 
-        {/* {viewAssetInwardId && (
+        {viewAssetInwardId && (
           <>
             <div className="row mt-3">
               <div className="col-lg-12">
@@ -946,21 +964,19 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
                       </tr>
                     </thead>
                     <tbody>
-                      {tableData.length > 0 &&
-                        tableData.map((item, index) => (
+                      {viewTable &&
+                        viewTable.map((row, index) => (
                           <tr key={index}>
-                            <td className="px-2 py-2 text-center">{item.id}</td>
+                            <td className="px-2 py-2 text-center">{row.id}</td>
                             <td className="px-2 py-2 text-center">
-                              {item.assetId}
+                              {row.assetId}
                             </td>
                             <td className="px-2 py-2 text-center">
-                              {item.rfId}
+                              {row.rfId}
                             </td>
+                            <td className="px-2 py-2 text-center">{row.sku}</td>
                             <td className="px-2 py-2 text-center">
-                              {item.sku}
-                            </td>
-                            <td className="px-2 py-2 text-center">
-                              {item.code}
+                              {row.code}
                             </td>
                           </tr>
                         ))}
@@ -970,7 +986,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               </div>
             </div>
           </>
-        )} */}
+        )}
 
         {/* <div className="row mt-2">
           <div className="col-lg-12">
