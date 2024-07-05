@@ -534,7 +534,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
         address1: address,
         address2: "",
         country: country,
-        location: city,
+        city: city,
         pin: pincode,
         state: state,
       },
@@ -1067,7 +1067,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
                       className="form-check-label fw-bold"
                       htmlFor="selectAll"
                     >
-                      SELECT ALL Flow
+                      Select All Flow
                     </label>
                   </div>
                   {flow.map((flowItem) => (

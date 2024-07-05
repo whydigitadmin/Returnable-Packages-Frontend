@@ -118,7 +118,7 @@ function AddFlows({ addFlows, editFlowId }) {
   const editDestinationList = async (value) => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city?orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -515,7 +515,7 @@ function AddFlows({ addFlows, editFlowId }) {
   const getStateData = async () => {
     try {
       const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/basicMaster/city`
+        `${process.env.REACT_APP_API_URL}/api/basicMaster/city?orgId=${orgId}`
       );
 
       if (response.status === 200) {
@@ -700,6 +700,9 @@ function AddFlows({ addFlows, editFlowId }) {
     }
     if (!cycleTime) {
       errors.cycleTime = "Cycle Time is required";
+    }
+    if (cycleTime === 0) {
+      errors.cycleTime = "Cycle Time cannot be zero";
     }
     if (Object.keys(errors).length === 0) {
       const existingKit = kitDTO.find(
@@ -1365,6 +1368,9 @@ function AddFlows({ addFlows, editFlowId }) {
                   value={cycleTime}
                   disabled
                 />
+                {errors.cycleTime && (
+                  <span className="error-text mb-1">{errors.cycleTime}</span>
+                )}
               </div>
             </div>
           </DialogContentText>
