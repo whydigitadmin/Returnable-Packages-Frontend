@@ -268,7 +268,8 @@ export function AsstTagging({ addTagging, viewId }) {
   const getAllAssetCategory = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        // `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        `${process.env.REACT_APP_API_URL}/api/master/getAllActiveAssetcategory`,
         {
           params: {
             orgId: orgId,
@@ -279,12 +280,12 @@ export function AsstTagging({ addTagging, viewId }) {
       );
 
       if (response.status === 200) {
-        const assetCategories =
-          response.data.paramObjectsMap.assetGroupVO.category;
+        const assetCategories = response.data.paramObjectsMap.category;
+        // response.data.paramObjectsMap.assetGroupVO.category;
         // response.data.paramObjectsMap.assetGroupVO.assetGroupVO.category;
         console.log(
           "THE ASSET CATEGORY IS:",
-          response.data.paramObjectsMap.assetGroupVO.category
+          response.data.paramObjectsMap.category
         );
         setAssetCategoryList(assetCategories);
       }

@@ -256,10 +256,34 @@ function AddAsset({ addItem, editItemId }) {
     }
   };
 
+  // const getAssetNamesByCategory = async (category) => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+  //       {
+  //         params: {
+  //           orgId: orgId,
+  //           assetCategory: category,
+  //         },
+  //       }
+  //     );
+  //     if (response.status === 200) {
+  //       setCategoryVO(response.data.paramObjectsMap.assetGroupVO.category);
+  //       console.log(
+  //         "Response from category:",
+  //         response.data.paramObjectsMap.assetGroupVO.assetGroupVO.category
+  //       );
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
   const getAssetNamesByCategory = async (category) => {
+    console.log("Asset Category API Called");
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/assetGroup`,
+        `${process.env.REACT_APP_API_URL}/api/master/getActiveAssetcategory`,
         {
           params: {
             orgId: orgId,
@@ -267,12 +291,10 @@ function AddAsset({ addItem, editItemId }) {
           },
         }
       );
+      console.log("Response from API:", response.data);
       if (response.status === 200) {
-        setCategoryVO(response.data.paramObjectsMap.assetGroupVO.category);
-        console.log(
-          "Response from category:",
-          response.data.paramObjectsMap.assetGroupVO.assetGroupVO.category
-        );
+        setCategoryVO(response.data.paramObjectsMap.category);
+        console.log("Category", response.data.paramObjectsMap.category);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
