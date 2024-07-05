@@ -52,6 +52,9 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const [allAsset, setAllAsset] = useState("");
   const [aleartState, setAleartState] = useState(false);
   const [transferQtyErrorMsg, setTransferQtyErrorMsg] = useState("");
+  const [viewStockFrom, setViewStockFrom] = useState("");
+  const [viewStockTo, setViewStockTo] = useState("");
+  const [viewAssetCode, setViewAssetCode] = useState("");
 
   const [tableData, setTableData] = useState([
     {
@@ -223,15 +226,24 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const getAssetInwardDetailsById = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getAssetInwardDocId?docId=24BI10021`
+        `${process.env.REACT_APP_API_URL}/api/master/getAssetInwardDocId?docId=${viewAssetInwardId}`
       );
       console.log("API Response:", response);
 
       if (response.status === 200) {
+        console.log("first");
+
         setDocId(response.data.paramObjectsMap.assetInwardVO.docId);
         setDocDate(response.data.paramObjectsMap.assetInwardVO.docDate);
-        setStockFrom(response.data.paramObjectsMap.assetInwardVO.sourceFrom);
-        setStockTo(response.data.paramObjectsMap.assetInwardVO.stockBranch);
+        // setStockFrom(response.data.paramObjectsMap.assetInwardVO.sourceFrom);
+        setViewStockFrom(
+          response.data.paramObjectsMap.assetInwardVO.sourceFrom
+        );
+        // setStockTo(response.data.paramObjectsMap.assetInwardVO.stockBranch);
+        setViewStockTo(response.data.paramObjectsMap.assetInwardVO.stockBranch);
+        setAssetCategory(response.data.paramObjectsMap.assetInwardVO.category);
+        setViewAssetCode(response.data.paramObjectsMap.assetInwardVO.assetCode);
+        setTransferQty(response.data.paramObjectsMap.assetInwardVO.qty);
         const tempAssetInwardTable =
           response.data.paramObjectsMap.assetInwardDetailVO.map(
             (row, index) => ({
@@ -566,109 +578,6 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
       setErrors(errors);
     }
   };
-  // const handleSave = () => {
-  //   const errors = {};
-
-  //   if (!stockFrom) {
-  //     errors.stockFrom = "Source from is required";
-  //   }
-
-  //   if (!stockTo) {
-  //     errors.stockTo = "Source To is required";
-  //   }
-
-  //   if (!docId) {
-  //     errors.docId = "DocId is required";
-  //   }
-
-  //   if (!docDate) {
-  //     errors.docDate = "To Date is required";
-  //   }
-  //   if (tableData[0].code === "") {
-  //     errors.code = "Code field is Required";
-  //   }
-  //   if (tableData[0].qty === "") {
-  //     errors.qty = "QTY field is Required";
-  //   }
-
-  //   const tableFormData = tableData.map((row) => ({
-  //     rfId: row.rfId,
-  //     tagCode: row.assetId,
-  //     skuDetail: row.sku,
-  //     skucode: row.code,
-  //     skuQty: row.qty,
-  //     stockValue: row.stockValue,
-  //     stockLocation: row.stockLoc,
-  //     binLocation: row.binLoc,
-  //     // stockValue: row.stockValue,
-  //     // stockLocation: row.stockLoc,
-  //   }));
-
-  //   // Check if any table fields are empty
-  //   const isTableDataEmpty = tableFormData.some(
-  //     (row) =>
-  //       row.sku === "" ||
-  //       row.code === "" ||
-  //       row.qty === "" ||
-  //       // row.stockValue === "" ||
-  //       // row.stockLoc === "" ||
-  //       row.binLoc === ""
-  //   );
-
-  //   if (isTableDataEmpty) {
-  //     errors.tableData = "Please fill all table fields";
-  //   } else {
-  //     delete errors.tableData;
-  //   }
-
-  //   if (Object.keys(errors).length === 0) {
-  //     const formData = {
-  //       docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
-  //       sourceFrom: stockFrom,
-  //       stockBranch: stockTo,
-  //       orgId,
-  //       assetInwardDetailDTO: tableFormData,
-  //     };
-
-  //     axios
-  //       .post(
-  //         `${process.env.REACT_APP_API_URL}/api/master/assetInward`,
-  //         formData
-  //       )
-  //       .then((response) => {
-  //         console.log("Response:", response.data);
-  //         // setAleartState(true);
-  //         setDocData(DOCDATA);
-  //         setDocDate(null);
-  //         setDocId("");
-  //         setStockFrom("");
-  //         setStockTo("");
-  //         setErrors({});
-
-  //         setTableData([
-  //           {
-  //             id: 1,
-  //             sku: "",
-  //             code: "",
-  //             qty: "",
-  //             stockValue: "",
-  //             stockLoc: "",
-  //             binLoc: "",
-  //           },
-  //         ]);
-  //         toast.success("Stock Branch Updated Successfully!", {
-  //           autoClose: 2000,
-  //           theme: "colored",
-  //         });
-  //       })
-  //       .catch((error) => {
-  //         console.error("Error:", error);
-  //         toast.error("Failed to update user. Please try again.");
-  //       });
-  //   } else {
-  //     setErrors(errors);
-  //   }
-  // };
 
   const handleInwardmanifeastClose = () => {
     addInwardManifeast(false);
@@ -696,7 +605,6 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               className="form-control form-sz mb-2"
               placeholder="Doc Id"
               value={docId}
-              // onChange={(e) => setDocId(e.target.value)}
               disabled
             />
             {errors.docId && (
@@ -730,30 +638,43 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={handleStockFromChange}
-              value={stockFrom}
-              disabled={viewAssetInwardId ? true : false}
-            >
-              <option value="" disabled>
-                Select Warehouse
-              </option>
-              <option value="AI POOL">AI POOL</option>
+          {viewAssetInwardId ? (
+            <>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder="viewStockFrom"
+                  value={viewStockFrom}
+                  disabled
+                />
+              </div>
+            </>
+          ) : (
+            <div className="col-lg-3 col-md-6">
+              <select
+                className="form-select form-sz w-full mb-2"
+                onChange={handleStockFromChange}
+                value={stockFrom}
+                disabled={viewAssetInwardId ? true : false}
+              >
+                <option value="" disabled>
+                  Select Warehouse
+                </option>
+                <option value="AI POOL">AI POOL</option>
 
-              {/* </option> */}
-              {stockBranch.length > 0 &&
-                stockBranch.map((list) => (
-                  <option key={list.id} value={list.warehouseLocation}>
-                    {list.warehouseLocation}
-                  </option>
-                ))}
-            </select>
-            {errors.stockFrom && (
-              <span className="error-text mb-1">{errors.stockFrom}</span>
-            )}
-          </div>
+                {/* </option> */}
+                {stockBranch.length > 0 &&
+                  stockBranch.map((list) => (
+                    <option key={list.id} value={list.warehouseLocation}>
+                      {list.warehouseLocation}
+                    </option>
+                  ))}
+              </select>
+              {errors.stockFrom && (
+                <span className="error-text mb-1">{errors.stockFrom}</span>
+              )}
+            </div>
+          )}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -762,27 +683,42 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-6">
-            <select
-              className="form-select form-sz w-full mb-2"
-              onChange={(e) => setStockTo(e.target.value)}
-              value={stockTo}
-              disabled={viewAssetInwardId ? true : false}
-            >
-              <option value="" disabled>
-                Select Stock Branch
-              </option>
-              {filteredStockBranch &&
-                filteredStockBranch.map((list) => (
-                  <option key={list.id} value={list.warehouseLocation}>
-                    {list.warehouseLocation}
+          {viewAssetInwardId ? (
+            <>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder="viewStockTo"
+                  value={viewStockTo}
+                  disabled
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="col-lg-3 col-md-6">
+                <select
+                  className="form-select form-sz w-full mb-2"
+                  onChange={(e) => setStockTo(e.target.value)}
+                  value={stockTo}
+                  disabled={viewAssetInwardId ? true : false}
+                >
+                  <option value="" disabled>
+                    Select Stock Branch
                   </option>
-                ))}
-            </select>
-            {errors.stockTo && (
-              <span className="error-text mb-1">{errors.stockTo}</span>
-            )}
-          </div>
+                  {filteredStockBranch &&
+                    filteredStockBranch.map((list) => (
+                      <option key={list.id} value={list.warehouseLocation}>
+                        {list.warehouseLocation}
+                      </option>
+                    ))}
+                </select>
+                {errors.stockTo && (
+                  <span className="error-text mb-1">{errors.stockTo}</span>
+                )}
+              </div>
+            </>
+          )}
           <div className="col-lg-3 col-md-3 mb-4">
             <span
               className={
@@ -800,6 +736,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               className="input input-bordered ps-2"
               onChange={handleAssetCategoryChange}
               value={assetCategory}
+              disabled={viewAssetInwardId ? true : false}
             >
               <option value="" selected>
                 Select an Asset Category
@@ -823,39 +760,56 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               </span>
             </label>
           </div>
-          <div className="col-lg-3 col-md-3">
-            <select
-              className="form-select form-sz w-full mb-2"
-              value={assetCode}
-              onChange={handleChangeAssetCode}
-            >
-              <option value="">Select code</option>
-              {assetList.map((code) => (
-                <option key={code.id} value={code.assetCodeId}>
-                  {code.assetCodeId}
-                </option>
-              ))}
-            </select>
-            {errors.assetCode && (
-              <span className="error-text mb-4">{errors.assetCode}</span>
-            )}
-          </div>
-          <div className="col-lg-3 col-md-3">
-            <label className="label mb-4">
-              <span className="label-text label-font-size text-base-content d-flex flex-row">
-                Available Qty
-              </span>
-            </label>
-          </div>
-          <div className="col-lg-3 col-md-3">
-            <input
-              className="form-control form-sz"
-              type="number"
-              value={availQty}
-              disabled
-              // onChange={(e) => setSeqFrom(e.target.value)}
-            />
-          </div>
+          {viewAssetInwardId ? (
+            <>
+              <div className="col-lg-3 col-md-6">
+                <input
+                  className="form-control form-sz mb-2"
+                  placeholder="viewStockTo"
+                  value={viewAssetCode}
+                  disabled
+                />
+              </div>
+            </>
+          ) : (
+            <div className="col-lg-3 col-md-3">
+              <select
+                className="form-select form-sz w-full mb-2"
+                value={assetCode}
+                onChange={handleChangeAssetCode}
+              >
+                <option value="">Select code</option>
+                {assetList.map((code) => (
+                  <option key={code.id} value={code.assetCodeId}>
+                    {code.assetCodeId}
+                  </option>
+                ))}
+              </select>
+              {errors.assetCode && (
+                <span className="error-text mb-4">{errors.assetCode}</span>
+              )}
+            </div>
+          )}
+
+          {!viewAssetInwardId && (
+            <>
+              <div className="col-lg-3 col-md-3">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Available Qty
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-3">
+                <input
+                  className="form-control form-sz"
+                  type="number"
+                  value={availQty}
+                  disabled
+                />
+              </div>
+            </>
+          )}
           <div className="col-lg-3 col-md-3">
             <label className="label mb-4">
               <span className="label-text label-font-size text-base-content d-flex flex-row">
@@ -885,6 +839,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
                   setTransferQty("");
                 }
               }}
+              disabled={viewAssetInwardId ? true : false}
             />
             {transferQtyErrorMsg && (
               <span className="error-text">
@@ -893,34 +848,31 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
             )}
           </div>
         </div>
-        <div className="d-flex flex-row mt-2">
-          <button
-            type="button"
-            className="bg-blue me-3 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            onClick={getAssetDetailsForAssetInward}
-          >
-            Check
-          </button>
-          {showTable && (
-            <div className="">
+        {!viewAssetInwardId && (
+          <>
+            <div className="d-flex flex-row mt-2">
               <button
                 type="button"
-                className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                onClick={handleSave}
+                className="bg-blue me-3 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                onClick={getAssetDetailsForAssetInward}
               >
-                Proceed
+                Check
               </button>
+              {showTable && (
+                <div className="">
+                  <button
+                    type="button"
+                    className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                    onClick={handleSave}
+                  >
+                    Proceed
+                  </button>
+                </div>
+              )}
             </div>
-          )}
-        </div>
-        {/* <div className="mt-2">
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-2 rounded"
-            onClick={handleAddRow}
-          >
-            + Add
-          </button>
-        </div> */}
+          </>
+        )}
+
         {showTable && (
           <div className="row mt-3">
             <div className="col-lg-12">
@@ -967,6 +919,59 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
             </div>
           </div>
         )}
+
+        {/* {viewAssetInwardId && (
+          <>
+            <div className="row mt-3">
+              <div className="col-lg-12">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead>
+                      <tr>
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                          S.No
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                          Tag Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                          RF ID
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                          Asset Code
+                        </th>
+                        <th className="px-2 py-2 bg-blue-500 text-white text-center">
+                          Asset
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {tableData.length > 0 &&
+                        tableData.map((item, index) => (
+                          <tr key={index}>
+                            <td className="px-2 py-2 text-center">{item.id}</td>
+                            <td className="px-2 py-2 text-center">
+                              {item.assetId}
+                            </td>
+                            <td className="px-2 py-2 text-center">
+                              {item.rfId}
+                            </td>
+                            <td className="px-2 py-2 text-center">
+                              {item.sku}
+                            </td>
+                            <td className="px-2 py-2 text-center">
+                              {item.code}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </>
+        )} */}
+
         {/* <div className="row mt-2">
           <div className="col-lg-12">
             <div className="overflow-x-auto">

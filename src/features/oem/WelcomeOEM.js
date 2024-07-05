@@ -87,32 +87,16 @@ function WelcomeOEM() {
               <h4 className="text-2xl font-semibold mt-4 mb-2 text-center">
                 WELCOME TO
               </h4>
-              {/* <h4 className="text-4xl font-bold mt-2 ms-2 mb-4">AIPACKS</h4> */}
               <img
                 src="/ai.png"
                 style={{ width: "100px", margin: "auto" }}
                 className="text-center mb-3"
               />
-              {/* <h4 className="text-lg dark:text-slate-300 font-semibold ms-2 mb-1">
-                {userDetail.firstName}
-              </h4> */}
-              {/* <p className="text-sm ms-2 mb-2">
-      Last login{" "}
-      <span>
-        {moment(userDetail.lastLogin).format("MMMM Do YYYY, h:mm:ss a")}
-      </span>
-    </p> */}
+
               <LastLogin userDetail={userDetail} />
-              {/* <p className="text-2xl ms-2">Tue</p>
-    <p className="text-5xl ms-5">Jan</p>
-    <p className="text-9xl text-right me-2 mb-3">17</p> */}
             </div>
             <div className="">
               <div className="d-flex flex-row">
-                {/* <FaLocationDot
-        className="text-lg font-semibold ms-2 w-7 h-7"
-        style={{ marginTop: 30 }}
-      /> */}
                 <img
                   src="/location.png"
                   style={{
@@ -140,7 +124,6 @@ function WelcomeOEM() {
                 }}
               >
                 <h4 className="text-lg font-semibold mt-4 mb-2 ">Welcome</h4>
-                {/* <h4 className="text-4xl font-bold mt-2 ms-2 mb-4">AIPACKS</h4> */}
                 <h4
                   className="text-lg font-bold mt-4 mb-2 ml-2"
                   style={{ color: "green" }}
@@ -161,7 +144,7 @@ function WelcomeOEM() {
                 </p>
               </b>
             </div>
-            <div
+            {/* <div
               className="col-12 d-flex mb-4 ml-2"
               style={{ flexDirection: "row" }}
             >
@@ -184,18 +167,18 @@ function WelcomeOEM() {
                   TAFE BANGALORE
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
 
           <div className="col-lg-8 col-md-8 card bg-white shadow-xl mb-4 p-3 rounded-lg hover:shadow-2xl transition-shadow duration-300 ease-in-out">
             <>
-              <div className="col-lg-12">
+              {/* <div className="col-lg-12">
                 <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-6">
                   {statsData.map((d, k) => {
                     return <DashboardStats key={k} {...d} colorIndex={k} />;
                   })}
                 </div>
-              </div>
+              </div> */}
               <div className="grid lg:grid-cols-2 mt-2 md:grid-cols-2 grid-cols-1 gap-3">
                 <div className="col-lg-12">
                   <Link to="/app/BinInwardOem">
@@ -381,82 +364,6 @@ function WelcomeOEM() {
               </div>
             </>
           </div>
-
-          {/* <div className="col-lg-9 card bg-base-100 shadow-xl mb-4"></div>
-        <div className="col-lg-3 card bg-base-100 shadow-xl mb-4 pe-2"></div> */}
-          {/* <div className="col-lg-9 card bg-base-100 shadow-xl mb-4"> */}
-          {/* <div className="row">
-            <div className="col-lg-4">
-              <Link to="/app/IssueReq">
-                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-                  <div className="">
-                    <div className="d-flex flex-row">
-                      <FaArrowCircleUp
-                        className="text-lg font-semibold me-2 w-7 h-7"
-                        style={{ marginTop: 2 }}
-                      />
-                      <h4 className="text-lg font-semibold">Issue Request</h4>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-lg-4">
-              <Link to="/app/EmitterInward">
-                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-                  <div className="">
-                    <div className="d-flex flex-row">
-                      <FaArrowCircleDown
-                        className="text-lg font-semibold me-2 w-7 h-7"
-                        style={{ marginTop: 2 }}
-                      />
-                      <h4 className="text-lg font-semibold">Inward</h4>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-lg-4">
-              <Link to="/app/EmitterOutward">
-                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-                  <div className="">
-                    <div className="d-flex flex-row">
-                      <MdOutbound
-                        className="text-lg font-semibold me-2 w-7 h-7"
-                        style={{ marginTop: 2 }}
-                      />
-                      <h4 className="text-lg font-semibold">Outward</h4>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-
-            <div className="col-lg-4">
-              <Link to="/app/StockAdjustment">
-                <div className="w-60 card bg-base-100 shadow-xl mb-4 p-3 mt-3">
-                  <div className="">
-                    <div className="d-flex flex-row">
-                      <TbChartInfographic
-                        className="text-lg font-semibold me-2 w-8 h-8"
-                        style={{ marginTop: -6 }}
-                      />
-                      <h4 className="text-lg font-semibold">Stock Report</h4>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            </div>
-          </div> */}
-          {/* <h4 className="text-lg dark:text-slate-300 font-semibold mt-3 ms-3">
-            Recent transfer IN
-          </h4>
-          <h4 className="text-lg dark:text-slate-300 font-semibold mt-3 ms-3">
-            Recent transfer OUT
-          </h4> */}
-          {/* </div> */}
         </div>
       </div>
     </>
