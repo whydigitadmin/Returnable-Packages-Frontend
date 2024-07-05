@@ -111,7 +111,7 @@ function Partstudy() {
 
       if (response.status === 200) {
         // Update the state with basicDetailVO data
-        setData(response.data.paramObjectsMap.basicDetailVO);
+        setData(response.data.paramObjectsMap.basicDetailVO.reverse());
 
         // Calculate the counts
         const totalFlowCount =

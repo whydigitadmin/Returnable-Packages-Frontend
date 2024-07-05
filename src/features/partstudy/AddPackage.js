@@ -61,6 +61,7 @@ function AddPackage({
   const [drawingApprovalUpload, setDrawingApprovalUpload] = useState([]);
   const [selectedACCImg, setSelectedACCImg] = useState([]);
   const [accImgUpload, setACCImgUpload] = React.useState([]);
+  const [isUploading, setIsUploading] = useState(false);
 
   const VisuallyHiddenInput = styled("input")({
     clip: "rect(0 0 0 0)",
@@ -230,9 +231,20 @@ function AddPackage({
       )
         .then((response) => {
           console.log("Response:", response.data);
-          handleAllImgUpload();
+          if (
+            selectedPartImgFiles.length > 0 ||
+            selectedExPackFiles.length > 0 ||
+            selectedDrawing.length > 0 ||
+            selectedDrawingApproval.length > 0 ||
+            selectedACCImg.length > 0
+          ) {
+            handleAllImgUpload();
+          } else {
+            handleNext();
+          }
+          // handleAllImgUpload();
 
-          handleNext();
+          // handleNext();
           // addPackage(false);
         })
         .catch((error) => {
@@ -244,12 +256,26 @@ function AddPackage({
   };
 
   const handleAllImgUpload = () => {
-    handlePartImgSave();
-    handleExPackagingImgSave();
-    handlePartDrawingSave();
-    handleApprovedPackagingImgSave();
-    handleApprovedCommercialContrachImgSave();
+    setIsUploading(true);
+    setTimeout(() => {
+      handlePartImgSave();
+      setTimeout(() => {
+        handleExPackagingImgSave();
+        setTimeout(() => {
+          handlePartDrawingSave();
+          setTimeout(() => {
+            handleApprovedPackagingImgSave();
+            setTimeout(() => {
+              handleApprovedCommercialContrachImgSave();
+              setIsUploading(false);
+              handleNext();
+            }, 2000);
+          }, 2000);
+        }, 2000);
+      }, 2000);
+    }, 2000);
   };
+
   const handlePartImgSave = () => {
     const formData = new FormData();
     for (let i = 0; i < partImgUploadedFiles.length; i++) {
@@ -1013,6 +1039,7 @@ function AddPackage({
               <img
                 src={`data:image/jpeg;base64,${partImagePreview}`}
                 alt="Product"
+                className="my-2"
                 onError={(e) => {
                   e.target.src = dummyImageURL;
                 }}
@@ -1063,6 +1090,7 @@ function AddPackage({
               <img
                 src={`data:image/jpeg;base64,${existingPackingImagePreview}`}
                 alt="Product"
+                className="my-2"
                 onError={(e) => {
                   e.target.src = dummyImageURL;
                 }}
@@ -1112,6 +1140,7 @@ function AddPackage({
               <img
                 src={`data:image/jpeg;base64,${partDrawingPreview}`}
                 alt="Product"
+                className="my-2"
                 onError={(e) => {
                   e.target.src = dummyImageURL;
                 }}
@@ -1161,6 +1190,7 @@ function AddPackage({
               <img
                 src={`data:image/jpeg;base64,${comercialPreview}`}
                 alt="Product"
+                className="my-2"
                 onError={(e) => {
                   e.target.src = dummyImageURL;
                 }}
@@ -1210,6 +1240,7 @@ function AddPackage({
               <img
                 src={`data:image/jpeg;base64,${approvedCommercialContract}`}
                 alt="Product"
+                className="my-2"
                 onError={(e) => {
                   e.target.src = dummyImageURL;
                 }}
@@ -1228,6 +1259,7 @@ function AddPackage({
           <button
             type="button"
             onClick={handlePackage}
+            disabled={isUploading}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Save & Next

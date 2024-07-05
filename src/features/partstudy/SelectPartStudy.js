@@ -52,8 +52,8 @@ function SelectPartStudy({
   };
 
   useEffect(() => {
-    getPartStudyId(emitterId);
-    getPartStudyName(partStudyId);
+    // getPartStudyId(emitterId);
+    // getPartStudyName(partStudyId);
     getCustomersList();
     {
       editPSId && getPartStudyDetailsById();

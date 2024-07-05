@@ -5,6 +5,7 @@ import { IoMdClose } from "react-icons/io";
 import ToastComponent from "../../utils/ToastComponent";
 
 function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
+  const [btnFade, setBtnFade] = useState(false);
   const [emitterStoreDays, setEmitterStoreDays] = useState("");
   const [emitterLineDays, setEmitterLineDays] = useState("");
   const [inTransitDays, setInTransitDays] = useState("");
@@ -216,6 +217,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
         .then((response) => {
           console.log("Response stockDetail:", response.data);
           generatePartStudyId();
+          setBtnFade(true);
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -304,7 +306,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               type={"number"}
               placeholder={""}
               name="emitterStoreDays"
-              value={emitterStoreDays}
+              value={emitterStoreDays === 0 ? "" : emitterStoreDays}
               onChange={handleInputChange}
             />
             {errors.emitterStoreDays && (
@@ -329,7 +331,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               type={"number"}
               placeholder={""}
               name="emitterLineDays"
-              value={emitterLineDays}
+              value={emitterLineDays === 0 ? "" : emitterLineDays}
               onChange={handleInputChange}
             />
             {errors.emitterLineDays && (
@@ -354,7 +356,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               type={"number"}
               placeholder={""}
               name="inTransitDays"
-              value={inTransitDays}
+              value={inTransitDays === 0 ? "" : inTransitDays}
               onChange={handleInputChange}
             />
             {errors.inTransitDays && (
@@ -379,7 +381,9 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               type={"number"}
               placeholder={""}
               name="receiverLineStorageDays"
-              value={receiverLineStorageDays}
+              value={
+                receiverLineStorageDays === 0 ? "" : receiverLineStorageDays
+              }
               onChange={handleInputChange}
             />
             {errors.receiverLineStorageDays && (
@@ -406,7 +410,11 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               type={"number"}
               placeholder={""}
               name="receiverManufacturingLineDays"
-              value={receiverManufacturingLineDays}
+              value={
+                receiverManufacturingLineDays === 0
+                  ? ""
+                  : receiverManufacturingLineDays
+              }
               onChange={handleInputChange}
             />
             {errors.receiverManufacturingLineDays && (
@@ -433,7 +441,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               type={"number"}
               placeholder={""}
               name="otherStorageDays"
-              value={otherStorageDays}
+              value={otherStorageDays === 0 ? "" : otherStorageDays}
               onChange={handleInputChange}
             />
             {errors.otherStorageDays && (
@@ -461,7 +469,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               type={"number"}
               placeholder={""}
               name="reverseLogisticsDay"
-              value={reverseLogisticsDay}
+              value={reverseLogisticsDay === 0 ? "" : reverseLogisticsDay}
               onChange={handleInputChange}
             />
             {errors.reverseLogisticsDay && (
@@ -487,7 +495,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
               placeholder={""}
               name="totalCycleTime"
               disabled
-              value={totalCycleTime}
+              value={totalCycleTime === 0 ? "" : totalCycleTime}
               onChange={handleInputChange}
             />
             {errors.totalCycleTime && (
@@ -506,6 +514,7 @@ function AddStockKeeping({ refPsId, emitterName, handleBack, handleNext }) {
           <button
             type="button"
             onClick={handleStock}
+            disabled={btnFade ? btnFade : ""}
             className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           >
             Submit

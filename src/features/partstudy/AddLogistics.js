@@ -55,12 +55,12 @@ function AddLogistics({ refPsId, emitterName, handleBack, handleNext }) {
   const handleLogistic = () => {
     const errors = {};
     console.log("test");
-    if (!avgLotSize) {
-      errors.avgLotSize = "Lot size Name is required";
-    }
-    if (!dispatchFrequency) {
-      errors.dispatchFrequency = "Dispatch frequency is required";
-    }
+    // if (!avgLotSize) {
+    //   errors.avgLotSize = "Avg lot size is required";
+    // }
+    // if (!dispatchFrequency) {
+    //   errors.dispatchFrequency = "Dispatch frequency is required";
+    // }
 
     if (Object.keys(errors).length === 0) {
       const formData = {
@@ -162,7 +162,7 @@ function AddLogistics({ refPsId, emitterName, handleBack, handleNext }) {
               type={"text"}
               placeholder={""}
               name="avgLotSize"
-              value={avgLotSize}
+              value={avgLotSize === 0 ? "" : avgLotSize}
               onChange={handleInputChange}
               onInput={(e) => {
                 e.target.value = e.target.value.toUpperCase();
@@ -190,7 +190,7 @@ function AddLogistics({ refPsId, emitterName, handleBack, handleNext }) {
               type={"text"}
               placeholder={""}
               name="dispatchFrequency"
-              value={dispatchFrequency}
+              value={dispatchFrequency === 0 ? "" : dispatchFrequency}
               onChange={handleInputChange}
               onInput={(e) => {
                 e.target.value = e.target.value.toUpperCase();
