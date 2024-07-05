@@ -1,19 +1,17 @@
-import { useDispatch } from "react-redux";
 import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined";
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import Datepicker from "react-tailwindcss-datepicker";
-import { FaStarOfLife } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Box } from "@mui/material";
+import axios from "axios";
+import { download, generateCsv, mkConfig } from "export-to-csv";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button } from "@mui/material";
-import { mkConfig, generateCsv, download } from "export-to-csv";
-import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaArrowCircleLeft, FaStarOfLife } from "react-icons/fa";
+import { Link } from "react-router-dom";
+import Datepicker from "react-tailwindcss-datepicker";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaArrowCircleLeft } from "react-icons/fa";
 
 function EmitterStockLedgerReport() {
   const [dateValue, setDateValue] = useState({
@@ -145,34 +143,40 @@ function EmitterStockLedgerReport() {
   };
   const handleExportData = () => {
     const csv = generateCsv(csvConfig)(data);
-    download(csvConfig)(csv);
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const filename = `Stock-ledger-report_${currentDate}.csv`;
+    download({ ...csvConfig, filename })(csv);
   };
 
   const table = useMaterialReactTable({
     columns,
     data,
-    // enableRowSelection: true,
-    // columnFilterDisplayMode: "popover",
-    // paginationDisplayMode: "pages",
-    // positionToolbarAlertBanner: "bottom",
-    // renderTopToolbarCustomActions: ({ table }) => (
-    //   <Box
-    //     sx={{
-    //       display: "flex",
-    //       gap: "16px",
-    //       padding: "8px",
-    //       flexWrap: "wrap",
-    //     }}
-    //   >
-    //     <button
-    //       className="btn btn-ghost btn-sm normal-case"
-    //       onClick={handleExportData}
-    //     >
-    //       <CloudDownloadOutlinedIcon className="w-4 mr-2" />
-    //       Download
-    //     </button>
-    //   </Box>
-    // ),
+    enableRowSelection: true,
+    columnFilterDisplayMode: "popover",
+    paginationDisplayMode: "pages",
+    positionToolbarAlertBanner: "bottom",
+    renderTopToolbarCustomActions: ({ table }) => (
+      <Box
+        sx={{
+          display: "flex",
+          gap: "16px",
+          padding: "8px",
+          flexWrap: "wrap",
+        }}
+      >
+        <button
+          className="btn btn-ghost btn-sm normal-case"
+          onClick={handleExportData}
+        >
+          <CloudDownloadOutlinedIcon className="w-4 mr-2" />
+          Download
+        </button>
+      </Box>
+    ),
   });
 
   const handleSelectedFlow = (event) => {

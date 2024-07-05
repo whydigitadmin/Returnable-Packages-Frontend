@@ -188,8 +188,8 @@ export const KitCard = () => {
         )}
         <div>
           {kitData && (
-            <div className="d-flex col-md-12 gap-2">
-              <div className="overflow-x-auto col-md-4 mt-2">
+            <div className="d-flex flex-wrap col-md-12 gap-2 ">
+              <div className="overflow-x-auto col-md-4 mt-2 bg-white border rounded-lg overflow-hidden shadow-md flex-grow-1 m-2">
                 <table className="table w-full table-striped table-hover">
                   <thead>
                     <tr>
@@ -228,18 +228,30 @@ export const KitCard = () => {
                   </tbody>
                 </table>
               </div>
-              {emitterData.length > 0 && (
-                <div className="overflow-x-auto col-md-4 mt-2">
-                  <div className="">
-                    {emitterData.map((kit) => (
-                      <div className="bg-white border rounded-lg overflow-hidden shadow-md">
+              <div className="overflow-x-auto col-md-4 mt-2">
+                <div className="">
+                  <RatioComponent />
+                </div>
+              </div>
+              <div className="d-flex flex-wrap flex-direction-row col-md-12 mt-2">
+                {emitterData.length > 0 && (
+                  <div className="d-flex flex-wrap col-md-12 mt-2">
+                    {emitterData.map((kit, index) => (
+                      <div
+                        key={index}
+                        className="bg-white border rounded-lg overflow-hidden shadow-md m-2"
+                        style={{
+                          flexBasis: "calc(33.3333% - 16px)",
+                          flexGrow: 1,
+                        }}
+                      >
                         <div className="p-3">
                           <h3 className="text-md font-semibold mb-2">
                             PARTIES
                           </h3>
                           <div className="mb-2">
                             <p className="text-gray-600">
-                              <span className=" text-sm font-semibold">
+                              <span className="text-sm font-semibold">
                                 Emitter:
                               </span>{" "}
                               <span className="text-sm">{kit.emitter}</span>
@@ -248,19 +260,19 @@ export const KitCard = () => {
                               <span className="text-sm font-semibold">
                                 Receiver:
                               </span>{" "}
-                              <span className="text-sm"> {kit.receiver}</span>
+                              <span className="text-sm">{kit.receiver}</span>
                             </p>
                             <p className="text-gray-600">
                               <span className="font-semibold text-sm">
                                 Flow:
                               </span>{" "}
-                              <span className="text-sm"> {kit.flow} </span>
+                              <span className="text-sm">{kit.flow}</span>
                             </p>
                             <div className="flex flex-wrap gap-2 mt-2">
                               <span className="inline-block px-2 py-1 text-xs font-semibold bg-yellow-200 text-yellow-800 rounded-full">
                                 Min Dehire Qty: 15
                               </span>
-                              <span className="inline-block px-2 py-1 text-xs font-semibold bg-blue-200 text-blue-800  rounded-full">
+                              <span className="inline-block px-2 py-1 text-xs font-semibold bg-blue-200 text-blue-800 rounded-full">
                                 Min Issue Qty: 20
                               </span>
                               <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-200 text-green-800 rounded-full">
@@ -272,15 +284,11 @@ export const KitCard = () => {
                       </div>
                     ))}
                   </div>
-                </div>
-              )}
-              <div className="overflow-x-auto col-md-4 mt-2">
-                <div className="">
-                  <RatioComponent />
-                </div>
+                )}
               </div>
             </div>
           )}
+
           {kitData && (
             <div className="d-flex flex-direction-row gap-2">
               <div className="col-md-6">

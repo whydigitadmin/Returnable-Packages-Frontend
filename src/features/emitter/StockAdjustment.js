@@ -1,17 +1,16 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import Datepicker from "react-tailwindcss-datepicker";
-import { FaStarOfLife } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import CloudDownloadOutlinedIcon from "@mui/icons-material/CloudDownloadOutlined";
+import { Box } from "@mui/material";
+import axios from "axios";
+import { download, generateCsv, mkConfig } from "export-to-csv";
 import {
   MaterialReactTable,
   useMaterialReactTable,
 } from "material-react-table";
-import { Box, Button } from "@mui/material";
-import { mkConfig, generateCsv, download } from "export-to-csv";
-import axios from "axios";
+import React, { useEffect, useMemo, useState } from "react";
+import { FaArrowCircleLeft, FaStarOfLife } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { FaArrowCircleLeft } from "react-icons/fa";
 
 function StockAdjustment() {
   const [dateValue, setDateValue] = useState({
@@ -23,7 +22,12 @@ function StockAdjustment() {
   const [errors, setErrors] = useState("");
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
+  const [emitterId, setEmitterId] = React.useState(
+    localStorage.getItem("emitterId")
+  );
   const [tableView, setTableView] = useState(false);
+  const [flowData, setFlowData] = useState([]);
+  const [selectedFlowId, setSelectedFlowId] = useState("");
 
   const csvConfig = mkConfig({
     fieldSeparator: ",",
@@ -32,7 +36,7 @@ function StockAdjustment() {
   });
 
   useEffect(() => {
-    getStockBranchByUserId();
+    getFlowById();
   }, []);
 
   // const handleClearData = () => {
@@ -47,8 +51,8 @@ function StockAdjustment() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "category",
-        header: "Category",
+        accessorKey: "kitCode",
+        header: "Kit",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -58,8 +62,8 @@ function StockAdjustment() {
         },
       },
       {
-        accessorKey: "assetCode",
-        header: "Asset Code",
+        accessorKey: "kitAvailQty",
+        header: "Avilable Kit Qty ",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -69,19 +73,8 @@ function StockAdjustment() {
         },
       },
       {
-        accessorKey: "assetName",
-        header: "Asset Desc",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "availQty",
-        header: "Available QTY",
+        accessorKey: "flow",
+        header: "Flow",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -101,34 +94,39 @@ function StockAdjustment() {
   };
   const handleExportData = () => {
     const csv = generateCsv(csvConfig)(data);
-    download(csvConfig)(csv);
+    const currentDate = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+    const filename = `Stock-report_${currentDate}.csv`;
+    download({ ...csvConfig, filename })(csv);
   };
 
   const table = useMaterialReactTable({
     columns,
     data,
-    // enableRowSelection: true,
-    // columnFilterDisplayMode: "popover",
-    // paginationDisplayMode: "pages",
-    // positionToolbarAlertBanner: "bottom",
-    // renderTopToolbarCustomActions: ({ table }) => (
-    //   <Box
-    //     sx={{
-    //       display: "flex",
-    //       gap: "16px",
-    //       padding: "8px",
-    //       flexWrap: "wrap",
-    //     }}
-    //   >
-    //     <button
-    //       className="btn btn-ghost btn-sm normal-case"
-    //       onClick={handleExportData}
-    //     >
-    //       <CloudDownloadOutlinedIcon className="w-4 mr-2" />
-    //       Download
-    //     </button>
-    //   </Box>
-    // ),
+    columnFilterDisplayMode: "popover",
+    paginationDisplayMode: "pages",
+    positionToolbarAlertBanner: "bottom",
+    renderTopToolbarCustomActions: ({ table }) => (
+      <Box
+        sx={{
+          display: "flex",
+          gap: "16px",
+          padding: "8px",
+          flexWrap: "wrap",
+        }}
+      >
+        <button
+          className="btn btn-ghost btn-sm normal-case"
+          onClick={handleExportData}
+        >
+          <CloudDownloadOutlinedIcon className="w-4 mr-2" />
+          Download
+        </button>
+      </Box>
+    ),
   });
 
   const handleSelectedStockBranch = (event) => {
@@ -137,28 +135,43 @@ function StockAdjustment() {
     stockBranchReport(selectedId);
   };
 
-  const getStockBranchByUserId = async () => {
+  const getFlowById = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getStockBranchByUserId?userId=${userId}&orgId=${orgId}`
+        `${process.env.REACT_APP_API_URL}/api/master/flow/getFlowByUserId?userId=${userId}`
       );
 
       if (response.status === 200) {
-        setStockBranch(response.data.paramObjectsMap.branch);
+        console.log(
+          "response.data.paramObjectsMap",
+          response.data.paramObjectsMap
+        );
+        const validFlows = response.data.paramObjectsMap.flowVO
+          .filter(
+            (flow) =>
+              typeof flow.flowName === "string" && flow.flowName.trim() !== ""
+          )
+          .map((flow) => ({ id: flow.id, flow: flow.flowName }));
+        if (validFlows.length === 1) {
+          setSelectedFlowId(validFlows[0].id);
+          console.log("THE FIRST FLOW INDEX VALUE IS:", validFlows[0].id);
+        }
+        setFlowData(validFlows);
+        console.log("validFlows", validFlows);
       }
     } catch (error) {
-      toast.error("Network Error!");
+      // toast.error("Network Error!");
     }
   };
 
-  const stockBranchReport = async (stockBranch) => {
+  const stockBranchReport = async (flowId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getEmptyAssetDetailsForGathering?orgId=${orgId}&stockBranch=${stockBranch}`
+        `${process.env.REACT_APP_API_URL}/api/emitter/getStockKitQtyByEmitter?orgId=${orgId}&emitterId=${emitterId}&flowId=${flowId}`
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.oemEmptyDetails);
+        setData(response.data.paramObjectsMap.avlKitQty);
         setTableView(true);
       }
     } catch (error) {
@@ -166,12 +179,19 @@ function StockAdjustment() {
     }
   };
 
+  const handleFlowChange = (e) => {
+    const selectedId = e.target.value;
+    setSelectedFlowId(selectedId);
+    console.log("Newwww", e.target.value);
+    stockBranchReport(selectedId);
+  };
+
   return (
     <>
       <div className="container-sm">
         <div className="card bg-base-100 shadow-xl p-4">
           <div className="row">
-            <div className="col-md-12">
+            <div className="col-md-4">
               <p className="text-2xl flex items-center">
                 <Link to="/app/welcomeemitter">
                   <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
@@ -182,31 +202,32 @@ function StockAdjustment() {
               </p>
             </div>
           </div>
-          <div className="row mt-4">
-            <div className="col-lg-2 col-md-4">
+          <div className="row d-flex mt-6">
+            <div className="col-lg-2 col-md-2 ml-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Stock Branch
+                  Select Flow
                   <FaStarOfLife className="must" />
                 </span>
               </label>
             </div>
-            <div className="col-lg-3 col-md-6">
+            <div className="col-lg-6">
               <select
-                className="form-select form-sz w-full mb-2"
-                value={stockBranch}
-                onChange={handleSelectedStockBranch}
+                className="form-select w-56 h-10 mt-1 mb-2"
+                value={selectedFlowId}
+                onChange={handleFlowChange}
               >
-                <option value="">Select a Stock Branch</option>
-                {stockBranch.map((branch, index) => (
-                  <option key={index} value={branch.stockBranch}>
-                    {branch.stockBranch}
-                  </option>
-                ))}
+                <option value="">Select a Flow</option>
+                {flowData &&
+                  flowData.map((flowName) => (
+                    <option key={flowName.id} value={flowName.id}>
+                      {flowName.flow}
+                    </option>
+                  ))}
               </select>
-              {/* {errors.flow && (
-                <span className="error-text mb-1">{errors.flow}</span>
-              )} */}
+              {errors.selectedFlowId && (
+                <span className="error-text">{errors.selectedFlowId}</span>
+              )}
             </div>
           </div>
           {/* <div className="">

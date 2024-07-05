@@ -234,11 +234,59 @@ function IssueReq() {
     return priorityStatus === "High Priority" ? "red" : "green";
   };
 
+  const handleKitNoChange = async (e, index) => {
+    const selectedKitNo = e.target.value;
+
+    // Check if the selected kit already exists
+    const isDuplicate = kitFields.some(
+      (field, i) => index !== i && field.kitNo === selectedKitNo
+    );
+
+    if (isDuplicate) {
+      setDuplicateKitError(true);
+      toast.error("The selected kit already exists", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      return;
+    }
+
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getPartNoAndPartName?emitterId=${emitterId}&flowId=${selectedFlowId}&kitNo=${selectedKitNo}`
+      );
+      if (response.status === 200) {
+        const partNoAndPartName =
+          response.data.paramObjectsMap.partNoAndPartName;
+
+        // Update partNoAndPartNames state
+        updatePartNoAndPartNames(selectedKitNo, partNoAndPartName);
+
+        // Update kitFields with selectedKitNo
+        setKitFields((prevFields) => {
+          const newFields = [...prevFields];
+          newFields[index].kitNo = selectedKitNo;
+          return newFields;
+        });
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
   const updatePartNoAndPartNames = (kitNo, partNoAndPartName) => {
     setPartNoAndPartNames((prev) => ({
       ...prev,
       [kitNo]: partNoAndPartName,
     }));
+
+    console.log("Updated partNoAndPartNames:", partNoAndPartName);
+  };
+
+  // Function to get part details from partNoAndPartNames state
+  const getPartDetails = (kitNo) => {
+    return partNoAndPartNames[kitNo] || {};
   };
 
   useEffect(() => {
@@ -357,24 +405,21 @@ function IssueReq() {
         orgId,
         irType: "IR_KIT",
         flowTo: selectedFlowId,
-        // issueItemDTO: kitFields.map((field) => ({
-        //   kitName: field.kitNo,
-        //   kitQty: field.qty,
-        // })),
         issueItemDTO: kitFields.map((field) => {
-          const kit = partNoAndPartName.find(
-            (kit) => kit.kitNo === field.kitNo
-          );
+          const kit = getPartDetails(field.kitNo);
+          console.log(`Kit details for ${field.kitNo}:`, kit); // Debugging
+
           return {
             kitName: field.kitNo,
             kitQty: field.qty,
-            partName: kit ? kit.partName : "N/A",
-            partNo: kit ? kit.partNo : "N/A",
-            partQty: kit ? kit.partQty : 0,
+            partName: kit.partName || "N/A",
+            partNo: kit.partNo || "N/A",
+            partQty: kit.partQty || 0,
           };
         }),
       };
-      console.log("handleKitWiseIssueReq", formData);
+
+      console.log("Final formData:", formData);
       axios
         .post(
           `${process.env.REACT_APP_API_URL}/api/emitter/createIssueRequest`,
@@ -691,47 +736,6 @@ function IssueReq() {
   //     return newFields;
   //   });
   // };
-
-  const handleKitNoChange = async (e, index) => {
-    const selectedKitNo = e.target.value;
-
-    // Check if the selected kit already exists
-    const isDuplicate = kitFields.some(
-      (field, i) => index !== i && field.kitNo === selectedKitNo
-    );
-
-    if (isDuplicate) {
-      setDuplicateKitError(true);
-      toast.error("The selected kit already exists", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      return;
-    }
-
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getPartNoAndPartName?emitterId=${emitterId}&flowId=${selectedFlowId}&kitNo=${selectedKitNo}`
-      );
-      if (response.status === 200) {
-        const partNoAndPartName =
-          response.data.paramObjectsMap.partNoAndPartName;
-
-        // Update partNoAndPartNames state
-        updatePartNoAndPartNames(selectedKitNo, partNoAndPartName);
-
-        // Update kitFields with selectedKitNo
-        setKitFields((prevFields) => {
-          const newFields = [...prevFields];
-          newFields[index].kitNo = selectedKitNo;
-          return newFields;
-        });
-      } else {
-        console.error("API Error:", response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   const getPartNoAndPartName = async (kit) => {
     try {
@@ -1294,7 +1298,7 @@ function IssueReq() {
                                     style={{
                                       backgroundColor: "rgb(101 196 102)",
                                       borderColor: "#000000",
-                                      color: "#000000",
+                                      color: "#ffffff",
                                     }}
                                   />
                                 )
@@ -1438,7 +1442,7 @@ function IssueReq() {
                               style={{
                                 backgroundColor: "rgb(101 196 102)",
                                 borderColor: "#000000",
-                                color: "#000000",
+                                color: "#ffffff",
                               }}
                             />
                             <Chip
@@ -1448,7 +1452,7 @@ function IssueReq() {
                               style={{
                                 backgroundColor: "rgb(101 196 102)",
                                 borderColor: "#000000",
-                                color: "#000000",
+                                color: "#ffffff",
                               }}
                             />
                             {kitQtyy[index] && kitQtyy[index] > 0 && (
@@ -1459,7 +1463,7 @@ function IssueReq() {
                                 style={{
                                   backgroundColor: "rgb(101 196 102)",
                                   borderColor: "#000000",
-                                  color: "#000000",
+                                  color: "#ffffff",
                                 }}
                               />
                             )}
