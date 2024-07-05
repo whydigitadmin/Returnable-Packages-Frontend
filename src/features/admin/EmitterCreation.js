@@ -332,17 +332,57 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
     }
   };
 
-  const handleFlowSelection = (flow, isChecked) => {
+  // const handleFlowSelection = (flow, isChecked) => {
+  //   setSelectedFlows((prevFlow) => {
+  //     if (!Array.isArray(prevFlow)) {
+  //       console.error("Flow is not an array:", prevFlow);
+  //       return prevFlow;
+  //     }
+
+  //     if (flow === "selectAll") {
+  //       if (isChecked) {
+  //         const allFlowIds = flow.map((location) => location.flow);
+  //         console.log("Select All flow:", allFlowIds);
+  //         return allFlowIds;
+  //       } else {
+  //         return [];
+  //       }
+  //     }
+
+  //     if (isChecked) {
+  //       const updatedFlow = [...prevFlow, flow];
+  //       return updatedFlow;
+  //     } else {
+  //       const updatedFlow = prevFlow.filter((id) => id !== flow);
+  //       return updatedFlow;
+  //     }
+  //   });
+  // };
+
+  const handleFlowSelection = (flowId, isChecked) => {
     setSelectedFlows((prevFlow) => {
       if (!Array.isArray(prevFlow)) {
+        console.error("prevFlow is not an array:", prevFlow);
         return prevFlow;
       }
 
+      if (flowId === "selectAll") {
+        if (isChecked) {
+          const allFlowIds = Array.isArray(flow)
+            ? flow.map((location) => location.id)
+            : [];
+          console.log("Select All flow:", allFlowIds);
+          return allFlowIds;
+        } else {
+          return [];
+        }
+      }
+
       if (isChecked) {
-        const updatedFlow = [...prevFlow, flow];
+        const updatedFlow = [...prevFlow, flowId];
         return updatedFlow;
       } else {
-        const updatedFlow = prevFlow.filter((id) => id !== flow);
+        const updatedFlow = prevFlow.filter((id) => id !== flowId);
         return updatedFlow;
       }
     });
@@ -946,11 +986,90 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
             className="cursor-pointer w-8 h-8 mt-3 me-3"
           />
         </div>
-        <DialogContent>
+        {/* <DialogContent>
           <div className="row mb-3">
             <div className="col-lg-12 col-md-12">
               {flow.length > 0 ? (
                 <div>
+                  <div className="form-check mb-2">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="selectAll"
+                      value="selectAll"
+                      checked={
+                        Array.isArray(flow) && flow.length === flow.length
+                      }
+                      onChange={(e) =>
+                        handleFlowSelection("selectAll", e.target.checked)
+                      }
+                    />
+                    <label
+                      className="form-check-label fw-bold"
+                      htmlFor="selectAll"
+                    >
+                      SELECT ALL Flow
+                    </label>
+                  </div>
+                  {flow.map((flowItem) => (
+                    <div className="form-check mb-2" key={flowItem.id}>
+                      <input
+                        type="checkbox"
+                        className="form-check-input"
+                        id={flowItem.id}
+                        value={flowItem.id}
+                        checked={
+                          Array.isArray(selectedFlows) &&
+                          selectedFlows.includes(flowItem.id)
+                        }
+                        onChange={(e) =>
+                          handleFlowSelection(flowItem.id, e.target.checked)
+                        }
+                      />
+                      <label
+                        className="form-check-label ms-1"
+                        htmlFor={flowItem.id}
+                      >
+                        {flowItem.flowName}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div>
+                  <center>Flow Not Available!</center>
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent> */}
+
+        <DialogContent>
+          <div className="row mb-3">
+            <div className="col-lg-12 col-md-12">
+              {Array.isArray(flow) && flow.length > 0 ? (
+                <div>
+                  <div className="form-check mb-2">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="selectAll"
+                      value="selectAll"
+                      checked={
+                        Array.isArray(selectedFlows) &&
+                        selectedFlows.length === flow.length
+                      }
+                      onChange={(e) =>
+                        handleFlowSelection("selectAll", e.target.checked)
+                      }
+                    />
+                    <label
+                      className="form-check-label fw-bold"
+                      htmlFor="selectAll"
+                    >
+                      SELECT ALL Flow
+                    </label>
+                  </div>
                   {flow.map((flowItem) => (
                     <div className="form-check mb-2" key={flowItem.id}>
                       <input
@@ -983,7 +1102,6 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
             </div>
           </div>
         </DialogContent>
-
         <DialogActions>
           <Button onClick={handleShippingClickClose}>OK</Button>
         </DialogActions>
