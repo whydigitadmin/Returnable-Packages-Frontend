@@ -111,7 +111,7 @@ export function AsstTagging({ addTagging, viewId }) {
   const [poNo, setPoNo] = useState("");
   const [poDate, setPoDate] = useState(null);
   const [poList, setPoList] = useState([]);
-  const [poViewDate, setPoViewDate] = useState("");
+  const [viewPoDate, setViewPoDate] = useState("");
 
   const handleOpenBarcodeScannerDialog = (tagCode) => {
     setSelectedBarcode(tagCode);
@@ -173,7 +173,7 @@ export function AsstTagging({ addTagging, viewId }) {
         setDocId(response.data.paramObjectsMap.assetTaggingVO.docid);
         setDocDate(response.data.paramObjectsMap.assetTaggingVO.docDate);
         setPoNo(response.data.paramObjectsMap.assetTaggingVO.poNo);
-        setPoViewDate(response.data.paramObjectsMap.assetTaggingVO.poDate);
+        setViewPoDate(response.data.paramObjectsMap.assetTaggingVO.poDate);
         setAssetCategory(response.data.paramObjectsMap.assetTaggingVO.category);
         setAssetCode(response.data.paramObjectsMap.assetTaggingVO.assetCode);
         setAssetName(response.data.paramObjectsMap.assetTaggingVO.asset);
@@ -751,21 +751,38 @@ export function AsstTagging({ addTagging, viewId }) {
             </span>
           </label>
         </div>
-        <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DesktopDatePicker
-              value={poDate}
-              disabled={disableFlag || viewId ? true : false}
-              onChange={(newDate) => setPoDate(newDate)}
-              slotProps={{
-                textField: { size: "small", clearable: true },
-              }}
-              format="DD/MM/YYYY"
-            />
-          </LocalizationProvider>
+        {viewId ? (
+          <>
+            <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
+              <input
+                className="form-control form-sz"
+                value={viewPoDate}
+                name="viewPoDate"
+                disabled
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="col-lg-3 col-md-6 mb-4 col-sm-4">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DesktopDatePicker
+                  value={poDate}
+                  disabled={disableFlag || viewId ? true : false}
+                  onChange={(newDate) => setPoDate(newDate)}
+                  slotProps={{
+                    textField: { size: "small", clearable: true },
+                  }}
+                  format="DD/MM/YYYY"
+                />
+              </LocalizationProvider>
 
-          {errors.poDate && <span className="error-text">{errors.poDate}</span>}
-        </div>
+              {errors.poDate && (
+                <span className="error-text">{errors.poDate}</span>
+              )}
+            </div>
+          </>
+        )}
 
         {/* ASSET CATEGORY FIELD */}
         <div className="col-lg-3 col-md-3 mb-4">
