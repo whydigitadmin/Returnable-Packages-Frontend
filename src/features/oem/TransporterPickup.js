@@ -370,71 +370,33 @@ const TransporterPickup = ({}) => {
                           {expandedRows.includes(row.id) && (
                             <tr>
                               <td colSpan="10">
-                                <table className="table table-bordered">
+                                <table className="table table-success">
                                   <thead>
                                     <tr>
-                                      <th
-                                        className="text-center"
-                                        style={{
-                                          backgroundColor: "green",
-                                        }}
-                                      >
-                                        Category
-                                      </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
+                                      <th className="text-center">Category</th>
+                                      <th className="text-center">
                                         Asset Name
                                       </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
+                                      <th className="text-center">
                                         Asset Code
                                       </th>
-                                      <th
-                                        className="text-center"
-                                        style={{ backgroundColor: "green" }}
-                                      >
-                                        Pick QTY
-                                      </th>
+                                      <th className="text-center">Pick QTY</th>
                                     </tr>
                                   </thead>
                                   <tbody>
                                     {row.transportPickupDetailsVO.map(
                                       (detail) => (
                                         <tr key={detail.id}>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.category}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.asset}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.assetCode}
                                           </td>
-                                          <td
-                                            className="text-center"
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
+                                          <td className="text-center">
                                             {detail.pickQty}
                                           </td>
                                         </tr>
@@ -471,7 +433,7 @@ const TransporterPickup = ({}) => {
                   return (
                     <>
                       <div className="col-lg-2 col-md-3">
-                        <label className="label mb-4">
+                        <label className="label mb-2">
                           <span className="label-text label-font-size text-base-content d-flex flex-row">
                             RETRIEVAL MANIFEST NO:
                           </span>
@@ -485,7 +447,7 @@ const TransporterPickup = ({}) => {
                         />
                       </div>
                       <div className="col-lg-2 col-md-3">
-                        <label className="label mb-4">
+                        <label className="label mb-2">
                           <span className="label-text label-font-size text-base-content d-flex flex-row">
                             RETRIEVAL DATE:
                           </span>
@@ -499,7 +461,7 @@ const TransporterPickup = ({}) => {
                         />
                       </div>
                       <div className="col-lg-2 col-md-3">
-                        <label className="label mb-4">
+                        <label className="label mb-2">
                           <span className="label-text label-font-size text-base-content d-flex flex-row">
                             FROM STOCK BRANCH:
                           </span>
@@ -532,7 +494,7 @@ const TransporterPickup = ({}) => {
               ) : (
                 <>
                   <div className="col-lg-2 col-md-3">
-                    <label className="label mb-4">
+                    <label className="label mb-2">
                       <span className="label-text label-font-size text-base-content d-flex flex-row">
                         RETRIEVAL MANIFEST NO:
                       </span>
@@ -546,7 +508,7 @@ const TransporterPickup = ({}) => {
                     />
                   </div>
                   <div className="col-lg-2 col-md-3">
-                    <label className="label mb-4">
+                    <label className="label mb-2">
                       <span className="label-text label-font-size text-base-content d-flex flex-row">
                         RETRIEVAL DATE:
                       </span>
@@ -560,7 +522,7 @@ const TransporterPickup = ({}) => {
                     />
                   </div>
                   <div className="col-lg-2 col-md-3">
-                    <label className="label mb-4">
+                    <label className="label mb-2">
                       <span className="label-text label-font-size text-base-content d-flex flex-row">
                         FROM STOCK BRANCH:
                       </span>

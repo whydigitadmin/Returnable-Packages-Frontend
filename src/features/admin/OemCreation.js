@@ -96,13 +96,16 @@ function OemCreation({ addEmitter, oemEditId }) {
   const [cityList, setCityList] = useState([]);
 
   useEffect(() => {
-    getCountryData();
-    getStateData();
-    getCityData();
     getCustomersList();
     {
       oemEditId && getOemById();
     }
+  }, []);
+
+  useEffect(() => {
+    getCountryData();
+    getStateData();
+    getCityData();
   }, [country, state]);
 
   const getCountryData = async () => {
@@ -453,7 +456,8 @@ function OemCreation({ addEmitter, oemEditId }) {
         address1: address,
         address2: "",
         country: country,
-        location: city,
+        city: city,
+        // location: city,
         pin: pincode,
         state: state,
       },

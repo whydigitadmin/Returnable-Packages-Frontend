@@ -389,13 +389,16 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
   };
 
   useEffect(() => {
-    getCountryData();
-    getStateData();
-    getCityData();
     if (emitterEditId) {
       getEmitterById();
     }
     getCustomersList();
+  }, []);
+
+  useEffect(() => {
+    getCountryData();
+    getStateData();
+    getCityData();
   }, [country, state]);
 
   const getCountryData = async () => {

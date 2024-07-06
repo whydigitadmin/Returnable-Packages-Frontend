@@ -65,7 +65,11 @@ const BinInwardOem = ({}) => {
   const getAllInwardedDetailsByOrgId = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllOemBinInward?orgId=${orgId}`
+        `${
+          process.env.REACT_APP_API_URL
+        }/api/oem/getAllOemBinInward?orgId=${orgId}&receiverId=${localStorage.getItem(
+          "receiverId"
+        )}`
       );
       if (response.status === 200) {
         setListViewTableData(response.data.paramObjectsMap.oemBinInwardVOs);

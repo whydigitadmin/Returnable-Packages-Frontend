@@ -51,6 +51,17 @@ function StockAdjustment() {
   const columns = useMemo(
     () => [
       {
+        accessorKey: "flow",
+        header: "Flow",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
         accessorKey: "kitCode",
         header: "Kit",
         size: 50,
@@ -64,17 +75,6 @@ function StockAdjustment() {
       {
         accessorKey: "kitAvailQty",
         header: "Avilable Kit Qty ",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "flow",
-        header: "Flow",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -206,14 +206,15 @@ function StockAdjustment() {
             <div className="col-lg-2 col-md-2 ml-4">
               <label className="label mb-4">
                 <span className="label-text label-font-size text-base-content d-flex flex-row">
-                  Select Flow
+                  Select Flow:
                   <FaStarOfLife className="must" />
                 </span>
               </label>
             </div>
-            <div className="col-lg-6">
+            <div className="col-lg-3 col-md-6">
               <select
-                className="form-select w-56 h-10 mt-1 mb-2"
+                // className="form-select w-56 h-10 mt-1 mb-2"
+                className="form-select form-sz w-full mb-2"
                 value={selectedFlowId}
                 onChange={handleFlowChange}
               >

@@ -102,13 +102,16 @@ function UserCreation({ addUser, userEditId }) {
   };
 
   useEffect(() => {
-    getCountryData();
-    getStateData();
-    getCityData();
     if (userEditId) {
       getUserById();
     }
     getWarehouseLocationList();
+  }, []);
+
+  useEffect(() => {
+    getCountryData();
+    getStateData();
+    getCityData();
   }, [country, state]);
 
   const getCountryData = async () => {
@@ -491,7 +494,7 @@ function UserCreation({ addUser, userEditId }) {
           address1: address,
           address2: "",
           country: country,
-          location: "Location",
+          // location: "Location",
           pin: pincode,
           state: state,
           city: city,

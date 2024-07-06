@@ -3,7 +3,7 @@
 const iconClasses = `h-6 w-6`;
 const submenuIconClasses = `h-5 w-5`;
 
-const routes = [
+const allRoutes = [
   {
     path: "/app/welcome",
     icon: (
@@ -16,33 +16,33 @@ const routes = [
     ),
     name: <span>Dashboard</span>,
   },
-  {
-    path: "", //no URL needed as this has submenu
-    icon: (
-      <img
-        src="https://cdn-icons-png.flaticon.com/128/12153/12153844.png"
-        alt="Admin"
-        style={{ width: "34px", height: "auto" }}
-        className={`${iconClasses} inline`}
-      />
-    ),
-    name: <span className="ml-2">Product Owner</span>,
+  // {
+  //   path: "", //no URL needed as this has submenu
+  //   icon: (
+  //     <img
+  //       src="https://cdn-icons-png.flaticon.com/128/12153/12153844.png"
+  //       alt="Admin"
+  //       style={{ width: "34px", height: "auto" }}
+  //       className={`${iconClasses} inline`}
+  //     />
+  //   ),
+  //   name: <span className="ml-2">Product Owner</span>,
 
-    submenu: [
-      {
-        path: "/app/companydetails",
-        icon: (
-          <img
-            src="	https://cdn-icons-png.flaticon.com/128/4413/4413528.png"
-            alt="Usercreation"
-            style={{ width: "32px", height: "auto" }}
-            className={{ submenuIconClasses }}
-          />
-        ),
-        name: <span>Company Details</span>,
-      },
-    ],
-  },
+  //   submenu: [
+  //     {
+  //       path: "/app/companydetails",
+  //       icon: (
+  //         <img
+  //           src="	https://cdn-icons-png.flaticon.com/128/4413/4413528.png"
+  //           alt="Usercreation"
+  //           style={{ width: "32px", height: "auto" }}
+  //           className={{ submenuIconClasses }}
+  //         />
+  //       ),
+  //       name: <span>Company Details</span>,
+  //     },
+  //   ],
+  // },
   {
     path: "", //no URL needed as this has submenu
     icon: (
@@ -1036,5 +1036,39 @@ const routes = [
   //   ]
   // },
 ];
+
+const isAdmin = localStorage.getItem("userDetails") === "ROLE_ADMIN";
+
+const routes = isAdmin
+  ? [
+      {
+        path: "", // no URL needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/12153/12153844.png"
+            alt="Admin"
+            style={{ width: "34px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span className="ml-2">Product Owner</span>,
+
+        submenu: [
+          {
+            path: "/app/companydetails",
+            icon: (
+              <img
+                src="https://cdn-icons-png.flaticon.com/128/4413/4413528.png"
+                alt="Company Details"
+                style={{ width: "32px", height: "auto" }}
+                className={submenuIconClasses}
+              />
+            ),
+            name: <span>Company Details</span>,
+          },
+        ],
+      },
+    ]
+  : allRoutes;
 
 export default routes;

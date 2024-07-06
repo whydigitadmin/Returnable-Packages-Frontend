@@ -21,6 +21,9 @@ import { FiDownload } from "react-icons/fi";
 import { IoMdClose } from "react-icons/io";
 import { LuWarehouse } from "react-icons/lu";
 import { TbWeight } from "react-icons/tb";
+import { FaUser } from "react-icons/fa";
+import { FaDatabase } from "react-icons/fa6";
+import { MdGroups } from "react-icons/md";
 import DashBoardComponent from "../master/DashBoardComponent";
 // import UserCreation from "./UserCreation";
 import NewCompany from "./NewCompany";
@@ -69,6 +72,7 @@ export const CompanyDetails = () => {
   const [openView, setOpenView] = React.useState(false);
   const [add, setAdd] = React.useState(false);
   const [data, setData] = React.useState([]);
+  const [statsData, setStatsData] = React.useState([]);
   const [userAddressData, setUserAddressData] = React.useState(null);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [selectedRowData, setSelectedRowData] = useState(null);
@@ -110,9 +114,48 @@ export const CompanyDetails = () => {
         `${process.env.REACT_APP_API_URL}/api/company/getAllCompany`
       );
 
+      // if (response.status === 200) {
+      //   setData(response.data.paramObjectsMap.organizationVO);
+      //   console.log("setData", response.data.paramObjectsMap.organizationVO);
+      // }
+
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.organizationVO);
-        console.log("setData", response.data.paramObjectsMap.organizationVO);
+        const allUsers = response.data.paramObjectsMap.organizationVO;
+
+        setData(allUsers);
+        const totalUsers = allUsers.length;
+        const activeUsers = allUsers.filter(
+          (customer) => customer.active === "Active"
+        ).length;
+        const inActiveUsers = allUsers.filter(
+          (customer) => customer.active === "In-Active"
+        ).length;
+        setStatsData([
+          {
+            title: "All Users",
+            value: totalUsers.toString(),
+            icon: <MdGroups className="w-7 h-7 text-white dashicon" />,
+            description: "",
+          },
+          {
+            title: "Active Users",
+            value: activeUsers.toString(),
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "In-Active Users",
+            value: inActiveUsers.toString(),
+            icon: <FaUser className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+          {
+            title: "--",
+            value: "0",
+            icon: <FaDatabase className="w-5 h-5 text-white dashicon-sm" />,
+            description: "",
+          },
+        ]);
       }
     } catch (error) {
       console.error("Error fetching data:", error);

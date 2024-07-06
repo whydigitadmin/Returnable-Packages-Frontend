@@ -349,88 +349,26 @@ export const EmitterDispatch = () => {
                             {expandedRows.includes(row.id) && (
                               <tr>
                                 <td colSpan="9">
-                                  <table className="table table-bordered">
+                                  <table className="table table-success">
                                     <thead>
                                       <tr>
-                                        <th
-                                          style={{
-                                            backgroundColor: "green",
-                                          }}
-                                        >
-                                          Bin Out Docid
-                                        </th>
-                                        <th
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Bin Out Doc Date
-                                        </th>
-                                        <th
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Part Name
-                                        </th>
-                                        <th
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Part No
-                                        </th>
-                                        <th
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Kit No
-                                        </th>
-                                        <th
-                                          style={{ backgroundColor: "green" }}
-                                        >
-                                          Qty
-                                        </th>
+                                        <th>Bin Out Docid</th>
+                                        <th>Bin Out Doc Date</th>
+                                        <th>Part Name</th>
+                                        <th>Part No</th>
+                                        <th>Kit No</th>
+                                        <th>Qty</th>
                                       </tr>
                                     </thead>
                                     <tbody>
                                       {row.dispatchDetailsVO.map((detail) => (
                                         <tr key={detail.id}>
-                                          <td
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
-                                            {detail.binOutDocid}
-                                          </td>
-                                          <td
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
-                                            {detail.binOutDocDate}
-                                          </td>
-                                          <td
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
-                                            {detail.partName}
-                                          </td>
-                                          <td
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
-                                            {detail.partNo}
-                                          </td>
-                                          <td
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
-                                            {detail.kitNo}
-                                          </td>
-                                          <td
-                                            style={{
-                                              backgroundColor: "yellow",
-                                            }}
-                                          >
-                                            {detail.qty}
-                                          </td>
+                                          <td>{detail.binOutDocid}</td>
+                                          <td>{detail.binOutDocDate}</td>
+                                          <td>{detail.partName}</td>
+                                          <td>{detail.partNo}</td>
+                                          <td>{detail.kitNo}</td>
+                                          <td>{detail.qty}</td>
                                         </tr>
                                       ))}
                                     </tbody>

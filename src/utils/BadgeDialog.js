@@ -123,7 +123,7 @@ const BadgeDialog = ({
                   ))
                 ) : (
                   <StyledTableRow>
-                    <StyledTableCell colSpan={5} align="center">
+                    <StyledTableCell colSpan={9} align="center">
                       No requests found
                     </StyledTableCell>
                   </StyledTableRow>
@@ -165,7 +165,7 @@ const BadgeDialog = ({
                   ))
                 ) : (
                   <StyledTableRow>
-                    <StyledTableCell colSpan={5} align="center">
+                    <StyledTableCell colSpan={9} align="center">
                       No requests found
                     </StyledTableCell>
                   </StyledTableRow>
