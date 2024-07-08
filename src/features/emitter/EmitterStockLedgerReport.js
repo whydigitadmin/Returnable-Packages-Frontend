@@ -206,10 +206,10 @@ function EmitterStockLedgerReport() {
               theme: "colored",
             });
           } else {
-            toast.success(response.data.paramObjectsMap.message, {
-              autoClose: 2000,
-              theme: "colored",
-            });
+            // toast.success(response.data.paramObjectsMap.message, {
+            //   autoClose: 2000,
+            //   theme: "colored",
+            // });
 
             setData(response.data.paramObjectsMap.kitLedger);
             setErrors({});

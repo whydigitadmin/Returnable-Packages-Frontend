@@ -512,7 +512,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
               </div>
             </div>
             <div className="d-flex justify-content-end mt-5 me-5">
-              <strong>Aknowledged By</strong>
+              <strong>Acknowledged By</strong>
             </div>
             <div className={`watermark cross`}>{watermark}</div>
           </div>

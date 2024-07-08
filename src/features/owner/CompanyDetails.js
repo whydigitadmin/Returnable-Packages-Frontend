@@ -226,7 +226,18 @@ export const CompanyDetails = () => {
       // },
       {
         accessorKey: "name",
-        header: "User Name",
+        header: "Company Name",
+        size: 50,
+        muiTableHeadCellProps: {
+          align: "center",
+        },
+        muiTableBodyCellProps: {
+          align: "center",
+        },
+      },
+      {
+        accessorKey: "code",
+        header: "Company Code",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -257,20 +268,20 @@ export const CompanyDetails = () => {
           align: "center",
         },
       },
-      {
-        accessorKey: "active",
-        header: "Active",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-        Cell: ({ cell: { value } }) => (
-          <span>{value ? "Active" : "Active"}</span>
-        ),
-      },
+      // {
+      //   accessorKey: "active",
+      //   header: "Active",
+      //   size: 50,
+      //   muiTableHeadCellProps: {
+      //     align: "center",
+      //   },
+      //   muiTableBodyCellProps: {
+      //     align: "center",
+      //   },
+      //   Cell: ({ cell: { value } }) => (
+      //     <span>{value ? "Active" : "Active"}</span>
+      //   ),
+      // },
     ],
     []
   );
@@ -455,6 +466,10 @@ export const CompanyDetails = () => {
                   <TableRow>
                     <TableCell>Admin Email</TableCell>
                     <TableCell>{selectedRowData.email}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell>Admin Name</TableCell>
+                    <TableCell>{selectedRowData.adminFirstName}</TableCell>
                   </TableRow>
                   <TableRow>
                     <TableCell>Phone</TableCell>

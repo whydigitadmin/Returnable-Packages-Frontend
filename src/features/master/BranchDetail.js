@@ -115,9 +115,9 @@ function BranchDetail() {
     getWarehouseData();
   };
 
-  useEffect(() => {
-    getWarehouseData();
-  }, []);
+  // useEffect(() => {
+  //   getWarehouseData();
+  // }, []);
 
   const getWarehouseData = async () => {
     try {

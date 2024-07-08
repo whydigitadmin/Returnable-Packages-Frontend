@@ -43,6 +43,7 @@ const BadgeDialog = ({
   page,
 }) => {
   const requestData = type === "Completed" ? completedReqData : pendingReqData;
+  const limitedRequestData = requestData.slice(0, 10);
 
   const inWardData = inwardTo === "Inward" ? true : false;
 
@@ -83,8 +84,8 @@ const BadgeDialog = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {requestData && requestData.length > 0 ? (
-                  requestData.map((row, index) => (
+                {limitedRequestData && limitedRequestData.length > 0 ? (
+                  limitedRequestData.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell>
                         {row.status === "Completed" ||
@@ -146,8 +147,8 @@ const BadgeDialog = ({
                 </TableRow>
               </TableHead>
               <TableBody>
-                {requestData && requestData.length > 0 ? (
-                  requestData.map((row, index) => (
+                {limitedRequestData && limitedRequestData.length > 0 ? (
+                  limitedRequestData.map((row, index) => (
                     <StyledTableRow key={index}>
                       <StyledTableCell>
                         <CheckCircleIcon style={{ color: green[500] }} />

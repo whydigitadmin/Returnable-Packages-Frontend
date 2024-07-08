@@ -503,6 +503,143 @@ function EmitterInwardNew({ addInwardManifeast }) {
     setTableData(tableData.filter((row) => row.id !== id));
   };
 
+  // const handleSave = () => {
+  //   const errors = {};
+
+  //   if (!allotmentNo) {
+  //     errors.allotmentNo = "AllotmentNo is required";
+  //   }
+
+  //   const tableFormData = tableData.map((row) => ({
+  //     tagCode: row.tagCode,
+  //     asset: row.asset,
+  //     assetCode: row.assetCode,
+  //     allotQty: row.allottedQty,
+  //     recQty: row.recQty,
+  //     returnQty: row.returnQty,
+  //   }));
+
+  //   if (Object.keys(errors).length === 0) {
+  //     const formData = {
+  //       binInwardDetailsDTO: tableFormData,
+  //       docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
+  //       allotedQty,
+  //       allotmentNo,
+  //       flow,
+  //       kitCode,
+  //       partName,
+  //       partCode,
+  //       reqNo,
+  //       binReqDate: reqDate,
+  //       allotDate: allottedDate,
+  //       orgId,
+  //       emitterId: localStorage.getItem("emitterId"),
+  //       reqKitQty,
+  //       returnQty: returnQty ? returnQty : 0,
+  //       returnRemarks,
+  //       createdBy: userName,
+  //     };
+
+  //     axios
+  //       .put(
+  //         `${process.env.REACT_APP_API_URL}/api/emitter/updateCreateBinInward`,
+  //         formData
+  //       )
+  //       .then((response) => {
+  //         if (response.data.statusFlag === "Error") {
+  //           toast.error(response.data.paramObjectsMap.errorMessage, {
+  //             autoClose: 2000,
+  //             theme: "colored",
+  //           });
+  //         } else {
+  //           toast.success(response.data.paramObjectsMap.message, {
+  //             autoClose: 2000,
+  //             theme: "colored",
+  //           });
+  //           setAllotmentNo("");
+  //           // setSelectedFiles("");
+  //           getAllPendingBinInward();
+  //           console.log("Response:", response.data);
+  //           // setAleartState(true);
+  //           setDocDate(null);
+  //           setDocId("");
+  //           setReqDate("");
+  //           setReqNo("");
+  //           setRecKitQty("");
+  //           setAllottedDate("");
+  //           setReqKitQty("");
+  //           setFlow("");
+  //           setKitCode("");
+  //           setAllottedQty("");
+  //           setErrors({});
+  //           setReturnQty("");
+  //           setReturnRemarks("");
+  //           setView2(false);
+  //           setView1(true);
+  //           setTableData([
+  //             {
+  //               id: 1,
+  //               tagCode: "",
+  //               asset: "",
+  //               assetCode: "",
+  //               allotQty: "",
+  //               recQty: "",
+  //               returnQty: "",
+  //             },
+  //           ]);
+
+  //           const formData1 = new FormData();
+  //           for (let i = 0; i < uploadedFiles.length; i++) {
+  //             formData1.append("file", uploadedFiles[i]);
+  //           }
+  //           formData1.append("allotNo", allotmentNo);
+
+  //           axios
+  //             .post(
+  //               `${process.env.REACT_APP_API_URL}/api/emitter/uploadPodFilePath`,
+  //               formData1,
+  //               {
+  //                 headers: {
+  //                   "Content-Type": "multipart/form-data",
+  //                 },
+  //               }
+  //             )
+  //             .then((uploadResponse) => {
+  //               if (uploadResponse.data.statusFlag === "Error") {
+  //                 toast.error(
+  //                   uploadResponse.data.paramObjectsMap.errorMessage,
+  //                   {
+  //                     autoClose: 2000,
+  //                     theme: "colored",
+  //                   }
+  //                 );
+  //               }
+  //               //  else {
+  //               //   console.log("File Upload Response:", uploadResponse.data);
+  //               //   setAllotmentNo("");
+  //               //   setSelectedFiles("");
+  //               //   getAllPendingBinInward();
+  //               //   toast.success(response.data.paramObjectsMap.message, {
+  //               //     autoClose: 2000,
+  //               //     theme: "colored",
+  //               //   });
+  //               // }
+  //             })
+  //             .catch((uploadError) => {
+  //               console.error("File Upload Error:", uploadError);
+  //               toast.error("Error saving upload: " + uploadError.message);
+  //             });
+  //         }
+  //       })
+  //       .catch((error) => {
+  //         console.error("Error:", error);
+  //         toast.error("Error saving inward: " + error.message);
+  //       });
+  //   } else {
+  //     setErrors(errors);
+  //   }
+  // };
+
   const handleSave = () => {
     const errors = {};
 
@@ -557,17 +694,14 @@ function EmitterInwardNew({ addInwardManifeast }) {
               theme: "colored",
             });
             setAllotmentNo("");
-            setSelectedFiles("");
             getAllPendingBinInward();
             console.log("Response:", response.data);
-            // setAleartState(true);
             setDocDate(null);
             setDocId("");
             setReqDate("");
             setReqNo("");
             setRecKitQty("");
             setAllottedDate("");
-            getAllPendingBinInward();
             setReqKitQty("");
             setFlow("");
             setKitCode("");
@@ -589,47 +723,39 @@ function EmitterInwardNew({ addInwardManifeast }) {
               },
             ]);
 
-            const formData1 = new FormData();
-            for (let i = 0; i < uploadedFiles.length; i++) {
-              formData1.append("file", uploadedFiles[i]);
-            }
-            formData1.append("allotNo", allotmentNo);
+            if (uploadedFiles.length > 0) {
+              const formData1 = new FormData();
+              for (let i = 0; i < uploadedFiles.length; i++) {
+                formData1.append("file", uploadedFiles[i]);
+              }
+              formData1.append("allotNo", allotmentNo);
 
-            axios
-              .post(
-                `${process.env.REACT_APP_API_URL}/api/emitter/uploadPodFilePath`,
-                formData1,
-                {
-                  headers: {
-                    "Content-Type": "multipart/form-data",
-                  },
-                }
-              )
-              .then((uploadResponse) => {
-                if (uploadResponse.data.statusFlag === "Error") {
-                  toast.error(
-                    uploadResponse.data.paramObjectsMap.errorMessage,
-                    {
-                      autoClose: 2000,
-                      theme: "colored",
-                    }
-                  );
-                }
-                //  else {
-                //   console.log("File Upload Response:", uploadResponse.data);
-                //   setAllotmentNo("");
-                //   setSelectedFiles("");
-                //   getAllPendingBinInward();
-                //   toast.success(response.data.paramObjectsMap.message, {
-                //     autoClose: 2000,
-                //     theme: "colored",
-                //   });
-                // }
-              })
-              .catch((uploadError) => {
-                console.error("File Upload Error:", uploadError);
-                toast.error("Error saving upload: " + uploadError.message);
-              });
+              axios
+                .post(
+                  `${process.env.REACT_APP_API_URL}/api/emitter/uploadPodFilePath`,
+                  formData1,
+                  {
+                    headers: {
+                      "Content-Type": "multipart/form-data",
+                    },
+                  }
+                )
+                .then((uploadResponse) => {
+                  if (uploadResponse.data.statusFlag === "Error") {
+                    toast.error(
+                      uploadResponse.data.paramObjectsMap.errorMessage,
+                      {
+                        autoClose: 2000,
+                        theme: "colored",
+                      }
+                    );
+                  }
+                })
+                .catch((uploadError) => {
+                  console.error("File Upload Error:", uploadError);
+                  toast.error("Error saving upload: " + uploadError.message);
+                });
+            }
           }
         })
         .catch((error) => {

@@ -45,7 +45,7 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const [branchAssetList, setBranchAssetList] = React.useState([]);
   const [assetCode, setAssetCode] = useState("");
   const [availQty, setAvailQty] = useState("");
-  const [transferQty, setTransferQty] = useState();
+  const [transferQty, setTransferQty] = useState("");
   const [stockBranch, setStockBranch] = useState("");
   const [docId, setDocId] = useState("");
   const [showTable, setShowTable] = useState(false);
@@ -597,6 +597,25 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
   const handleInwardmanifeastClose = () => {
     addInwardManifeast(false);
   };
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value.toUpperCase().replace(/[^0-9]/g, "");
+    const newValue = parseInt(inputValue, 10);
+
+    if (!isNaN(newValue)) {
+      if (newValue <= availQty && newValue !== 0) {
+        setTransferQty(newValue);
+        setTransferQtyErrorMsg(false);
+        setErrors((prevErrors) => ({ ...prevErrors, transferQty: "" }));
+      } else {
+        setTransferQty("");
+        setTransferQtyErrorMsg(true);
+      }
+    } else {
+      setTransferQty("");
+    }
+  };
+
   return (
     <>
       <div className="pt-8 card w-full p-3 bg-base-100 shadow-xl mt-2">
@@ -836,9 +855,9 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
             </label>
           </div>
           <div className="col-lg-3 col-md-3">
-            <input
+            {/* <input
               className="form-control form-sz mb-2"
-              name="transferqty"
+              name="transferQty"
               value={transferQty}
               onChange={(e) => {
                 const inputValue = e.target.value
@@ -863,6 +882,24 @@ function InwardManifest({ addInwardManifeast, viewAssetInwardId }) {
               <span className="error-text">
                 Transfer Qty is too low or exceed from Available Qty
               </span>
+            )}
+            {transferQty && (
+              <span className="error-text">{errors.transferQty}</span>
+            )} */}
+            <input
+              className="form-control form-sz mb-2"
+              name="transferqty"
+              value={transferQty}
+              onChange={handleInputChange}
+              disabled={viewAssetInwardId ? true : false}
+            />
+            {transferQtyErrorMsg && (
+              <span className="error-text">
+                Transfer Qty is too low or exceeds the Available Qty
+              </span>
+            )}
+            {errors.transferQty && (
+              <span className="error-text">{errors.transferQty}</span>
             )}
           </div>
         </div>

@@ -72,6 +72,7 @@ function EmitterAllotmentReport() {
     startDate: "",
     endDate: "",
   });
+  const [errors, setErrors] = useState("");
   const [kit, setKit] = useState("");
   const [flow, setFlow] = useState("");
   const [data, setData] = useState([]);
@@ -119,29 +120,37 @@ function EmitterAllotmentReport() {
     }
   };
   const getAllBinAllotmentReportByEmitterId = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/emitter/getCustomizedAllotmentDetailsByEmitter?emitterId=${loginEmitterId}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
-      );
-      if (response.status === 200) {
-        const binAllotmentVO = response.data.paramObjectsMap.binAllotmentVO;
-        const newData = binAllotmentVO.map((item) => ({
-          binReqNo: item.binReqNo,
-          binReqDate: item.binReqDate,
-          docId: item.docId,
-          docDate: item.docDate,
-          emitter: item.emitter,
-          flow: item.flow,
-          kitCode: item.kitCode,
-          reqKitQty: item.reqKitQty,
-          allotkKitQty: item.allotkKitQty,
-        }));
-        setData([...data, ...newData]);
-        console.log("The Data from the API is:", data);
-        setTableView(true);
+    const errors = {};
+    if (!dateValue.startDate || !dateValue.endDate) {
+      errors.dateValue = "Date is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_URL}/api/emitter/getCustomizedAllotmentDetailsByEmitter?emitterId=${loginEmitterId}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
+        );
+        if (response.status === 200) {
+          const binAllotmentVO = response.data.paramObjectsMap.binAllotmentVO;
+          const newData = binAllotmentVO.map((item) => ({
+            binReqNo: item.binReqNo,
+            binReqDate: item.binReqDate,
+            docId: item.docId,
+            docDate: item.docDate,
+            emitter: item.emitter,
+            flow: item.flow,
+            kitCode: item.kitCode,
+            reqKitQty: item.reqKitQty,
+            allotkKitQty: item.allotkKitQty,
+          }));
+          setData([...data, ...newData]);
+          console.log("The Data from the API is:", data);
+          setTableView(true);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+    } else {
+      setErrors(errors);
     }
   };
 
@@ -362,6 +371,9 @@ function EmitterAllotmentReport() {
                 showShortcuts={true}
                 primaryColor={"white"}
               />
+              {errors.dateValue && (
+                <span className="error-text mb-1">{errors.dateValue}</span>
+              )}
             </div>
             {/* KIT FIELD */}
             <div className="col-lg-1 col-md-6">

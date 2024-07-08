@@ -162,6 +162,9 @@ function BinOutward() {
       if (response.status === 200) {
         const filteredParts = response.data.paramObjectsMap.EmitterOutward;
         setFilteredPartData(filteredParts);
+        setPartCode("");
+        setPartName("");
+        setPartQty("");
       } else {
         toast.error("Error fetching data!");
       }
