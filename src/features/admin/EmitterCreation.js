@@ -634,6 +634,7 @@ function EmitterCreation({ addEmitter, emitterEditId }) {
               className="form-select form-sz w-full mb-2"
               onChange={handleEmitterChange}
               value={emitter}
+              disabled={emitterEditId}
             >
               <option value="" disabled>
                 Select an Emitter

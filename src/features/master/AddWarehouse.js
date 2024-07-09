@@ -15,6 +15,7 @@ import {
   codeFieldValidation,
   stringAndNoAndSpecialCharValidation,
 } from "../../utils/userInputValidation";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -211,6 +212,19 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     }
   };
 
+  const filterInput = (event) => {
+    const regex = /[^a-zA-Z0-9\-&]/g;
+    event.target.value = event.target.value.toUpperCase().replace(regex, "");
+  };
+
+  const filterValue = (value) => {
+    return value.replace(/[^a-zA-Z0-9\-&]/g, "");
+  };
+
+  useEffect(() => {
+    setName(filterValue(`${locationName}-${unit}`));
+  }, [locationName, unit]);
+
   // ALL INPUT FIELD CHANGE EVENTS
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -240,7 +254,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
         setCountry(value);
         break;
       case "pincode":
-        setPincode(value);
+        setPincode(value.replace(/\D/g, "").slice(0, 6));
         break;
       case "gst":
         setGst(value);
@@ -317,20 +331,14 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               theme: "colored",
             });
           } else {
-            toast.success("Warehouse created successfully", {
-              autoClose: 2000,
-              theme: "colored",
-            });
+            showSuccessToast(response.data.paramObjectsMap.message);
             setTimeout(() => {
               addWarehouse(true);
             }, 2000);
           }
         })
         .catch((error) => {
-          toast.error("Warehouse Creation failed", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
           if (error.response) {
             console.log("Response status:", error.response.status);
             console.log("Response data:", error.response.data);
@@ -346,6 +354,9 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
     const errors = {};
     if (!locationName) {
       errors.locationName = "Location Name is required";
+    }
+    if (!unit) {
+      errors.unit = "Unit is required";
     }
     if (!country) {
       errors.country = "Country is required";
@@ -393,25 +404,16 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
       )
         .then((response) => {
           if (response.data.statusFlag === "Error") {
-            toast.error(response.data.paramObjectsMap.errorMessage, {
-              autoClose: 2000,
-              theme: "colored",
-            });
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
           } else {
-            toast.success(response.data.paramObjectsMap.message, {
-              autoClose: 2000,
-              theme: "colored",
-            });
+            showSuccessToast(response.data.paramObjectsMap.message);
             setTimeout(() => {
               addWarehouse(false);
             }, 2000);
           }
         })
         .catch((error) => {
-          toast.error("Warehouse Updation failed", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
         });
     } else {
       setErrors(errors);
@@ -479,7 +481,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
               className="form-control form-sz mb-2"
               type={"text"}
               name="locationName"
-              onInput={stringAndNoAndSpecialCharValidation}
+              onInput={filterInput}
               value={locationName}
               onChange={handleInputChange}
             />
@@ -502,9 +504,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              onInput={(e) => {
-                e.target.value = e.target.value.toUpperCase();
-              }}
+              onInput={filterInput}
               name="unit"
               value={unit}
               onChange={handleInputChange}
@@ -527,7 +527,7 @@ function AddWarehouse({ addWarehouse, editWarehouseId }) {
             <input
               className="form-control form-sz mb-2"
               type={"text"}
-              onInput={codeFieldValidation}
+              // onInput={codeFieldValidation}
               name="name"
               value={name}
               disabled

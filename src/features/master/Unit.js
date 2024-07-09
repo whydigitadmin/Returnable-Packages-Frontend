@@ -29,6 +29,7 @@ import "react-toastify/dist/ReactToastify.css";
 import sampleFile from "../../assets/sampleFiles/sample_data_unit.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import { stringValidation } from "../../utils/userInputValidation";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const statsData = [
   {
@@ -115,6 +116,7 @@ function Unit() {
   const [tableData, setTableData] = useState([]);
   const [unit, setUnit] = useState("");
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
+  const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [errors, setErrors] = useState({});
   const [openView, setOpenView] = useState(false);
   const [selectedRowData, setSelectedRowData] = useState(null);
@@ -185,6 +187,7 @@ function Unit() {
       }
     } catch (error) {
       console.error("Error fetching data:", error);
+      showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
     }
   };
 
@@ -211,22 +214,25 @@ function Unit() {
       const formData = {
         unit,
         orgId,
+        createdBy: userName,
+        updatedBy: userName,
       };
       console.log("test1", formData);
       axios
         .post(`${process.env.REACT_APP_API_URL}/api/master/unit`, formData)
         .then((response) => {
-          console.log("Response:", response.data);
-          getWarehouseData();
-          setUnit("");
-          setErrors("");
-          toast.success("Unit Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getWarehouseData();
+            setUnit("");
+            setErrors("");
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
         });
     } else {
       setErrors(errors);
@@ -234,32 +240,43 @@ function Unit() {
   };
 
   const handleUpdateUnit = () => {
-    setUpdateLoading(true); // Set loading state
-
-    const formData = {
-      id: selectedRowId,
-      unit,
-      orgId: orgId,
-    };
-    console.log("test1", formData);
-    axios
-      .put(`${process.env.REACT_APP_API_URL}/api/master/unit`, formData)
-      .then((response) => {
-        console.log("Response:", response.data);
-        getWarehouseData();
-        setEdit(false);
-        setUpdateLoading(false); // Reset loading state
-        setUnit("");
-        setErrors("");
-        toast.success("Unit Updation successfully", {
-          autoClose: 2000,
-          theme: "colored",
+    const errors = {};
+    if (!unit) {
+      errors.unit = "Unit Name is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      setUpdateLoading(true); // Set loading state
+      const formData = {
+        active,
+        id: selectedRowId,
+        unit,
+        orgId: orgId,
+        createdBy: userName,
+        updatedBy: userName,
+      };
+      console.log("test1", formData);
+      axios
+        .put(`${process.env.REACT_APP_API_URL}/api/master/unit`, formData)
+        .then((response) => {
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getWarehouseData();
+            setEdit(false);
+            setUpdateLoading(false);
+            setUnit("");
+            setErrors("");
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          setUpdateLoading(false); // Reset loading state on error
+          showErrorToast(error.response?.data?.paramObjectsMap?.errorMessage);
         });
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setUpdateLoading(false); // Reset loading state on error
-      });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const handleSubmit = () => {

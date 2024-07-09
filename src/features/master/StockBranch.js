@@ -21,6 +21,7 @@ import {
   codeFieldValidation,
   stringValidation,
 } from "../../utils/userInputValidation";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -179,15 +180,16 @@ export const StockBranch = () => {
           { headers }
         )
         .then((response) => {
-          setBranch("");
-          setBranchCode("");
-          setErrors({});
-          getAllStockbranch();
-          toast.success("Bin Inward Saved Successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          console.log("created");
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            setBranch("");
+            setBranchCode("");
+            setErrors({});
+            getAllStockbranch();
+            setSelectedRowId("");
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -220,15 +222,16 @@ export const StockBranch = () => {
           formData
         )
         .then((response) => {
-          setBranch("");
-          setBranchCode("");
-          setErrors({});
-          getAllStockbranch();
-          setSelectedRowId("");
-          toast.success("Stock Branch updated successfully!", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            setBranch("");
+            setBranchCode("");
+            setErrors({});
+            getAllStockbranch();
+            setSelectedRowId("");
+          }
         })
         .catch((error) => {
           console.error("Error:", error);

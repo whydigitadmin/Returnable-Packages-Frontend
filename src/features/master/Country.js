@@ -17,6 +17,7 @@ import {
   codeFieldValidation,
   stringValidation,
 } from "../../utils/userInputValidation";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -194,15 +195,15 @@ export const Country = () => {
         )
         .then((response) => {
           console.log("Response:", response.data);
-
-          getCountryData();
-          setCountry("");
-          setCode("");
-          setErrors("");
-          toast.success("Country Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getCountryData();
+            setCountry("");
+            setCode("");
+            setErrors("");
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -297,15 +298,16 @@ export const Country = () => {
           formData
         )
         .then((response) => {
-          getCountryData();
-          setCountry("");
-          setCode("");
-          setErrors("");
-          setSelectedRowId("");
-          toast.success("Country Updated successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getCountryData();
+            setCountry("");
+            setCode("");
+            setErrors("");
+            setSelectedRowId("");
+          }
         })
         .catch((error) => {
           console.error("Error:", error);

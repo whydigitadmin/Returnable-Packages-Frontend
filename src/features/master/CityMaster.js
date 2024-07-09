@@ -30,6 +30,7 @@ import {
   codeFieldValidation,
   stringValidation,
 } from "../../utils/userInputValidation";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -267,16 +268,17 @@ export const CityMaster = () => {
         .post(`${process.env.REACT_APP_API_URL}/api/basicMaster/city`, formData)
         .then((response) => {
           console.log("Response:", response.data);
-          getCityData();
-          setCity("");
-          setCode("");
-          setCountry("");
-          setState("");
-          setErrors("");
-          toast.success("City Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getCityData();
+            setCity("");
+            setCode("");
+            setCountry("");
+            setState("");
+            setErrors("");
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -287,42 +289,60 @@ export const CityMaster = () => {
   };
 
   const handleUpdateCity = () => {
-    setUpdateLoading(true); // Set loading state
+    const errors = {};
+    if (!city) {
+      errors.city = "City Name is required";
+    }
+    if (!state) {
+      errors.state = "State is required";
+    }
+    if (!country) {
+      errors.country = "Country is required";
+    }
+    if (!code) {
+      errors.code = "Code is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      setUpdateLoading(true); // Set loading state
 
-    const formData = {
-      cityName: city,
-      cityCode: code,
-      cityid: selectedRowId,
-      orgId: orgId,
-      createdBy: userName,
-      modifiedBy: userName,
-      active,
-      cancel: false,
-      country: country,
-      state: state,
-    };
-    console.log("FORM DATA IS:", formData);
+      const formData = {
+        cityName: city,
+        cityCode: code,
+        cityid: selectedRowId,
+        orgId: orgId,
+        createdBy: userName,
+        modifiedBy: userName,
+        active,
+        cancel: false,
+        country: country,
+        state: state,
+      };
+      console.log("FORM DATA IS:", formData);
 
-    axios
-      .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/city`, formData)
-      .then((response) => {
-        console.log("Update Response:", response.data);
-        getCityData();
-        setEdit(false);
-        setUpdateLoading(false);
-        setCountry("");
-        setState("");
-        setCity("");
-        setCode("");
-        toast.success("City Updation successfully", {
-          autoClose: 2000,
-          theme: "colored",
+      axios
+        .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/city`, formData)
+        .then((response) => {
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getCityData();
+            setEdit(false);
+            setUpdateLoading(false);
+            setCountry("");
+            setState("");
+            setCity("");
+            setCode("");
+            setErrors({});
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating data:", error);
+          setUpdateLoading(false);
         });
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-        setUpdateLoading(false);
-      });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const columns = useMemo(

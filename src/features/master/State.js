@@ -30,6 +30,7 @@ import {
   codeFieldValidation,
   stringValidation,
 } from "../../utils/userInputValidation";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const IOSSwitch = styled((props) => (
   <Switch focusVisibleClassName=".Mui-focusVisible" disableRipple {...props} />
@@ -246,18 +247,19 @@ export const State = () => {
           formData
         )
         .then((response) => {
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getStateData();
+            setState("");
+            setCode("");
+            setStateNo("");
+            setCountryData([]);
+            setCountry("");
+            setErrors("");
+          }
           console.log("Response:", response.data);
-          getStateData();
-          setState("");
-          setCode("");
-          setStateNo("");
-          setCountryData([]);
-          setCountry("");
-          setErrors("");
-          toast.success("State Created successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
         })
         .catch((error) => {
           console.error("Error:", error);
@@ -268,41 +270,60 @@ export const State = () => {
   };
 
   const handleUpdateState = () => {
-    setUpdateLoading(true);
+    const errors = {};
+    if (!state) {
+      errors.state = "State Name is required";
+    }
+    if (!code) {
+      errors.code = "Code is required";
+    }
+    if (!stateNo) {
+      errors.stateNo = "State No is required";
+    }
+    if (!country) {
+      errors.country = "Country is required";
+    }
+    if (Object.keys(errors).length === 0) {
+      setUpdateLoading(true);
 
-    const formData = {
-      stateName: state,
-      stateCode: code,
-      stateNo: stateNo,
-      id: selectedRowId,
-      orgId: orgId,
-      createdBy: userName,
-      modifiedBy: userName,
-      active,
-      cancel: false,
-      country: country,
-    };
+      const formData = {
+        stateName: state,
+        stateCode: code,
+        stateNo: stateNo,
+        id: selectedRowId,
+        orgId: orgId,
+        createdBy: userName,
+        modifiedBy: userName,
+        active,
+        cancel: false,
+        country: country,
+      };
 
-    axios
-      .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/state`, formData)
-      .then((response) => {
-        console.log("Update Response:", response.data);
-        getStateData();
-        setEdit(false);
-        setUpdateLoading(false);
-        setState("");
-        setCode("");
-        setStateNo("");
-        setCountry("");
-        toast.success("State Updated successfully", {
-          autoClose: 2000,
-          theme: "colored",
+      axios
+        .put(`${process.env.REACT_APP_API_URL}/api/basicMaster/state`, formData)
+        .then((response) => {
+          console.log("Update Response:", response.data);
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            getStateData();
+            setEdit(false);
+            setUpdateLoading(false);
+            setState("");
+            setCode("");
+            setStateNo("");
+            setCountry("");
+            setErrors("");
+          }
+        })
+        .catch((error) => {
+          console.error("Error updating data:", error);
+          setUpdateLoading(false); // Reset loading state on error
         });
-      })
-      .catch((error) => {
-        console.error("Error updating data:", error);
-        setUpdateLoading(false); // Reset loading state on error
-      });
+    } else {
+      setErrors(errors);
+    }
   };
 
   const columns = useMemo(

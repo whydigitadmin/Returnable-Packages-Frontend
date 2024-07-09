@@ -20,6 +20,7 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/Close";
 import NoRecordsFound from "../../utils/NoRecordsFound";
 import { Pagination } from "@mui/material";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 function BinOutward() {
   const [flow, setFlow] = React.useState("");
@@ -356,19 +357,23 @@ function BinOutward() {
           requestData
         )
         .then((response) => {
-          setFlow("");
-          setReceiver("");
-          setKitNo("");
-          setPartCode("");
-          setPartName("");
-          setPartQty("");
-          setAvlQty("");
-          setDestination("");
-          setOutwardKitQty("");
-          setErrors("");
-          getOutwardDocId();
-          getAllBinOutward();
-          toast.success("Outward Qty updated");
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            setFlow("");
+            setReceiver("");
+            setKitNo("");
+            setPartCode("");
+            setPartName("");
+            setPartQty("");
+            setAvlQty("");
+            setDestination("");
+            setOutwardKitQty("");
+            setErrors("");
+            getOutwardDocId();
+            getAllBinOutward();
+          }
         })
         .catch((error) => {
           console.error("Error:", error);
