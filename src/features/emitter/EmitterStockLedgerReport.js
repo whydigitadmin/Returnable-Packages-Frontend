@@ -80,9 +80,9 @@ function EmitterStockLedgerReport() {
       {
         accessorKey: "kitNo",
         header: "Kit",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
-          align: "center",
+          align: "left",
         },
         muiTableBodyCellProps: {
           align: "center",
@@ -91,9 +91,9 @@ function EmitterStockLedgerReport() {
       {
         accessorKey: "oqty",
         header: "Opening QTY",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
-          align: "center",
+          align: "left",
         },
         muiTableBodyCellProps: {
           align: "center",
@@ -102,9 +102,9 @@ function EmitterStockLedgerReport() {
       {
         accessorKey: "rqty",
         header: "Received QTY",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
-          align: "center",
+          align: "left",
         },
         muiTableBodyCellProps: {
           align: "center",
@@ -113,9 +113,9 @@ function EmitterStockLedgerReport() {
       {
         accessorKey: "dqty",
         header: "Dispatch QTY",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
-          align: "center",
+          align: "left",
         },
         muiTableBodyCellProps: {
           align: "center",
@@ -124,9 +124,9 @@ function EmitterStockLedgerReport() {
       {
         accessorKey: "cqty",
         header: "Closing QTY",
-        size: 50,
+        size: 30,
         muiTableHeadCellProps: {
-          align: "center",
+          align: "left",
         },
         muiTableBodyCellProps: {
           align: "center",
@@ -141,8 +141,19 @@ function EmitterStockLedgerReport() {
     const csv = generateCsv(csvConfig)(rowData);
     download(csvConfig)(csv);
   };
+  const rearrangeColumns = (data) => {
+    return data.map((row) => ({
+      kitNo: row.kitNo,
+      rqty: row.rqty,
+      oqty: row.oqty,
+      dqty: row.dqty,
+      cqty: row.cqty,
+    }));
+  };
+
   const handleExportData = () => {
-    const csv = generateCsv(csvConfig)(data);
+    const rearrangedData = rearrangeColumns(data);
+    const csv = generateCsv(csvConfig)(rearrangedData);
     const currentDate = new Date().toLocaleDateString("en-US", {
       year: "numeric",
       month: "2-digit",
@@ -150,6 +161,8 @@ function EmitterStockLedgerReport() {
     });
     const filename = `Stock-ledger-report_${currentDate}.csv`;
     download({ ...csvConfig, filename })(csv);
+
+    console.log("CSV", csv);
   };
 
   const table = useMaterialReactTable({
