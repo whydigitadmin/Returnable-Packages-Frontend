@@ -99,6 +99,7 @@ export function AsstTagging({ addTagging, viewId }) {
   const [generateFlag, setGenerateFlag] = useState(false);
   const [disableFlag, setDisableFlag] = useState(false);
   const [showTable, setShowTable] = useState(false);
+  const [checked, setChecked] = useState(false);
   const [userDetail, setUserDetail] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
@@ -219,6 +220,7 @@ export function AsstTagging({ addTagging, viewId }) {
           const tagcodes = response.data.paramObjectsMap.tagcode;
           setGenerateFlag(true);
           setShowTable(true);
+          setChecked(true);
           setErrors({});
           // setPoDate(null);
 
@@ -339,23 +341,17 @@ export function AsstTagging({ addTagging, viewId }) {
   const handleSave = async () => {
     const errors = {};
 
-    // if (!docId || !docId.trim()) {
-    //   errors.docId = "Document ID is required";
-    // }
-    if (!toDate) {
-      errors.toDate = "Doc Date is required";
-    }
     if (!assetCode) {
       errors.assetCode = "Asset Code is required";
     }
-    if (!assetName || !assetName.trim()) {
-      errors.assetName = "Asset Name is required";
+    if (!assetCategory) {
+      errors.assetCategory = "Asset Category is required";
     }
-    // if (!seqFrom || !seqFrom.trim()) {
-    //   errors.seqFrom = "Seq From is required";
-    // }
-    if (!seqTo || !seqTo.trim()) {
-      errors.seqTo = "Seq To is required";
+    if (!assetName) {
+      errors.assetName = "Asset Description is required";
+    }
+    if (!seqTo) {
+      errors.seqTo = "QTY is required";
     }
 
     if (Object.keys(errors).length === 0) {
@@ -421,8 +417,24 @@ export function AsstTagging({ addTagging, viewId }) {
         console.error("Error:", error);
       }
     } else {
-      // setErrors(errors);
+      setErrors(errors);
       showErrorToast(errors);
+    }
+  };
+
+  const handleSeqToChange = (e) => {
+    const value = e.target.value;
+    if (/^[1-9][0-9]{0,3}$/.test(value)) {
+      setSeqTo(value);
+      setErrors({ ...errors, seqTo: "" });
+    } else if (value === "") {
+      setSeqTo("");
+      setErrors({ ...errors, seqTo: "" });
+    } else {
+      setErrors({
+        ...errors,
+        seqTo: "Please enter up to 4 digits",
+      });
     }
   };
 
@@ -451,6 +463,13 @@ export function AsstTagging({ addTagging, viewId }) {
 
   const handleGenerateTagcode = () => {
     getAllTagCode();
+  };
+
+  const handleClear = () => {
+    setSeqTo("");
+    setChecked(false);
+    setGenerateFlag(false);
+    setShowTable(false);
   };
 
   // Function to handle selecting individual row in barcode table
@@ -899,11 +918,11 @@ export function AsstTagging({ addTagging, viewId }) {
         </div>
         <div className="col-lg-3 col-md-3">
           <input
-            className="form-control form-sz"
-            type="text"
+            className="form-control form-sz mb-2"
+            type="number"
             value={seqTo}
-            onChange={(e) => setSeqTo(e.target.value)}
-            disabled={viewId ? true : false}
+            onChange={handleSeqToChange}
+            disabled={viewId || checked ? true : false}
           />
           {errors.seqTo && <span className="error-text">{errors.seqTo}</span>}
         </div>
@@ -911,20 +930,30 @@ export function AsstTagging({ addTagging, viewId }) {
 
       {!viewId && (
         <>
-          <div className="d-flex flex-row mt-3">
-            <button
-              type="button"
-              onClick={handleGenerateTagcode}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              Generate Tagcode
-            </button>
+          <div className="d-flex justify-content-between mt-3">
+            <div>
+              <button
+                type="button"
+                onClick={handleGenerateTagcode}
+                disabled={checked}
+                className="bg-blue me-3 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Generate Tagcode
+              </button>
+              <button
+                type="button"
+                onClick={handleClear}
+                className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+              >
+                Clear
+              </button>
+            </div>
             {generateFlag && (
               <div>
                 <button
                   type="button"
                   onClick={handleSave}
-                  className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
+                  className="bg-blue me-1 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
                 >
                   Proceed
                 </button>

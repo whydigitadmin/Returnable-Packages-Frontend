@@ -697,7 +697,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
             getAllPendingBinInward();
             console.log("Response:", response.data);
             setDocDate(null);
-            setDocId("");
+            // setDocId("");
+            getInwardDocId();
             setReqDate("");
             setReqNo("");
             setRecKitQty("");
