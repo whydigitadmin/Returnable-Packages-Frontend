@@ -338,8 +338,8 @@ function Flows() {
               })}
             </div>
             <div className="">
-              <div className="flex justify-between mt-4">
-                <BulkUploadDialog
+              <div className="flex justify-end mt-4">
+                {/* <BulkUploadDialog
                   open={open}
                   onOpenClick={handleClickOpen}
                   handleClose={handleClose}
@@ -349,7 +349,7 @@ function Flows() {
                   onSubmit={handleSubmit}
                   sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
                   handleFileUpload={handleFileUpload}
-                />
+                /> */}
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

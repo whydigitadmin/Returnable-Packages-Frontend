@@ -293,7 +293,7 @@ function Customer() {
               })}
             </div>
             <div className="">
-              <div className="flex justify-between mt-4">
+              <div className="flex justify-end mt-4">
                 {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -317,7 +317,7 @@ function Customer() {
                     Bulk Upload
                   </span>
                 </button> */}
-                <BulkUploadDialog
+                {/* <BulkUploadDialog
                   open={open}
                   onOpenClick={handleClickOpen}
                   handleClose={handleClose}
@@ -327,7 +327,7 @@ function Customer() {
                   onSubmit={handleSubmit}
                   sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
                   handleFileUpload={handleFileUpload}
-                />
+                /> */}
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

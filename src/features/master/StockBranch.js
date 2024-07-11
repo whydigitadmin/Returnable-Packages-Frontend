@@ -407,7 +407,7 @@ export const StockBranch = () => {
             }
           />
         </div>
-        <BulkUploadDialog
+        {/* <BulkUploadDialog
           open={open}
           onOpenClick={handleClickOpen}
           handleClose={handleClose}
@@ -418,7 +418,7 @@ export const StockBranch = () => {
           sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
           handleFileUpload={handleFileUpload}
           apiUrl={apiUrl}
-        />
+        /> */}
       </div>
       {selectedRowId ? (
         <div className="d-flex flex-row">
