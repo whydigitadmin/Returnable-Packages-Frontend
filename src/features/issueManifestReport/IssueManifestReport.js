@@ -278,8 +278,8 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                   <div className="d-flex flex-column">
                     <div className="mb-3">{headerData.senderName}</div>
                     <div className="mb-3">
-                      {headerData.senderAddress} <br />
-                      {headerData.senderCity}
+                      {headerData.senderAddress}
+                      {/* {headerData.senderCity} */}
                       <br />
                     </div>
                     <div className="mb-3"> {headerData.senderGst}</div>
@@ -296,11 +296,11 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                   <div className="d-flex flex-column">
                     <div className="mb-3">{headerData.receiverName}</div>
                     <div className="mb-3">
-                      {headerData.senderAddress} <br />
-                      {headerData.senderCity}
+                      {headerData.receiverAddress}
+                      {/* {headerData.senderCity} */}
                       <br />
                     </div>
-                    <div className="mb-3"> {headerData.senderGst}</div>
+                    <div className="mb-3"> {headerData.receiverGstin}</div>
                   </div>
                 </div>
               </div>
