@@ -1,7 +1,6 @@
 import { Typography } from "@mui/material";
 import Lottie from "lottie-react";
 import LoginLottieFile from "../../pages/LoginLottie.json";
-import Recycle from "../../pages/recycle.json";
 
 function LandingIntro() {
   return (
@@ -35,7 +34,6 @@ function LandingIntro() {
                 display: "flex",
                 alignItems: "center",
                 marginLeft: "30%",
-                marginTop: "10%",
               }}
             >
               Sustainable
@@ -70,38 +68,76 @@ function LandingIntro() {
           style={{
             display: "flex",
             alignItems: "center",
-            marginLeft: "42%",
-            marginTop: "-14px",
-          }}
-        >
-          <Lottie
-            animationData={Recycle}
-            loop={true}
-            style={{ width: "65px", height: "65px" }}
-          />
-        </div>
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            marginLeft: "36%",
+            justifyContent: "center",
+            flexDirection: "column",
+
             marginBottom: "2%",
-            color: "green",
           }}
         >
-          <img
-            src="https://cdn-icons-png.flaticon.com/128/2391/2391092.png"
-            width={25}
-            height={25}
-            alt="Go Green"
-          />
-          &nbsp;
-          <Typography
-            variant="body2"
-            sx={{ fontSize: "13px", fontWeight: "bold", marginTop: "3px" }}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              color: "green",
+              marginBottom: "8px",
+              marginLeft: "7px",
+            }}
           >
-            #GoGreen
-          </Typography>
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: "18px",
+                fontWeight: "bold",
+                marginTop: "1px",
+                color: "green",
+                fontFamily: "monospace",
+              }}
+            >
+              Sustainable
+            </Typography>
+          </div>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              color: "green",
+            }}
+          >
+            {/* <img
+              src="https://cdn-icons-png.flaticon.com/128/9220/9220626.png"
+              width={25}
+              height={25}
+              alt="Go Green"
+            />
+            &nbsp;
+            <Typography
+              variant="body2"
+              sx={{
+                fontSize: "13px",
+                fontWeight: "bold",
+                marginTop: "3px",
+                color: "green",
+              }}
+            >
+              Sustainable
+            </Typography>
+            &nbsp; &nbsp; &nbsp; */}
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/2391/2391092.png"
+              width={25}
+              height={25}
+              alt="Go Green"
+              style={{ marginTop: "6%" }}
+            />
+            &nbsp;
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "13px", fontWeight: "bold", marginTop: "3px" }}
+            >
+              #GoGreen
+            </Typography>{" "}
+          </div>
         </div>
       </div>
     </>

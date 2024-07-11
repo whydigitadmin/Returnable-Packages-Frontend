@@ -18,10 +18,6 @@ function EmitterStockLedgerReport() {
     startDate: "",
     endDate: "",
   });
-  // const [dateValue, setDateValue] = useState({
-  //   startDate: new Date(),
-  //   endDate: new Date(),
-  // });
   const [flow, setFlow] = useState("");
   const [flowData, setFlowData] = useState("");
   const [errors, setErrors] = useState("");
@@ -43,8 +39,8 @@ function EmitterStockLedgerReport() {
   const handleDatePickerValueChange = (newValue) => {
     console.log("newValue:", newValue);
     setDateValue(newValue);
-    // updateDashboardPeriod(newValue)
   };
+
   const handleClearData = () => {
     setDateValue({
       startDate: null,
@@ -68,7 +64,6 @@ function EmitterStockLedgerReport() {
           )
           .map((flow) => ({ id: flow.id, flow: flow.flowName }));
         setFlowData(validFlows);
-        // setUserName(userDetail.firstName);
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -141,6 +136,7 @@ function EmitterStockLedgerReport() {
     const csv = generateCsv(csvConfig)(rowData);
     download(csvConfig)(csv);
   };
+
   const rearrangeColumns = (data) => {
     return data.map((row) => ({
       kitNo: row.kitNo,
@@ -152,7 +148,15 @@ function EmitterStockLedgerReport() {
   };
 
   const handleExportData = () => {
-    const rearrangedData = rearrangeColumns(data);
+    const selectedRows = table.getSelectedRowModel().rows;
+    let rowData;
+    if (selectedRows.length === 0) {
+      rowData = data; // Export all rows if no rows are selected
+    } else {
+      rowData = selectedRows.map((row) => row.original);
+    }
+
+    const rearrangedData = rearrangeColumns(rowData);
     const csv = generateCsv(csvConfig)(rearrangedData);
     const currentDate = new Date().toLocaleDateString("en-US", {
       year: "numeric",
@@ -195,7 +199,6 @@ function EmitterStockLedgerReport() {
   const handleSelectedFlow = (event) => {
     const selectedId = event.target.value;
     setFlow(selectedId);
-    // getFlowDetailsByFlowId(selectedId);
   };
 
   const handleSave = () => {
@@ -219,11 +222,6 @@ function EmitterStockLedgerReport() {
               theme: "colored",
             });
           } else {
-            // toast.success(response.data.paramObjectsMap.message, {
-            //   autoClose: 2000,
-            //   theme: "colored",
-            // });
-
             setData(response.data.paramObjectsMap.kitLedger);
             setErrors({});
             setTableView(true);
@@ -270,7 +268,6 @@ function EmitterStockLedgerReport() {
             </div>
             <div className="col-lg-3 col-md-6 mb-2">
               <Datepicker
-                // containerClassName="datesize"
                 value={dateValue}
                 theme={"light"}
                 inputClassName="input input-bordered w-full p-3"
@@ -298,11 +295,11 @@ function EmitterStockLedgerReport() {
                 value={flow}
                 onChange={handleSelectedFlow}
               >
-                <option value="">Select a Flow</option>
+                <option value="">Select Flow</option>
                 {flowData &&
-                  flowData.map((flowName) => (
-                    <option key={flowName.id} value={flowName.id}>
-                      {flowName.flow}
+                  flowData.map((flow) => (
+                    <option key={flow.id} value={flow.id}>
+                      {flow.flow}
                     </option>
                   ))}
               </select>
@@ -327,15 +324,16 @@ function EmitterStockLedgerReport() {
               Clear
             </button>
           </div>
-          {tableView && (
-            <>
-              <div className="mt-4">
-                <MaterialReactTable table={table} />
-              </div>
-            </>
-          )}
         </div>
       </div>
+
+      {tableView && (
+        <div className="container-sm">
+          <div className="card bg-base-100 shadow-xl mt-4 p-4">
+            <MaterialReactTable table={table} />
+          </div>
+        </div>
+      )}
     </>
   );
 }
