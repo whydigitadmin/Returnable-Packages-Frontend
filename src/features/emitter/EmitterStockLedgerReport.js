@@ -48,6 +48,7 @@ function EmitterStockLedgerReport() {
     });
     setFlow("");
     setTableView(false);
+    setErrors({});
   };
 
   const getAddressById = async () => {
@@ -266,7 +267,7 @@ function EmitterStockLedgerReport() {
                 </span>
               </label>
             </div>
-            <div className="col-lg-3 col-md-6 mb-2">
+            <div className="col-lg-4 col-md-8">
               <Datepicker
                 value={dateValue}
                 theme={"light"}
@@ -278,7 +279,7 @@ function EmitterStockLedgerReport() {
                 primaryColor={"white"}
               />
               {errors.dateValue && (
-                <span className="error-text mb-1">{errors.dateValue}</span>
+                <span className="error-text mt-2">{errors.dateValue}</span>
               )}
             </div>
             <div className="col-lg-2 col-md-4">
@@ -324,16 +325,14 @@ function EmitterStockLedgerReport() {
               Clear
             </button>
           </div>
+
+          {tableView && (
+            <div className="mt-4">
+              <MaterialReactTable table={table} />
+            </div>
+          )}
         </div>
       </div>
-
-      {tableView && (
-        <div className="container-sm">
-          <div className="card bg-base-100 shadow-xl mt-4 p-4">
-            <MaterialReactTable table={table} />
-          </div>
-        </div>
-      )}
     </>
   );
 }
