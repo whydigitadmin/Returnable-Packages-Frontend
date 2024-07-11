@@ -39,6 +39,7 @@ function EmitterStockLedgerReport() {
   const handleDatePickerValueChange = (newValue) => {
     console.log("newValue:", newValue);
     setDateValue(newValue);
+    setErrors({ ...errors, dateValue: "" });
   };
 
   const handleClearData = () => {
@@ -271,16 +272,18 @@ function EmitterStockLedgerReport() {
               <Datepicker
                 value={dateValue}
                 theme={"light"}
-                inputClassName="input input-bordered w-full p-3"
+                inputClassName={`input input-bordered w-full p-3 ${
+                  errors.dateValue ? "input-error" : ""
+                }`}
                 popoverDirection={"down"}
                 toggleClassName="invisible"
                 onChange={handleDatePickerValueChange}
                 showShortcuts={true}
                 primaryColor={"white"}
               />
-              {errors.dateValue && (
+              {/* {errors.dateValue && (
                 <span className="error-text mt-2">{errors.dateValue}</span>
-              )}
+              )} */}
             </div>
             <div className="col-lg-2 col-md-4">
               <label className="label mb-4">

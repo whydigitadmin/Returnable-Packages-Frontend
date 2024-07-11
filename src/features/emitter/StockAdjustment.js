@@ -152,10 +152,10 @@ function StockAdjustment() {
               typeof flow.flowName === "string" && flow.flowName.trim() !== ""
           )
           .map((flow) => ({ id: flow.id, flow: flow.flowName }));
-        if (validFlows.length === 1) {
-          setSelectedFlowId(validFlows[0].id);
-          console.log("THE FIRST FLOW INDEX VALUE IS:", validFlows[0].id);
-        }
+        // if (validFlows.length === 1) {
+        //   setSelectedFlowId(validFlows[0].id);
+        //   console.log("THE FIRST FLOW INDEX VALUE IS:", validFlows[0].id);
+        // }
         setFlowData(validFlows);
         console.log("validFlows", validFlows);
       }

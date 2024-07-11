@@ -64,3 +64,7 @@
 .datesize {
   width: 216px;
 }
+
+.input-error {
+  border-color: red;
+}

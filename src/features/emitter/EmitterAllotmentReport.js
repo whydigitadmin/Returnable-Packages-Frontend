@@ -26,33 +26,6 @@ const csvConfig = mkConfig({
   useKeysAsHeaders: true,
 });
 
-const statsData = [
-  {
-    title: "New Users",
-    value: "34700",
-    icon: <UserGroupIcon className="w-8 h-8" />,
-    description: "↗︎ 2300 (22%)",
-  },
-  {
-    title: "Total Sales",
-    value: "34,545",
-    icon: <CreditCardIcon className="w-8 h-8" />,
-    description: "Current month",
-  },
-  {
-    title: "Pending Leads",
-    value: "450",
-    icon: <CircleStackIcon className="w-8 h-8" />,
-    description: "50 in hot leads",
-  },
-  {
-    title: "Active Users",
-    value: "5600",
-    icon: <UsersIcon className="w-8 h-8" />,
-    description: "↙ 300 (18%)",
-  },
-];
-
 const periodOptions = [
   { name: "Today", value: "TODAY" },
   { name: "Yesterday", value: "YESTERDAY" },
@@ -145,6 +118,7 @@ function EmitterAllotmentReport() {
           setData([...data, ...newData]);
           console.log("The Data from the API is:", data);
           setTableView(true);
+          setErrors({});
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -157,6 +131,7 @@ function EmitterAllotmentReport() {
   const handleDatePickerValueChange = (newValue) => {
     console.log("newValue:", newValue);
     setDateValue(newValue);
+    setErrors({ ...errors, dateValue: "" });
     // updateDashboardPeriod(newValue)
   };
   const handleClearData = () => {
@@ -167,6 +142,7 @@ function EmitterAllotmentReport() {
     setFlow("");
     setKit("");
     setTableView(false);
+    setErrors({});
   };
   // const updateDashboardPeriod = (newRange) => {
   //   dispatch(
@@ -361,19 +337,20 @@ function EmitterAllotmentReport() {
             </div>
             <div className="col-lg-3 col-md-6">
               <Datepicker
-                // containerClassName="datesize"
                 value={dateValue}
                 theme={"light"}
-                inputClassName="input input-bordered w-full p-3"
+                inputClassName={`input input-bordered w-full p-3 ${
+                  errors.dateValue ? "input-error" : ""
+                }`}
                 popoverDirection={"down"}
                 toggleClassName="invisible"
                 onChange={handleDatePickerValueChange}
                 showShortcuts={true}
                 primaryColor={"white"}
               />
-              {errors.dateValue && (
+              {/* {errors.dateValue && (
                 <span className="error-text mb-1">{errors.dateValue}</span>
-              )}
+              )} */}
             </div>
             {/* KIT FIELD */}
             <div className="col-lg-1 col-md-6">
@@ -434,7 +411,7 @@ function EmitterAllotmentReport() {
               </select>
             </div>
           </div>
-          <div className="mt-4">
+          <div className="mt-2">
             <button
               type="button"
               className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
