@@ -3,35 +3,6 @@ import { Box, Typography } from "@mui/material";
 function TemplatePointers() {
   return (
     <>
-      {/* Your existing content */}
-      {/* <div
-        className=" float-right d-flex align-items-center"
-        style={{
-          bottom: "20px",
-          right: "20px",
-          marginTop: "440px",
-          marginLeft: "250px",
-        }}
-      >
-        <span
-          style={{
-            marginRight: "10px",
-            marginTop: "5px",
-            color: "#000000",
-            fontSize: "14px",
-            opacity: "0.7",
-          }}
-          className="font-semibold"
-        >
-          Powered by
-        </span>
-        <img
-          src="/wds_logo.png"
-          alt="Whydigit Logo"
-          style={{ width: "60px" }}
-        />
-      </div> */}
-
       {/* Copyright component */}
       <Box
         sx={{
@@ -48,9 +19,22 @@ function TemplatePointers() {
           zIndex: 1000, // Ensure it appears above other content
         }}
       >
-        <Typography variant="body2" sx={{ fontSize: "12px" }}>
+        {/* <Typography variant="body2" sx={{ fontSize: "12px" }}>
           Copyrights &copy; 2022 - {new Date().getFullYear()} WhyDigit. All
           Rights Reserved.
+        </Typography> */}
+        <img
+          src="https://cdn-icons-png.flaticon.com/128/2391/2391092.png"
+          width={25}
+          height={25}
+        ></img>{" "}
+        &nbsp;
+        {/* Eco icon with size and margin */}
+        <Typography
+          variant="body2"
+          sx={{ fontSize: "13px", fontWeight: "bold", marginTop: "3px" }}
+        >
+          #GoGreen
         </Typography>
         {/* Additional Copyright details can be added here */}
       </Box>

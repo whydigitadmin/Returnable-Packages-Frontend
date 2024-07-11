@@ -1,3 +1,4 @@
+import { Typography } from "@mui/material";
 import Axios from "axios";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -125,7 +126,7 @@ function Login() {
           <div className="">
             <LandingIntro />
           </div>
-          <div className="py-16 px-10">
+          <div className="pt-16 pb-1 px-10">
             <div
               className="mb-2 login-border"
               // style={{ backgroundColor: "#f7f052" }}
@@ -139,7 +140,7 @@ function Login() {
               </div>
             </div>
             <form onSubmit={(e) => submitForm(e)}>
-              <div className="mb-4">
+              <div className="mb-3">
                 <InputText
                   type="emailId"
                   defaultValue={loginObj.emailId}
@@ -167,7 +168,7 @@ function Login() {
                 </Link>
               </div>
 
-              <ErrorText styleClass="mt-8">{errorMessage}</ErrorText>
+              <ErrorText styleClass="mt-2">{errorMessage}</ErrorText>
               {/* <button
                 type="submit"
                 className={"btn mt-2 w-full" + (loading ? " loading" : "")}
@@ -188,6 +189,28 @@ function Login() {
               </button>
             </form>
             {/* <GoGreen /> */}
+
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginLeft: "11%",
+              }}
+            >
+              &nbsp;
+              <Typography
+                variant="body2"
+                sx={{
+                  fontSize: "11px",
+                  fontWeight: "bold",
+                  marginTop: "30px",
+                  marginBottom: "10px",
+                }}
+              >
+                Copyrights &copy; {new Date().getFullYear()} WhyDigit. All
+                Rights Reserved.
+              </Typography>
+            </div>
           </div>
         </div>
       </div>
