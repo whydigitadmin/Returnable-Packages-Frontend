@@ -24,6 +24,7 @@ import ToastComponent from "../../utils/ToastComponent";
 import RequestSummaryTable from "./RequestSummaryTable";
 
 import { styled } from "@mui/material/styles";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 const ItemsPerPage = 10;
 
@@ -426,21 +427,21 @@ function IssueReq() {
           formData
         )
         .then((response) => {
-          // setAleartState(true);
-          console.log("Response:", response.data);
-          setKitFields([{ kitNo: "", qty: "" }]);
-          setSelectedKitNumbers([""]);
-          setSelectedKitId("");
-          setSelectedKit("");
-          setSelectedFlowId("");
-          setSelectedPart(null);
-          setSelectedDate1(null);
-          getIssueRequest();
-          setErrors("");
-          toast.success("Bin Requested Successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            setKitFields([{ kitNo: "", qty: "" }]);
+            setSelectedKitNumbers([""]);
+            setSelectedKitId("");
+            setSelectedKit("");
+            setSelectedFlowId("");
+            setSelectedPart(null);
+            setSelectedDate1(null);
+            getIssueRequest();
+            setErrors("");
+            console.log("Response for handleIssueReq kit wise", response.data);
+          }
         })
         .catch((error) => {
           toast.error("Network Error!");
@@ -498,23 +499,23 @@ function IssueReq() {
           formData
         )
         .then((response) => {
-          console.log("Response:", response.data);
-          // setAleartState(true);
-          toast.success("Bin Requested Successfully", {
-            autoClose: 2000,
-            theme: "colored",
-          });
-          // setSelectedKitNumbers([""]);
-          // setPartFields([{ partNo: "", qty: "" }]);
-          // setSelectedPartNumbers([""]);
-          // setSelectedKitId("");
-          getIssueRequest();
-          setSelectedPart(null);
-          setSelectedFlowId("");
-          setPartFields([{ partNo: "", qty: "" }]);
-          setSelectedDate1(null);
-          setErrors("");
-          setKitQtyy("");
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(response.data.paramObjectsMap.message);
+            // setSelectedKitNumbers([""]);
+            // setPartFields([{ partNo: "", qty: "" }]);
+            // setSelectedPartNumbers([""]);
+            // setSelectedKitId("");
+            getIssueRequest();
+            setSelectedPart(null);
+            setSelectedFlowId("");
+            setPartFields([{ partNo: "", qty: "" }]);
+            setSelectedDate1(null);
+            setErrors("");
+            setKitQtyy("");
+            console.log("Response for part wise req", response.data);
+          }
         })
         .catch((error) => {
           toast.error("Network Error!");

@@ -11,6 +11,7 @@ import { FaArrowCircleLeft, FaStarOfLife } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 function StockAdjustment() {
   const [dateValue, setDateValue] = useState({
@@ -170,9 +171,12 @@ function StockAdjustment() {
         `${process.env.REACT_APP_API_URL}/api/emitter/getStockKitQtyByEmitter?orgId=${orgId}&emitterId=${emitterId}&flowId=${flowId}`
       );
 
-      if (response.status === 200) {
+      if (response.data.statusFlag === "Error") {
+        showErrorToast(response.data.paramObjectsMap.errorMessage);
+      } else {
         setData(response.data.paramObjectsMap.avlKitQty);
         setTableView(true);
+        // showSuccessToast(response.data.paramObjectsMap.message);
       }
     } catch (error) {
       toast.error("Network Error!");

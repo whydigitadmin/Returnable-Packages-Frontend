@@ -19,6 +19,7 @@ import {
 import { Box, Button } from "@mui/material";
 import { mkConfig, generateCsv, download } from "export-to-csv"; //or use your library of choice here
 import axios from "axios";
+import { showErrorToast } from "../../utils/toastUtils";
 
 const csvConfig = mkConfig({
   fieldSeparator: ",",
@@ -102,7 +103,9 @@ function EmitterAllotmentReport() {
         const response = await axios.get(
           `${process.env.REACT_APP_API_URL}/api/emitter/getCustomizedAllotmentDetailsByEmitter?emitterId=${loginEmitterId}&endAllotDate=${dateValue.endDate}&flow=${flow}&kitCode=${kit}&startAllotDate=${dateValue.startDate}`
         );
-        if (response.status === 200) {
+        if (response.data.statusFlag === "Error") {
+          showErrorToast(response.data.paramObjectsMap.errorMessage);
+        } else {
           const binAllotmentVO = response.data.paramObjectsMap.binAllotmentVO;
           const newData = binAllotmentVO.map((item) => ({
             binReqNo: item.binReqNo,
