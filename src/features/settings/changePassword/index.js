@@ -317,7 +317,7 @@ function ChangePassword() {
                 <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
               </Link>
               <p className="text-2xl">
-                <strong>Bin Inward Details</strong>
+                <strong>Change Password</strong>
               </p>
             </div>
 

@@ -43,23 +43,45 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
             setGridData(gridResponse.data.paramObjectsMap.allotDetails);
 
             // Concatenate relevant fields from header and grid data
-            const concatenatedData = JSON.stringify({
-              // headerData: headerResponse.data.paramObjectsMap.HeaderDetails[0],
-              TransactionNo:
-                headerResponse.data.paramObjectsMap.HeaderDetails[0].allotno,
-              TransactionDate:
-                headerResponse.data.paramObjectsMap.HeaderDetails[0].allotDate,
+            const concatenatedData = {
+              TransactionNo: Array.from(
+                new Set(
+                  gridResponse.data.paramObjectsMap.allotDetails.map(
+                    (detail) => detail.allotmentNo
+                  )
+                )
+              ).join(", "),
+              TransactionDate: Array.from(
+                new Set(
+                  gridResponse.data.paramObjectsMap.allotDetails.map(
+                    (detail) => detail.allotmentDate
+                  )
+                )
+              ).join(", "),
+              RequestNo:
+                headerResponse.data.paramObjectsMap.HeaderDetails[0].binreqno,
               Receiver:
                 headerResponse.data.paramObjectsMap.HeaderDetails[0]
                   .receiverName,
-              RequestNo:
-                headerResponse.data.paramObjectsMap.HeaderDetails[0].binreqno,
-              Kit: gridResponse.data.paramObjectsMap.allotDetails[0].kitcode,
-              // gridData: gridResponse.data.paramObjectsMap.allotDetails,
-            });
+              Kit: Array.from(
+                new Set(
+                  gridResponse.data.paramObjectsMap.allotDetails.map(
+                    (detail) => detail.kitcode
+                  )
+                )
+              ).join(", "),
+            };
 
-            setQrCodeValue(concatenatedData);
-            console.log("THE QRCODE DATA IS:", concatenatedData);
+            const formattedData = `
+TransactionNo: ${concatenatedData.TransactionNo},
+TransactionDate: ${concatenatedData.TransactionDate},
+Receiver: ${concatenatedData.Receiver},
+RequestNo: ${concatenatedData.RequestNo},
+Kit: ${concatenatedData.Kit}
+            `;
+
+            setQrCodeValue(formattedData);
+            console.log("THE QRCODE DATA IS:", formattedData);
           } else {
             console.error("API Error:", gridResponse.data);
           }
@@ -257,20 +279,24 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
               </div>
             </div>
 
-            <div className="flex justify-evenly">
-              <div className="font-semibold">Transaction No:</div>
-              <div>{headerData.allotno}</div>
-              <div className=" font-semibold">Transaction Date:</div>
-              <div>{headerData.allotDate}</div>
-              <div className=" font-semibold">Dispatch Date:</div>
-              <div>{headerData.binreqdate}</div>
+            <div className="d-flex justify-content-start">
+              <div className="d-flex flex-row me-5">
+                <div className="font-semibold me-3">Bin Request No:</div>
+                <div>{headerData.binreqno}</div>
+              </div>
+              <div className="d-flex flex-row">
+                <div className=" font-semibold me-3">Bin Request Date:</div>
+                <div>{headerData.binreqdate}</div>
+              </div>
+              {/* <div className=" font-semibold">Dispatch Date:</div>
+              <div>{headerData.binreqdate}</div> */}
             </div>
 
             {/* Sender and Receiver details */}
             <div className="row mt-4">
               <div className="col-lg-6 col-md-6 col-sm-12">
                 <div className="d-flex justify-content-start">
-                  <div className="d-flex flex-column justify-content-between ms-3 me-4">
+                  <div className="d-flex flex-column justify-content-between ms-2 me-4">
                     <div className="mb-3 font-semibold">Sender:</div>
                     <div className="mb-3 font-semibold">Address:</div>
                     <div className="mb-3 font-semibold">GST:</div>
@@ -288,7 +314,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
               </div>
               <div className="col-lg-6 col-md-6 col-sm-12">
                 <div className="d-flex">
-                  <div className="d-flex flex-column justify-content-between ms-3 me-4">
+                  <div className="d-flex flex-column justify-content-between ms-2 me-4">
                     <div className="mb-3 font-semibold">Receiver:</div>
                     <div className="mb-3 font-semibold">Address:</div>
                     <div className="mb-3 font-semibold">GST:</div>
@@ -298,7 +324,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                     <div className="mb-3">
                       {headerData.receiverAddress}
                       {/* {headerData.senderCity} */}
-                      <br />
+                      {/* <br />   */}
                     </div>
                     <div className="mb-3"> {headerData.receiverGstin}</div>
                   </div>
@@ -319,6 +345,24 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                         style={{
                           border: "2px solid black",
                           textAlign: "center",
+                          width: 30,
+                        }}
+                      >
+                        Transaction No
+                      </th>
+                      <th
+                        style={{
+                          border: "2px solid black",
+                          textAlign: "center",
+                          width: 30,
+                        }}
+                      >
+                        Transaction Date
+                      </th>
+                      <th
+                        style={{
+                          border: "2px solid black",
+                          textAlign: "center",
                         }}
                       >
                         Kit ID
@@ -331,18 +375,19 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                       >
                         KIT QTY
                       </th>
-                      <th
+                      {/* <th
                         style={{
                           border: "2px solid black",
                           textAlign: "center",
                         }}
                       >
                         HSN Code
-                      </th>
+                      </th> */}
                       <th
                         style={{
                           border: "2px solid black",
                           textAlign: "center",
+                          width: 30,
                         }}
                       >
                         Product
@@ -374,6 +419,24 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                               style={{
                                 border: "2px solid black",
                                 textAlign: "center",
+                                width: 30,
+                              }}
+                            >
+                              {row.allotmentNo}
+                            </td>
+                            <td
+                              style={{
+                                border: "2px solid black",
+                                textAlign: "center",
+                                width: 30,
+                              }}
+                            >
+                              {row.allotmentDate}
+                            </td>
+                            <td
+                              style={{
+                                border: "2px solid black",
+                                textAlign: "center",
                               }}
                             >
                               {row.kitcode}
@@ -386,18 +449,19 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                             >
                               {row.allotkitqty}
                             </td>
-                            <td
+                            {/* <td
                               style={{
                                 border: "2px solid black",
                                 textAlign: "center",
                               }}
                             >
                               -
-                            </td>
+                            </td> */}
                             <td
                               style={{
                                 border: "2px solid black",
                                 textAlign: "center",
+                                width: 30,
                               }}
                             >
                               {row.productName}
@@ -414,6 +478,7 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
                               style={{
                                 border: "2px solid black",
                                 textAlign: "center",
+                                width: 50,
                               }}
                             >
                               {row.productQty}

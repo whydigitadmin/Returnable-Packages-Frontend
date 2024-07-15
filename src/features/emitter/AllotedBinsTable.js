@@ -157,8 +157,8 @@ function AllotedBinsTable({ viewAllotedTable }) {
         console.log("True", filteredData.length);
         setData(response.data.paramObjectsMap.binAllotmentNewVO.reverse());
         console.log(
-          "false",
-          response.data.paramObjectsMap.binAllotmentNewVO.length
+          "binAllotmentNewVO",
+          response.data.paramObjectsMap.binAllotmentNewVO
         );
 
         const allRequests =
@@ -216,7 +216,7 @@ function AllotedBinsTable({ viewAllotedTable }) {
   };
 
   const handleDownloadClick = (row) => {
-    setSelectedRowId(row.original.docId);
+    setSelectedRowId(row.original.binReqNo);
     setOpenDialog(true);
   };
 
