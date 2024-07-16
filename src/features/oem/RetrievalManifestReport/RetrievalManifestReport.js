@@ -48,7 +48,7 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
             setGridData(gridResponse.data.paramObjectsMap.retrievalDetails);
 
             // Concatenate relevant fields from header and grid data
-            const concatenatedData = JSON.stringify({
+            const concatenatedData = {
               // headerData: headerResponse.data.paramObjectsMap.HeaderDetails[0],
               TransactionNo:
                 headerResponse.data.paramObjectsMap
@@ -59,13 +59,19 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
               DispatchDate:
                 headerResponse.data.paramObjectsMap
                   .reterivalManifestDetailsPdf[0].dispatchDate,
-              Receiver:
+              Sender:
                 headerResponse.data.paramObjectsMap
-                  .reterivalManifestDetailsPdf[0].receiver,
-            });
+                  .reterivalManifestDetailsPdf[0].sender,
+            };
 
-            setQrCodeValue(concatenatedData);
-            console.log("THE QRCODE DATA IS:", concatenatedData);
+            const formattedData = `
+TransactionNo: ${concatenatedData.TransactionNo},
+TransactionDate: ${concatenatedData.TransactionDate},
+Sender: ${concatenatedData.Sender},
+DispatchDate: ${concatenatedData.DispatchDate}`;
+
+            setQrCodeValue(formattedData);
+            console.log("THE QRCODE DATA IS:", formattedData);
           } else {
             console.error("API Error:", gridResponse.data);
           }
@@ -306,8 +312,8 @@ export const RetrievalManifestReport = ({ goBack, docId, onClose }) => {
                     <div className="mb-3">{headerData.sender}</div>
                     <div className="mb-3">
                       {headerData.senderAddress} <br />
-                      {headerData.senderCity}
-                      <br />
+                      {/* {headerData.senderCity}
+                      <br /> */}
                     </div>
                     <div className="mb-3"> {headerData.senderGstin}</div>
                   </div>

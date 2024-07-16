@@ -106,6 +106,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
       flow: "",
       kitCode: "",
       allotedQty: "",
+      binReqNo: "",
       binInwardDetailsVO: [],
     },
   ]);
@@ -147,6 +148,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
       kitCode: "",
       reqKitQty: "",
       allotKitQty: "",
+      binReqNo: "",
     },
   ]);
   //   const [tableData, setTableData] = useState([]);
@@ -449,6 +451,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
             binInwardId: assetDetail.binInwardId,
             reqKitQty: assetDetail.reqKitQty,
             binInwardDetailsVO: assetDetail.binInwardDetailsVO,
+            binReqNo: assetDetail.binReqNo,
           })
         );
 
@@ -487,6 +490,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
             reqKitQty: assetDetail.reqKitQty,
             allotKitQty: assetDetail.allotKitQty,
             binInwardId: assetDetail.binInwardId,
+            binReqNo: assetDetail.binReqNo,
           })
         );
 
@@ -900,7 +904,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               src="/RetrivalManifest-download.png"
                               alt="pending-status-icon"
                               title="add"
-                              onClick={() => handleDownloadClick(row.allotNo)}
+                              onClick={() => handleDownloadClick(row.binReqNo)}
                               style={{
                                 width: 30,
                                 height: 30,
@@ -1518,9 +1522,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                               src="/RetrivalManifest-download.png"
                               alt="pending-status-icon"
                               title="add"
-                              onClick={() =>
-                                handleDownloadClick(row.allotmentNo)
-                              }
+                              onClick={() => handleDownloadClick(row.binReqNo)}
                               style={{
                                 width: 30,
                                 height: 30,
