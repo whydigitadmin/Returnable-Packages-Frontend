@@ -6,6 +6,7 @@ import {
   Paper,
   Table,
   TableBody,
+  TableHead,
   TableCell,
   TableContainer,
   TableRow,
@@ -383,7 +384,7 @@ function Flows() {
       <Dialog
         open={createModalOpenView}
         onClose={handleVisibilityClose}
-        maxWidth="sm"
+        maxWidth="md"
         fullWidth
       >
         <DialogTitle style={{ borderBottom: "1px solid #ccc" }}>
@@ -400,46 +401,78 @@ function Flows() {
         </DialogTitle>
         <DialogContent className="mt-4">
           {selectedRowData && (
-            <TableContainer component={Paper}>
-              <Table>
-                <TableBody>
-                  <TableRow>
-                    <TableCell>Status</TableCell>
-                    <TableCell>{selectedRowData.active}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Flow Name</TableCell>
-                    <TableCell>{selectedRowData.flowName}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Emitter</TableCell>
-                    <TableCell>{selectedRowData.emitter}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Receiver</TableCell>
-                    <TableCell>{selectedRowData.receiver}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Origin</TableCell>
-                    <TableCell>{selectedRowData.orgin}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Destination</TableCell>
-                    <TableCell>{selectedRowData.destination}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Supplier Warehouse</TableCell>
-                    <TableCell>{selectedRowData.warehouseLocation}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell>Retrieval Warehouse</TableCell>
-                    <TableCell>
-                      {selectedRowData.retrievalWarehouseLocation}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </TableContainer>
+            <>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableBody>
+                    <TableRow>
+                      <TableCell>Status</TableCell>
+                      <TableCell>{selectedRowData.active}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Flow Name</TableCell>
+                      <TableCell>{selectedRowData.flowName}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Emitter</TableCell>
+                      <TableCell>{selectedRowData.emitter}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Receiver</TableCell>
+                      <TableCell>{selectedRowData.receiver}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Origin</TableCell>
+                      <TableCell>{selectedRowData.orgin}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Destination</TableCell>
+                      <TableCell>{selectedRowData.destination}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Supplier Warehouse</TableCell>
+                      <TableCell>{selectedRowData.warehouseLocation}</TableCell>
+                    </TableRow>
+                    <TableRow>
+                      <TableCell>Retrieval Warehouse</TableCell>
+                      <TableCell>
+                        {selectedRowData.retrievalWarehouseLocation}
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </TableContainer>
+
+              <Typography variant="h6" className="my-3">
+                Kit Details
+              </Typography>
+              <TableContainer component={Paper}>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Kit No</TableCell>
+                      <TableCell>Kit Description</TableCell>
+                      <TableCell>Part Number</TableCell>
+                      <TableCell>Part Name</TableCell>
+                      <TableCell>Part Quantity</TableCell>
+                      <TableCell>Cycle Time</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {selectedRowData.flowDetailVO.map((detail, index) => (
+                      <TableRow key={index}>
+                        <TableCell>{detail.kitNo}</TableCell>
+                        <TableCell>{detail.kitDesc}</TableCell>
+                        <TableCell>{detail.partNumber}</TableCell>
+                        <TableCell>{detail.partName}</TableCell>
+                        <TableCell>{detail.partQty}</TableCell>
+                        <TableCell>{detail.cycleTime}</TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            </>
           )}
         </DialogContent>
         <DialogActions>

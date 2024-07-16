@@ -415,12 +415,25 @@ function CreateKit() {
               <DialogTitle>Kit Details</DialogTitle>
               <DialogContent>
                 {selectedKitDetails && (
-                  <div>
-                    <p className="kit-detail">
-                      <strong>Kit ID :</strong> {selectedKitDetails.kitNo}{" "}
-                      <br />
-                      <strong>Kit Desc :</strong> {selectedKitDetails.kitDesc}
-                    </p>
+                  <div className="d-flex flex-column">
+                    <div className="d-flex justify-content-start">
+                      <strong>Kit ID :</strong>
+                      <span className="text-uppercase ms-2">
+                        {selectedKitDetails.kitNo}
+                      </span>
+                    </div>
+                    <div className="d-flex justify-content-start">
+                      <strong>Kit Desc :</strong>
+                      <span className="text-uppercase ms-2">
+                        {selectedKitDetails.kitDesc}
+                      </span>
+                    </div>
+                    <div className="d-flex justify-content-start">
+                      <strong>Part Qty :</strong>
+                      <span className="text-uppercase ms-2">
+                        {selectedKitDetails.partQty}
+                      </span>
+                    </div>
 
                     {kitAssetCategory && (
                       <div>
