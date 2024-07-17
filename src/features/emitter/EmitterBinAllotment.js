@@ -358,7 +358,7 @@ function EmitterBinAllotment({
     }));
 
     const isTableDataEmpty = tableFormData.some(
-      (row) => row.rfId === "" || row.qrCode === ""
+      (row) => row.asset === "" || row.assetCode === "" || row.qty === ""
     );
 
     if (isTableDataEmpty) {
