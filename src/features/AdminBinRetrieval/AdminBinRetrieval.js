@@ -29,6 +29,7 @@ import { FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
 import EditIcon from "@mui/icons-material/Edit";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
 export const AdminBinRetrieval = () => {
   const [viewId, setViewId] = useState("");
@@ -620,21 +621,16 @@ export const AdminBinRetrieval = () => {
           formData
         )
         .then((response) => {
-          console.log("After save Response:", response.data);
-          const responseDocId =
-            response.data.paramObjectsMap.binRetrievalVO.docId;
-          // handleNew();
-          toast.success(
-            `Bin Retrieval ${responseDocId} Created Successfully!`,
-            {
-              autoClose: 2000,
-              theme: "colored",
-            }
-          );
-
-          setTimeout(() => {
-            handleTransactionViewClose();
-          }, 2000);
+          if (response.data.statusFlag === "Error") {
+            showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            console.log("Response:", response.data);
+            showSuccessToast(response.data.paramObjectsMap.message);
+            setTableData([]);
+            setTimeout(() => {
+              handleTransactionViewClose();
+            }, 1000);
+          }
         })
         .catch((error) => {
           console.error("Error:", error);

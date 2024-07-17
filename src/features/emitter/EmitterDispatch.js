@@ -143,7 +143,9 @@ export const EmitterDispatch = () => {
     setInvNo("");
     setInvDate(null);
     setDispatchRemarks("");
-    setSelectedRowData("");
+    setSelectedRowData([]);
+    setSelectedRows([]);
+    setSelectAll(false);
     setTableData("");
     setTableView(false);
   };

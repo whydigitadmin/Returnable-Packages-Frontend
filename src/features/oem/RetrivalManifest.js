@@ -127,6 +127,7 @@ export const RetrivalManifest = () => {
     setTableData("");
     setTableView(false);
     setStockBranch("");
+    setToStockBranch("");
     setErrors({});
   };
 
