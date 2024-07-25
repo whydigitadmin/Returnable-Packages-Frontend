@@ -12,6 +12,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { Pagination } from "@mui/material";
 import NoRecordsFound from "../../utils/NoRecordsFound";
 import RetrievalManifestReport from "./RetrievalManifestReport/RetrievalManifestReport";
 
@@ -39,6 +40,20 @@ export const RetrivalManifest = () => {
   const [expandedRows, setExpandedRows] = useState([]);
   const [downloadDocId, setDownloadDocId] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = listViewTableData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   useEffect(() => {
     getDocIdByRetreival();
@@ -123,12 +138,14 @@ export const RetrivalManifest = () => {
   };
 
   const handleNew = () => {
+    setSelectedRows([]);
     setSelectedRowData("");
     setTableData("");
     setTableView(false);
     setStockBranch("");
     setToStockBranch("");
     setErrors({});
+    setSelectAll(false);
   };
 
   const handleBack = () => {
@@ -192,6 +209,8 @@ export const RetrivalManifest = () => {
     );
     if (selectedBranch) {
       getOemOutwardDetailsForRetreival(selectedBranch.stockBranch);
+      setSelectedRows([]);
+      setSelectAll(false);
     } else {
       // setSelectedStockBranch("");
     }
@@ -253,6 +272,7 @@ export const RetrivalManifest = () => {
           } else {
             handleNew();
             getDocIdByRetreival();
+            getAllRetrievalDetailsByReceiverId();
             toast.success(response.data.paramObjectsMap.message, {
               autoClose: 2000,
               theme: "colored",
@@ -496,8 +516,8 @@ export const RetrivalManifest = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData && listViewTableData.length > 0 ? (
-                        listViewTableData.map((row, index) => (
+                      {paginatedData && paginatedData.length > 0 ? (
+                        paginatedData.map((row, index) => (
                           <React.Fragment key={row.id}>
                             <tr style={{ backgroundColor: "red" }}>
                               <td
@@ -590,6 +610,15 @@ export const RetrivalManifest = () => {
                       )}
                     </tbody>
                   </table>
+                </div>
+                <div className="mt-4 d-flex justify-content-center">
+                  <Pagination
+                    count={Math.ceil(listViewTableData.length / rowsPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    variant="outlined"
+                    shape="rounded"
+                  />
                 </div>
               </div>
             </>

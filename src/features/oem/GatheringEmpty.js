@@ -10,6 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { Pagination } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -46,6 +47,20 @@ export const GatheringEmpty = () => {
   const [receiverId, setReceiverId] = React.useState(
     localStorage.getItem("receiverId")
   );
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = listViewTableData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   useEffect(() => {
     getOemStockBranchByUserId();
@@ -77,7 +92,9 @@ export const GatheringEmpty = () => {
         `${process.env.REACT_APP_API_URL}/api/oem/getAllGatheringEmptyByReceiverId?receiverId=${receiverId}`
       );
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.gatheringEmptyVO);
+        setListViewTableData(
+          response.data.paramObjectsMap.gatheringEmptyVO.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -261,8 +278,8 @@ export const GatheringEmpty = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {listViewTableData && listViewTableData.length > 0 ? (
-                      listViewTableData.map((row, index) => (
+                    {paginatedData && paginatedData.length > 0 ? (
+                      paginatedData.map((row, index) => (
                         <React.Fragment key={row.id}>
                           <tr style={{ backgroundColor: "red" }}>
                             <td>{row.docId}</td>
@@ -336,6 +353,15 @@ export const GatheringEmpty = () => {
                     )}
                   </tbody>
                 </table>
+              </div>
+              <div className="mt-4 d-flex justify-content-center">
+                <Pagination
+                  count={Math.ceil(listViewTableData.length / rowsPerPage)}
+                  page={page}
+                  onChange={handleChangePage}
+                  variant="outlined"
+                  shape="rounded"
+                />
               </div>
             </div>
           </>

@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import NoRecordsFound from "../../utils/NoRecordsFound";
+import { Pagination } from "@mui/material";
 
 const TransporterPickup = ({}) => {
   const [docId, setDocId] = useState("");
@@ -33,6 +34,25 @@ const TransporterPickup = ({}) => {
   const [userName, setUserName] = useState(localStorage.getItem("userName"));
   const [receiverId, setReceiverId] = React.useState(
     localStorage.getItem("receiverId")
+  );
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = listViewTableData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
+
+  const pendingPaginatedData = retrievalDetailsData.slice(
+    startIndex,
+    startIndex + rowsPerPage
   );
 
   useEffect(() => {
@@ -66,7 +86,9 @@ const TransporterPickup = ({}) => {
         `${process.env.REACT_APP_API_URL}/api/oem/getAllTranportPickupByReceiverId?receiverId=${receiverId}`
       );
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.transportPickupVO);
+        setListViewTableData(
+          response.data.paramObjectsMap.transportPickupVO.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -96,7 +118,9 @@ const TransporterPickup = ({}) => {
       );
 
       if (response.status === 200) {
-        setRetrievalDetailsData(response.data.paramObjectsMap.retrievalDetails);
+        setRetrievalDetailsData(
+          response.data.paramObjectsMap.retrievalDetails.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -228,6 +252,7 @@ const TransporterPickup = ({}) => {
             setErrors("");
             getDocIdByTransportPickup();
             getRetrievalDetails();
+            window.location.reload();
           }
         })
         .catch((error) => {
@@ -286,8 +311,8 @@ const TransporterPickup = ({}) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {retrievalDetailsData && retrievalDetailsData.length > 0 ? (
-                      retrievalDetailsData.map((row, index) => (
+                    {pendingPaginatedData && pendingPaginatedData.length > 0 ? (
+                      pendingPaginatedData.map((row, index) => (
                         <tr key={row.index}>
                           <td className="text-center">
                             <a
@@ -320,6 +345,15 @@ const TransporterPickup = ({}) => {
                   </tbody>
                 </table>
               </div>
+              <div className="mt-4 d-flex justify-content-center">
+                <Pagination
+                  count={Math.ceil(retrievalDetailsData.length / rowsPerPage)}
+                  page={page}
+                  onChange={handleChangePage}
+                  variant="outlined"
+                  shape="rounded"
+                />
+              </div>
             </div>
           </>
         )}
@@ -342,8 +376,8 @@ const TransporterPickup = ({}) => {
                     </tr>
                   </thead>
                   <tbody>
-                    {listViewTableData && listViewTableData.length > 0 ? (
-                      listViewTableData.map((row, index) => (
+                    {paginatedData && paginatedData.length > 0 ? (
+                      paginatedData.map((row, index) => (
                         <React.Fragment key={row.id}>
                           <tr style={{ backgroundColor: "red" }}>
                             <td>{row.docId}</td>
@@ -420,6 +454,15 @@ const TransporterPickup = ({}) => {
                     )}
                   </tbody>
                 </table>
+              </div>
+              <div className="mt-4 d-flex justify-content-center">
+                <Pagination
+                  count={Math.ceil(listViewTableData.length / rowsPerPage)}
+                  page={page}
+                  onChange={handleChangePage}
+                  variant="outlined"
+                  shape="rounded"
+                />
               </div>
             </div>
           </>

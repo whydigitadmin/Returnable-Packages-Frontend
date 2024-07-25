@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import NoRecordsFound from "../../utils/NoRecordsFound";
+import { Pagination } from "@mui/material";
 
 export const EmitterDispatch = () => {
   const [flow, setFlow] = React.useState("");
@@ -38,6 +39,20 @@ export const EmitterDispatch = () => {
   const [listViewTableData, setListViewTableData] = useState([]);
   const [viewId, setViewId] = useState("");
   const [expandedRows, setExpandedRows] = useState([]);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = listViewTableData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   useEffect(() => {
     getAddressById();
@@ -73,7 +88,9 @@ export const EmitterDispatch = () => {
         `${process.env.REACT_APP_API_URL}/api/emitter/getAllDispatch?emitterId=${emitterId}`
       );
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.dispatchVO);
+        setListViewTableData(
+          response.data.paramObjectsMap.dispatchVO.reverse()
+        );
       }
     } catch (error) {
       toast.error("Network Error!");
@@ -85,6 +102,8 @@ export const EmitterDispatch = () => {
     setFlow(selectedId);
     getEmitterDispatchByFlowId(selectedId);
     setTableView(true);
+    setSelectedRows([]);
+    setSelectAll(false);
   };
 
   const getAddressById = async () => {
@@ -148,6 +167,7 @@ export const EmitterDispatch = () => {
     setSelectAll(false);
     setTableData("");
     setTableView(false);
+    setErrors("");
   };
 
   const handleSave = () => {
@@ -315,8 +335,8 @@ export const EmitterDispatch = () => {
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData && listViewTableData.length > 0 ? (
-                        listViewTableData.map((row, index) => (
+                      {paginatedData && paginatedData.length > 0 ? (
+                        paginatedData.map((row, index) => (
                           <React.Fragment key={row.id}>
                             <tr style={{ backgroundColor: "red" }}>
                               <td>{row.docId}</td>
@@ -391,6 +411,15 @@ export const EmitterDispatch = () => {
                       )}
                     </tbody>
                   </table>
+                </div>
+                <div className="mt-4 d-flex justify-content-center">
+                  <Pagination
+                    count={Math.ceil(listViewTableData.length / rowsPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    variant="outlined"
+                    shape="rounded"
+                  />
                 </div>
               </div>
             </>

@@ -11,6 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { FaStarOfLife } from "react-icons/fa";
 import NoRecordsFound from "../../utils/NoRecordsFound";
+import { Pagination } from "@mui/material";
 
 const BinInwardOem = ({}) => {
   const [docId, setDocId] = useState("");
@@ -34,6 +35,20 @@ const BinInwardOem = ({}) => {
   const [emitterOutwardList, setEmitterOutwardList] = useState([]);
   const [tableData, setTableData] = useState([]);
   const [listViewTableData, setListViewTableData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = listViewTableData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   useEffect(() => {
     getFlowByUserId();
@@ -72,7 +87,9 @@ const BinInwardOem = ({}) => {
         )}`
       );
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.oemBinInwardVOs);
+        setListViewTableData(
+          response.data.paramObjectsMap.oemBinInwardVOs.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -172,6 +189,7 @@ const BinInwardOem = ({}) => {
   const handleNew = () => {
     setTableView(false);
     setInvNo("");
+    setFlow("");
     setInvDate("");
     setAllotedId("");
     setOemInwardNo("");
@@ -306,8 +324,8 @@ const BinInwardOem = ({}) => {
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData && listViewTableData.length > 0 ? (
-                        listViewTableData.map((row, index) => (
+                      {paginatedData && paginatedData.length > 0 ? (
+                        paginatedData.map((row, index) => (
                           <React.Fragment key={row.id}>
                             <tr style={{ backgroundColor: "red" }}>
                               <td>{row.docId}</td>
@@ -403,6 +421,15 @@ const BinInwardOem = ({}) => {
                       )}
                     </tbody>
                   </table>
+                </div>
+                <div className="mt-4 d-flex justify-content-center">
+                  <Pagination
+                    count={Math.ceil(listViewTableData.length / rowsPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    variant="outlined"
+                    shape="rounded"
+                  />
                 </div>
               </div>
             </>
@@ -574,7 +601,9 @@ const BinInwardOem = ({}) => {
                   <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DesktopDatePicker
                       value={oemInwardDate}
-                      onChange={(newDate) => setOemInwardDate(newDate)}
+                      onChange={(newDate) =>
+                        setOemInwardDate(dayjs(newDate).format("YYYY-MM-DD"))
+                      }
                       slotProps={{
                         textField: {
                           size: "small",

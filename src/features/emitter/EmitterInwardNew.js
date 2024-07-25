@@ -110,6 +110,19 @@ function EmitterInwardNew({ addInwardManifeast }) {
       binInwardDetailsVO: [],
     },
   ]);
+  const [tableDataPending, setTableDataPending] = useState([
+    {
+      id: 1,
+      allotNo: "",
+      allotDate: "",
+      flow: "",
+      partName: "",
+      kitCode: "",
+      reqKitQty: "",
+      allotKitQty: "",
+      binReqNo: "",
+    },
+  ]);
 
   const [openDialog, setOpenDialog] = useState(false);
 
@@ -138,19 +151,11 @@ function EmitterInwardNew({ addInwardManifeast }) {
     startIndex + rowsPerPage
   );
 
-  const [tableDataPending, setTableDataPending] = useState([
-    {
-      id: 1,
-      allotNo: "",
-      allotDate: "",
-      flow: "",
-      partName: "",
-      kitCode: "",
-      reqKitQty: "",
-      allotKitQty: "",
-      binReqNo: "",
-    },
-  ]);
+  const pendingPaginatedData = tableDataPending.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
+
   //   const [tableData, setTableData] = useState([]);
 
   //   const handleAddRow = () => {
@@ -890,8 +895,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
                   </thead>
                   {/* Table body */}
                   <tbody>
-                    {tableDataPending && tableDataPending.length > 0 ? (
-                      tableDataPending.map((row) => (
+                    {pendingPaginatedData && pendingPaginatedData.length > 0 ? (
+                      pendingPaginatedData.map((row) => (
                         <tr key={row.id}>
                           <td
                             className="border px-2 py-2 text-center d-flex justify-content-center"
@@ -973,6 +978,15 @@ function EmitterInwardNew({ addInwardManifeast }) {
                     )}
                   </tbody>
                 </table>
+              </div>
+              <div className="mt-4 d-flex justify-content-center">
+                <Pagination
+                  count={Math.ceil(tableDataPending.length / rowsPerPage)}
+                  page={page}
+                  onChange={handleChangePage}
+                  variant="outlined"
+                  shape="rounded"
+                />
               </div>
             </div>
           </div>

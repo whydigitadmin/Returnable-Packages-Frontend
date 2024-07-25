@@ -115,7 +115,9 @@ export const AdminBinRetrieval = () => {
       );
 
       if (response.status === 200) {
-        setPendingData(response.data.paramObjectsMap.pendingBinRetrieval);
+        setPendingData(
+          response.data.paramObjectsMap.pendingBinRetrieval.reverse()
+        );
         setPendingCount(
           response.data.paramObjectsMap.pendingBinRetrieval.length
         );
@@ -140,7 +142,9 @@ export const AdminBinRetrieval = () => {
       );
 
       if (response.status === 200) {
-        setListViewTableData(response.data.paramObjectsMap.binRetrievalVO);
+        setListViewTableData(
+          response.data.paramObjectsMap.binRetrievalVO.reverse()
+        );
         console.log(
           "THE RETERIVAL BIN DATA FROM API IS",
           response.data.paramObjectsMap.binRetrievalVO

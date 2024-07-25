@@ -11,6 +11,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import NoRecordsFound from "../../utils/NoRecordsFound";
+import { Pagination } from "@mui/material";
 
 function BinOutwardOem({}) {
   const [docId, setDocId] = useState("");
@@ -27,6 +28,20 @@ function BinOutwardOem({}) {
   const [tableData, setTableData] = useState([]);
   const [expandedRows, setExpandedRows] = useState([]);
   const [listViewTableData, setListViewTableData] = useState([]);
+  const [page, setPage] = useState(1);
+  const [rowsPerPage] = useState(10);
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  // Calculate the starting index of the current page
+  const startIndex = (page - 1) * rowsPerPage;
+  // Slice the tableDataView array to get the rows for the current page
+  const paginatedData = listViewTableData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   useEffect(() => {
     getOemStockBranchByUserId();
@@ -256,8 +271,8 @@ function BinOutwardOem({}) {
                       </tr>
                     </thead>
                     <tbody>
-                      {listViewTableData && listViewTableData.length > 0 ? (
-                        listViewTableData.map((row, index) => (
+                      {paginatedData && paginatedData.length > 0 ? (
+                        paginatedData.map((row, index) => (
                           <React.Fragment key={row.id}>
                             <tr style={{ backgroundColor: "red" }}>
                               <td>{row.docId}</td>
@@ -334,6 +349,15 @@ function BinOutwardOem({}) {
                       )}
                     </tbody>
                   </table>
+                </div>
+                <div className="mt-4 d-flex justify-content-center">
+                  <Pagination
+                    count={Math.ceil(listViewTableData.length / rowsPerPage)}
+                    page={page}
+                    onChange={handleChangePage}
+                    variant="outlined"
+                    shape="rounded"
+                  />
                 </div>
               </div>
             </>

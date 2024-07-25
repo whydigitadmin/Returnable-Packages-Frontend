@@ -246,7 +246,7 @@ Kit: ${concatenatedData.Kit}
           </button>
         </div>
 
-        <div className="mt-2">
+        <div className="">
           <IoMdClose
             onClick={handleReportClose}
             className="cursor-pointer w-8 h-8 mb-3"
@@ -348,7 +348,7 @@ Kit: ${concatenatedData.Kit}
                           width: 30,
                         }}
                       >
-                        Transaction No
+                        Allotment No
                       </th>
                       <th
                         style={{
@@ -357,7 +357,7 @@ Kit: ${concatenatedData.Kit}
                           width: 30,
                         }}
                       >
-                        Transaction Date
+                        Allotment Date
                       </th>
                       <th
                         style={{
