@@ -164,6 +164,9 @@ const RetrievalManifestReport = lazy(() =>
 const AdminBinRetrieval = lazy(() =>
   import("../pages/protected/AdminBinRetrieval")
 );
+const InvoiceGenerator = lazy(() =>
+  import("../pages/protected/InvoiceGenerator")
+);
 const routes = [
   {
     path: "/dashboard", // the url
@@ -589,6 +592,10 @@ const routes = [
   {
     path: "/FlowCard",
     component: FlowCard,
+  },
+  {
+    path: "/invoiceGenerator",
+    component: InvoiceGenerator,
   },
 ];
 
