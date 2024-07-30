@@ -705,8 +705,6 @@ function EmitterInwardNew({ addInwardManifeast }) {
             setAllotmentNo("");
             getAllPendingBinInward();
             console.log("Response:", response.data);
-            setDocDate(null);
-            // setDocId("");
             getInwardDocId();
             setReqDate("");
             setReqNo("");
@@ -719,6 +717,8 @@ function EmitterInwardNew({ addInwardManifeast }) {
             setErrors({});
             setReturnQty("");
             setReturnRemarks("");
+            setViewButton(true);
+            setView3(false);
             setView2(false);
             setView1(true);
             setTableData([

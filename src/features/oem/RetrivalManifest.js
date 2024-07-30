@@ -210,6 +210,7 @@ export const RetrivalManifest = () => {
     if (selectedBranch) {
       getOemOutwardDetailsForRetreival(selectedBranch.stockBranch);
       setSelectedRows([]);
+      setSelectedRowData([]);
       setSelectAll(false);
     } else {
       // setSelectedStockBranch("");

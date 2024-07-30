@@ -73,8 +73,8 @@ export const IssueManifestReport = ({ goBack, docId, onClose }) => {
             };
 
             const formattedData = `
-TransactionNo: ${concatenatedData.TransactionNo},
-TransactionDate: ${concatenatedData.TransactionDate},
+AllotmentNo: ${concatenatedData.TransactionNo},
+AllotmentDate: ${concatenatedData.TransactionDate},
 Receiver: ${concatenatedData.Receiver},
 RequestNo: ${concatenatedData.RequestNo},
 Kit: ${concatenatedData.Kit}

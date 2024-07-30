@@ -103,6 +103,7 @@ export const EmitterDispatch = () => {
     getEmitterDispatchByFlowId(selectedId);
     setTableView(true);
     setSelectedRows([]);
+    setSelectedRowData([]);
     setSelectAll(false);
   };
 
