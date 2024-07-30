@@ -407,6 +407,20 @@ const allRoutes = [
         ),
         name: <span style={{ marginLeft: "6px" }}>Invoice Generator</span>,
       },
+      {
+        path: "/app/issuemanifestprovider",
+        icon: (
+          <img
+            src="/report.png"
+            alt="issuemanifestprovider"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: (
+          <span style={{ marginLeft: "6px" }}>Issue Manifest Provider</span>
+        ),
+      },
       // {
       //   path: "/app/Branch",
       //   icon: (

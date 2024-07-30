@@ -2,8 +2,6 @@
 
 import { lazy } from "react";
 import "./style.css";
-import MaterialIssueManifest from "../features/MaterialIssueManifest/MaterialIssueManifest";
-
 const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const WelcomeEmitter = lazy(() => import("../pages/protected/WelcomeEmitter"));
@@ -24,6 +22,12 @@ const StockAdjustment = lazy(() =>
 const IssueManifest = lazy(() => import("../pages/protected/IssueManifest"));
 const IssueManifestReport = lazy(() =>
   import("../pages/protected/IssueManifestReport")
+);
+const MaterialIssueManifest = lazy(() =>
+  import("../pages/protected/MaterialIssueManifest")
+);
+const IssueManifestProvider = lazy(() =>
+  import("../pages/protected/IssueManifestProvider")
 );
 // const InwardManifest = lazy(() => import("../pages/protected/InwardManifest"));
 const InwardManifestDetails = lazy(() =>
@@ -252,6 +256,10 @@ const routes = [
   {
     path: "/materialissuemanifest",
     component: MaterialIssueManifest,
+  },
+  {
+    path: "/issuemanifestprovider",
+    component: IssueManifestProvider,
   },
   {
     path: "/inwardmanifestdetails",
