@@ -26,6 +26,12 @@ const IssueManifestReport = lazy(() =>
 const MaterialIssueManifest = lazy(() =>
   import("../pages/protected/MaterialIssueManifest")
 );
+const RetrievalIssueManifest = lazy(() =>
+  import("../pages/protected/RetrievalIssueManifest")
+);
+const RetrievalManifestProvider = lazy(() =>
+  import("../pages/protected/RetrievalManifestProvider")
+);
 const IssueManifestProvider = lazy(() =>
   import("../pages/protected/IssueManifestProvider")
 );
@@ -260,6 +266,14 @@ const routes = [
   {
     path: "/issuemanifestprovider",
     component: IssueManifestProvider,
+  },
+  {
+    path: "/retrievalissuemanifest",
+    component: RetrievalIssueManifest,
+  },
+  {
+    path: "/retrievalmanifestprovider",
+    component: RetrievalManifestProvider,
   },
   {
     path: "/inwardmanifestdetails",

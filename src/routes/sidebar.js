@@ -407,20 +407,6 @@ const allRoutes = [
         ),
         name: <span style={{ marginLeft: "6px" }}>Invoice Generator</span>,
       },
-      {
-        path: "/app/issuemanifestprovider",
-        icon: (
-          <img
-            src="/report.png"
-            alt="issuemanifestprovider"
-            style={{ width: "29px", height: "auto" }}
-            className={`${iconClasses} inline`}
-          />
-        ),
-        name: (
-          <span style={{ marginLeft: "6px" }}>Issue Manifest Provider</span>
-        ),
-      },
       // {
       //   path: "/app/Branch",
       //   icon: (
@@ -621,6 +607,68 @@ const allRoutes = [
     name: <span className="ml-1">Bin Retrieval</span>,
   },
 
+  {
+    path: "", //no url needed as this has submenu
+    icon: (
+      <img
+        src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+        alt="PDF"
+        style={{ width: "29px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "12px" }}>Pdf Generator</span>,
+    submenu: [
+      {
+        path: "/app/issuemanifestprovider", //no url needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="Issuemanifestprovider"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">MIM Generator</span>,
+      },
+      {
+        path: "/app/materialissuemanifest", //no url needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="MaterialIssueManifest"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Material Issue Manifest</span>,
+      },
+      {
+        path: "/app/retrievalmanifestprovider", //no url needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="Retrievalmanifestprovider"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">RIM Generator</span>,
+      },
+      {
+        path: "/app/retrievalissuemanifest", //no url needed as this has submenu
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="RetrievalIssueManifest"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Retrieval Issue Manifest</span>,
+      },
+    ],
+  },
   {
     path: "", //no url needed as this has submenu
     icon: (

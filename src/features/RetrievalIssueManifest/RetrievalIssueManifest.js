@@ -12,7 +12,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 
-export const MaterialIssueManifest = () => {
+export const RetrievalIssueManifest = () => {
   const componentRef = useRef();
   const [qrCodeValue, setQrCodeValue] = useState([]);
   const [watermark, setWatermark] = useState("");
@@ -20,14 +20,26 @@ export const MaterialIssueManifest = () => {
   const [data, setData] = React.useState([]);
   const [terms, setTerms] = React.useState([]);
   const [productDetails, setProductDetails] = React.useState([]);
-  const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [openDialog, setOpenDialog] = useState(false);
 
   useEffect(() => {
+    getAllRetrievalManifestProvider();
     getAllDeclarationAndNotes();
-    getAllIssueManifestProvider();
   }, []);
 
+  const getAllRetrievalManifestProvider = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getAllRetrievalManifestProvider`
+      );
+
+      if (response.status === 200) {
+        setData(response.data.paramObjectsMap.retrievalManifestProviderVOs);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
   const getAllDeclarationAndNotes = async () => {
     try {
       const response = await axios.get(
@@ -36,20 +48,6 @@ export const MaterialIssueManifest = () => {
 
       if (response.status === 200) {
         setTerms(response.data.paramObjectsMap.declarationAndNotesVO[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const getAllIssueManifestProvider = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllIssueManifestProvider`
-      );
-
-      if (response.status === 200) {
-        setData(response.data.paramObjectsMap.IssueManifestProviderVO);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -68,7 +66,7 @@ export const MaterialIssueManifest = () => {
   };
 
   const handleDownloadClick = (row) => {
-    getAllIssueManifestProviderById(row.original.id);
+    getRetrievalManifestProviderById(row.original.id);
     setOpenDialog(true);
   };
 
@@ -97,8 +95,8 @@ export const MaterialIssueManifest = () => {
       },
 
       {
-        accessorKey: "receiver",
-        header: "Receiver",
+        accessorKey: "sender",
+        header: "Sender",
         size: 50,
         muiTableHeadCellProps: {
           align: "center",
@@ -138,20 +136,21 @@ export const MaterialIssueManifest = () => {
     columns,
   });
 
-  const getAllIssueManifestProviderById = async (selectedRowId) => {
+  const getRetrievalManifestProviderById = async (selectedRowId) => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllIssueManifestProviderById?id=${selectedRowId}`
+        `${process.env.REACT_APP_API_URL}/api/oem/getRetrievalManifestProviderById?id=${selectedRowId}`
       );
       if (response.status === 200) {
-        const mimData = response.data.paramObjectsMap.IssueManifestProviderVO;
-        setPdfData(mimData);
-        setProductDetails(mimData.issueManifestProviderDetailsVOs);
+        const rimData =
+          response.data.paramObjectsMap.retrievalManifestProviderVO;
+        setPdfData(rimData);
+        setProductDetails(rimData.retrievalManifestProviderDetailsVOs);
         const concatenatedData = {
-          TransactionNo: mimData.transactionNo,
-          TransactionDate: mimData.transactionDate,
-          DispatchDate: mimData.dispatchDate,
-          Receiver: mimData.receiver,
+          TransactionNo: rimData.transactionNo,
+          TransactionDate: rimData.transactionDate,
+          DispatchDate: rimData.dispatchDate,
+          Receiver: rimData.receiver,
         };
 
         const formattedData = `
@@ -335,11 +334,11 @@ Receiver: ${concatenatedData.Receiver},
 
                   <div className="text-center mt-5">
                     <h1 className="text-xl">
-                      <strong>{pdfData.sender}</strong>
+                      <strong>{pdfData.receiver}</strong>
                     </h1>
                     <br />
                     <h3>
-                      <strong>Material Issue Manifest</strong>
+                      <strong>Retrieval Issue Manifest</strong>
                     </h3>
                   </div>
                   <div className="mr-3 mt-4">
@@ -349,7 +348,6 @@ Receiver: ${concatenatedData.Receiver},
 
                 <hr />
 
-                {/* <div className="d-flex justify-content-start"> */}
                 <div className="d-flex flex-column mt-2">
                   <div className="d-flex flex-row me-5">
                     <div className="font-semibold mb-2" style={{ width: 150 }}>
@@ -384,15 +382,16 @@ Receiver: ${concatenatedData.Receiver},
                       <div className="d-flex flex-column justify-content-between ms-2 me-4">
                         <div className="mb-2 font-semibold">Sender:</div>
                         <div className="mb-2 font-semibold">Address:</div>
-                        <div className="mb-2 font-semibold"></div>
+                        <div className="mb-2 font-semibold">GST:</div>
                       </div>
                       <div className="d-flex flex-column">
                         {/* <div className="mb-3">{headerData.senderName}</div> */}
-                        <div className="mb-3">{pdfData.sender}</div>
-                        <div className="mb-3">
+                        <div className="mb-2">{pdfData.sender}</div>
+                        <div className="mb-2">
                           {pdfData.senderAddress}
                           <br />
                         </div>
+                        <div className="mb-2">{pdfData.senderGst}</div>
                       </div>
                     </div>
                   </div>
@@ -401,15 +400,14 @@ Receiver: ${concatenatedData.Receiver},
                       <div className="d-flex flex-column justify-content-between ms-2 me-4">
                         <div className="mb-2 font-semibold">Receiver:</div>
                         <div className="mb-2 font-semibold">Address:</div>
-                        <div className="mb-2 font-semibold">GST:</div>
+                        <div className="mb-2 font-semibold"></div>
                       </div>
                       <div className="d-flex flex-column">
-                        <div className="mb-3">{pdfData.receiver}</div>
-                        <div className="mb-3">
+                        <div className="mb-2">{pdfData.receiver}</div>
+                        <div className="mb-2">
                           {pdfData.receiverAddress}
                           <br />
                         </div>
-                        <div className="mb-3">{pdfData.receiverGst}</div>
                       </div>
                     </div>
                   </div>
@@ -564,17 +562,11 @@ Receiver: ${concatenatedData.Receiver},
                         className="d-flex flex-column"
                         style={{ width: 150 }}
                       >
-                        <div className="mb-2 font-semibold">
-                          Amount In Words:
-                        </div>
                         <div className="mb-2 font-semibold">Transporter:</div>
                         <div className="mb-2 font-semibold">Vehicle No:</div>
                         <div className="mb-2 font-semibold">Driver No:</div>
                       </div>
                       <div className="d-flex flex-column">
-                        <div className="mb-2 font-normal">
-                          {pdfData.amountInWords}
-                        </div>
                         <div className="mb-2 font-normal">
                           {pdfData.transporterName}
                         </div>
@@ -585,10 +577,6 @@ Receiver: ${concatenatedData.Receiver},
                           {pdfData.driverPhoneNo}
                         </div>
                       </div>
-                    </div>
-                    <div className="d-flex justify-content-between">
-                      <div className="font-semibold me-5">Amount: </div>
-                      <div className="font-semibold">{pdfData.amount}</div>
                     </div>
                   </div>
                 </div>
@@ -665,4 +653,4 @@ Receiver: ${concatenatedData.Receiver},
   );
 };
 
-export default MaterialIssueManifest;
+export default RetrievalIssueManifest;

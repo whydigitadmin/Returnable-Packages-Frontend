@@ -44,6 +44,7 @@
     "lottie-web": "^5.12.2",
     "material-react-table": "^2.0.5",
     "moment": "^2.29.4",
+    "number-to-words": "^1.2.4",
     "qrcode": "^1.5.3",
     "qrcode-generator": "^1.4.4",
     "qrcode.react": "^3.1.0",
