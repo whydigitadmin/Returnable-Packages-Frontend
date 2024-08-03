@@ -617,8 +617,8 @@ const BinInwardOem = ({}) => {
                         },
                       }}
                       format="DD/MM/YYYY"
-                      minDate={dayjs().subtract(15, "day")} // Minimum date is 30 days before today
-                      maxDate={dayjs()}
+                      // minDate={dayjs().subtract(15, "day")} // Minimum date is 30 days before today
+                      // maxDate={dayjs()}
                     />
                   </LocalizationProvider>
                 </div>

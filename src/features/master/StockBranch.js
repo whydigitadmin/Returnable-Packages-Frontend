@@ -269,7 +269,7 @@ export const StockBranch = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <Tooltip
+            {/* <Tooltip
               title={
                 row.original.eflag
                   ? "Editing is disabled for this Stock Branch"
@@ -286,7 +286,10 @@ export const StockBranch = () => {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
           </div>
         ),
       },

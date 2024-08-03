@@ -454,7 +454,10 @@ function Partstudy() {
             >
               <VisibilityIcon />
             </IconButton>
-            <Tooltip
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+            {/* <Tooltip
               title={
                 row.original.eflag
                   ? "Editing is disabled for this Part Study"
@@ -472,7 +475,7 @@ function Partstudy() {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip title="Pdf Download">
               <IconButton
                 onClick={() => handleDownloadPDF(row)}

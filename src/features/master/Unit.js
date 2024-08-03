@@ -322,7 +322,7 @@ function Unit() {
             {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton> */}
-            <Tooltip
+            {/* <Tooltip
               title={
                 row.original.eflag ? "Editing is disabled for this Unit" : ""
               }
@@ -337,7 +337,10 @@ function Unit() {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
           </div>
         ),
       },

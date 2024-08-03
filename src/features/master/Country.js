@@ -337,7 +337,7 @@ export const Country = () => {
           <div>
             {/* <IconButton onClick={() => handleViewRow(row)}>
                 <VisibilityIcon />
-              </IconButton> */}
+              </IconButton>
             <Tooltip
               title={
                 row.original.eflag ? "Editing is disabled for this Country" : ""
@@ -353,7 +353,10 @@ export const Country = () => {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
           </div>
         ),
       },

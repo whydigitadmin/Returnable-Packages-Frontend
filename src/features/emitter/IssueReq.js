@@ -126,8 +126,8 @@ function IssueReq() {
   const [partNoAndPartNames, setPartNoAndPartNames] = useState({});
   const [selectedParts, setSelectedParts] = useState({});
 
-  const today = dayjs();
-  const maxDate = today.add(30, "day");
+  // const today = dayjs();
+  // const maxDate = today.add(30, "day");
 
   const itemsPerPage = 5;
 
@@ -202,29 +202,29 @@ function IssueReq() {
   //   // Handle displaying fields based on mode and tab selection
   // };
 
-  const handleIssueDateChange = (newDate) => {
-    if (newDate) {
-      // If a new date is selected
-      const originalDateString = newDate;
-      const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
-      setSelectedDate1(formattedDate);
+  // const handleIssueDateChange = (newDate) => {
+  //   if (newDate) {
+  //     // If a new date is selected
+  //     const originalDateString = newDate;
+  //     const formattedDate = dayjs(originalDateString).format("YYYY-MM-DD");
+  //     setSelectedDate1(formattedDate);
 
-      const currentDate = dayjs(); // Update currentDate with the current date
+  //     const currentDate = dayjs(); // Update currentDate with the current date
 
-      if (currentDate) {
-        const hoursDifference = originalDateString.diff(currentDate, "hour");
-        if (hoursDifference <= 48) {
-          setPriorityStatus("High Priority");
-        } else {
-          setPriorityStatus("Normal Priority");
-        }
-      }
-    } else {
-      // If the date is cleared
-      setSelectedDate1(""); // Clear the selected date
-      setPriorityStatus(""); // Clear the priority status
-    }
-  };
+  //     if (currentDate) {
+  //       const hoursDifference = originalDateString.diff(currentDate, "hour");
+  //       if (hoursDifference <= 48) {
+  //         setPriorityStatus("High Priority");
+  //       } else {
+  //         setPriorityStatus("Normal Priority");
+  //       }
+  //     }
+  //   } else {
+  //     // If the date is cleared
+  //     setSelectedDate1(dayjs()); // Clear the selected date
+  //     setPriorityStatus(""); // Clear the priority status
+  //   }
+  // };
 
   const handleIdClick = (issueRequest) => {
     setSelectedIssue(issueRequest);
@@ -437,7 +437,7 @@ function IssueReq() {
             setSelectedKit("");
             setSelectedFlowId("");
             setSelectedPart(null);
-            setSelectedDate1(null);
+            setSelectedDate1(dayjs());
             getIssueRequest();
             setErrors("");
             console.log("Response for handleIssueReq kit wise", response.data);
@@ -511,7 +511,7 @@ function IssueReq() {
             setSelectedPart(null);
             setSelectedFlowId("");
             setPartFields([{ partNo: "", qty: "" }]);
-            setSelectedDate1(null);
+            setSelectedDate1(dayjs());
             setErrors("");
             setKitQtyy("");
             console.log("Response for part wise req", response.data);
@@ -1056,15 +1056,18 @@ function IssueReq() {
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DesktopDatePicker
                     value={selectedDate1}
-                    onChange={handleIssueDateChange}
-                    minDate={today}
-                    disableCloseOnSelect={true}
-                    maxDate={maxDate}
+                    // onChange={handleIssueDateChange}
+                    onChange={(date) =>
+                      setSelectedDate1(dayjs(date).format("YYYY-MM-DD"))
+                    }
+                    // minDate={today}
+                    // disableCloseOnSelect={true}
+                    // maxDate={maxDate}
                     slotProps={{
                       textField: {
                         size: "small",
-                        clearable: true,
-                        disabled: true,
+                        // clearable: true,
+                        // disabled: true,
                       }, // Disable the text field
                     }}
                     format="DD/MM/YYYY"
@@ -1072,7 +1075,7 @@ function IssueReq() {
                 </LocalizationProvider>
               </div>
 
-              {selectedDate1 ? ( // Only show the priority input table if a date is selected
+              {/* {selectedDate1 ? ( // Only show the priority input table if a date is selected
                 <Chip
                   label={priorityStatus}
                   size="small"
@@ -1089,7 +1092,7 @@ function IssueReq() {
                 errors.selectedDate1 && (
                   <span className="error-text">{errors.selectedDate1}</span>
                 )
-              )}
+              )} */}
             </div>
 
             <div className="col-md-3 mt-4">

@@ -1172,7 +1172,7 @@ function AddFlows({ addFlows, editFlowId }) {
                     <th className="text-center">Part Name</th>
                     <th className="text-center">Part Number</th>
                     <th className="text-center">Cycle</th>
-                    <th>Action</th>
+                    {editFlowId ? "" : <th>Action</th>}
                   </tr>
                 </thead>
                 <tbody>
@@ -1182,13 +1182,17 @@ function AddFlows({ addFlows, editFlowId }) {
                       <td className="text-center">{kit.partName}</td>
                       <td className="text-center">{kit.partNumber}</td>
                       <td className="text-center">{kit.cycleTime}</td>
-                      <td>
-                        <FaTrash
-                          onClick={() => handleDeleteRow(index)}
-                          className="cursor-pointer w-6 h-6"
-                          style={{ marginLeft: 10 }}
-                        />
-                      </td>
+                      {editFlowId ? (
+                        ""
+                      ) : (
+                        <td>
+                          <FaTrash
+                            onClick={() => handleDeleteRow(index)}
+                            className="cursor-pointer w-6 h-6"
+                            style={{ marginLeft: 10 }}
+                          />
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>

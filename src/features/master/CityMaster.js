@@ -364,7 +364,7 @@ export const CityMaster = () => {
           <div>
             {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
-            </IconButton> */}
+            </IconButton>
             <Tooltip
               title={
                 row.original.eflag ? "Editing is disabled for this City" : ""
@@ -380,7 +380,10 @@ export const CityMaster = () => {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
           </div>
         ),
       },

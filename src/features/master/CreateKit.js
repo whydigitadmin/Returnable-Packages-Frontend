@@ -221,7 +221,7 @@ function CreateKit() {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
-            <Tooltip
+            {/* <Tooltip
               title={
                 row.original.eflag ? "Editing is disabled for this Kit" : ""
               }
@@ -236,7 +236,10 @@ function CreateKit() {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
           </div>
         ),
       },

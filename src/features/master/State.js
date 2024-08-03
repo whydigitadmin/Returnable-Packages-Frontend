@@ -346,7 +346,7 @@ export const State = () => {
             {/* <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton> */}
-            <Tooltip
+            {/* <Tooltip
               title={
                 row.original.eflag ? "Editing is disabled for this State" : ""
               }
@@ -361,7 +361,10 @@ export const State = () => {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
           </div>
         ),
       },

@@ -292,7 +292,10 @@ function AssetCategory() {
             <IconButton onClick={() => handleViewRow(row)}>
               <VisibilityIcon />
             </IconButton>
-            <Tooltip
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
+            {/* <Tooltip
               title={
                 row.original.eflag
                   ? "Editing is disabled for this Category"
@@ -309,7 +312,7 @@ function AssetCategory() {
                   <EditIcon />
                 </IconButton>
               </span>
-            </Tooltip>
+            </Tooltip> */}
           </div>
         ),
       },
