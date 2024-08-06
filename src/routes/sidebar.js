@@ -393,7 +393,31 @@ const allRoutes = [
             className={`${iconClasses} inline`}
           />
         ),
-        name: <span style={{ marginLeft: "6px" }}>ASSET Tagging</span>,
+        name: <span style={{ marginLeft: "6px" }}>Asset Tagging</span>,
+      },
+      {
+        path: "/app/chargetyperequest",
+        icon: (
+          <img
+            src="/report.png"
+            alt="Charge Type Request"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>Charge Type Request</span>,
+      },
+      {
+        path: "/app/group",
+        icon: (
+          <img
+            src="/report.png"
+            alt="Group"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>Group</span>,
       },
       {
         path: "/app/invoiceGenerator",

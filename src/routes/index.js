@@ -57,6 +57,10 @@ const ManufacturerDetails = lazy(() =>
 );
 const Flows = lazy(() => import("../pages/protected/Flows"));
 const Vendors = lazy(() => import("../pages/protected/Vendors"));
+const ChargeTypeRequest = lazy(() =>
+  import("../pages/protected/ChargeTypeRequest")
+);
+const Group = lazy(() => import("../pages/protected/Group"));
 const Users = lazy(() => import("../pages/protected/Users"));
 const PurchaseOrder = lazy(() => import("../pages/protected/PurchaseOrder"));
 const Asn = lazy(() => import("../pages/protected/Asn"));
@@ -314,6 +318,14 @@ const routes = [
   {
     path: "/vendors",
     component: Vendors,
+  },
+  {
+    path: "/chargetyperequest",
+    component: ChargeTypeRequest,
+  },
+  {
+    path: "/group",
+    component: Group,
   },
   {
     path: "/users",
