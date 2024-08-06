@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useMemo } from "react";
 import { useReactToPrint } from "react-to-print";
 import axios from "axios";
 import { IoMdClose } from "react-icons/io";
+import EditIcon from "@mui/icons-material/Edit";
 import QRCode from "qrcode.react";
 import {
   MaterialReactTable,
@@ -11,11 +12,15 @@ import GetAppIcon from "@mui/icons-material/GetApp";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
+import IssueManifestProvider from "../IssueManifestProvider/IssueManifestProvider";
 
 export const MaterialIssueManifest = () => {
   const componentRef = useRef();
   const [qrCodeValue, setQrCodeValue] = useState([]);
   const [watermark, setWatermark] = useState("");
+  const [addMim, setAddMim] = useState(false);
+  const [editMim, setEditMim] = useState(false);
+  const [selectedRowId, setSelectedRowId] = useState(null);
   const [pdfData, setPdfData] = useState("");
   const [data, setData] = React.useState([]);
   const [terms, setTerms] = React.useState([]);
@@ -71,6 +76,11 @@ export const MaterialIssueManifest = () => {
     getAllIssueManifestProviderById(row.original.id);
     setOpenDialog(true);
   };
+  const handleEditRow = (row) => {
+    getAllIssueManifestProviderById(row.original.id);
+    setSelectedRowId(row.original.id);
+    setEditMim(true);
+  };
 
   const columns = useMemo(
     () => [
@@ -89,6 +99,9 @@ export const MaterialIssueManifest = () => {
         enableEditing: false,
         Cell: ({ row }) => (
           <div>
+            <IconButton onClick={() => handleEditRow(row)}>
+              <EditIcon />
+            </IconButton>
             <IconButton onClick={() => handleDownloadClick(row)}>
               <GetAppIcon />
             </IconButton>
@@ -138,6 +151,33 @@ export const MaterialIssueManifest = () => {
     columns,
   });
 
+  const transformProductDetails = (details) => {
+    const groupedDetails = details.reduce((acc, detail) => {
+      const existingKit = acc.find((kit) => kit.kitId === detail.kitId);
+      const asset = {
+        assetCode: detail.assetCode,
+        assetName: detail.asset,
+        assetQty: detail.assetQty,
+      };
+
+      if (existingKit) {
+        existingKit.assets.push(asset);
+      } else {
+        acc.push({
+          kitId: detail.kitId,
+          kitName: detail.kitName,
+          kitQty: detail.kitQty,
+          hsnCode: detail.hsnCode,
+          assets: [asset],
+        });
+      }
+
+      return acc;
+    }, []);
+
+    return groupedDetails;
+  };
+
   const getAllIssueManifestProviderById = async (selectedRowId) => {
     try {
       const response = await axios.get(
@@ -146,7 +186,10 @@ export const MaterialIssueManifest = () => {
       if (response.status === 200) {
         const mimData = response.data.paramObjectsMap.IssueManifestProviderVO;
         setPdfData(mimData);
-        setProductDetails(mimData.issueManifestProviderDetailsVOs);
+        const transformedDetails = transformProductDetails(
+          mimData.issueManifestProviderDetailsVOs
+        );
+        setProductDetails(transformedDetails);
         const concatenatedData = {
           TransactionNo: mimData.transactionNo,
           TransactionDate: mimData.transactionDate,
@@ -158,7 +201,7 @@ export const MaterialIssueManifest = () => {
 TransactionNo: ${concatenatedData.TransactionNo},
 TransactionDate: ${concatenatedData.TransactionDate},
 DispatchDate: ${concatenatedData.DispatchDate},
-Receiver: ${concatenatedData.Receiver},
+Receiver: ${concatenatedData.Receiver}
 `;
 
         setQrCodeValue(formattedData);
@@ -169,11 +212,54 @@ Receiver: ${concatenatedData.Receiver},
     }
   };
 
+  const handleBack = () => {
+    setAddMim(false);
+    setEditMim(false);
+    getAllIssueManifestProvider();
+  };
+
   return (
     <div>
-      <div className="">
-        <MaterialReactTable table={table} />
-      </div>
+      {(addMim && <IssueManifestProvider addMim={handleBack} />) ||
+        (editMim && (
+          <IssueManifestProvider addMim={handleBack} mimId={selectedRowId} />
+        )) || (
+          <div className="card w-full p-6 bg-base-100 shadow-xl">
+            {/* BULK UPLOAD AND ADD NEW BUTTON */}
+            <div className="">
+              <div className="d-flex justify-content-end mb-4">
+                <button
+                  className="btn btn-ghost btn-lg text-sm col-xs-1"
+                  style={{ color: "blue" }}
+                  onClick={() => setAddMim(true)}
+                >
+                  <img
+                    src="/new.png"
+                    alt="pending-status-icon"
+                    title="add"
+                    style={{
+                      width: 30,
+                      height: 30,
+                      margin: "auto",
+                      hover: "pointer",
+                    }}
+                  />
+                  <span
+                    className="text-form text-base"
+                    style={{ marginLeft: "10px" }}
+                  >
+                    MIM
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            {/* LISTVIEW TABLE */}
+            <div className="">
+              <MaterialReactTable table={table} />
+            </div>
+          </div>
+        )}
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -486,16 +572,57 @@ Receiver: ${concatenatedData.Receiver},
                         </thead>
                         <tbody>
                           {productDetails.length > 0 &&
-                            productDetails.map((row) => (
-                              <>
-                                <tr>
+                            productDetails.map((row) => {
+                              const assetCount = row.assets.length;
+                              return row.assets.map((asset, index) => (
+                                <tr key={`${row.kitId}-${index}`}>
+                                  {index === 0 && (
+                                    <>
+                                      <td
+                                        rowSpan={assetCount}
+                                        style={{
+                                          border: "2px solid black",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        {row.kitId}
+                                      </td>
+                                      <td
+                                        rowSpan={assetCount}
+                                        style={{
+                                          border: "2px solid black",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        {row.kitName}
+                                      </td>
+                                      <td
+                                        rowSpan={assetCount}
+                                        style={{
+                                          border: "2px solid black",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        {row.kitQty}
+                                      </td>
+                                      <td
+                                        rowSpan={assetCount}
+                                        style={{
+                                          border: "2px solid black",
+                                          textAlign: "center",
+                                        }}
+                                      >
+                                        {row.hsnCode}
+                                      </td>
+                                    </>
+                                  )}
                                   <td
                                     style={{
                                       border: "2px solid black",
                                       textAlign: "center",
                                     }}
                                   >
-                                    {row.kitId}
+                                    {asset.assetName}
                                   </td>
                                   <td
                                     style={{
@@ -503,7 +630,7 @@ Receiver: ${concatenatedData.Receiver},
                                       textAlign: "center",
                                     }}
                                   >
-                                    {row.kitName}
+                                    {asset.assetCode}
                                   </td>
                                   <td
                                     style={{
@@ -511,45 +638,11 @@ Receiver: ${concatenatedData.Receiver},
                                       textAlign: "center",
                                     }}
                                   >
-                                    {row.kitQty}
-                                  </td>
-                                  <td
-                                    style={{
-                                      border: "2px solid black",
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    {row.hsnCode}
-                                  </td>
-                                  <td
-                                    style={{
-                                      border: "2px solid black",
-                                      textAlign: "center",
-                                      width: 30,
-                                    }}
-                                  >
-                                    {row.asset}
-                                  </td>
-                                  <td
-                                    style={{
-                                      border: "2px solid black",
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    {row.assetCode}
-                                  </td>
-                                  <td
-                                    style={{
-                                      border: "2px solid black",
-                                      textAlign: "center",
-                                      width: 50,
-                                    }}
-                                  >
-                                    {row.assetQty}
+                                    {asset.assetQty}
                                   </td>
                                 </tr>
-                              </>
-                            ))}
+                              ));
+                            })}
                         </tbody>
                       </table>
                     </div>

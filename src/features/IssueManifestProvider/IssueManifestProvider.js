@@ -11,6 +11,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import dayjs from "dayjs";
 import numberToWords from "number-to-words";
 import { IoMdClose } from "react-icons/io";
+import { FaTrash } from "react-icons/fa";
 import { ToastContainer, toast } from "react-toastify";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
@@ -21,10 +22,11 @@ import {
 } from "../../utils/userInputValidation";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
 
-const IssueManifestProvider = () => {
+function IssueManifestProvider({ addMim, mimId }) {
+  const [mimData, setMimData] = useState([]);
   const [transactionNo, setTransactionNo] = useState("");
   const [transactionDate, setTransactionDate] = useState(dayjs());
-  const [dispatchDate, setDispatchDate] = useState(null);
+  const [dispatchDate, setDispatchDate] = useState();
   const [transactionType, setTransactionType] = useState("Issue Docket");
   const [sender, setSender] = useState("SCM AI-PACKS PVT LIMITED");
   const [warehouse, setWarehouse] = useState("");
@@ -48,6 +50,7 @@ const IssueManifestProvider = () => {
   const [kitVO, setKitVO] = useState([]);
   const [selectedKit, setSelectedKit] = useState(null);
   const [openKitModal, setOpenKitModal] = useState(false);
+  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
   const [kitDetails, setKitDetails] = useState([]);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
   const [userName, setUserName] = React.useState(
@@ -55,11 +58,73 @@ const IssueManifestProvider = () => {
   );
 
   useEffect(() => {
+    if (mimId) {
+      getAllIssueManifestProviderById();
+    }
     getCustomersList();
     getWarehouseData();
     // getAllUsersData();
     getAllKitData();
   }, []);
+
+  const getAllIssueManifestProviderById = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/oem/getAllIssueManifestProviderById?id=${mimId}`
+      );
+      if (response.status === 200) {
+        const editMimData =
+          response.data.paramObjectsMap.IssueManifestProviderVO;
+        setMimData(editMimData);
+        setTransactionNo(editMimData.transactionNo);
+        setTransactionDate(dayjs(editMimData.transactionDate));
+        setDispatchDate(dayjs(editMimData.dispatchDate));
+        setTransactionType(editMimData.transactionType);
+        setSenderAddress(editMimData.senderAddress);
+        setReceiverName(editMimData.receiver);
+        setReceiverAddress(editMimData.receiverAddress);
+        setReceiverGst(editMimData.receiverGst);
+        setSender(editMimData.sender);
+        setAmount(editMimData.amount);
+        setAmountInWords(editMimData.amountInWords);
+        setTransporterName(editMimData.transporterName);
+        setVehicleNo(editMimData.vehicleNo);
+        setDriverNo(editMimData.driverPhoneNo);
+        const transformedKitDetails =
+          editMimData.issueManifestProviderDetailsVOs.reduce((acc, detail) => {
+            const existingKitIndex = acc.findIndex(
+              (kit) => kit.kitNo === detail.kitId
+            );
+            if (existingKitIndex !== -1) {
+              acc[existingKitIndex].assets.push({
+                assetCodeId: detail.assetCode,
+                assetName: detail.asset,
+                quantity: detail.assetQty,
+              });
+            } else {
+              acc.push({
+                kitNo: detail.kitId,
+                kitDesc: detail.kitName,
+                kitQty: detail.kitQty,
+                hsnCode: detail.hsnCode,
+                assets: [
+                  {
+                    assetCodeId: detail.assetCode,
+                    assetName: detail.asset,
+                    quantity: detail.assetQty,
+                  },
+                ],
+              });
+            }
+            return acc;
+          }, []);
+
+        setKitDetails(transformedKitDetails);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   const getCustomersList = async () => {
     try {
@@ -232,6 +297,12 @@ const IssueManifestProvider = () => {
     // toast.success("Kit details added successfully.");
   };
 
+  const handleDeleteKit = (kitIndex) => {
+    const updatedKits = [...kitDetails];
+    updatedKits.splice(kitIndex, 1);
+    setKitDetails(updatedKits);
+  };
+
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
@@ -344,6 +415,7 @@ const IssueManifestProvider = () => {
         transactionType,
         transporterName,
         vehicleNo,
+        ...(mimId ? { id: mimId } : {}),
       };
 
       axios
@@ -371,10 +443,12 @@ const IssueManifestProvider = () => {
             setTransactionType("");
             setTransporterName("");
             setVehicleNo("");
-            setVehicleNo("");
             setDriverNo({});
             setKitDetails([]);
-            // getAllIssueManifests(); // Uncomment to fetch updated data
+            setErrors({});
+            setTimeout(() => {
+              addMim(false);
+            });
           }
         })
         .catch((error) => {
@@ -386,8 +460,42 @@ const IssueManifestProvider = () => {
     }
   };
 
+  const handleMimClose = () => {
+    if (
+      amount ||
+      dispatchDate ||
+      driverNo ||
+      receiver ||
+      receiverAddress ||
+      receiverGst ||
+      sender ||
+      senderAddress ||
+      transactionDate ||
+      transactionNo ||
+      transactionType ||
+      transporterName ||
+      vehicleNo ||
+      kitDetails > 0
+    ) {
+      setOpenConfirmationDialog(true);
+    } else {
+      setOpenConfirmationDialog(false);
+    }
+  };
+
+  const handleConfirmationYes = () => {
+    setOpenConfirmationDialog(false);
+    addMim(false);
+  };
+
   return (
     <div className="card w-full p-6 bg-base-100 shadow-xl">
+      <div className="d-flex justify-content-end">
+        <IoMdClose
+          onClick={handleMimClose}
+          className="cursor-pointer w-8 h-8 mb-3"
+        />
+      </div>
       <div className="row">
         <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
           <label className="label mb-2">
@@ -531,6 +639,7 @@ const IssueManifestProvider = () => {
           <textarea
             placeholder=""
             className="form-control form-sz mb-2"
+            style={{ height: 100 }}
             name="senderAddress"
             value={senderAddress}
             disabled
@@ -572,6 +681,7 @@ const IssueManifestProvider = () => {
           <textarea
             placeholder=""
             className="form-control form-sz mb-2"
+            style={{ height: 100 }}
             name="receiverAddress"
             value={receiverAddress}
             disabled
@@ -767,7 +877,7 @@ const IssueManifestProvider = () => {
         </div>
         {kitDetails.length > 0 && (
           <div
-            className="w-full p-3 bg-base-100 shadow-xl mt-2"
+            className="w-full p-3 bg-base-100 shadow-xl"
             style={{ borderRadius: 16 }}
           >
             <div className="text-xl font-semibold p-2">Kit & Qty Details</div>
@@ -776,6 +886,7 @@ const IssueManifestProvider = () => {
               <table className="table w-full">
                 <thead>
                   <tr>
+                    <th className="text-center">Action</th>
                     <th className="text-center">Kit No</th>
                     <th className="text-center">Kit Name</th>
                     <th className="text-center">Kit Qty</th>
@@ -791,6 +902,22 @@ const IssueManifestProvider = () => {
                   {kitDetails.map((kit, index) => (
                     <React.Fragment key={index}>
                       <tr>
+                        {/* <td
+                          className="text-center"
+                          rowSpan={kit.assets.length + 1}
+                        >
+                          {index + 1}
+                        </td> */}
+                        <td
+                          className="text-center"
+                          rowSpan={kit.assets.length + 1}
+                        >
+                          <FaTrash
+                            onClick={() => handleDeleteKit(index)}
+                            style={{ cursor: "pointer", color: "red" }}
+                            className="ms-4"
+                          />
+                        </td>
                         <td
                           className="text-center"
                           rowSpan={kit.assets.length + 1}
@@ -800,6 +927,11 @@ const IssueManifestProvider = () => {
                         <td
                           className="text-center"
                           rowSpan={kit.assets.length + 1}
+                          style={{
+                            width: 150,
+                            overflow: "hidden",
+                            textWrap: "wrap",
+                          }}
                         >
                           {kit.kitDesc}
                         </td>
@@ -816,10 +948,22 @@ const IssueManifestProvider = () => {
                           {kit.hsnCode}
                         </td>
                       </tr>
-                      {kit.assets.map((asset, idx) => (
-                        <tr key={idx}>
+                      {kit.assets.map((asset, subIndex) => (
+                        <tr key={subIndex}>
+                          {/* <td className="text-center">{`${index + 1}.${
+                            subIndex + 1
+                          }`}</td> */}
                           <td className="text-center">{asset.assetCodeId}</td>
-                          <td className="text-center">{asset.assetName}</td>
+                          <td
+                            className="text-center"
+                            style={{
+                              width: 150,
+                              overflow: "hidden",
+                              textWrap: "wrap",
+                            }}
+                          >
+                            {asset.assetName}
+                          </td>
                           <td className="text-center">{asset.quantity}</td>
                         </tr>
                       ))}
@@ -837,7 +981,7 @@ const IssueManifestProvider = () => {
           onClick={createUpdateIssueManifest}
           className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
         >
-          Proceed
+          {mimId ? "Update" : "Proceed"}
         </button>
       </div>
       <Dialog
@@ -943,8 +1087,17 @@ const IssueManifestProvider = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      <Dialog open={openConfirmationDialog}>
+        <DialogContent>
+          <p>Are you sure you want to close without saving changes?</p>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirmationDialog(false)}>No</Button>
+          <Button onClick={handleConfirmationYes}>Yes</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
-};
+}
 
 export default IssueManifestProvider;
