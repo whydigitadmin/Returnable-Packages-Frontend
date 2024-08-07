@@ -707,6 +707,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
             console.log("Response:", response.data);
             getInwardDocId();
             setReqDate("");
+            setDocDate(dayjs());
             setReqNo("");
             setRecKitQty("");
             setAllottedDate("");
@@ -1019,7 +1020,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                 <div className="col-lg-2 col-md-3">
                   <label className="label mb-4">
                     <span className="label-text label-font-size text-base-content d-flex flex-row">
-                      Date:
+                      Doc Date:
                     </span>
                   </label>
                 </div>
@@ -1032,7 +1033,7 @@ function EmitterInwardNew({ addInwardManifeast }) {
                         textField: { size: "small", clearable: true },
                       }}
                       format="DD/MM/YYYY"
-                      disabled
+                      // disabled
                     />
                   </LocalizationProvider>
                   {/* {errors.docDate && (

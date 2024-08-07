@@ -395,10 +395,10 @@ function BinOutwardOem({}) {
                       value={docDate}
                       onChange={(date) => setDocDate(date)}
                       slotProps={{
-                        textField: { size: "small", clearable: true },
+                        textField: { size: "small" },
                       }}
                       format="DD/MM/YYYY"
-                      disabled
+                      // disabled
                     />
                   </LocalizationProvider>
                 </div>

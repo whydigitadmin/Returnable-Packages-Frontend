@@ -214,10 +214,9 @@ const BinInwardOem = ({}) => {
     }
 
     const formData = {
-      docDate: docDate.format("YYYY-MM-DD"),
+      docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
       flowId: flow,
       // docId: docId,
-      docDate: docDate,
       invoiceNo: invNo,
       invoiceDate: invDate,
       dispatchId: allotedId,
@@ -270,6 +269,7 @@ const BinInwardOem = ({}) => {
             setEmitterOutwardList([]);
             handleNew();
             getInwardDocId();
+            setDocDate(dayjs());
           }
         })
         .catch((error) => {
@@ -470,7 +470,7 @@ const BinInwardOem = ({}) => {
                         textField: { size: "small", clearable: true },
                       }}
                       format="DD/MM/YYYY"
-                      disabled
+                      // disabled
                     />
                   </LocalizationProvider>
                 </div>

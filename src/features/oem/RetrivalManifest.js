@@ -138,6 +138,7 @@ export const RetrivalManifest = () => {
   };
 
   const handleNew = () => {
+    setDocDate(dayjs());
     setSelectedRows([]);
     setSelectedRowData("");
     setTableData("");
@@ -350,10 +351,10 @@ export const RetrivalManifest = () => {
                       value={docDate}
                       onChange={(date) => setDocDate(date)}
                       slotProps={{
-                        textField: { size: "small", clearable: true },
+                        textField: { size: "small" },
                       }}
                       format="DD/MM/YYYY"
-                      disabled
+                      // disabled
                     />
                   </LocalizationProvider>
                 </div>

@@ -402,7 +402,7 @@ export const GatheringEmpty = () => {
                       textField: { size: "small" },
                     }}
                     format="DD/MM/YYYY"
-                    disabled
+                    // disabled
                   />
                 </LocalizationProvider>
               </div>

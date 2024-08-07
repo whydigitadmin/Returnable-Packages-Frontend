@@ -234,7 +234,7 @@ export const AdminBinRetrieval = () => {
     setVehicleNo(row.original.vechicleNo);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getBinReterivalByDocId?docId=24BRI10000`
+        `${process.env.REACT_APP_API_URL}/api/master/getBinReterivalByDocId?docId=${row.original.docId}`
       );
 
       if (response.status === 200) {
@@ -749,7 +749,7 @@ export const AdminBinRetrieval = () => {
                           textField: { size: "small", clearable: true },
                         }}
                         format="DD/MM/YYYY"
-                        disabled
+                        // disabled
                       />
                     </LocalizationProvider>
                     {errors.docDate && (

@@ -81,6 +81,7 @@ const IOSSwitch = styled((props) => (
 
 function IssueReq() {
   // const [value, setValue] = React.useState(0);
+  const [requestDate, setRequestDate] = useState(dayjs());
   const [kitFields, setKitFields] = React.useState([{ kitNo: "", qty: "" }]);
   const [selectedKitNumbers, setSelectedKitNumbers] = React.useState([""]);
   const [partFields, setPartFields] = React.useState([{ partNo: "", qty: "" }]);
@@ -377,8 +378,11 @@ function IssueReq() {
     if (kitNoErrors) {
       errors.kitNo = "Kit is required";
     }
+    if (!requestDate) {
+      errors.requestDate = "Request Date is required";
+    }
     if (!selectedDate1) {
-      errors.selectedDate1 = "Date is required";
+      errors.selectedDate1 = "Demand Date is required";
     }
     if (!selectedFlowId) {
       errors.selectedFlowId = "Flow is required";
@@ -402,6 +406,9 @@ function IssueReq() {
       const formData = {
         createdBy: userName,
         demandDate: selectedDate1,
+        requestDate: requestDate
+          ? dayjs(requestDate).format("YYYY-MM-DD")
+          : null,
         emitterId: emitterId,
         orgId,
         irType: "IR_KIT",
@@ -438,6 +445,7 @@ function IssueReq() {
             setSelectedFlowId("");
             setSelectedPart(null);
             setSelectedDate1(dayjs());
+            setRequestDate(dayjs());
             getIssueRequest();
             setErrors("");
             console.log("Response for handleIssueReq kit wise", response.data);
@@ -465,8 +473,12 @@ function IssueReq() {
       errors.selectedFlowId = "Flow is required";
     }
 
+    if (!requestDate) {
+      errors.requestDate = "Request Date is required";
+    }
+
     if (!selectedDate1) {
-      errors.selectedDate1 = "Date is required";
+      errors.selectedDate1 = "Demand Date is required";
     }
     const partQtyErrors = partFields.some((field) => !field.qty);
     if (partQtyErrors) {
@@ -486,6 +498,9 @@ function IssueReq() {
       const formData = {
         createdBy: userName,
         demandDate: selectedDate1,
+        requestDate: requestDate
+          ? dayjs(requestDate).format("YYYY-MM-DD")
+          : null,
         emitterId: emitterId,
         orgId,
         flowTo: selectedFlowId,
@@ -512,6 +527,7 @@ function IssueReq() {
             setSelectedFlowId("");
             setPartFields([{ partNo: "", qty: "" }]);
             setSelectedDate1(dayjs());
+            setRequestDate(dayjs());
             setErrors("");
             setKitQtyy("");
             console.log("Response for part wise req", response.data);
@@ -962,41 +978,183 @@ function IssueReq() {
               </p>
             </div>
           </div>
-          {/* <div className="col-lg-4 card bg-base-100 shadow-xl ms-4 mt-3 me-2">
-              <div className="p-1">
-                <div className="d-flex flex-row">
-                  <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 14 }}
+          <div style={{ paddingLeft: 40, paddingRight: 40 }}>
+            <div className="card">
+              <div
+                className="row bg-base-100 mx-4"
+                style={{ width: "auto", height: "auto" }}
+              >
+                <div className="col-lg-2 my-3">
+                  <div className="d-flex flex-row">
+                    <img
+                      src={
+                        "https://cdn-icons-png.flaticon.com/128/854/854932.png"
+                      }
+                      className="me-1"
+                      alt="Favorite"
+                      style={{
+                        width: "32px",
+                        height: "32px",
+                        // marginRight: "6px",
+                        // marginTop: "9px",
+                      }}
+                    />
+                    <h4 className="text-xl font-semibold ms-1 me-1 mb-2">
+                      Flow To
+                    </h4>
+                    <span
+                      className="ms-1 me-1 mb-2"
+                      style={{ color: "red", fontSize: 22 }}
+                    >
+                      *
+                    </span>
+                  </div>
+                </div>
+                <div className="col-lg-4 my-3">
+                  <div className="d-flex flex-column">
+                    <select
+                      className="form-select w-full h-10"
+                      value={selectedFlowId}
+                      onChange={handleFlowChange}
+                    >
+                      <option value="">Select a Flow</option>
+                      {flowData &&
+                        flowData.map((flowName) => (
+                          <option key={flowName.id} value={flowName.id}>
+                            {flowName.flow}
+                          </option>
+                        ))}
+                    </select>
+                    {errors.selectedFlowId && (
+                      <span className="error-text">
+                        {errors.selectedFlowId}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="col-lg-2 my-3">
+                  <div className="d-flex flex-row">
+                    <label className="mt-1">
+                      <b>Request Date</b>
+                    </label>
+                    <span
+                      style={{ color: "red", fontSize: 22, paddingTop: 2 }}
+                      className="ms-1 me-1 mb-2"
+                    >
+                      *
+                    </span>
+                  </div>
+                </div>
+                <div className="col-lg-4 my-3">
+                  <div className="">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        value={requestDate}
+                        onChange={(date) => setRequestDate(date)}
+                        slotProps={{
+                          textField: { size: "small", clearable: true },
+                        }}
+                        format="DD/MM/YYYY"
+                        // disabled
+                      />
+                    </LocalizationProvider>
+                    {errors.requestDate && (
+                      <span className="error-text mb-1">
+                        {errors.requestDate}
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="col-lg-2 mb-3">
+                  <div className="d-flex flex-row">
+                    <label className="mt-1">
+                      <b>Demand Date</b>
+                    </label>
+                    <span
+                      style={{ color: "red", fontSize: 22, paddingTop: 2 }}
+                      className="ms-1 me-1 mb-2"
+                    >
+                      *
+                    </span>
+                  </div>
+                </div>
+                <div className="col-lg-3 mb-3">
+                  <div className="d-flex flex-column">
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DesktopDatePicker
+                        value={selectedDate1}
+                        // onChange={handleIssueDateChange}
+                        onChange={(date) =>
+                          setSelectedDate1(dayjs(date).format("YYYY-MM-DD"))
+                        }
+                        // minDate={today}
+                        // disableCloseOnSelect={true}
+                        // maxDate={maxDate}
+                        slotProps={{
+                          textField: {
+                            size: "small",
+                            // clearable: true,
+                            // disabled: true,
+                          }, // Disable the text field
+                        }}
+                        format="DD/MM/YYYY"
+                      />
+                    </LocalizationProvider>
+                    {errors.selectedDate1 && (
+                      <span className="error-text">{errors.selectedDate1}</span>
+                    )}
+                  </div>
+
+                  {/* {selectedDate1 ? ( // Only show the priority input table if a date is selected
+                <Chip
+                  label={priorityStatus}
+                  size="small"
+                  style={{
+                    backgroundColor: getPriorityColor(priorityStatus),
+                    color: "white",
+                    marginTop: "5px",
+                    marginBottom: "5px",
+                    marginLeft: "1%",
+                    fontSize: "11px",
+                  }}
+                />
+              ) : (
+                errors.selectedDate1 && (
+                  <span className="error-text">{errors.selectedDate1}</span>
+                )
+              )} */}
+                </div>
+                <div className="col-lg-3 mb-3">
+                  <FormControlLabel
+                    control={
+                      <IOSSwitch
+                        checked={mode === "PART"}
+                        onChange={toggleMode}
+                        color="primary"
+                        sx={{ m: 1 }}
+                      />
+                    }
+                    labelPlacement="start"
+                    label={<span style={{ fontWeight: "bold" }}>KIT</span>}
                   />
-                  <h4 className="text-xl font-semibold pt-1 mt-2 ms-1 mb-2">
-                    Location -
-                  </h4>
-                  <h4 className="text-2xl font-semibold ms-1 mt-2">Gabriel</h4>
+                  <FormControlLabel
+                    control={<div />} // This is to leave the control empty
+                    labelPlacement="start"
+                    label={<span style={{ fontWeight: "bold" }}>PART</span>}
+                  />
                 </div>
               </div>
-              <p className="mb-3">
-                29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                Pune, Maharashtra, 410501 India
-              </p>
             </div>
-            <div className="col-lg-1">
-              <MdDoubleArrow
-                className="text-xl font-semibold w-16  h-16 "
-                style={{ marginTop: 70 }}
-              />
-            </div> */}
-          <div
+          </div>
+
+          {/* <div
             className="row d-flex flex-row card bg-base-100 m-auto"
             style={{ width: "auto", height: "auto" }}
           >
             <div className="col-md-5">
               <div className="p-3">
                 <div className="d-flex flex-row">
-                  {/* <FaLocationDot
-                    className="text-xl font-semibold w-5 h-5"
-                    style={{ marginTop: 11 }}
-                  /> */}
+                  
                   <img
                     src={
                       "https://cdn-icons-png.flaticon.com/128/854/854932.png"
@@ -1034,13 +1192,6 @@ function IssueReq() {
                   </div>
                 </div>
 
-                {/* <h4 className="text-xl dark:text-slate-300 font-semibold ms-1">
-                  -
-                </h4> */}
-                {/* <p className="ms-1 mb-2">
-                  29, Milestone Village, Kuruli, Pune Nasik Highway, Taluk Khed,
-                  Pune, Maharashtra, 410501 India
-                </p> */}
               </div>
             </div>
             <div className="col-md-1 mt-4">
@@ -1052,7 +1203,7 @@ function IssueReq() {
             </div>
             <div className="col-md-3 mt-4">
               <div>
-                {/* <label style={{ fontWeight: "bold" }}>Select Date</label> */}
+                {/* <label style={{ fontWeight: "bold" }}>Select Date</label>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <DesktopDatePicker
                     value={selectedDate1}
@@ -1092,7 +1243,7 @@ function IssueReq() {
                 errors.selectedDate1 && (
                   <span className="error-text">{errors.selectedDate1}</span>
                 )
-              )} */}
+              )}
             </div>
 
             <div className="col-md-3 mt-4">
@@ -1127,8 +1278,8 @@ function IssueReq() {
                   style={{ color: getPriorityColor(), marginTop: "5px" }}
                 />
               </div>
-            )} */}
-          </div>
+            )} 
+          </div> */}
 
           <div className="row pt-4 pl-5 pr-5 pb-10">
             <div className="col-lg-12">

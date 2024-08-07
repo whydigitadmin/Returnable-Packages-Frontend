@@ -361,6 +361,7 @@ function BinOutward() {
             showErrorToast(response.data.paramObjectsMap.errorMessage);
           } else {
             showSuccessToast(response.data.paramObjectsMap.message);
+            setDocDate(dayjs());
             setFlow("");
             setReceiver("");
             setKitNo("");
@@ -529,7 +530,7 @@ function BinOutward() {
                         textField: { size: "small", clearable: true },
                       }}
                       format="DD/MM/YYYY"
-                      disabled
+                      // disabled
                     />
                   </LocalizationProvider>
                   {errors.docDate && (

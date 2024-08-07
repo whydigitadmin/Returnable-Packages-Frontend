@@ -159,6 +159,7 @@ export const EmitterDispatch = () => {
   };
 
   const handleNew = () => {
+    setDocDate(dayjs());
     setFlow("");
     setInvNo("");
     setInvDate(null);
@@ -192,6 +193,7 @@ export const EmitterDispatch = () => {
     }));
     const requestData = {
       docId: docId,
+      docDate: docDate ? dayjs(docDate).format("YYYY-MM-DD") : null,
       emitterId: emitterId,
       flowId: flow,
       invoiceDate: invDate,
@@ -239,6 +241,7 @@ export const EmitterDispatch = () => {
             });
             handleNew();
             getDocIdByDispatch();
+            setDocDate(dayjs());
           }
         })
         .catch((error) => {
@@ -465,7 +468,7 @@ export const EmitterDispatch = () => {
                         textField: { size: "small", clearable: true },
                       }}
                       format="DD/MM/YYYY"
-                      disabled
+                      // disabled
                     />
                   </LocalizationProvider>
                   {errors.docDate && (

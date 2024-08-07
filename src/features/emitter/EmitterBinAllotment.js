@@ -297,6 +297,7 @@ function EmitterBinAllotment({
 
   const handleNew = () => {
     setDocId("");
+    setDocDate(dayjs());
     setStockFrom("");
     setReqNo("");
     setReqDate(null);
@@ -684,7 +685,7 @@ function EmitterBinAllotment({
                 </>
               ) : (
                 <>
-                  <div className="col-lg-3 col-md-6">
+                  {/* <div className="col-lg-3 col-md-6">
                     <label className="label mb-4">
                       <span className="label-text label-font-size text-base-content d-flex flex-row">
                         Doc Date:
@@ -706,7 +707,7 @@ function EmitterBinAllotment({
                     {errors.docDate && (
                       <span className="error-text mb-1">{errors.docDate}</span>
                     )}
-                  </div>
+                  </div> */}
                 </>
               )}
             </>
@@ -820,6 +821,34 @@ function EmitterBinAllotment({
               <span className="error-text">{errors.reqQty}</span>
             )}
           </div>
+          {!viewId && (
+            <>
+              <div className="col-lg-3 col-md-6">
+                <label className="label mb-4">
+                  <span className="label-text label-font-size text-base-content d-flex flex-row">
+                    Doc Date:
+                  </span>
+                </label>
+              </div>
+              <div className="col-lg-3 col-md-6">
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DesktopDatePicker
+                    value={docDate}
+                    onChange={(date) => setDocDate(date)}
+                    slotProps={{
+                      textField: { size: "small", clearable: true },
+                    }}
+                    format="DD/MM/YYYY"
+                    // disabled
+                  />
+                </LocalizationProvider>
+                {errors.docDate && (
+                  <span className="error-text mb-1">{errors.docDate}</span>
+                )}
+              </div>
+            </>
+          )}
+
           {/* STOCK FROM FIELD */}
           <div className="col-lg-3 col-md-6">
             <label className="label mb-4">
