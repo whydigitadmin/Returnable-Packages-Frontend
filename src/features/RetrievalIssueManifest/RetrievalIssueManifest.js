@@ -61,6 +61,29 @@ export const RetrievalIssueManifest = () => {
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
+    onBeforeGetContent: () => {
+      const printDateTimeElement = document.createElement("div");
+      printDateTimeElement.className = "print-datetime";
+      printDateTimeElement.innerHTML = `
+        <div class="d-flex justify-content-between mt-5 mb-5">
+          <div class="ms-5">
+            Printed By: ${pdfData.receiver}
+          </div>
+          <div class="me-5">
+            Printed On: ${new Date().toLocaleString()}
+          </div>
+        </div>
+      `;
+      componentRef.current.appendChild(printDateTimeElement);
+      return new Promise((resolve) => setTimeout(() => resolve(), 100));
+    },
+    onAfterPrint: () => {
+      const printDateTimeElement =
+        componentRef.current.querySelector(".print-datetime");
+      if (printDateTimeElement) {
+        componentRef.current.removeChild(printDateTimeElement);
+      }
+    },
   });
 
   const handlePrintWithWatermark = (watermarkText) => {
