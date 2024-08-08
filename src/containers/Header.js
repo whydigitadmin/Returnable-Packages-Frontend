@@ -1,10 +1,10 @@
 import Bars3Icon from "@heroicons/react/24/outline/Bars3Icon";
 import BellIcon from "@heroicons/react/24/outline/BellIcon";
-import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { FaRegUserCircle } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { openRightDrawer } from "../features/common/rightDrawerSlice";
 import { RIGHT_DRAWER_TYPES } from "../utils/globalConstantUtil";
 
@@ -17,9 +17,12 @@ function Header() {
     localStorage.getItem("theme")
   );
   const userDetails = localStorage.getItem("userDetails");
-  const modifiedUserDetails = userDetails.slice(5).toLowerCase();
-  const initCapUserDetails =
-    modifiedUserDetails.charAt(0).toUpperCase() + modifiedUserDetails.slice(1);
+  const modifiedUserDetails = userDetails
+    ? userDetails.slice(5).toLowerCase()
+    : "";
+  const initCapUserDetails = modifiedUserDetails
+    ? modifiedUserDetails.charAt(0).toUpperCase() + modifiedUserDetails.slice(1)
+    : "";
   const [loginUserDto, setLoginUserDto] = useState(
     JSON.parse(localStorage.getItem("userDto"))
   );
@@ -157,7 +160,7 @@ function Header() {
         <div className="order-last">
           <p className="font-semibold me-2">
             <span>Welcome </span>
-            <span className="text-uppercase">{loginUserDto.firstName}</span>
+            <span className="text-uppercase">{loginUserDto?.firstName}</span>
             <span className="text-uppercase ms-1">({initCapUserDetails})</span>
           </p>
           {/* Multiple theme selection, uncomment this if you want to enable multiple themes selection,

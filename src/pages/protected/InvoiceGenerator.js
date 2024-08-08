@@ -1,13 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import InvoiceGenerator from "../../features/admin/InvoiceGenerator.tsx";
 import { setPageTitle } from "../../features/common/headerSlice";
-import InvoiceGenerator from "../../features/admin/InvoiceGenerator";
 
 function InternalPage() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle({ title: "Invoice Generator" }));
+    dispatch(setPageTitle({ title: "Purchase Order" }));
   }, []);
 
   return <InvoiceGenerator />;

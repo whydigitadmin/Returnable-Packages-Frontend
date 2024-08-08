@@ -19,11 +19,12 @@ function LandingIntro() {
                 className="w-40 inline-block"
               ></img>
             </div>
-            <div className="text-center mb-2">
+            <div className="text-center mb-2" style={{ marginTop: "45px" }}>
+              <br></br>
               <Lottie
                 animationData={LoginLottieFile}
                 loop={true}
-                style={{ width: "275px", height: "275px" }}
+                style={{ width: "210px", height: "210px" }}
               />
             </div>
             {/* <h1 className="text-3xl text-center font-bold mb-10">
@@ -71,8 +72,8 @@ function LandingIntro() {
             alignItems: "center",
             justifyContent: "center",
             flexDirection: "column",
-            marginTop: "11%",
-            marginBottom: "2%",
+            marginTop: "15%",
+            // marginBottom: "2%",
           }}
         >
           {/* <div

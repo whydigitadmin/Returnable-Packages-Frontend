@@ -137,7 +137,9 @@ html {
   border-radius: 10px;
   border: 3px solid transparent;
   background-clip: padding-box;
-  transition: background-color 0.3s, border-color 0.3s;
+  transition:
+    background-color 0.3s,
+    border-color 0.3s;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -168,4 +170,63 @@ html {
   border: 3px solid transparent;
   background-clip: padding-box;
   transition: background-color 0.3s;
+}
+
+.flexx {
+  display: flex;
+  justify-content: space-between;
+  /* align-items: flex-start; */
+}
+
+.left-section {
+  flex: 1;
+  max-width: 200px; /* Adjust width as needed */
+}
+
+.right-section {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  max-width: 350px;
+}
+
+.right-section .EditableInput,
+.right-section .EditableSelect {
+  width: 100%; /* Ensures inputs take full width */
+}
+
+.flex {
+  display: flex;
+}
+
+.left-section,
+.middle-section,
+.right-section {
+  display: flex;
+  align-items: center;
+}
+
+.download-pdf {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.download-pdf__pdf {
+  background-color: #4caf50;
+  color: white;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 10px 2px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+}
+
+.mt-40 {
+  margin-top: 40px;
 }

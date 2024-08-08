@@ -431,6 +431,19 @@ const allRoutes = [
         ),
         name: <span style={{ marginLeft: "6px" }}>Invoice Generator</span>,
       },
+      {
+        path: "/app/invoiceGeneratorOriginal",
+        icon: (
+          <img
+            src="/report.png"
+            alt="AssetTagging"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>Invoice</span>,
+      },
+
       // {
       //   path: "/app/Branch",
       //   icon: (
