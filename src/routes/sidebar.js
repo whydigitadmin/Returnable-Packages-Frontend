@@ -686,7 +686,7 @@ const allRoutes = [
           <img
             src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
             alt="AssetTagging"
-            style={{ width: "29px", height: "auto" }}
+            style={{ width: "36px", height: "auto" }}
             className={`${iconClasses} inline`}
           />
         ),
@@ -698,7 +698,7 @@ const allRoutes = [
           <img
             src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
             alt="AssetTagging"
-            style={{ width: "29px", height: "auto" }}
+            style={{ width: "36px", height: "auto" }}
             className={`${iconClasses} inline`}
           />
         ),
