@@ -419,30 +419,6 @@ const allRoutes = [
         ),
         name: <span style={{ marginLeft: "6px" }}>Group</span>,
       },
-      {
-        path: "/app/invoiceGenerator",
-        icon: (
-          <img
-            src="/report.png"
-            alt="AssetTagging"
-            style={{ width: "29px", height: "auto" }}
-            className={`${iconClasses} inline`}
-          />
-        ),
-        name: <span style={{ marginLeft: "6px" }}>Invoice Generator</span>,
-      },
-      {
-        path: "/app/invoiceGeneratorOriginal",
-        icon: (
-          <img
-            src="/report.png"
-            alt="AssetTagging"
-            style={{ width: "29px", height: "auto" }}
-            className={`${iconClasses} inline`}
-          />
-        ),
-        name: <span style={{ marginLeft: "6px" }}>Invoice</span>,
-      },
 
       // {
       //   path: "/app/Branch",
@@ -703,6 +679,30 @@ const allRoutes = [
           />
         ),
         name: <span className="">Retrieval Issue Manifest</span>,
+      },
+      {
+        path: "/app/invoiceGenerator",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="AssetTagging"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>Purchase Order</span>,
+      },
+      {
+        path: "/app/invoiceGeneratorOriginal",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="AssetTagging"
+            style={{ width: "29px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>Invoice</span>,
       },
     ],
   },
