@@ -306,6 +306,16 @@ function IssueManifestProvider({ addMim, mimId }) {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
+    let filteredValue = value;
+    if (name === "transactionNo") {
+      filteredValue = value
+        .replace(/[^A-Z0-9\s&\-]/g, "")
+        .slice(0, 7)
+        .trim();
+    } else if (name === "driverNo") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 10).trim();
+    }
+
     switch (name) {
       case "dispatchDate":
         setDispatchDate(value);
@@ -333,7 +343,7 @@ function IssueManifestProvider({ addMim, mimId }) {
         setTransactionDate(value);
         break;
       case "transactionNo":
-        setTransactionNo(value);
+        setTransactionNo(filteredValue);
         break;
       case "transactionType":
         setTransactionType(value);
@@ -345,7 +355,7 @@ function IssueManifestProvider({ addMim, mimId }) {
         setVehicleNo(value.toUpperCase());
         break;
       case "driverNo":
-        setDriverNo(value);
+        setDriverNo(filteredValue);
         break;
       default:
         break;
@@ -384,7 +394,12 @@ function IssueManifestProvider({ addMim, mimId }) {
     if (!sender) errors.sender = "Sender is required";
     if (!warehouse) errors.warehouse = "Warehouse is required";
     if (!receiver) errors.receiver = "Receiver is required";
-    if (!transactionNo) errors.transactionNo = "Transaction No is required";
+    // if (!transactionNo) errors.transactionNo = "Transaction No is required";
+    if (!transactionNo) {
+      errors.transactionNo = "Transaction number is required";
+    } else if (transactionNo.length < 7) {
+      errors.transactionNo = "Transaction number must be 7 Digit";
+    }
     if (!amountInWords) errors.amountInWords = "Amount In Words is required";
     if (!amount) errors.amount = "Amount is required";
     if (!transporterName)
@@ -449,6 +464,7 @@ function IssueManifestProvider({ addMim, mimId }) {
             setTimeout(() => {
               addMim(false);
             });
+            // addMim(false);
           }
         })
         .catch((error) => {
@@ -490,6 +506,9 @@ function IssueManifestProvider({ addMim, mimId }) {
 
   return (
     <div className="card w-full p-6 bg-base-100 shadow-xl">
+      <div>
+        <ToastContainer />
+      </div>
       <div className="d-flex justify-content-end">
         <IoMdClose
           onClick={handleMimClose}

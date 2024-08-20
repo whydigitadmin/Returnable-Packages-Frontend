@@ -54,7 +54,9 @@ export const MaterialIssueManifest = () => {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.IssueManifestProviderVO);
+        setData(
+          response.data.paramObjectsMap.IssueManifestProviderVO.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);

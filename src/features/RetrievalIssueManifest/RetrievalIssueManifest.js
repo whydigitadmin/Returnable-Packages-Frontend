@@ -39,7 +39,9 @@ export const RetrievalIssueManifest = () => {
       );
 
       if (response.status === 200) {
-        setData(response.data.paramObjectsMap.retrievalManifestProviderVOs);
+        setData(
+          response.data.paramObjectsMap.retrievalManifestProviderVOs.reverse()
+        );
       }
     } catch (error) {
       console.error("Error fetching data:", error);

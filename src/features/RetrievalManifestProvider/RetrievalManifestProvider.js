@@ -298,6 +298,16 @@ function RetrievalManifestProvider({ addRim, rimId }) {
   const handleInputChange = (event) => {
     const { name, value } = event.target;
 
+    let filteredValue = value;
+    if (name === "transactionNo") {
+      filteredValue = value
+        .replace(/[^A-Z0-9\s&\-]/g, "")
+        .slice(0, 7)
+        .trim();
+    } else if (name === "driverNo") {
+      filteredValue = value.replace(/\D/g, "").slice(0, 10).trim();
+    }
+
     switch (name) {
       case "dispatchDate":
         setDispatchDate(value);
@@ -321,7 +331,7 @@ function RetrievalManifestProvider({ addRim, rimId }) {
         setTransactionDate(value);
         break;
       case "transactionNo":
-        setTransactionNo(value);
+        setTransactionNo(filteredValue);
         break;
       case "transactionType":
         setTransactionType(value);
@@ -333,7 +343,7 @@ function RetrievalManifestProvider({ addRim, rimId }) {
         setVehicleNo(value.toUpperCase());
         break;
       case "driverNo":
-        setDriverNo(value);
+        setDriverNo(filteredValue);
         break;
       default:
         break;
@@ -429,9 +439,11 @@ function RetrievalManifestProvider({ addRim, rimId }) {
             setVehicleNo("");
             setDriverNo({});
             setKitDetails([]);
+            setOpenKitModal(false);
             setTimeout(() => {
               addRim(false);
             });
+            // addRim(false);
           }
         })
         .catch((error) => {
@@ -472,6 +484,9 @@ function RetrievalManifestProvider({ addRim, rimId }) {
 
   return (
     <div className="card w-full p-6 bg-base-100 shadow-xl">
+      <div>
+        <ToastContainer />
+      </div>
       <div className="d-flex justify-content-end">
         <IoMdClose
           onClick={handleMimClose}

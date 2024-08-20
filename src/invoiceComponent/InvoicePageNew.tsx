@@ -91,7 +91,7 @@ const InvoicePageNew: FC<Props> = ({
         `${process.env.REACT_APP_API_URL}/api/master/getAllTaxInvoiceByOrgId?orgId=${orgId}`
       );
       if (response.status === 200) {
-        setInvoiceVO(response.data.paramObjectsMap.taxInvoiceVO);
+        setInvoiceVO(response.data.paramObjectsMap.taxInvoiceVO.reverse());
       } else {
         console.error("API Error:", response.data);
       }

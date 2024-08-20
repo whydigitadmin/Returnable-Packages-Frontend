@@ -94,7 +94,7 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
         `${process.env.REACT_APP_API_URL}/api/master/getAllInvoiceByOrgId?orgId=${orgId}`
       );
       if (response.status === 200) {
-        setInvoiceVO(response.data.paramObjectsMap.invoiceVO);
+        setInvoiceVO(response.data.paramObjectsMap.invoiceVO.reverse());
       } else {
         console.error("API Error:", response.data);
       }
