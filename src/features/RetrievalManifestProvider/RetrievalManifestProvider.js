@@ -405,7 +405,7 @@ function RetrievalManifestProvider({ addRim, rimId }) {
         senderGst: receiverGst,
         receiver: sender,
         receiverAddress: senderAddress,
-        transactionDate,
+        transactionDate: transactionDate.format("YYYY-MM-DD"),
         transactionNo,
         transactionType,
         transporterName,
@@ -535,9 +535,7 @@ function RetrievalManifestProvider({ addRim, rimId }) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               value={transactionDate}
-              onChange={(date) =>
-                setTransactionDate(dayjs(date).format("YYYY-MM-DD"))
-              }
+              onChange={(date) => setTransactionDate(dayjs(date))}
               slotProps={{
                 textField: { size: "small", clearable: true },
               }}

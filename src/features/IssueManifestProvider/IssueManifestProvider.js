@@ -425,7 +425,7 @@ function IssueManifestProvider({ addMim, mimId }) {
         receiverGst,
         sender,
         senderAddress,
-        transactionDate,
+        transactionDate: transactionDate.format("YYYY-MM-DD"),
         transactionNo,
         transactionType,
         transporterName,
@@ -557,9 +557,7 @@ function IssueManifestProvider({ addMim, mimId }) {
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DesktopDatePicker
               value={transactionDate}
-              onChange={(date) =>
-                setTransactionDate(dayjs(date).format("YYYY-MM-DD"))
-              }
+              onChange={(date) => setTransactionDate(dayjs(date))}
               slotProps={{
                 textField: { size: "small", clearable: true },
               }}
