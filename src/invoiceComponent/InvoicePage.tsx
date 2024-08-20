@@ -42,6 +42,7 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
   const [subTotal, setSubTotal] = useState<number>();
   const [saleTax, setSaleTax] = useState<number>();
   const [saleTax1, setSaleTax1] = useState<number>();
+  const [saleTax2, setSaleTax2] = useState<number>();
   const [listView, setListView] = useState<boolean>(false);
   const [invoiceVO, setInvoiceVO] = useState([]);
   const orgId = window.localStorage.getItem("orgId");
@@ -190,8 +191,12 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
       const taxRate1 = extractTaxRate(invoice.taxLabel1);
       const saleTax1 = calculateSaleTax(subTotal, taxRate1);
       setSaleTax1(saleTax1);
+
+      const taxRate2 = extractTaxRate(invoice.taxLabel2);
+      const saleTax2 = calculateSaleTax(subTotal, taxRate2);
+      setSaleTax2(saleTax2); // Assuming you have a state for saleTax2
     }
-  }, [subTotal, invoice?.taxLabel, invoice?.taxLabel1]);
+  }, [subTotal, invoice?.taxLabel, invoice?.taxLabel1, invoice?.taxLabel2]);
 
   useEffect(() => {
     if (onChange) {
@@ -527,18 +532,18 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
                   <View className="flex" pdfMode={pdfMode}>
                     <View className="w-50" pdfMode={pdfMode}>
                       <EditableInput
-                        value={invoice.taxLabel1}
-                        onChange={(value) => handleChange("taxLabel1", value)}
+                        value={invoice.taxLabel2}
+                        onChange={(value) => handleChange("taxLabel2", value)}
                         pdfMode={pdfMode}
                       />
                     </View>
                     <View className="w-50" pdfMode={pdfMode}>
                       <Text className="right bold dark" pdfMode={pdfMode}>
-                        {saleTax1 !== undefined
+                        {saleTax2 !== undefined
                           ? new Intl.NumberFormat("en-IN", {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
-                            }).format(saleTax1)
+                            }).format(saleTax2)
                           : ""}
                       </Text>
                     </View>
