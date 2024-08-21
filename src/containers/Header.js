@@ -135,6 +135,20 @@ function Header() {
               </Link>
             </>
           )}
+          {localStorage.getItem("userDetails") === "ROLE_DOCUMENT" && (
+            <>
+              <Link to={"/app/welcomedocumentuser"}>
+                <img
+                  src="/BIN_BEE.png"
+                  style={{
+                    width: "150px",
+                    height: "auto",
+                    marginLeft: "6px",
+                  }}
+                />
+              </Link>
+            </>
+          )}
           {localStorage.getItem("userDetails") === "ROLE_USER" && (
             <>
               <h1

@@ -92,6 +92,18 @@ const allRoutes = [
         ),
         name: <span>OEM Receiver / User</span>,
       },
+      {
+        path: "/app/documentDetails",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3685/3685367.png"
+            alt="DocumentCreator"
+            style={{ width: "31px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Document Creator</span>,
+      },
 
       // {
       //   path: "/app/Roles",

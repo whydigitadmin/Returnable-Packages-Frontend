@@ -6,6 +6,9 @@ const Dashboard = lazy(() => import("../pages/protected/Dashboard"));
 const Welcome = lazy(() => import("../pages/protected/Welcome"));
 const WelcomeEmitter = lazy(() => import("../pages/protected/WelcomeEmitter"));
 const WelcomeOEM = lazy(() => import("../pages/protected/WelcomeOem"));
+const WelcomeDocumentUser = lazy(
+  () => import("../pages/protected/WelcomeDocumentUser")
+);
 const IssueReq = lazy(() => import("../pages/protected/IssueReq"));
 const EmitterInward = lazy(() => import("../pages/protected/EmitterInward"));
 const EmitterInwardNew = lazy(
@@ -110,6 +113,12 @@ const EmitterCreation = lazy(
   () => import("../pages/protected/EmitterCreation")
 );
 const EmitterDetails = lazy(() => import("../pages/protected/EmitterDetails"));
+const DocumentCreation = lazy(
+  () => import("../pages/protected/DocumentCreation")
+);
+const DocumentDetails = lazy(
+  () => import("../pages/protected/DocumentDetails")
+);
 const OemUser = lazy(() => import("../pages/protected/OemUser"));
 const Roles = lazy(() => import("../pages/protected/Roles"));
 const Responsibilities = lazy(
@@ -253,6 +262,10 @@ const routes = [
   {
     path: "/welcomeoem",
     component: WelcomeOEM,
+  },
+  {
+    path: "/welcomedocumentuser",
+    component: WelcomeDocumentUser,
   },
   {
     path: "/IssueReq",
@@ -505,6 +518,14 @@ const routes = [
   {
     path: "/emitterDetails",
     component: EmitterDetails,
+  },
+  {
+    path: "/documentCreation",
+    component: DocumentCreation,
+  },
+  {
+    path: "/documentDetails",
+    component: DocumentDetails,
   },
   {
     path: "/oemUser",

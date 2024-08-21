@@ -97,6 +97,8 @@ function Login() {
             window.location.href = "/app/welcomeoem";
           } else if (localStorage.getItem("userDetails") === "ROLE_ADMIN") {
             window.location.href = "/app/companydetails";
+          } else if (localStorage.getItem("userDetails") === "ROLE_DOCUMENT") {
+            window.location.href = "/app/welcomedocumentuser";
           }
         }
 
