@@ -13,6 +13,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import IssueManifestProvider from "../IssueManifestProvider/IssueManifestProvider";
+import { Link } from "react-router-dom";
+import { FaArrowCircleLeft } from "react-icons/fa";
 
 export const MaterialIssueManifest = () => {
   const componentRef = useRef();
@@ -27,6 +29,7 @@ export const MaterialIssueManifest = () => {
   const [productDetails, setProductDetails] = React.useState([]);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [openDialog, setOpenDialog] = useState(false);
+  const userDetails = localStorage.getItem("userDetails");
 
   useEffect(() => {
     getAllDeclarationAndNotes();
@@ -252,31 +255,69 @@ Receiver: ${concatenatedData.Receiver}
           <div className="card w-full p-6 bg-base-100 shadow-xl">
             {/* BULK UPLOAD AND ADD NEW BUTTON */}
             <div className="">
-              <div className="d-flex justify-content-end mb-4">
-                <button
-                  className="btn btn-ghost btn-lg text-sm col-xs-1"
-                  style={{ color: "blue" }}
-                  onClick={() => setAddMim(true)}
-                >
-                  <img
-                    src="/new.png"
-                    alt="pending-status-icon"
-                    title="add"
-                    style={{
-                      width: 30,
-                      height: 30,
-                      margin: "auto",
-                      hover: "pointer",
-                    }}
-                  />
-                  <span
-                    className="text-form text-base"
-                    style={{ marginLeft: "10px" }}
+              {userDetails === "ROLE_DOCUMENT" ? (
+                <div className="d-flex justify-content-between mb-4">
+                  <div className="d-flex align-items-center ms-2">
+                    <Link to="/app/welcomedocumentuser">
+                      <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                    </Link>
+                    <p className="text-2xl">
+                      <strong className="ml-4">Material Issue Manifest</strong>
+                    </p>
+                  </div>
+                  <div>
+                    <button
+                      className="btn btn-ghost btn-lg text-sm col-xs-1"
+                      style={{ color: "blue" }}
+                      onClick={() => setAddMim(true)}
+                    >
+                      <img
+                        src="/new.png"
+                        alt="pending-status-icon"
+                        title="add"
+                        style={{
+                          width: 30,
+                          height: 30,
+                          margin: "auto",
+                          hover: "pointer",
+                        }}
+                      />
+                      <span
+                        className="text-form text-base"
+                        style={{ marginLeft: "10px" }}
+                      >
+                        MIM
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="d-flex justify-content-end mb-4">
+                  <button
+                    className="btn btn-ghost btn-lg text-sm col-xs-1"
+                    style={{ color: "blue" }}
+                    onClick={() => setAddMim(true)}
                   >
-                    MIM
-                  </span>
-                </button>
-              </div>
+                    <img
+                      src="/new.png"
+                      alt="pending-status-icon"
+                      title="add"
+                      style={{
+                        width: 30,
+                        height: 30,
+                        margin: "auto",
+                        hover: "pointer",
+                      }}
+                    />
+                    <span
+                      className="text-form text-base"
+                      style={{ marginLeft: "10px" }}
+                    >
+                      MIM
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* LISTVIEW TABLE */}

@@ -149,7 +149,7 @@ function WelcomeDocumentUser() {
                     >
                       <div className="d-flex flex-row">
                         <img
-                          src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+                          src="/outgoing.png"
                           style={{
                             width: "35px",
                             height: "35px",
@@ -181,7 +181,7 @@ function WelcomeDocumentUser() {
                     >
                       <div className="d-flex flex-row">
                         <img
-                          src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+                          src="/incoming.png"
                           style={{
                             width: "32px",
                             height: "32px",
@@ -214,8 +214,8 @@ function WelcomeDocumentUser() {
                         <img
                           src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
                           style={{
-                            width: "35px",
-                            height: "35px",
+                            width: "32px",
+                            height: "32px",
                             marginRight: "6px",
                           }}
                         />

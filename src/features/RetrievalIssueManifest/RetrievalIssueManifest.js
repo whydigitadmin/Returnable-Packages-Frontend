@@ -13,6 +13,8 @@ import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import IconButton from "@mui/material/IconButton";
 import RetrievalManifestProvider from "../RetrievalManifestProvider/RetrievalManifestProvider";
+import { Link } from "react-router-dom";
+import { FaArrowCircleLeft } from "react-icons/fa";
 
 export const RetrievalIssueManifest = () => {
   const componentRef = useRef();
@@ -26,6 +28,7 @@ export const RetrievalIssueManifest = () => {
   const [terms, setTerms] = React.useState([]);
   const [productDetails, setProductDetails] = React.useState([]);
   const [openDialog, setOpenDialog] = useState(false);
+  const userDetails = localStorage.getItem("userDetails");
 
   useEffect(() => {
     getAllRetrievalManifestProvider();
@@ -256,31 +259,71 @@ Sender: ${concatenatedData.Sender}
             <div className="card w-full p-6 bg-base-100 shadow-xl">
               {/* BULK UPLOAD AND ADD NEW BUTTON */}
               <div className="">
-                <div className="d-flex justify-content-end mb-4">
-                  <button
-                    className="btn btn-ghost btn-lg text-sm col-xs-1"
-                    style={{ color: "blue" }}
-                    onClick={() => setAddRim(true)}
-                  >
-                    <img
-                      src="/new.png"
-                      alt="pending-status-icon"
-                      title="add"
-                      style={{
-                        width: 30,
-                        height: 30,
-                        margin: "auto",
-                        hover: "pointer",
-                      }}
-                    />
-                    <span
-                      className="text-form text-base"
-                      style={{ marginLeft: "10px" }}
+                {userDetails === "ROLE_DOCUMENT" ? (
+                  <div className="d-flex justify-content-between mb-4">
+                    <div className="d-flex align-items-center ms-2">
+                      <Link to="/app/welcomedocumentuser">
+                        <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
+                      </Link>
+                      <p className="text-2xl">
+                        <strong className="ml-4">
+                          Retrieval Issue Manifest
+                        </strong>
+                      </p>
+                    </div>
+                    <div>
+                      <button
+                        className="btn btn-ghost btn-lg text-sm col-xs-1"
+                        style={{ color: "blue" }}
+                        onClick={() => setAddRim(true)}
+                      >
+                        <img
+                          src="/new.png"
+                          alt="pending-status-icon"
+                          title="add"
+                          style={{
+                            width: 30,
+                            height: 30,
+                            margin: "auto",
+                            hover: "pointer",
+                          }}
+                        />
+                        <span
+                          className="text-form text-base"
+                          style={{ marginLeft: "10px" }}
+                        >
+                          RIM
+                        </span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="d-flex justify-content-end mb-4">
+                    <button
+                      className="btn btn-ghost btn-lg text-sm col-xs-1"
+                      style={{ color: "blue" }}
+                      onClick={() => setAddRim(true)}
                     >
-                      RIM
-                    </span>
-                  </button>
-                </div>
+                      <img
+                        src="/new.png"
+                        alt="pending-status-icon"
+                        title="add"
+                        style={{
+                          width: 30,
+                          height: 30,
+                          margin: "auto",
+                          hover: "pointer",
+                        }}
+                      />
+                      <span
+                        className="text-form text-base"
+                        style={{ marginLeft: "10px" }}
+                      >
+                        RIM
+                      </span>
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* LISTVIEW TABLE */}
