@@ -43,6 +43,8 @@ const Download: FC<Props> = ({ data, setData }) => {
     FileSaver.saveAs(blob, `${title}.template`);
   }
 
+  function handleNew() {}
+
   const title = data.invoiceTitle ? data.invoiceTitle.toLowerCase() : "invoice";
   return (
     <div className="download-pdf">

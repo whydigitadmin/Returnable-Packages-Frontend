@@ -216,7 +216,7 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
 
   return (
     <>
-      <div className="flex justify-end mb-4" style={{ marginTop: "-57px" }}>
+      <div className="flex justify-end mb-4" style={{ marginTop: "-78px" }}>
         <button
           className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
           onClick={onListView}
@@ -288,11 +288,72 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
                   onChange={(value) => handleChange("title", value)}
                   pdfMode={pdfMode}
                 />
-                <div className="bold mb-3" style={{ marginLeft: "51%" }}>
-                  <h6>
-                    {invoice.id && "#"} {invoice.id}
-                  </h6>
-                </div>
+                <View
+                  className="flex "
+                  pdfMode={pdfMode}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View className="w-30" pdfMode={pdfMode}>
+                    <EditableInput
+                      value={invoice.poNoLabel}
+                      onChange={(value) => handleChange("poNoLabel", value)}
+                      pdfMode={pdfMode}
+                      className="bold"
+                      style={{ fontWeight: "bold" }}
+                    />
+                  </View>
+                  <View
+                    className="w-30"
+                    pdfMode={pdfMode}
+                    style={{ width: "50%" }}
+                  >
+                    <EditableInput
+                      value={invoice.poNo}
+                      onChange={(value) => handleChange("poNo", value)}
+                      pdfMode={pdfMode}
+                      placeholder="Enter"
+                      className="bold"
+                      style={{ fontWeight: "bold" }}
+                    />
+                  </View>
+                </View>
+                <View
+                  className="flex "
+                  pdfMode={pdfMode}
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <View className="w-30" pdfMode={pdfMode}>
+                    <EditableInput
+                      value={invoice.poDateLabel}
+                      onChange={(value) => handleChange("poDateLabel", value)}
+                      pdfMode={pdfMode}
+                      className="bold"
+                      style={{ fontWeight: "bold" }}
+                    />
+                  </View>
+                  <View
+                    className="w-30"
+                    pdfMode={pdfMode}
+                    style={{ width: "50%" }}
+                  >
+                    <EditableInput
+                      value={invoice.poDate}
+                      onChange={(value) => handleChange("poDate", value)}
+                      pdfMode={pdfMode}
+                      placeholder="Enter"
+                      className="bold"
+                      style={{ fontWeight: "bold" }}
+                    />
+                  </View>
+                </View>
                 <br></br>
                 <EditableInput
                   className="fs-10 bold"
