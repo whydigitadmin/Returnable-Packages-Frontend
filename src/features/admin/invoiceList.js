@@ -66,7 +66,7 @@ const InvoiceList = ({ invoices, onListView, setInvoiceVO }) => {
                 onClick={() => handleClick(invoice.id)}
                 style={{ cursor: "pointer", color: "blue" }}
               >
-                {invoice.id}
+                {invoice.poNo}
               </TableCell>
               <TableCell>{invoice.title}</TableCell>
               <TableCell>{invoice.invoiceDate}</TableCell>
