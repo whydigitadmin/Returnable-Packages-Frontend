@@ -119,6 +119,12 @@ const DocumentCreation = lazy(
 const DocumentDetails = lazy(
   () => import("../pages/protected/DocumentDetails")
 );
+const AllocatorCreation = lazy(
+  () => import("../pages/protected/AllocatorCreation")
+);
+const AllocatorDetails = lazy(
+  () => import("../pages/protected/AllocatorDetails")
+);
 const OemUser = lazy(() => import("../pages/protected/OemUser"));
 const Roles = lazy(() => import("../pages/protected/Roles"));
 const Responsibilities = lazy(
@@ -526,6 +532,14 @@ const routes = [
   {
     path: "/documentDetails",
     component: DocumentDetails,
+  },
+  {
+    path: "/allocatorCreation",
+    component: AllocatorCreation,
+  },
+  {
+    path: "/allocatorDetails",
+    component: AllocatorDetails,
   },
   {
     path: "/oemUser",

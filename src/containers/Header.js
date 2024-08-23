@@ -149,6 +149,16 @@ function Header() {
               </Link>
             </>
           )}
+          {localStorage.getItem("userDetails") === "ROLE_ALLOCATOR" && (
+            <>
+              <h1
+                className="text-2xl font-semibold ml-2"
+                // style={{ color: "rgb(51, 156, 109)" }}
+              >
+                {pageTitle}
+              </h1>
+            </>
+          )}
           {localStorage.getItem("userDetails") === "ROLE_USER" && (
             <>
               <h1

@@ -99,6 +99,8 @@ function Login() {
             window.location.href = "/app/companydetails";
           } else if (localStorage.getItem("userDetails") === "ROLE_DOCUMENT") {
             window.location.href = "/app/welcomedocumentuser";
+          } else if (localStorage.getItem("userDetails") === "ROLE_ALLOCATOR") {
+            window.location.href = "/app/binallotmentdetails";
           }
         }
 

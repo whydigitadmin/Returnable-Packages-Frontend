@@ -104,6 +104,18 @@ const allRoutes = [
         ),
         name: <span>Document Creator</span>,
       },
+      {
+        path: "/app/allocatorDetails",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3685/3685367.png"
+            alt="AllocatorCreator"
+            style={{ width: "31px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span>Allocator Creator</span>,
+      },
 
       // {
       //   path: "/app/Roles",
@@ -1161,6 +1173,7 @@ const allRoutes = [
 ];
 
 const isAdmin = localStorage.getItem("userDetails") === "ROLE_ADMIN";
+const isAllocator = localStorage.getItem("userDetails") === "ROLE_ALLOCATOR";
 
 const routes = isAdmin
   ? [
@@ -1192,6 +1205,97 @@ const routes = isAdmin
         ],
       },
     ]
-  : allRoutes;
+  : isAllocator
+    ? [
+        {
+          path: "", // no URL needed as this has submenu
+          icon: (
+            <img
+              src="https://cdn-icons-png.flaticon.com/128/12819/12819713.png"
+              alt="Operational"
+              style={{ width: "34px", height: "auto" }}
+              className={`${iconClasses} inline`}
+            />
+          ),
+          name: <span className="ml-2">Operational</span>,
+          submenu: [
+            {
+              path: "/app/customer",
+              icon: (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/5455/5455723.png"
+                  alt="Customer"
+                  style={{ width: "32px", height: "auto" }}
+                  className={{ submenuIconClasses }}
+                />
+              ),
+              name: <span className="">Customer</span>,
+            },
+            {
+              path: "/app/vendors",
+              icon: (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/14785/14785229.png"
+                  alt="Vendors"
+                  style={{ width: "33px", height: "auto" }}
+                  className={{ submenuIconClasses }}
+                />
+              ),
+              name: <span className="">Vendors</span>,
+            },
+            {
+              path: "/app/partstudy", //no url needed as this has submenu
+              icon: (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/8787/8787090.png"
+                  alt="PartStudy"
+                  style={{ width: "34px", height: "auto" }}
+                  className={{ submenuIconClasses }}
+                />
+              ),
+              name: <span className="">Part Study</span>,
+            },
+          ],
+        },
+        {
+          path: "welcomeallocator", // no URL needed as this has submenu
+          icon: (
+            <img
+              src="/issue.png"
+              alt="welcomeallocator"
+              style={{ width: "34px", height: "auto" }}
+              className={`${iconClasses} inline`}
+            />
+          ),
+          name: <span className="ml-2">Bin</span>,
+          submenu: [
+            {
+              path: "/app/binallotmentdetails",
+              icon: (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/8947/8947854.png"
+                  alt="Bin Allotment"
+                  style={{ width: "30px", height: "auto" }}
+                  className={submenuIconClasses}
+                />
+              ),
+              name: <span className="ml-1">Bin Allotment</span>,
+            },
+            {
+              path: "/app/adminbinretrieval",
+              icon: (
+                <img
+                  src="https://cdn-icons-png.flaticon.com/128/8552/8552084.png"
+                  alt="Bin Retrieval"
+                  style={{ width: "30px", height: "auto" }}
+                  className={submenuIconClasses}
+                />
+              ),
+              name: <span className="ml-1">Bin Retrieval</span>,
+            },
+          ],
+        },
+      ]
+    : allRoutes;
 
 export default routes;

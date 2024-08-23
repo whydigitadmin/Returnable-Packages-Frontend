@@ -30,7 +30,9 @@ function Layout() {
   // Conditional rendering for LeftSidebar based on user role
   const userDetails = localStorage.getItem("userDetails");
   const isUserRole =
-    userDetails === "ROLE_ADMIN" || userDetails === "ROLE_USER";
+    userDetails === "ROLE_ADMIN" ||
+    userDetails === "ROLE_USER" ||
+    userDetails === "ROLE_ALLOCATOR";
 
   return (
     <>
