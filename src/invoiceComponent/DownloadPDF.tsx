@@ -54,9 +54,9 @@ const Download: FC<Props> = ({ data, setData }) => {
         fileName={`${title}.pdf`}
         aria-label="Save PDF"
         title="Save PDF"
-        className="download-pdf__pdf"
+        className="download-pdf__template_download"
       >
-        {({ loading }) => (loading ? "Loading document..." : "")}
+        {({ loading }) => (loading ? "" : "")}
       </PDFDownloadLink>
       {/* <button
         onClick={handleSaveTemplate}

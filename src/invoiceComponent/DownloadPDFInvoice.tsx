@@ -52,7 +52,7 @@ const DownloadNew: FC<Props> = ({ data, setData }) => {
         fileName={`${title}.pdf`}
         aria-label="Save PDF"
         title="Save PDF"
-        className="download-pdf__pdf"
+        className="download-pdf__template_download"
       ></PDFDownloadLink>
       {/* <p>PDF</p> */}
 

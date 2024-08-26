@@ -1,7 +1,6 @@
 import { Font } from "@react-pdf/renderer";
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
-import countryList from "../data/countryList.ts";
 import {
   initialInvoiceNew,
   initialKitLine,
@@ -11,7 +10,6 @@ import { Invoice, InvoiceNew, KitLine, ProductLine } from "../data/types.ts";
 import Document from "./Document.tsx";
 import EditableFileImage from "./EditableFileImage.tsx";
 import EditableInput from "./EditableInput.tsx";
-import EditableSelect from "./EditableSelect.tsx";
 import EditableTextarea from "./EditableTextarea.tsx";
 import Page from "./Page.tsx";
 import Text from "./Text.tsx";
@@ -316,7 +314,7 @@ const InvoicePageNew: FC<Props> = ({
 
               <View className="w-60 ml-1.5" pdfMode={pdfMode}>
                 <EditableInput
-                  className="fs-30 bold mt-40 w-100"
+                  className="fs-25 bold mt-40 w-100"
                   placeholder="Invoice"
                   value={invoice.title}
                   onChange={(value) => handleChange("title", value)}
@@ -532,8 +530,8 @@ const InvoicePageNew: FC<Props> = ({
                   onChange={(value) => handleChange("clientAddress2", value)}
                   pdfMode={pdfMode}
                 />
-                <EditableSelect
-                  options={countryList}
+                <EditableInput
+                  placeholder="Country"
                   value={invoice.clientCountry}
                   onChange={(value) => handleChange("clientCountry", value)}
                   pdfMode={pdfMode}
@@ -568,8 +566,8 @@ const InvoicePageNew: FC<Props> = ({
                   onChange={(value) => handleChange("sclientAddress2", value)}
                   pdfMode={pdfMode}
                 />
-                <EditableSelect
-                  options={countryList}
+                <EditableInput
+                  placeholder="Country"
                   value={invoice.sclientCountry}
                   onChange={(value) => handleChange("sclientCountry", value)}
                   pdfMode={pdfMode}

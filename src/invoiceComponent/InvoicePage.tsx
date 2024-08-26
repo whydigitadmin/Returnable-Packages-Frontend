@@ -1,14 +1,12 @@
 import { Font } from "@react-pdf/renderer";
 import axios from "axios";
 import React, { FC, useEffect, useState } from "react";
-import countryList from "../data/countryList.ts";
 import { initialInvoice, initialProductLine } from "../data/initialData.ts";
 import { Invoice, ProductLine } from "../data/types";
 import Document from "./Document.tsx";
 import Download from "./DownloadPDF.tsx";
 import EditableFileImage from "./EditableFileImage.tsx";
 import EditableInput from "./EditableInput.tsx";
-import EditableSelect from "./EditableSelect.tsx";
 import EditableTextarea from "./EditableTextarea.tsx";
 import Page from "./Page.tsx";
 import Text from "./Text.tsx";
@@ -268,8 +266,8 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
                   onChange={(value) => handleChange("companyAddress2", value)}
                   pdfMode={pdfMode}
                 />
-                <EditableSelect
-                  options={countryList}
+                <EditableInput
+                  placeholder="Country"
                   value={invoice.companyCountry}
                   onChange={(value) => handleChange("companyCountry", value)}
                   pdfMode={pdfMode}
@@ -282,7 +280,7 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
               </View>
               <View className="w-50 ml-48 pl-2.5" pdfMode={pdfMode}>
                 <EditableInput
-                  className="fs-30 bold mt-40 "
+                  className="fs-25 bold mt-40 "
                   placeholder="Invoice"
                   value={invoice.title}
                   onChange={(value) => handleChange("title", value)}
@@ -380,8 +378,8 @@ const InvoicePage: FC<Props> = ({ data, pdfMode, onChange, setNotSaved }) => {
                   onChange={(value) => handleChange("clientAddress2", value)}
                   pdfMode={pdfMode}
                 />
-                <EditableSelect
-                  options={countryList}
+                <EditableInput
+                  placeholder="Country"
                   value={invoice.clientCountry}
                   onChange={(value) => handleChange("clientCountry", value)}
                   pdfMode={pdfMode}

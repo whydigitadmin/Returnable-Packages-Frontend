@@ -1,5 +1,7 @@
 import { Invoice, InvoiceNew, ProductLine } from "./types";
 
+import logoImage from "../images/AI_Packs.png";
+
 export const initialProductLine: ProductLine = {
   description: "",
   quantity: "1",
@@ -16,7 +18,7 @@ export const initialKitLine: KitLine = {
 };
 
 export const initialInvoice: Invoice = {
-  logo: "",
+  logo: logoImage,
   logoWidth: 100,
   title: "PURCHASE ORDER",
   companyName: "",
@@ -24,12 +26,12 @@ export const initialInvoice: Invoice = {
   id: "",
   companyAddress: "",
   companyAddress2: "",
-  companyCountry: "United States",
+  companyCountry: "India",
   billTo: "Bill To:",
   clientName: "",
   clientAddress: "",
   clientAddress2: "",
-  clientCountry: "United States",
+  clientCountry: "India",
   poNoLabel: "PO NO : ",
   poNo: "",
   poDate: "",
@@ -73,7 +75,7 @@ export const initialInvoice: Invoice = {
 };
 
 export const initialInvoiceNew: InvoiceNew = {
-  logo: "",
+  logo: logoImage,
   logoWidth: 100,
   title: "INVOICE",
   companyName: `SCM AI-PACKS Private Limited
@@ -86,17 +88,17 @@ CIN - accounts@aipacks.com`,
   id: "",
   companyAddress: "",
   companyAddress2: "",
-  companyCountry: "United States",
+  companyCountry: "India",
   billTo: "Bill To:",
   clientName: "",
   clientAddress: "",
   clientAddress2: "",
-  clientCountry: "United States",
+  clientCountry: "India",
   shipTo: "Ship To:",
   sclientName: "",
   sclientAddress: "",
   sclientAddress2: "",
-  sclientCountry: "United States",
+  sclientCountry: "India",
   invoiceTitle: "",
   invoiceDateLabel: "Invoice Date",
   invoiceDate: "",
