@@ -234,6 +234,7 @@ function ChangePassword() {
     <>
       {loginUserRole === "ROLE_USER" ||
       loginUserRole === "ROLE_ADMIN" ||
+      loginUserRole === "ROLE_DOCUMENT" ||
       loginUserRole === "ROLE_ALLOCATOR" ? (
         <>
           <div className="card w-full p-6 bg-base-100 shadow-xl">

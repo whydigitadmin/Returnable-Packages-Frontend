@@ -58,6 +58,7 @@ function ProfileSettings() {
       <div>
         {(role === "ROLE_USER" ||
           role === "ROLE_ADMIN" ||
+          role === "ROLE_DOCUMENT" ||
           role === "ROLE_ALLOCATOR") && (
           <div className="card p-6 bg-base-100 shadow-xl">
             <div className="row">
