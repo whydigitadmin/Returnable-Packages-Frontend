@@ -1,846 +1,549 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
-import { useReactToPrint } from "react-to-print";
-import axios from "axios";
-import { IoMdClose } from "react-icons/io";
-import EditIcon from "@mui/icons-material/Edit";
-import QRCode from "qrcode.react";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import GetAppIcon from "@mui/icons-material/GetApp";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import IconButton from "@mui/material/IconButton";
-import RetrievalManifestProvider from "../RetrievalManifestProvider/RetrievalManifestProvider";
-import { Link } from "react-router-dom";
-import { FaArrowCircleLeft } from "react-icons/fa";
-import InvoiceProvider from "./InvoiceProvider";
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/system";
+import React, { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
 
-export const InvoiceManifest = () => {
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  backgroundColor: "white",
+  color: "black",
+  fontWeight: "bold",
+  border: "1px solid black",
+  "@media print": {
+    border: "1px solid black",
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "@media print": {
+    border: "1px solid black",
+  },
+}));
+const StyledTable = styled(Table)(({ theme }) => ({
+  "@media print": {
+    border: "1px solid black",
+  },
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  [`@media print`]: {
+    border: "none",
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiInputBase-input": {
+      padding: 0,
+    },
+  },
+}));
+
+const StyledTableCellActions = styled(StyledTableCell)(({ theme }) => ({
+  "@media print": {
+    display: "none",
+  },
+}));
+
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  "@media print": {
+    display: "none",
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  "@media print": {
+    display: "none",
+  },
+}));
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  "@media print": {
+    boxShadow: "none",
+  },
+}));
+
+const PurchaseOrder = React.forwardRef((props, ref) => {
+  return (
+    <div style={{ maxWidth: 1060 }}>
+      <Paper
+        ref={ref}
+        elevation={3}
+        sx={{ padding: 4, fontFamily: "Roboto, sans-serif" }}
+      >
+        <Container>
+          <Box sx={{ mb: 3 }}>
+            <Grid container spacing={2}>
+              {/* Left Box */}
+              <Grid item xs={2}>
+                <img src="/AI_Packs.png" style={{ width: "150px" }}></img>
+              </Grid>
+              <Grid item xs={5}>
+                <StyledTextField
+                  fullWidth
+                  variant="outlined"
+                  multiline
+                  className="mt-3"
+                  value={props.companyAddress}
+                  onChange={(e) => props.setCompanyAddress(e.target.value)}
+                  sx={{ mb: 1 }}
+                />
+              </Grid>
+
+              {/* Right Box */}
+              <Grid item xs={5} sx={{ textAlign: "right" }}>
+                <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                  INVOICE
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                <Box sx={{ flexBasis: "30%", maxWidth: 200 }}>
+                  <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                    Invoice No:
+                  </Typography>
+                  <StyledTextField
+                    fullWidth
+                    size="small"
+                    variant="outlined"
+                    value={props.invoiceNumber}
+                    onChange={(e) => props.setInvoiceNumber(e.target.value)}
+                    sx={{ fontWeight: "bold" }}
+                  />
+                </Box>
+
+                <Box sx={{ flexBasis: "30%", maxWidth: 200 }}>
+                  <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                    Invoice Date:
+                  </Typography>
+                  <StyledTextField
+                    fullWidth
+                    size="small"
+                    variant="outlined"
+                    value={props.invoiceDate}
+                    onChange={(e) => props.setInvoiceDate(e.target.value)}
+                    sx={{ fontWeight: "bold" }}
+                  />
+                </Box>
+
+                <Box sx={{ flexBasis: "30%", maxWidth: 200 }}>
+                  <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                    Terms:
+                  </Typography>
+                  <StyledTextField
+                    fullWidth
+                    size="small"
+                    variant="outlined"
+                    value={props.terms}
+                    onChange={(e) => props.setItems(e.target.value)}
+                    sx={{ fontWeight: "bold" }}
+                  />
+                </Box>
+
+                <Box sx={{ flexBasis: "30%", maxWidth: 200 }}>
+                  <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                    Due Date:
+                  </Typography>
+                  <StyledTextField
+                    fullWidth
+                    size="small"
+                    variant="outlined"
+                    value={props.dueDate}
+                    onChange={(e) => props.setDueDate(e.target.value)}
+                    sx={{ fontWeight: "bold" }}
+                  />
+                </Box>
+
+                <Box sx={{ flexBasis: "30%", maxWidth: 200 }}>
+                  <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                    Service Month:
+                  </Typography>
+                  <StyledTextField
+                    fullWidth
+                    size="small"
+                    variant="outlined"
+                    value={props.serviceMonth}
+                    onChange={(e) => props.setServiceMonth(e.target.value)}
+                    sx={{ fontWeight: "bold" }}
+                  />
+                </Box>
+              </Box>
+            </Grid>
+          </Grid>
+
+          <Grid container spacing={2} sx={{ mb: 3 }}>
+            <Grid item xs={6}>
+              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+                Bill To
+              </Typography>
+              <StyledTextField
+                fullWidth
+                variant="outlined"
+                multiline
+                value={props.billTo}
+                onChange={(e) => props.setBillTo(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+                Ship To:
+              </Typography>
+              <StyledTextField
+                fullWidth
+                variant="outlined"
+                multiline
+                value={props.deliveryAddress}
+                onChange={(e) => props.setDeliveryAddress(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+            </Grid>
+          </Grid>
+
+          <StyledTableContainer component={Paper} sx={{ mb: 3 }}>
+            <StyledTable>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell>S.No</StyledTableCell>
+                  <StyledTableCell>Item & Description</StyledTableCell>
+                  <StyledTableCell>Qty</StyledTableCell>
+                  <StyledTableCell>Rate</StyledTableCell>
+                  <StyledTableCell>Amount</StyledTableCell>
+                  <StyledTableCellActions>Actions</StyledTableCellActions>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {props.items.map((item, index) => (
+                  <StyledTableRow key={index}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>
+                      <StyledTextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        value={item.description}
+                        onChange={(e) =>
+                          props.handleItemChange(
+                            index,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <StyledTextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        type="number"
+                        value={item.qty}
+                        onChange={(e) =>
+                          props.handleItemChange(index, "qty", e.target.value)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>
+                      <StyledTextField
+                        fullWidth
+                        variant="outlined"
+                        size="small"
+                        type="number"
+                        value={item.rate}
+                        onChange={(e) =>
+                          props.handleItemChange(index, "rate", e.target.value)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell>{item.amount.toFixed(2)}</TableCell>
+                    <StyledTableCellActions>
+                      <StyledIconButton
+                        onClick={() => props.handleDeleteRow(index)}
+                        color="error"
+                      >
+                        <DeleteIcon />
+                      </StyledIconButton>
+                    </StyledTableCellActions>
+                  </StyledTableRow>
+                ))}
+              </TableBody>
+            </StyledTable>
+          </StyledTableContainer>
+
+          <StyledButton
+            variant="contained"
+            color="primary"
+            startIcon={<AddCircleOutlineIcon />}
+            onClick={props.handleAddRow}
+            sx={{ mb: 3 }}
+          >
+            Add Row
+          </StyledButton>
+
+          <Box sx={{ textAlign: "right", mb: 2 }}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={props.gstType === "inter"}
+                  onChange={() => props.handleGstCalculation("inter")}
+                />
+              }
+              label="Inter GST"
+            />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={props.gstType === "intra"}
+                  onChange={() => props.handleGstCalculation("intra")}
+                />
+              }
+              label="Intra GST"
+            />
+          </Box>
+
+          {/* GST Calculation Result */}
+          <Box sx={{ textAlign: "right", mb: 3 }}>
+            <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+              Subtotal: ₹ {props.subtotal.toFixed(2)}
+            </Typography>
+            {props.gstType === "intra" && (
+              <>
+                <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                  SGST (9%): ₹ {props.sgst.toFixed(2)}
+                </Typography>
+                <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                  CGST (9%): ₹ {props.cgst.toFixed(2)}
+                </Typography>
+              </>
+            )}
+            {props.gstType === "inter" && (
+              <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                IGST (18%): ₹ {props.igst.toFixed(2)}
+              </Typography>
+            )}
+            <Typography sx={{ fontWeight: "bold", mt: 2 }}>
+              Total: ₹ {props.total.toFixed(2)}
+            </Typography>
+          </Box>
+
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+              Terms & Conditions:
+            </Typography>
+            <Typography variant="body2">
+              1. The payment should be made by way of Account Payee Cheque /
+              Demand Draft / NEFT / RTGS in the name of “SCM AIPACKS PVT LTD”
+            </Typography>
+            <Typography variant="body2">
+              2. Any Discrepancy in the invoice shall be informed within 7 days
+              of the invoice submission.
+            </Typography>
+            <Typography variant="body2">
+              3. Interest at 2% p.m. or part thereof will be charged if the bill
+              is not paid on the due date.
+            </Typography>
+            <Typography variant="body2">
+              4. Any dispute is subject to Bangalore Jurisdiction.
+            </Typography>
+          </Box>
+
+          <Box sx={{ textAlign: "left", mt: 4, mb: 3 }}>
+            <Typography variant="body1">
+              Authorized Signature: ________________________________
+            </Typography>
+          </Box>
+
+          <Box sx={{ textAlign: "left", mb: 3 }}>
+            <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+              Bank Name: KOTAK MAHINDRA BANK LIMITED
+            </Typography>
+            <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+              Account Name: SCM AIPACKS PVT LTD
+            </Typography>
+            <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+              Account No: 786786787
+            </Typography>
+            <Typography sx={{ fontWeight: "bold", mt: 2 }}>
+              IFSC: KKBK675465
+            </Typography>
+          </Box>
+        </Container>
+      </Paper>
+    </div>
+  );
+});
+
+const InvoiceManifest = () => {
   const componentRef = useRef();
-  const [qrCodeValue, setQrCodeValue] = useState([]);
-  const [watermark, setWatermark] = useState("");
-  const [addRim, setAddRim] = useState(false);
-  const [editRim, setEditRim] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState(null);
-  const [pdfData, setPdfData] = useState("");
-  const [data, setData] = React.useState([]);
-  const [terms, setTerms] = React.useState([]);
-  const [productDetails, setProductDetails] = React.useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const userDetails = localStorage.getItem("userDetails");
 
-  useEffect(() => {
-    getAllRetrievalManifestProvider();
-    getAllDeclarationAndNotes();
-  }, []);
+  // State for editable fields
+  const [companyAddress, setCompanyAddress] = useState(
+    "SCM AI-PACKS Private Limited\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore - 560010"
+  );
+  const [billTo, setBillTo] = useState(
+    "XYZ Packaging Solutions\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore\nGSTIN: 29AACCU1713L1ZY"
+  );
+  const [deliveryAddress, setDeliveryAddress] = useState(
+    "SCM AI-PACKS Private Limited\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore - 560010"
+  );
+  const [invoiceNumber, setInvoiceNumber] = useState("AIP/24-25/119");
+  const [invoiceDate, setInvoiceDate] = useState("01/08/2024");
+  const [terms, setTerms] = useState("Net 30");
+  const [dueDate, setDueDate] = useState("01/09/2024");
+  const [serviceMonth, setServiceMonth] = useState("June & July 2024");
+  const [items, setItems] = useState([
+    {
+      description: "Item 1 Description",
+      qty: 424,
+      rate: 619.0,
+      amount: 424 * 619.0,
+    },
+    {
+      description: "Item 2 Description",
+      qty: 1672,
+      rate: 617.0,
+      amount: 1672 * 617.0,
+    },
+  ]);
 
-  const getAllRetrievalManifestProvider = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllRetrievalManifestProvider`
-      );
+  const [subtotal, setSubtotal] = useState(0);
+  const [sgst, setSgst] = useState(0);
+  const [cgst, setCgst] = useState(0);
+  const [total, setTotal] = useState(0);
 
-      if (response.status === 200) {
-        setData(
-          response.data.paramObjectsMap.retrievalManifestProviderVOs.reverse()
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  const [gstType, setGstType] = useState(""); // "inter" or "intra"
+  const [igst, setIgst] = useState(0);
+
+  // Function to handle GST calculation
+  const handleGstCalculation = (type) => {
+    setGstType(type);
+    const gstRate = 0.18;
+    const halfGstRate = gstRate / 2;
+
+    let calculatedIgst = 0;
+    let calculatedCgst = 0;
+    let calculatedSgst = 0;
+
+    if (type === "inter") {
+      calculatedIgst = subtotal * gstRate;
+      calculatedCgst = 0;
+      calculatedSgst = 0;
+    } else if (type === "intra") {
+      calculatedIgst = 0;
+      calculatedCgst = subtotal * halfGstRate;
+      calculatedSgst = subtotal * halfGstRate;
     }
-  };
-  const getAllDeclarationAndNotes = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllDeclarationAndNotes`
-      );
 
-      if (response.status === 200) {
-        setTerms(response.data.paramObjectsMap.declarationAndNotesVO[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+    setIgst(calculatedIgst);
+    setCgst(calculatedCgst);
+    setSgst(calculatedSgst);
+    setTotal(subtotal + calculatedIgst + calculatedCgst + calculatedSgst);
   };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
-    onBeforeGetContent: () => {
-      const printDateTimeElement = document.createElement("div");
-      printDateTimeElement.className = "print-datetime";
-      printDateTimeElement.innerHTML = `
-        <div class="d-flex justify-content-between mt-5 mb-5">
-          <div class="ms-5">
-            Printed By: ${pdfData.receiver}
-          </div>
-          <div class="me-5">
-            Printed On: ${new Date().toLocaleString()}
-          </div>
-        </div>
-      `;
-      componentRef.current.appendChild(printDateTimeElement);
-      return new Promise((resolve) => setTimeout(() => resolve(), 100));
-    },
-    onAfterPrint: () => {
-      const printDateTimeElement =
-        componentRef.current.querySelector(".print-datetime");
-      if (printDateTimeElement) {
-        componentRef.current.removeChild(printDateTimeElement);
-      }
-    },
+    documentTitle: "Purchase_Order",
   });
 
-  const handlePrintWithWatermark = (watermarkText) => {
-    setWatermark(watermarkText);
-    setTimeout(() => {
-      handlePrint();
-    }, 100);
-  };
-
-  const handleDownloadClick = (row) => {
-    getRetrievalManifestProviderById(row.original.id);
-    setOpenDialog(true);
-  };
-
-  const handleEditRow = (row) => {
-    getRetrievalManifestProviderById(row.original.id);
-    setSelectedRowId(row.original.id);
-    setEditRim(true);
-  };
-
-  const handleBack = () => {
-    setAddRim(false);
-    setEditRim(false);
-    getAllRetrievalManifestProvider();
-  };
-
-  const columns = useMemo(
-    () => [
+  const handleAddRow = () => {
+    setItems([
+      ...items,
       {
-        accessorKey: "actions",
-        header: "Actions",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-        enableSorting: false,
-        enableColumnOrdering: false,
-        enableEditing: false,
-        Cell: ({ row }) => (
-          <div>
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => handleDownloadClick(row)}>
-              <GetAppIcon />
-            </IconButton>
-          </div>
-        ),
+        description: "",
+        qty: 0,
+        rate: 0,
+        amount: 0,
       },
-
-      {
-        accessorKey: "sender",
-        header: "Sender",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "transactionNo",
-        header: "Transaction No",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "transactionDate",
-        header: "Transaction Date",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-    ],
-    []
-  );
-
-  const table = useMaterialReactTable({
-    data,
-    columns,
-  });
-
-  const transformProductDetails = (details) => {
-    const groupedDetails = details.reduce((acc, detail) => {
-      const existingKit = acc.find((kit) => kit.kitId === detail.kitId);
-      const asset = {
-        assetCode: detail.assetCode,
-        assetName: detail.asset,
-        assetQty: detail.assetQty,
-      };
-
-      if (existingKit) {
-        existingKit.assets.push(asset);
-      } else {
-        acc.push({
-          kitId: detail.kitId,
-          kitName: detail.kitName,
-          kitQty: detail.kitQty,
-          hsnCode: detail.hsnCode,
-          assets: [asset],
-        });
-      }
-
-      return acc;
-    }, []);
-
-    return groupedDetails;
+    ]);
   };
 
-  const getRetrievalManifestProviderById = async (selectedRowId) => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getRetrievalManifestProviderById?id=${selectedRowId}`
-      );
-      if (response.status === 200) {
-        const rimData =
-          response.data.paramObjectsMap.retrievalManifestProviderVO;
-        setPdfData(rimData);
-        const transformedDetails = transformProductDetails(
-          rimData.retrievalManifestProviderDetailsVOs
-        );
-        setProductDetails(transformedDetails);
-        const concatenatedData = {
-          TransactionNo: rimData.transactionNo,
-          TransactionDate: rimData.transactionDate,
-          DispatchDate: rimData.dispatchDate,
-          Sender: rimData.sender,
-        };
-
-        const formattedData = `
-TransactionNo: ${concatenatedData.TransactionNo},
-TransactionDate: ${concatenatedData.TransactionDate},
-DispatchDate: ${concatenatedData.DispatchDate},
-Sender: ${concatenatedData.Sender}
-`;
-
-        setQrCodeValue(formattedData);
-        console.log("THE QRCODE DATA IS:", formattedData);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
+  const handleDeleteRow = (index) => {
+    const newItems = items.filter((item, i) => i !== index);
+    setItems(newItems);
   };
+
+  const handleItemChange = (index, field, value) => {
+    const newItems = [...items];
+    newItems[index][field] = value;
+    newItems[index].amount = newItems[index].qty * newItems[index].rate;
+    setItems(newItems);
+  };
+
+  useEffect(() => {
+    const calcSubtotal = items.reduce((acc, item) => acc + item.amount, 0);
+    const calcSgst = calcSubtotal * 0.09;
+    const calcCgst = calcSubtotal * 0.09;
+    const calcTotal = calcSubtotal + calcSgst + calcCgst;
+    setSubtotal(calcSubtotal);
+    setSgst(calcSgst);
+    setCgst(calcCgst);
+    setTotal(calcTotal);
+  }, [items]);
 
   return (
-    <>
-      <div style={{ maxWidth: 1060 }} className="ml-auto me-auto">
-        <div>
-          {(addRim && <InvoiceProvider addRim={handleBack} />) ||
-            (editRim && (
-              <InvoiceProvider addRim={handleBack} rimId={selectedRowId} />
-            )) || (
-              <div className="card w-full p-6 bg-base-100 shadow-xl">
-                {/* BULK UPLOAD AND ADD NEW BUTTON */}
-                <div className="">
-                  {userDetails === "ROLE_DOCUMENT" ? (
-                    <div className="d-flex justify-content-between mb-4">
-                      <div className="d-flex align-items-center ms-2">
-                        <Link to="/app/welcomedocumentuser">
-                          <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                        </Link>
-                        <p className="text-2xl">
-                          <strong className="ml-4">
-                            Retrieval Issue Manifest
-                          </strong>
-                        </p>
-                      </div>
-                      <div>
-                        <button
-                          className="btn btn-ghost btn-lg text-sm col-xs-1"
-                          style={{ color: "blue" }}
-                          onClick={() => setAddRim(true)}
-                        >
-                          <img
-                            src="/new.png"
-                            alt="pending-status-icon"
-                            title="add"
-                            style={{
-                              width: 30,
-                              height: 30,
-                              margin: "auto",
-                              hover: "pointer",
-                            }}
-                          />
-                          <span
-                            className="text-form text-base"
-                            style={{ marginLeft: "10px" }}
-                          >
-                            RIM
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="d-flex justify-content-end mb-4">
-                      <button
-                        className="btn btn-ghost btn-lg text-sm col-xs-1"
-                        style={{ color: "blue" }}
-                        onClick={() => setAddRim(true)}
-                      >
-                        <img
-                          src="/new.png"
-                          alt="pending-status-icon"
-                          title="add"
-                          style={{
-                            width: 30,
-                            height: 30,
-                            margin: "auto",
-                            hover: "pointer",
-                          }}
-                        />
-                        <span
-                          className="text-form text-base"
-                          style={{ marginLeft: "10px" }}
-                        >
-                          Invoice
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* LISTVIEW TABLE */}
-                <div className="">
-                  <MaterialReactTable table={table} />
-                </div>
-              </div>
-            )}
-          <Dialog
-            open={openDialog}
-            onClose={() => setOpenDialog(false)}
-            fullWidth
-            maxWidth="xl"
-          >
-            <DialogContent>
-              <style>
-                {`
-              @media print {
-                /* Scale the table content down to fit on the screen */
-                .print-scale {
-              transform: scale(0.9);
-              transform-origin: top left;
-              width: calc(100% / 0.9);
-            }
-
-                .container-sm {
-                  width: 100%;
-                  max-width: 100%;
-                }
-                .card {
-                  box-shadow: none;
-                  border: none;
-                  width: 100%;
-                  page-break-inside: avoid;
-                }
-                .row {
-                  display: flex;
-                  flex-wrap: wrap;
-                }
-                .size {
-                  font-size: 12px;
-                }
-                .col-md-12 {
-                  font-size: 12px;
-                }
-                .col-md-6 {
-                  flex: 0 0 50%;
-                  max-width: 50%;
-                }
-                .col-md-5 {
-                  flex: 0 0 40%;
-                  max-width: 40%;
-                }
-                .col-md-4 {
-                  flex: 0 0 40%;
-                  max-width: 40%;
-                }
-                .col-md-3 {
-                  flex: 0 0 20%;
-                  max-width: 20%;
-                }
-                .text-xl {
-                  font-size: 20px;
-                  margin-top: 0;
-                  margin-bottom: 0.5rem;
-                }
-                .text-center {
-                  text-align: center;
-                }
-                .font-weight-bold {
-                  font-weight: bold;
-                }
-                .table {
-                  width: 100%;
-                  margin-bottom: 1rem;
-                  color: #212529;
-                  border-collapse: collapse;
-                }
-                .table-bordered {
-                  border-collapse: collapse;
-                }
-                .table-bordered th,
-                .table-bordered td {
-                  border: 1px solid #dee2e6;
-                  padding: 0.5rem;
-                  vertical-align: middle;
-                }
-                .mt-5 {
-                  margin-top: 3rem !important;
-                }
-                /* Reduce font size for table cells */
-                .table td,
-                .table th {
-                  font-size: 11px;
-                }
-
-                .watermark.cross {
-                  position: fixed;
-                  opacity: 0.4;
-                  font-size: 4em;
-                  color: #ccc;
-                  z-index: 9999;
-                  pointer-events: none;
-                  top: 50%;
-                  left: 50%;
-                  transform: translate(-50%, -50%) rotate(-45deg);
-                  transform-origin: center center;
-                  white-space: nowrap;
-                }
-
-                /* Hide non-print elements */
-                .non-print {
-                  display: none;
-                }
-              }
-            `}
-              </style>
-              <div className="d-flex justify-content-end">
-                <div className="mr-5">
-                  <button
-                    className="me-2 bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    onClick={() => handlePrintWithWatermark("Consignee Copy")}
-                    style={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    Consignee Copy
-                  </button>
-                  <button
-                    className="me-2 bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    onClick={() => handlePrintWithWatermark("Transporter Copy")}
-                    style={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    Transporter Copy
-                  </button>
-                  <button
-                    className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    onClick={() => handlePrintWithWatermark("Consignor Copy")}
-                    style={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    Consignor Copy
-                  </button>
-                </div>
-
-                <div className="">
-                  <IoMdClose
-                    onClick={() => setOpenDialog(false)}
-                    className="cursor-pointer w-8 h-8 mb-3"
-                  />
-                </div>
-              </div>
-              <div className="print-scale" ref={componentRef}>
-                <div className="container-sm">
-                  <div className="card bg-base-100 shadow-xl p-4">
-                    <div className="d-flex justify-content-between">
-                      <div>
-                        <img
-                          src="/AI_Packs.png"
-                          alt="Your Image"
-                          style={{ width: "150px" }}
-                        />
-                      </div>
-
-                      <div className="text-center mt-5">
-                        <h1 className="text-xl">
-                          <strong>{pdfData.receiver}</strong>
-                        </h1>
-                        <br />
-                        <h3>
-                          <strong>Retrieval Issue Manifest</strong>
-                        </h3>
-                      </div>
-                      <div className="mr-3 mt-4">
-                        {qrCodeValue && (
-                          <QRCode value={qrCodeValue} size={120} />
-                        )}
-                      </div>
-                    </div>
-
-                    <hr />
-
-                    <div className="d-flex flex-column mt-2">
-                      <div className="d-flex flex-row me-5">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Transaction No:
-                        </div>
-                        <div>{pdfData.transactionNo}</div>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Transaction Date:
-                        </div>
-                        <div>{pdfData.transactionDate}</div>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Dispatch Date:
-                        </div>
-                        <div>{pdfData.dispatchDate}</div>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Transaction Type:
-                        </div>
-                        <div>{pdfData.transactionType}</div>
-                      </div>
-                    </div>
-
-                    {/* Sender and Receiver details */}
-                    <div className="row mt-2">
-                      <div className="col-lg-6 col-md-6 col-sm-12">
-                        <div className="d-flex justify-content-start">
-                          <div className="d-flex flex-column justify-content-between ms-2 me-4">
-                            <div className="mb-2 font-semibold">Sender:</div>
-                            <div className="mb-2 font-semibold">Address:</div>
-                            <div className="mb-2 font-semibold">GST:</div>
-                          </div>
-                          <div className="d-flex flex-column">
-                            {/* <div className="mb-3">{headerData.senderName}</div> */}
-                            <div className="mb-2">{pdfData.sender}</div>
-                            <div className="mb-2">
-                              {pdfData.senderAddress}
-                              <br />
-                            </div>
-                            <div className="mb-2">{pdfData.senderGst}</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6 col-sm-12">
-                        <div className="d-flex">
-                          <div className="d-flex flex-column justify-content-between ms-2 me-4">
-                            <div className="mb-2 font-semibold">Receiver:</div>
-                            <div className="mb-2 font-semibold">Address:</div>
-                            <div className="mb-2 font-semibold"></div>
-                          </div>
-                          <div className="d-flex flex-column">
-                            <div className="mb-2">{pdfData.receiver}</div>
-                            <div className="mb-2">
-                              {pdfData.receiverAddress}
-                              <br />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="d-flex row mt-2">
-                      {/* Responsive table */}
-                      <div className="print-table-container">
-                        <div className="table-responsive">
-                          <table
-                            className="table table-bordered"
-                            style={{ borderCollapse: "collapse" }}
-                          >
-                            <thead>
-                              <tr>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Kit ID
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Kit Name
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  KIT QTY
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  HSN Code
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                    width: 30,
-                                  }}
-                                >
-                                  Product
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Product Code
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Product QTY
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {productDetails.length > 0 &&
-                                productDetails.map((row) => {
-                                  const assetCount = row.assets.length;
-                                  return row.assets.map((asset, index) => (
-                                    <tr key={`${row.kitId}-${index}`}>
-                                      {index === 0 && (
-                                        <>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.kitId}
-                                          </td>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.kitName}
-                                          </td>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.kitQty}
-                                          </td>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.hsnCode}
-                                          </td>
-                                        </>
-                                      )}
-                                      <td
-                                        style={{
-                                          border: "2px solid black",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        {asset.assetName}
-                                      </td>
-                                      <td
-                                        style={{
-                                          border: "2px solid black",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        {asset.assetCode}
-                                      </td>
-                                      <td
-                                        style={{
-                                          border: "2px solid black",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        {asset.assetQty}
-                                      </td>
-                                    </tr>
-                                  ));
-                                })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Other Details */}
-                    <div className="mt-2">
-                      <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-justify-content-between me-4">
-                          <div
-                            className="d-flex flex-column"
-                            style={{ width: 150 }}
-                          >
-                            <div className="mb-2 font-semibold">
-                              Transporter:
-                            </div>
-                            <div className="mb-2 font-semibold">
-                              Vehicle No:
-                            </div>
-                            <div className="mb-2 font-semibold">Driver No:</div>
-                          </div>
-                          <div className="d-flex flex-column">
-                            <div className="mb-2 font-normal">
-                              {pdfData.transporterName}
-                            </div>
-                            <div className="mb-2 font-normal">
-                              {pdfData.vehicleeNo}
-                            </div>
-                            <div className="mb-2 font-normal">
-                              {pdfData.driverPhoneNo}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <hr />
-
-                    {/* Declaration */}
-                    <div className="row mt-3 mb-2">
-                      <div className="col-lg-2">
-                        <strong style={{ width: 225 }}>Declaration:</strong>
-                      </div>
-                      <div className="col-lg-10">
-                        <p>
-                          {terms.declaration}
-                          {/* The packaging products given on hire shall always remain
-                      the property of SCM AI-PACKS Private Limited and shall not
-                      be used for the purpose otherwise agreed upon. The same
-                      shall be returned at the address notified by SCM AI-PACKS
-                      Private Limited. */}
-                        </p>
-                      </div>
-                    </div>
-                    {/* Note */}
-                    <div className="row mb-3">
-                      <div className="col-lg-2">
-                        <strong style={{ width: 225 }}>Note:</strong>
-                      </div>
-                      <div className="col-lg-10">
-                        <p>
-                          {terms.note1}
-                          {/* 1.The goods listed in the above manifest are used empty
-                      packaging issued to customer on a daily hire basis. The
-                      service is packaging on{" "}
-                      <strong>rental model and not sale to customer.</strong> */}
-                          <strong>{terms.note1Bold}</strong>
-                          <br />
-                          {terms.note2}
-                          {/* 2. No E-Way Bill is required for Empty Cargo Containers.
-                      Refer, Rule 14 of Central Goods and Services Tax (Second
-                      Amendment) Rules, 2018. */}
-                        </p>
-                      </div>
-                    </div>
-                    <hr />
-                    {/* Signatures */}
-                    <div className="d-flex justify-content-between mt-4 mb-5">
-                      <div className="ms-5">
-                        <strong className="size">For Sending Location:</strong>
-                      </div>
-                      <div className="me-5">
-                        <strong className="size">
-                          For Receiving Location :
-                        </strong>
-                      </div>
-                    </div>
-                    <div className="d-flex justify-content-between mt-5 mb-5">
-                      <div className="d-flex flex-column">
-                        <div className="ms-5">
-                          <strong className="size">
-                            Authorized Signature:
-                          </strong>
-                        </div>
-                        <div className="ms-4">(Company Seal & Signature)</div>
-                      </div>
-                      <div className="d-flex flex-column">
-                        <div className="ms-4">
-                          <strong className="size">
-                            Authorized Signature:
-                          </strong>
-                        </div>
-                        <div className="me-5">(Company Seal & Signature)</div>
-                      </div>
-                    </div>
-                    <div className={`watermark cross`}>{watermark}</div>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
-        </div>
+    <Container>
+      <div className="text-right mb-3">
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handlePrint}
+          sx={{ mt: 3 }}
+        >
+          Print Invoice
+        </Button>
       </div>
-    </>
+
+      <PurchaseOrder
+        ref={componentRef}
+        companyAddress={companyAddress}
+        setCompanyAddress={setCompanyAddress}
+        billTo={billTo}
+        setBillTo={setBillTo}
+        deliveryAddress={deliveryAddress}
+        setDeliveryAddress={setDeliveryAddress}
+        invoiceNumber={invoiceNumber}
+        setInvoiceNumber={setInvoiceNumber}
+        invoiceDate={invoiceDate}
+        setInvoiceDate={setInvoiceDate}
+        terms={terms}
+        setTerms={setTerms}
+        dueDate={dueDate}
+        setDueDate={setDueDate}
+        serviceMonth={serviceMonth}
+        setServiceMonth={setServiceMonth}
+        items={items}
+        handleItemChange={handleItemChange}
+        handleDeleteRow={handleDeleteRow}
+        handleAddRow={handleAddRow}
+        subtotal={subtotal}
+        sgst={sgst}
+        cgst={cgst}
+        igst={igst}
+        gstType={gstType}
+        total={total}
+        handleGstCalculation={handleGstCalculation}
+      />
+    </Container>
   );
 };
 
