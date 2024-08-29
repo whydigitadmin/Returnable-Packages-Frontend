@@ -196,7 +196,7 @@ function WelcomeDocumentUser() {
                   </Link>
                 </div>
                 <div className="col-lg-12">
-                  <Link to="/app/invoiceGenerator">
+                  <Link to="/app/purchaseorder">
                     <div
                       className="card bg-base-100 shadow-xl mb-2  pt-3 pb-3 pl-3 mt-2 transition duration-300 ease-in-out"
                       style={{
@@ -227,7 +227,7 @@ function WelcomeDocumentUser() {
                   </Link>
                 </div>
                 <div className="col-lg-12">
-                  <Link to="/app/invoiceGeneratorOriginal">
+                  <Link to="/app/invoice">
                     <div
                       className="card bg-base-100 shadow-xl mb-2  pt-3 pb-3 pl-3 mt-2 transition duration-300 ease-in-out"
                       style={{
