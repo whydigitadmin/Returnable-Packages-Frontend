@@ -35,6 +35,12 @@ const RetrievalIssueManifest = lazy(
 const RetrievalManifestProvider = lazy(
   () => import("../pages/protected/RetrievalManifestProvider")
 );
+const PurchaseOrderProvider = lazy(
+  () => import("../pages/protected/PurchaseOrderProvider")
+);
+const InvoiceProvider = lazy(
+  () => import("../pages/protected/InvoiceProvider")
+);
 const IssueManifestProvider = lazy(
   () => import("../pages/protected/IssueManifestProvider")
 );
@@ -300,6 +306,14 @@ const routes = [
   {
     path: "/retrievalmanifestprovider",
     component: RetrievalManifestProvider,
+  },
+  {
+    path: "/invoice",
+    component: InvoiceProvider,
+  },
+  {
+    path: "/purchaseOrder",
+    component: PurchaseOrderProvider,
   },
   {
     path: "/inwardmanifestdetails",
