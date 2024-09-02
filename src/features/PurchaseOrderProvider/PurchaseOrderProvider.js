@@ -1,1077 +1,855 @@
-import * as React from "react";
-import { default as Axios, default as axios } from "axios";
-import { useEffect, useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import Button from "@mui/material/Button";
-import Dialog from "@mui/material/Dialog";
-import DialogActions from "@mui/material/DialogActions";
-import DialogContent from "@mui/material/DialogContent";
-import DialogContentText from "@mui/material/DialogContentText";
-import DialogTitle from "@mui/material/DialogTitle";
-import dayjs from "dayjs";
-import { FaTrash } from "react-icons/fa";
-import { IoMdClose } from "react-icons/io";
-import { ToastContainer, toast } from "react-toastify";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { DesktopDatePicker } from "@mui/x-date-pickers/DesktopDatePicker";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-  stringAndNoAndSpecialCharValidation,
-  stringValidation,
-} from "../../utils/userInputValidation";
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/system";
+import axios from "axios";
+import dayjs from "dayjs";
+import numberToWords from "number-to-words";
+import React, { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import PoList from "./PoList";
 
-function PurchaseOrderProvider({ addRim, rimId }) {
-  const [rimData, setRimData] = useState([]);
-  const [transactionNo, setTransactionNo] = useState("");
-  const [transactionDate, setTransactionDate] = useState(dayjs());
-  const [dispatchDate, setDispatchDate] = useState(null);
-  const [transactionType, setTransactionType] = useState("Retrieval Docket");
-  const [sender, setSender] = useState("SCM AI-PACKS PVT LIMITED");
-  const [warehouse, setWarehouse] = useState("");
-  const [warehouseVO, setWarehouseVO] = useState([]);
-  const [senderAddress, setSenderAddress] = useState("");
-  const [receiver, setReceiver] = useState("");
-  const [receiverName, setReceiverName] = useState("");
-  const [receiverAddress, setReceiverAddress] = useState("");
-  const [receiverGst, setReceiverGst] = useState("");
-  const [transporterName, setTransporterName] = useState("");
-  const [vehicleNo, setVehicleNo] = useState("");
-  const [driverNo, setDriverNo] = useState("");
-  const [kitId, setKitId] = useState("");
-  const [kitQty, setKitQty] = useState("");
-  const [hsnCode, setHsnCode] = useState("");
-  const [errors, setErrors] = useState({});
-  const [emitterCustomersVO, setEmitterCustomersVO] = useState([]);
-  const [senderVO, setSenderVO] = useState([]);
-  const [kitVO, setKitVO] = useState([]);
-  const [selectedKit, setSelectedKit] = useState(null);
-  const [openKitModal, setOpenKitModal] = useState(false);
-  const [openConfirmationDialog, setOpenConfirmationDialog] = useState(false);
-  const [kitDetails, setKitDetails] = useState([]);
-  const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
-  const [userName, setUserName] = React.useState(
-    localStorage.getItem("userName")
-  );
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  backgroundColor: "white",
+  color: "black",
+  fontWeight: "bold",
+  border: "1px solid black", // Ensure borders are applied to all sides
+  "@media print": {
+    border: "1px solid black", // Ensure borders are visible when printing
+  },
+}));
 
-  useEffect(() => {
-    if (rimId) {
-      getRetrievalManifestProviderById();
-    }
-    getCustomersList();
-    getWarehouseData();
-    getAllUsersData();
-    getAllKitData();
-  }, []);
+const StyledTableCellActions = styled(StyledTableCell)(({ theme }) => ({
+  "@media print": {
+    display: "none", // hide Actions cell when printing
+  },
+}));
 
-  const getRetrievalManifestProviderById = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getRetrievalManifestProviderById?id=${rimId}`
-      );
-      if (response.status === 200) {
-        const editRimData =
-          response.data.paramObjectsMap.retrievalManifestProviderVO;
-        setRimData(editRimData);
-        setTransactionNo(editRimData.transactionNo);
-        setTransactionDate(dayjs(editRimData.transactionDate));
-        setDispatchDate(dayjs(editRimData.dispatchDate));
-        setTransactionType(editRimData.transactionType);
-        setSenderAddress(editRimData.senderAddress);
-        setReceiverName(editRimData.receiver);
-        setReceiverAddress(editRimData.receiverAddress);
-        setReceiverGst(editRimData.senderGst);
-        setSender(editRimData.sender);
-        setTransporterName(editRimData.transporterName);
-        setVehicleNo(editRimData.vehicleeNo);
-        setDriverNo(editRimData.driverPhoneNo);
-        const transformedKitDetails =
-          editRimData.retrievalManifestProviderDetailsVOs.reduce(
-            (acc, detail) => {
-              const existingKitIndex = acc.findIndex(
-                (kit) => kit.kitNo === detail.kitId
-              );
-              if (existingKitIndex !== -1) {
-                acc[existingKitIndex].assets.push({
-                  assetCodeId: detail.assetCode,
-                  assetName: detail.asset,
-                  quantity: detail.assetQty,
-                });
-              } else {
-                acc.push({
-                  kitNo: detail.kitId,
-                  kitDesc: detail.kitName,
-                  kitQty: detail.kitQty,
-                  hsnCode: detail.hsnCode,
-                  assets: [
-                    {
-                      assetCodeId: detail.assetCode,
-                      assetName: detail.asset,
-                      quantity: detail.assetQty,
-                    },
-                  ],
-                });
-              }
-              return acc;
-            },
-            []
-          );
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "@media print": {
+    border: "1px solid black", // Ensure borders are visible between rows when printing
+  },
+}));
 
-        setKitDetails(transformedKitDetails);
+const StyledTable = styled(Table)(({ theme }) => ({
+  "@media print": {
+    borderCollapse: "collapse", // Merge adjacent borders
+  },
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  [`@media print`]: {
+    border: "none",
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiInputBase-input": {
+      padding: 0,
+    },
+  },
+}));
+
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  "@media print": {
+    display: "none", // Hide the delete button when printing
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  "@media print": {
+    display: "none", // Hide the add row button when printing
+  },
+}));
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  "@media print": {
+    border: "1px solid black", // Border around the entire table container when printing
+    boxShadow: "none", // Remove shadow when printing
+  },
+}));
+
+const PurchaseOrder = React.forwardRef((props, ref) => {
+  const {
+    poNumber,
+    setPoNumber,
+    vendorAddress,
+    setVendorAddress,
+    deliveryAddress,
+    setDeliveryAddress,
+    items,
+    handleItemChange,
+    handleAddRow,
+    handleDeleteRow,
+    subtotal,
+    setSubtotal,
+    gstType,
+    handleGstCalculation,
+    setTermsAndConditions,
+    termsAndConditions,
+    isPrintMode,
+    sgst,
+    cgst,
+    igst,
+    total,
+    companyAddress,
+    setCompanyAddress,
+    editMode,
+  } = props;
+
+  const formatWithIndianCurrency = (number) => {
+    // Convert number to words
+
+    // Format number for Indian currency (Lakhs and Crores)
+    const formatIndianCurrency = (number) => {
+      if (number === 0) return "zero";
+      const crore = Math.floor(number / 10000000);
+      const lakh = Math.floor((number % 10000000) / 100000);
+      const thousand = Math.floor((number % 100000) / 1000);
+      const remainder = number % 1000;
+
+      let formatted = "";
+
+      if (crore > 0) {
+        formatted += `${numberToWords.toWords(crore)} crore`;
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
-  const getCustomersList = async () => {
-    try {
-      const response = await Axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getCustomersList?orgId=${orgId}`
-      );
-
-      if (response.status === 200) {
-        setEmitterCustomersVO(
-          response.data.paramObjectsMap.customersVO.emitterCustomersVO
-        );
+      if (lakh > 0) {
+        if (formatted) formatted += " ";
+        formatted += `${numberToWords.toWords(lakh)} lakh`;
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
-  const getWarehouseData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/warehouse/view?orgId=${orgId}`
-      );
-
-      if (response.status === 200) {
-        setWarehouseVO(response.data.paramObjectsMap.WarehouseVO);
+      if (thousand > 0) {
+        if (formatted) formatted += " ";
+        formatted += `${numberToWords.toWords(thousand)} thousand`;
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
-  const getAllUsersData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/company/getAllCompany`
-      );
-
-      if (response.status === 200) {
-        setSenderVO(response.data.paramObjectsMap.organizationVO);
+      if (remainder > 0) {
+        if (formatted) formatted += " ";
+        formatted += `${numberToWords.toWords(remainder)}`;
       }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
-  const getAllKitData = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/master/getallkit`
-      );
-
-      if (response.status === 200) {
-        const kits = response.data.paramObjectsMap.KitVO;
-        setKitVO(kits);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
-  const handleSenderChange = (event) => {
-    setSender(event.target.value);
-  };
-
-  const handleEmitterChange = (event) => {
-    const selectedReceiverId = event.target.value;
-    setReceiverName(selectedReceiverId);
-
-    const selectedReceiver = emitterCustomersVO.find(
-      (customer) => customer.id === parseInt(selectedReceiverId)
-    );
-
-    if (selectedReceiver) {
-      setReceiver(selectedReceiver.displayName);
-      const address = selectedReceiver.customersAddressVO[0];
-      if (address) {
-        const { street1, street2, city, state, pinCode, gstNumber } = address;
-        setReceiverAddress(
-          `${street1}, ${street2}, ${city}, ${state} - ${pinCode}`
-        );
-        setReceiverGst(gstNumber);
-      }
-    }
-  };
-
-  const handleWarehouseChange = (event) => {
-    const selectedWarehouseId = event.target.value;
-    setWarehouse(selectedWarehouseId);
-
-    const selectedWarehouse = warehouseVO.find(
-      (warehouse) => warehouse.warehouseId === parseInt(selectedWarehouseId)
-    );
-
-    if (selectedWarehouse) {
-      const { address, city, state, pincode } = selectedWarehouse;
-      setSenderAddress(`${address}, ${city}, ${state} - ${pincode}`);
-    }
-  };
-
-  const handleKitChange = (event) => {
-    const selectedKitNo = event.target.value;
-    setKitId(selectedKitNo);
-
-    const selectedKit = kitVO.find((kit) => kit.kitNo === selectedKitNo);
-    if (selectedKit) {
-      setSelectedKit(selectedKit);
-    } else {
-      setSelectedKit(null);
-    }
-  };
-
-  const handleKitQtyChange = (event) => {
-    setKitQty(event.target.value);
-  };
-  const handleHsnChange = (event) => {
-    setHsnCode(event.target.value);
-  };
-
-  const handleKitClose = () => {
-    setOpenKitModal(false);
-    setKitId("");
-    setKitQty("");
-    setHsnCode("");
-    setErrors({});
-  };
-
-  const handleAddKitDetails = () => {
-    if (!selectedKit || !kitQty || !hsnCode) {
-      setErrors({
-        kitId: selectedKit ? "" : "Please select a kit",
-        kitQty: kitQty ? "" : "Please enter a kit quantity",
-        hsnCode: hsnCode ? "" : "Please enter a HSN Code",
-      });
-      return;
-    }
-
-    const existingKit = kitDetails.find(
-      (kit) => kit.kitNo === selectedKit.kitNo
-    );
-    if (existingKit) {
-      toast.error("This kit has already been added.");
-      return;
-    }
-
-    const newKitDetail = {
-      kitNo: selectedKit.kitNo,
-      kitQty,
-      kitDesc: selectedKit.kitDesc,
-      hsnCode,
-      assets: Object.values(selectedKit.kitAssetCategory)
-        .flat()
-        .map((asset) => ({
-          assetCodeId: asset.assetCodeId,
-          assetName: asset.assetName,
-          quantity: asset.quantity * kitQty,
-        })),
+      return formatted.trim();
     };
 
-    setKitDetails([...kitDetails, newKitDetail]);
-    setOpenKitModal(false);
-    setKitId("");
-    setKitQty("");
-    setHsnCode("");
-    setErrors({});
+    // Use the function to get the formatted total in words
+    return formatIndianCurrency(number);
   };
 
-  const handleDeleteKit = (kitIndex) => {
-    const updatedKits = [...kitDetails];
-    updatedKits.splice(kitIndex, 1);
-    setKitDetails(updatedKits);
-  };
+  const totalInWordsIndianCurrency = formatWithIndianCurrency(total);
+  return (
+    <div>
+      <div>
+        <ToastContainer />
+      </div>
+      <Paper
+        ref={ref}
+        elevation={3}
+        sx={{ padding: 4, fontFamily: "Roboto, sans-serif" }}
+      >
+        <Container>
+          <Box sx={{ mb: 3 }}>
+            <Grid container spacing={2}>
+              {/* Left Box */}
+              <Grid item xs={2}>
+                <img src="/AI_Packs.png" style={{ width: "150px" }}></img>
+              </Grid>
+              <Grid item xs={5}>
+                <Box sx={{ textAlign: "left" }}>
+                  {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    SCM AI-PACKS Private Limited
+                  </Typography> */}
+                  {/* <Typography variant="subtitle1">
+                    #23/1, T C Palya Main road, Hoysala Nagar, Ramamurthy Nagar,
+                    Bangalore - 560010, Karnataka.
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    GSTIN: 29ABMCS1982P1ZA
+                  </Typography> */}
+                  <StyledTextField
+                    fullWidth
+                    sx={{ fontWeight: "bold", mb: 1 }}
+                    variant="outlined"
+                    multiline
+                    // disabled={editMode}
+                    value={companyAddress}
+                    onChange={(e) => setCompanyAddress(e.target.value)}
+                  />
+                </Box>
+                <Grid item xs={5}></Grid>
+              </Grid>
 
-  const handleInputChange = (event) => {
-    const { name, value } = event.target;
+              {/* Right Box */}
+              <Grid item xs={5} sx={{ textAlign: "right" }}>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  PURCHASE ORDER
+                </Typography>
+                <StyledTextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  value={props.poNumber}
+                  onChange={(e) => props.setPoNumber(e.target.value)}
+                  sx={{
+                    maxWidth: 130,
+                    fontWeight: "bold",
+                  }}
+                />
+                <br></br>
+                <StyledTextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  value={props.poDate}
+                  onChange={(e) => props.setPoDate(e.target.value)}
+                  sx={{
+                    maxWidth: 130,
+                    fontWeight: "bold",
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
 
-    let filteredValue = value;
-    if (name === "transactionNo") {
-      filteredValue = value
-        .replace(/[^A-Z0-9\s&\-]/g, "")
-        .slice(0, 7)
-        .trim();
-    } else if (name === "driverNo") {
-      filteredValue = value.replace(/\D/g, "").slice(0, 10).trim();
+          <Grid container spacing={2} sx={{ mb: 1 }}>
+            <Grid item xs={6}>
+              <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                Vendor Address:
+              </Typography>
+              <StyledTextField
+                fullWidth
+                variant="outlined"
+                multiline
+                value={props.vendorAddress}
+                onChange={(e) => props.setVendorAddress(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                Deliver To:
+              </Typography>
+              <StyledTextField
+                fullWidth
+                variant="outlined"
+                multiline
+                value={props.deliveryAddress}
+                onChange={(e) => props.setDeliveryAddress(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+            </Grid>
+          </Grid>
+
+          <TableContainer component={Paper} sx={{ mb: 2 }}>
+            <Table
+              sx={{ border: "1px solid black", borderCollapse: "collapse" }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    S.No
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Item & Description
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Qty
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Rate
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Amount
+                  </TableCell>
+                  <StyledTableCellActions
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Actions
+                  </StyledTableCellActions>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {props.items.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <StyledTextField
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        multiline
+                        value={item.description}
+                        onChange={(e) =>
+                          props.handleItemChange(
+                            index,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <StyledTextField
+                        fullWidth
+                        sx={{ width: 100 }}
+                        size="small"
+                        variant="outlined"
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          props.handleItemChange(
+                            index,
+                            "quantity",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <StyledTextField
+                        fullWidth
+                        variant="outlined"
+                        type="number"
+                        sx={{ width: 100 }}
+                        size="small"
+                        value={item.rate}
+                        onChange={(e) =>
+                          props.handleItemChange(index, "rate", e.target.value)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      {item.amount.toFixed(2)}
+                    </TableCell>
+                    <StyledTableCellActions sx={{ border: "1px solid black" }}>
+                      <StyledIconButton
+                        onClick={() => props.handleDeleteRow(index)}
+                        color="error"
+                      >
+                        <DeleteIcon />
+                      </StyledIconButton>
+                    </StyledTableCellActions>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <StyledButton
+            variant="contained"
+            color="primary"
+            startIcon={<AddCircleOutlineIcon />}
+            onClick={props.handleAddRow}
+            sx={{ mb: 3 }}
+          >
+            Add Row
+          </StyledButton>
+
+          {/* Calculation Section */}
+          <Box sx={{ textAlign: "right", mb: 3 }}>
+            {/* <Box
+            sx={{
+              mb: 2,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography>Sub Total:</Typography>
+            <Typography sx={{ fontWeight: "bold" }}>
+              ₹ {props.subTotal.toFixed(2)}
+            </Typography>
+          </Box> */}
+
+            {/* GST Type Selection */}
+
+            {/* GST Type Selection */}
+            <Box sx={{ mb: 2 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={gstType === "inter"}
+                    onChange={() => handleGstCalculation("inter")}
+                  />
+                }
+                label="Inter GST"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={gstType === "intra"}
+                    onChange={() => handleGstCalculation("intra")}
+                  />
+                }
+                label="Intra GST"
+              />
+            </Box>
+
+            <Grid container spacing={2}>
+              <Grid item xs={8}>
+                <Box sx={{ textAlign: "left", maxWidth: 500 }}>
+                  <Typography sx={{ fontWeight: "bold", mt: 10 }}>
+                    Total in Words: ₹ {totalInWordsIndianCurrency} only
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Box sx={{ textAlign: "right", mb: 3 }}>
+                  <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                    Subtotal: ₹ {subtotal.toFixed(2)}
+                  </Typography>
+                  {gstType === "intra" && (
+                    <>
+                      <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                        SGST (9%): ₹ {sgst.toFixed(2)}
+                      </Typography>
+                      <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                        CGST (9%): ₹ {cgst.toFixed(2)}
+                      </Typography>
+                    </>
+                  )}
+                  {gstType === "inter" && (
+                    <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                      IGST (18%): ₹ {igst.toFixed(2)}
+                    </Typography>
+                  )}
+                  <Typography sx={{ fontWeight: "bold", mt: 2 }}>
+                    Total: ₹ {total.toFixed(2)}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+
+            {/* GST Calculation Result */}
+          </Box>
+
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+              Terms & Conditions:
+            </Typography>
+
+            <StyledTextField
+              fullWidth
+              multiline
+              minRows={4}
+              variant="outlined"
+              value={termsAndConditions}
+              onChange={(e) => setTermsAndConditions(e.target.value)}
+              placeholder="Enter terms and conditions"
+            />
+          </Box>
+
+          <Box sx={{ textAlign: "left", mt: 4 }}>
+            <Typography variant="body1">
+              Authorized Signature: ________________________________
+            </Typography>
+          </Box>
+
+          {/* <Box
+            sx={{ mt: 4 }}
+            className="print-footer"
+            data-po-number={poNumber}
+          /> */}
+        </Container>
+      </Paper>
+    </div>
+  );
+});
+
+const PurchaseOrderProvider = () => {
+  const componentRef = useRef();
+
+  // State for editable fields
+  const [vendorAddress, setVendorAddress] = useState(
+    // "XYZ Packaging Solutions\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore\nGSTIN: 29AACCU1713L1ZY"
+    ""
+  );
+  const [deliveryAddress, setDeliveryAddress] = useState(
+    // "SCM AI-PACKS Private Limited\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore - 560010"
+    ""
+  );
+
+  const [companyAddress, setCompanyAddress] = useState(
+    "SCM AI-PACKS Private Limited\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore\nGSTIN: 29ABMCS1982P1ZA"
+  );
+  const [poNumber, setPoNumber] = useState("");
+  const [poVo, setPoVo] = useState([]);
+  const [poDate, setPoDate] = useState(dayjs().format("DD/MM/YYYY"));
+  const [items, setItems] = useState([
+    {
+      description: "",
+      quantity: 0,
+      rate: 0,
+      amount: 0,
+    },
+  ]);
+
+  const [editMode, setEditMode] = useState(false);
+
+  const [termsAndConditions, setTermsAndConditions] =
+    useState(`1. Delivery Period: All the material must be delivered from your works within 1 week from the date of the purchase order.
+2. Payment Terms: 30 days from invoice submission through NEFT or check.
+3. Inspection & Testing: Inspection and quality check to be carried out by AI-PACKS designated executives during material dispatch.
+4. Statutory Requirements: NA`);
+  const [subtotal, setSubtotal] = useState(0);
+  const [sgst, setSgst] = useState(0);
+  const [cgst, setCgst] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [orgId, setOrgId] = useState(
+    parseInt(window.localStorage.getItem("orgId"))
+  );
+  const [gstType, setGstType] = useState(""); // "inter" or "intra"
+  const [igst, setIgst] = useState(0);
+  const [poData, setPoData] = useState([]);
+  const [listView, setListView] = useState(false);
+
+  // Function to handle GST calculation
+  const handleGstCalculation = (type) => {
+    setGstType(type);
+    const gstRate = 0.18;
+    const halfGstRate = gstRate / 2;
+
+    let calculatedIgst = 0;
+    let calculatedCgst = 0;
+    let calculatedSgst = 0;
+
+    if (type === "inter") {
+      calculatedIgst = subtotal * gstRate;
+      calculatedCgst = 0;
+      calculatedSgst = 0;
+    } else if (type === "intra") {
+      calculatedIgst = 0;
+      calculatedCgst = subtotal * halfGstRate;
+      calculatedSgst = subtotal * halfGstRate;
     }
 
-    switch (name) {
-      case "dispatchDate":
-        setDispatchDate(value);
-        break;
-      case "receiver":
-        setReceiver(value);
-        break;
-      case "receiverAddress":
-        setReceiverAddress(value);
-        break;
-      case "receiverGst":
-        setReceiverGst(value);
-        break;
-      case "sender":
-        setSender(value);
-        break;
-      case "senderAddress":
-        setSenderAddress(value);
-        break;
-      case "transactionDate":
-        setTransactionDate(value);
-        break;
-      case "transactionNo":
-        setTransactionNo(filteredValue);
-        break;
-      case "transactionType":
-        setTransactionType(value);
-        break;
-      case "transporterName":
-        setTransporterName(value);
-        break;
-      case "vehicleNo":
-        setVehicleNo(value.toUpperCase());
-        break;
-      case "driverNo":
-        setDriverNo(filteredValue);
-        break;
-      default:
-        break;
+    setIgst(calculatedIgst);
+    setCgst(calculatedCgst);
+    setSgst(calculatedSgst);
+    setTotal(subtotal + calculatedIgst + calculatedCgst + calculatedSgst);
+  };
+
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: `Purchase_Order-${poNumber}`,
+    onBeforeGetContent: () => {
+      if (!poNumber || poNumber.trim() === "") {
+        showErrorToast("PO Number is a mandatory field.");
+        return Promise.reject(); // Prevent the print if PO Number is empty
+      }
+      return Promise.resolve();
+    },
+    onAfterPrint: () => {
+      if (poNumber && poNumber.trim() !== "") {
+        postInvoice(); // Call your function after printing
+      }
+    },
+  });
+
+  const handleAddRow = () => {
+    setItems([
+      ...items,
+      {
+        description: "",
+        quantity: 0,
+        rate: 0,
+        amount: 0,
+      },
+    ]);
+  };
+
+  const handleDeleteRow = (index) => {
+    const newItems = items.filter((item, i) => i !== index);
+    setItems(newItems);
+  };
+
+  const handleItemChange = (index, field, value) => {
+    const newItems = [...items];
+    newItems[index][field] = value;
+    if (field === "quantity" || field === "rate") {
+      newItems[index].amount = newItems[index].quantity * newItems[index].rate;
     }
+    setItems(newItems);
   };
+  const [isPrintMode, setIsPrintMode] = useState(false);
 
-  const transformKitDetails = (kits) => {
-    const transformedDetails = [];
+  useEffect(() => {
+    const subtotal = items.reduce((acc, item) => acc + item.amount, 0);
+    setSubtotal(subtotal);
 
-    kits.forEach((kit) => {
-      const { kitNo, kitQty, kitDesc, hsnCode, assets } = kit;
+    if (gstType === "inter") {
+      const igst = subtotal * 0.18;
+      setIgst(igst);
+      setTotal(subtotal + igst);
+    } else if (gstType === "intra") {
+      const cgst = subtotal * 0.09;
+      const sgst = subtotal * 0.09;
+      setCgst(cgst);
+      setSgst(sgst);
+      setTotal(subtotal + cgst + sgst);
+    } else {
+      setIgst(0);
+      setCgst(0);
+      setSgst(0);
+      setTotal(subtotal);
+    }
+  }, [items, gstType]);
 
-      assets.forEach((asset, index) => {
-        transformedDetails.push({
-          asset: asset.assetName,
-          assetCode: asset.assetCodeId,
-          assetQty: asset.quantity,
-          hsnCode: parseInt(hsnCode, 10),
-          id: index, // Using index as ID
-          kitId: kitNo,
-          kitName: kitDesc,
-          kitQty: parseInt(kitQty, 10),
-        });
-      });
-    });
+  useEffect(() => {
+    getInvoiceData();
+  }, []);
 
-    return transformedDetails;
+  const createFormData = () => {
+    const data = {
+      vendorAddress,
+      deliveryAddress,
+      companyAddress,
+      poNumber,
+      poDate,
+      items, // Items can remain as an array
+      termsAndConditions,
+      subtotal,
+      sgst,
+      cgst,
+      total,
+      gstType,
+      igst,
+      ...(editMode && { id: poVo?.id }),
+    };
+
+    return data;
   };
+  // Example usage:
 
-  const createUpdateRetrievalManifest = () => {
-    console.log("save");
-    const errors = {};
-    if (!dispatchDate) errors.dispatchDate = "Dispatch Date is required";
-    if (!transactionDate)
-      errors.transactionDate = "Transaction Date is required";
-    if (!receiver) errors.receiver = "Receiver is required";
-    if (!warehouse) errors.warehouse = "Warehouse is required";
-    if (!receiver) errors.receiver = "Sender is required";
-    if (!transactionNo) errors.transactionNo = "Transaction No is required";
-    if (!transporterName)
-      errors.transporterName = "Transporter Name is required";
-    if (!vehicleNo) errors.vehicleNo = "Vehicle No is required";
-    if (!driverNo) errors.driverNo = "Driver Phone No is required";
-    if (kitDetails.length === 0)
-      errors.kitDetails = "Please add at least one Kit detail";
+  // You can now use `formData` to make an API request
 
-    if (Object.keys(errors).length === 0) {
-      const retrievalManifestProviderDetailsDTO =
-        transformKitDetails(kitDetails);
+  const postInvoice = () => {
+    const formData = createFormData();
 
-      const formData = {
-        createdBy: userName,
-        dispatchDate,
-        driverPhoneNo: driverNo,
-        retrievalManifestProviderDetailsDTO,
-        orgId,
-        sender: receiver,
-        senderAddress: receiverAddress,
-        senderGst: receiverGst,
-        receiver: sender,
-        receiverAddress: senderAddress,
-        transactionDate: transactionDate.format("YYYY-MM-DD"),
-        transactionNo,
-        transactionType,
-        transporterName,
-        vechileNo: vehicleNo,
-        ...(rimId ? { id: rimId } : {}),
-      };
+    if (formData) {
+      const formDataWithOrgId = { ...formData, orgId };
 
       axios
         .put(
-          `${process.env.REACT_APP_API_URL}/api/oem/createUpdateRetrievalManifest`,
-          formData
+          `${process.env.REACT_APP_API_URL}/api/master/createUpdateInvoice`,
+          formDataWithOrgId
         )
         .then((response) => {
+          console.log("Response:", response.data);
+
           if (response.data.statusFlag === "Error") {
-            showErrorToast(response.data.paramObjectsMap.errorMessage);
+            // showErrorToast(response.data.paramObjectsMap.errorMessage);
           } else {
-            showSuccessToast(response.data.paramObjectsMap.message);
-            setDispatchDate(null);
-            setReceiver("");
-            setReceiverName("");
-            setWarehouse("");
-            setReceiverAddress("");
-            setReceiverGst("");
-            setSender("");
-            setSenderAddress("");
-            setTransactionDate(null);
-            setTransactionNo("");
-            setTransactionType("");
-            setTransporterName("");
-            setVehicleNo("");
-            setVehicleNo("");
-            setDriverNo({});
-            setKitDetails([]);
-            setOpenKitModal(false);
-            setTimeout(() => {
-              addRim(false);
-            });
-            // addRim(false);
+            showSuccessToast(
+              editMode
+                ? "PO Updated Successfully"
+                : response.data.paramObjectsMap.message
+            );
+            getInvoiceData();
           }
         })
         .catch((error) => {
           console.error("Error:", error);
-          toast.error("Failed to update Issue Manifest. Please try again.");
+          showErrorToast("An error occurred while posting the invoice.");
         });
     } else {
-      setErrors(errors);
+      showErrorToast("No invoice data to post.");
     }
   };
 
-  const handleMimClose = () => {
-    if (
-      dispatchDate ||
-      driverNo ||
-      receiver ||
-      receiverAddress ||
-      receiverGst ||
-      sender ||
-      senderAddress ||
-      transactionDate ||
-      transactionNo ||
-      transactionType ||
-      transporterName ||
-      vehicleNo ||
-      kitDetails > 0
-    ) {
-      setOpenConfirmationDialog(true);
-    } else {
-      setOpenConfirmationDialog(false);
+  const getInvoiceData = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_URL}/api/master/getAllInvoiceByOrgId?orgId=${orgId}`
+      );
+      if (response.status === 200) {
+        setPoData(response.data.paramObjectsMap.invoiceVO.reverse());
+      } else {
+        console.error("API Error:", response.data);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
     }
   };
 
-  const handleConfirmationYes = () => {
-    setOpenConfirmationDialog(false);
-    addRim(false);
+  const handleListView = () => {
+    setListView(!listView);
+  };
+  useEffect(() => {
+    if (poVo && editMode) {
+      setVendorAddress(poVo.vendorAddress || "");
+      setDeliveryAddress(poVo.deliveryAddress || "");
+      setCompanyAddress(poVo.companyAddress || "");
+      setPoNumber(poVo.poNumber || "");
+      setPoDate(poVo.poDate || "");
+      setItems(poVo.productLines || []);
+      setTermsAndConditions(poVo.termsAndConditions || "");
+      setSubtotal(poVo.subtotal || 0);
+      setSgst(poVo.sgst || 0);
+      setCgst(poVo.cgst || 0);
+      setTotal(poVo.total || 0);
+      setGstType(poVo.gstType || "");
+      setIgst(poVo.igst || 0);
+    }
+  }, [poVo, editMode]);
+
+  const handleNew = () => {
+    setVendorAddress("");
+    setDeliveryAddress("");
+    setPoNumber("");
+    setPoDate(dayjs().format("DD/MM/YYYY"));
+    setItems([
+      {
+        description: "",
+        quantity: 0,
+        rate: 0,
+        amount: 0,
+      },
+    ]);
+    // setTermsAndConditions("");
+    setSubtotal(0);
+    setSgst(0);
+    setCgst(0);
+    setTotal(0);
+    setGstType("");
+    setIgst(0);
+    setEditMode(false);
   };
 
   return (
-    <>
-      <div style={{ maxWidth: 1060 }} className="ml-auto me-auto">
-        <div className="card w-full p-6 bg-base-100 shadow-xl">
-          <div>
-            <ToastContainer />
-          </div>
-          <div className="d-flex justify-content-end">
-            <IoMdClose
-              onClick={handleMimClose}
-              className="cursor-pointer w-8 h-8 mb-3"
-            />
-          </div>
-          <div className="row">
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <label className="label">
-                <span
-                  className={
-                    "d-flex flex-row label-text label-font-size text-base-content"
-                  }
-                >
-                  Transaction No:
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="transactionNo"
-                type="text"
-                value={transactionNo}
-                onInput={stringAndNoAndSpecialCharValidation}
-                onChange={handleInputChange}
-              />
-              {errors.transactionNo && (
-                <span className="error-text">{errors.transactionNo}</span>
-              )}
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Transaction Date:
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  value={transactionDate}
-                  onChange={(date) => setTransactionDate(dayjs(date))}
-                  slotProps={{
-                    textField: { size: "small", clearable: true },
-                  }}
-                  format="DD/MM/YYYY"
-                />
-              </LocalizationProvider>
-              {errors.transactionDate && (
-                <span className="error-text">{errors.transactionDate}</span>
-              )}
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Dispatch Date:
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DesktopDatePicker
-                  value={dispatchDate}
-                  onChange={(date) =>
-                    setDispatchDate(dayjs(date).format("YYYY-MM-DD"))
-                  }
-                  slotProps={{
-                    textField: { size: "small", clearable: true },
-                  }}
-                  format="DD/MM/YYYY"
-                />
-              </LocalizationProvider>
-              {errors.dispatchDate && (
-                <span className="error-text">{errors.dispatchDate}</span>
-              )}
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <label className="label">
-                <span
-                  className={
-                    "label-text label-font-size text-base-content d-flex flex-row"
-                  }
-                >
-                  Transaction Type:
-                  {/* <FaStarOfLife className="must" /> */}
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2 col-sm-4">
-              <input
-                className="form-control form-sz mb-2"
-                name="transactionType"
-                type="text"
-                value={transactionType}
-                disabled
-              />
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span className={"label-text text-base-content"}>Sender:</span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <select
-                className="form-select form-sz w-full mb-2"
-                onChange={handleEmitterChange}
-                value={receiverName}
-              >
-                <option value="" disabled>
-                  Select an sender
-                </option>
-                {emitterCustomersVO.length > 0 &&
-                  emitterCustomersVO.map((list) => (
-                    <option key={list.id} value={list.id}>
-                      {list.displayName}
-                    </option>
-                  ))}
-              </select>
-              {errors.receiver && (
-                <span className="error-text mb-1">{errors.receiver}</span>
-              )}
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span className={"label-text text-base-content "}>
-                  Sender's Address:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <textarea
-                placeholder=""
-                className="form-control form-sz mb-2"
-                style={{ height: 100 }}
-                name="receiverAddress"
-                value={receiverAddress}
-                disabled
-              />
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span className="label-text text-base-content">
-                  Sender's GST:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <input
-                placeholder=""
-                className="form-control form-sz mb-2"
-                name="receiverGst"
-                type="text"
-                value={receiverGst}
-                disabled
-              />
-            </div>
-            {/* <div className="col-lg-3 col-md-6">
-          <label className="label mb-4">
-            <span
-              className={
-                "label-text label-font-size text-base-content d-flex flex-row"
-              }
-            >
-              Receiver:
-              {/* <FaStarOfLife className="must" /> 
-            </span>
-          </label>
+    <Container style={{ width: "1060px" }}>
+      <Box sx={{ textAlign: "left", mb: 3, gap: 2, mr: 4 }}>
+        <Button
+          variant="contained"
+          color="primary"
+          sx={{ mr: 4 }}
+          onClick={handlePrint}
+        >
+          Print
+        </Button>
+        <Button
+          sx={{ ml: 2 }}
+          variant="contained"
+          color="primary"
+          onClick={handleListView}
+        >
+          View
+        </Button>
+        <Button
+          sx={{ ml: 2 }}
+          variant="contained"
+          color="primary"
+          onClick={handleNew}
+        >
+          New
+        </Button>
+      </Box>
+      {listView ? (
+        <PoList
+          poData={poData}
+          onListView={handleListView}
+          setPoVo={setPoVo}
+          setEditMode={setEditMode}
+        />
+      ) : (
+        <div>
+          <PurchaseOrder
+            ref={componentRef}
+            vendorAddress={vendorAddress}
+            setVendorAddress={setVendorAddress}
+            deliveryAddress={deliveryAddress}
+            setDeliveryAddress={setDeliveryAddress}
+            poNumber={poNumber}
+            poDate={poDate}
+            setPoNumber={setPoNumber}
+            items={items}
+            handleItemChange={handleItemChange}
+            handleAddRow={handleAddRow}
+            handleDeleteRow={handleDeleteRow}
+            subtotal={subtotal}
+            sgst={sgst}
+            cgst={cgst}
+            handleGstCalculation={handleGstCalculation}
+            igst={igst}
+            setSgst={setSgst}
+            setCgst={setCgst}
+            setIgst={setIgst}
+            gstType={gstType}
+            total={total}
+            subTotal={subtotal}
+            termsAndConditions={termsAndConditions}
+            setTermsAndConditions={setTermsAndConditions}
+            isPrintMode={isPrintMode}
+            companyAddress={companyAddress}
+            setCompanyAddress={setCompanyAddress}
+            editMode={editMode}
+          />
         </div>
-        <div className="col-lg-3 col-md-6">
-          <select
-            className="form-select form-sz w-full mb-2"
-            onChange={handleSenderChange}
-            value={sender}
-          >
-            <option value="" disabled>
-              Select an sender
-            </option>
-            {senderVO.length > 0 &&
-              senderVO.map((list) => (
-                <option key={list.id} value={list.name}>
-                  {list.name}
-                </option>
-              ))}
-          </select>
-          {errors.sender && (
-            <span className="error-text mb-1">{errors.sender}</span>
-          )}
-        </div> */}
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span className={"label-text text-base-content"}>
-                  Receiver Warehouse:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <select
-                className="form-select form-sz w-full mb-2"
-                onChange={handleWarehouseChange}
-                value={warehouse}
-              >
-                <option value="" disabled>
-                  Select an warehouse
-                </option>
-                {warehouseVO.length > 0 &&
-                  warehouseVO.map((list) => (
-                    <option key={list.warehouseId} value={list.warehouseId}>
-                      {list.warehouseLocation}
-                    </option>
-                  ))}
-              </select>
-              {errors.warehouse && (
-                <span className="error-text mb-1">{errors.warehouse}</span>
-              )}
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span className={"label-text text-base-content "}>
-                  Warehouse's Address:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <textarea
-                placeholder=""
-                className="form-control form-sz mb-2"
-                style={{ height: 100 }}
-                name="senderAddress"
-                value={senderAddress}
-                disabled
-              />
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={"label-text label-font-size text-base-content "}
-                >
-                  Transporter Name:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <div className="d-flex flex-row">
-                <input
-                  placeholder=""
-                  type="text"
-                  name="transporterName"
-                  className="form-control form-sz mb-2"
-                  value={transporterName}
-                  onChange={handleInputChange}
-                  onInput={stringValidation}
-                />
-              </div>
-              {errors.transporterName && (
-                <span className="error-text">{errors.transporterName}</span>
-              )}
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={"label-text label-font-size text-base-content "}
-                >
-                  Vehicle No:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <input
-                className="form-control form-sz mb-2"
-                placeholder={""}
-                type="text"
-                name="vehicleNo"
-                value={vehicleNo}
-                onChange={handleInputChange}
-              />
-              {errors.vehicleNo && (
-                <span className="error-text">{errors.vehicleNo}</span>
-              )}
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <label className="label">
-                <span
-                  className={"label-text label-font-size text-base-content "}
-                >
-                  Driver No:
-                </span>
-              </label>
-            </div>
-            <div className="col-lg-3 col-md-6 mb-2">
-              <input
-                className="form-control form-sz mb-2"
-                placeholder={""}
-                type="number"
-                name="driverNo"
-                value={driverNo}
-                onChange={handleInputChange}
-                maxLength={10}
-              />
-              {errors.driverNo && (
-                <span className="error-text">{errors.driverNo}</span>
-              )}
-            </div>
-            <div className="col-lg-12 col-md-12 mb-2">
-              <div className="d-flex justify-content-end">
-                <button
-                  className="btn btn-ghost btn-lg text-sm col-xs-1"
-                  style={{ color: "blue" }}
-                  onClick={() => setOpenKitModal(true)}
-                >
-                  <img
-                    src="/new.png"
-                    alt="new-icon"
-                    title="new"
-                    style={{
-                      width: 30,
-                      height: 30,
-                      margin: "auto",
-                      hover: "pointer",
-                    }}
-                  />
-                  <span
-                    className="text-form text-base"
-                    style={{ marginLeft: "10px" }}
-                  >
-                    Kit
-                  </span>
-                </button>
-              </div>
-            </div>
-            <div className="d-flex justify-content-end">
-              {errors.kitDetails && (
-                <span className="error-text mb-1">{errors.kitDetails}</span>
-              )}
-            </div>
-            {kitDetails.length > 0 && (
-              <div
-                className="w-full p-3 bg-base-100 shadow-xl"
-                style={{ borderRadius: 16 }}
-              >
-                <div className="text-xl font-semibold p-2">
-                  Kit & Qty Details
-                </div>
-                <div className="divider mt-0 mb-0"></div>
-                <div className="overflow-x-auto w-full">
-                  <table className="table w-full">
-                    <thead>
-                      <tr>
-                        <th className="text-center">Action</th>
-                        <th className="text-center">Kit No</th>
-                        <th className="text-center">Kit Name</th>
-                        <th className="text-center">Kit Qty</th>
-                        <th className="text-center">HSN Code</th>
-                        <th className="text-center">Product Code</th>
-                        <th className="text-center" style={{ width: "200px" }}>
-                          Product Name
-                        </th>
-                        <th className="text-center">Product Qty</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {kitDetails.map((kit, index) => (
-                        <React.Fragment key={index}>
-                          <tr>
-                            {/* <td
-                          className="text-center"
-                          rowSpan={kit.assets.length + 1}
-                        >
-                          {index + 1}
-                        </td> */}
-                            <td
-                              className="text-center"
-                              rowSpan={kit.assets.length + 1}
-                            >
-                              <FaTrash
-                                onClick={() => handleDeleteKit(index)}
-                                style={{ cursor: "pointer", color: "red" }}
-                                className="ms-4"
-                              />
-                            </td>
-                            <td
-                              className="text-center"
-                              rowSpan={kit.assets.length + 1}
-                            >
-                              {kit.kitNo}
-                            </td>
-                            <td
-                              className="text-center"
-                              rowSpan={kit.assets.length + 1}
-                              style={{
-                                width: 150,
-                                overflow: "hidden",
-                                textWrap: "wrap",
-                              }}
-                            >
-                              {kit.kitDesc}
-                            </td>
-                            <td
-                              className="text-center"
-                              rowSpan={kit.assets.length + 1}
-                            >
-                              {kit.kitQty}
-                            </td>
-                            <td
-                              className="text-center"
-                              rowSpan={kit.assets.length + 1}
-                            >
-                              {kit.hsnCode}
-                            </td>
-                          </tr>
-                          {kit.assets.map((asset, subIndex) => (
-                            <tr key={subIndex}>
-                              {/* <td className="text-center">{`${index + 1}.${
-                            subIndex + 1
-                          }`}</td> */}
-                              <td className="text-center">
-                                {asset.assetCodeId}
-                              </td>
-                              <td
-                                className="text-center"
-                                style={{
-                                  width: 150,
-                                  overflow: "hidden",
-                                  textWrap: "wrap",
-                                }}
-                              >
-                                {asset.assetName}
-                              </td>
-                              <td className="text-center">{asset.quantity}</td>
-                            </tr>
-                          ))}
-                        </React.Fragment>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </div>
-          <div className="d-flex flex-row mt-3">
-            <button
-              type="button"
-              onClick={createUpdateRetrievalManifest}
-              className="bg-blue me-5 inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-sm font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-            >
-              {rimId ? "Update" : "Proceed"}
-            </button>
-          </div>
-          <Dialog
-            fullWidth={true}
-            maxWidth={"md"}
-            open={openKitModal}
-            onClose={handleKitClose}
-          >
-            <div>
-              <ToastContainer />
-            </div>
-            <div className="d-flex justify-content-between">
-              <DialogTitle>Add Kit & Qty Details</DialogTitle>
-              <IoMdClose
-                onClick={handleKitClose}
-                className="cursor-pointer w-8 h-8 mt-3 me-3"
-              />
-            </div>
-            <DialogContent>
-              <DialogContentText>
-                <div className="row">
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span className={"label-text text-base-content"}>
-                        Kit:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <select
-                      className="form-select form-sz w-full mb-2"
-                      value={kitId}
-                      name="kitId"
-                      onChange={handleKitChange}
-                    >
-                      <option value="" disabled>
-                        Select a kit
-                      </option>
-                      {kitVO &&
-                        kitVO.map((kit) => (
-                          <option key={kit.id} value={kit.kitNo}>
-                            {kit.kitNo}
-                          </option>
-                        ))}
-                    </select>
-                    {errors.kitId && (
-                      <div className="error-text">{errors.kitId}</div>
-                    )}
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content "
-                        }
-                      >
-                        Kit Qty:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder={""}
-                      type="number"
-                      name="kitQty"
-                      value={kitQty}
-                      onChange={handleKitQtyChange}
-                    />
-                    {errors.kitQty && (
-                      <div className="error-text">{errors.kitQty}</div>
-                    )}
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <label className="label">
-                      <span
-                        className={
-                          "label-text label-font-size text-base-content "
-                        }
-                      >
-                        HSN Code:
-                      </span>
-                    </label>
-                  </div>
-                  <div className="col-lg-3 col-md-6 mb-2">
-                    <input
-                      className="form-control form-sz mb-2"
-                      placeholder={""}
-                      type="text"
-                      name="hsnCode"
-                      value={hsnCode}
-                      onChange={handleHsnChange}
-                    />
-                    {errors.hsnCode && (
-                      <div className="error-text">{errors.hsnCode}</div>
-                    )}
-                  </div>
-                </div>
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions className="mb-2 me-2">
-              <Button onClick={handleKitClose}>Cancel</Button>
-              <Button
-                component="label"
-                variant="contained"
-                onClick={handleAddKitDetails}
-              >
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
-          <Dialog open={openConfirmationDialog}>
-            <DialogContent>
-              <p>Are you sure you want to close without saving changes?</p>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setOpenConfirmationDialog(false)}>
-                No
-              </Button>
-              <Button onClick={handleConfirmationYes}>Yes</Button>
-            </DialogActions>
-          </Dialog>
-        </div>
-      </div>
-    </>
+      )}
+    </Container>
   );
-}
+};
 
 export default PurchaseOrderProvider;

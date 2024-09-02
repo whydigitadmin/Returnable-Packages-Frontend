@@ -23,6 +23,7 @@ const StockAdjustment = lazy(
   () => import("../pages/protected/StockAdjustment")
 );
 const IssueManifest = lazy(() => import("../pages/protected/IssueManifest"));
+const PaymentAdvice = lazy(() => import("../pages/protected/paymentAdvice"));
 const IssueManifestReport = lazy(
   () => import("../pages/protected/IssueManifestReport")
 );
@@ -692,6 +693,10 @@ const routes = [
   {
     path: "/invoiceGeneratorOriginal",
     component: InvoiceGeneratorOriginal,
+  },
+  {
+    path: "/paymentAdvice",
+    component: PaymentAdvice,
   },
 ];
 

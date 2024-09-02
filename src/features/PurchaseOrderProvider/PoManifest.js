@@ -1,849 +1,894 @@
-import React, { useRef, useEffect, useState, useMemo } from "react";
-import { useReactToPrint } from "react-to-print";
-import axios from "axios";
-import { IoMdClose } from "react-icons/io";
-import EditIcon from "@mui/icons-material/Edit";
-import QRCode from "qrcode.react";
+import AddIcon from "@mui/icons-material/Add";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import DeleteIcon from "@mui/icons-material/Delete";
+import PrintIcon from "@mui/icons-material/Print";
+import SaveIcon from "@mui/icons-material/Save";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import {
-  MaterialReactTable,
-  useMaterialReactTable,
-} from "material-react-table";
-import GetAppIcon from "@mui/icons-material/GetApp";
-import Dialog from "@mui/material/Dialog";
-import DialogContent from "@mui/material/DialogContent";
-import IconButton from "@mui/material/IconButton";
-import { Link } from "react-router-dom";
-import { FaArrowCircleLeft } from "react-icons/fa";
-import PurchaseOrderProvider from "./PurchaseOrderProvider";
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  FormControlLabel,
+  Grid,
+  IconButton,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/system";
+import axios from "axios";
+import numberToWords from "number-to-words";
+import React, { useEffect, useRef, useState } from "react";
+import { useReactToPrint } from "react-to-print";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import PoList from "./PoList";
 
-export const PoManifest = () => {
-  const componentRef = useRef();
-  const [qrCodeValue, setQrCodeValue] = useState([]);
-  const [watermark, setWatermark] = useState("");
-  const [addRim, setAddRim] = useState(false);
-  const [editRim, setEditRim] = useState(false);
-  const [selectedRowId, setSelectedRowId] = useState(null);
-  const [pdfData, setPdfData] = useState("");
-  const [data, setData] = React.useState([]);
-  const [terms, setTerms] = React.useState([]);
-  const [productDetails, setProductDetails] = React.useState([]);
-  const [openDialog, setOpenDialog] = useState(false);
-  const userDetails = localStorage.getItem("userDetails");
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  backgroundColor: "white",
+  color: "black",
+  fontWeight: "bold",
+  border: "1px solid black", // Ensure borders are applied to all sides
+  "@media print": {
+    border: "1px solid black", // Ensure borders are visible when printing
+  },
+}));
 
-  useEffect(() => {
-    getAllRetrievalManifestProvider();
-    getAllDeclarationAndNotes();
-  }, []);
+const StyledTableCellActions = styled(StyledTableCell)(({ theme }) => ({
+  "@media print": {
+    display: "none", // hide Actions cell when printing
+  },
+}));
 
-  const getAllRetrievalManifestProvider = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllRetrievalManifestProvider`
-      );
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  "@media print": {
+    border: "1px solid black", // Ensure borders are visible between rows when printing
+  },
+}));
 
-      if (response.status === 200) {
-        setData(
-          response.data.paramObjectsMap.retrievalManifestProviderVOs.reverse()
-        );
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+const StyledTable = styled(Table)(({ theme }) => ({
+  "@media print": {
+    borderCollapse: "collapse", // Merge adjacent borders
+  },
+}));
+
+const StyledTextField = styled(TextField)(({ theme }) => ({
+  [`@media print`]: {
+    border: "none",
+    "& .MuiOutlinedInput-notchedOutline": {
+      border: "none",
+    },
+    "& .MuiInputBase-input": {
+      padding: 0,
+    },
+  },
+}));
+
+const StyledIconButton = styled(IconButton)(({ theme }) => ({
+  "@media print": {
+    display: "none", // Hide the delete button when printing
+  },
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+  "@media print": {
+    display: "none", // Hide the add row button when printing
+  },
+}));
+
+const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
+  "@media print": {
+    border: "1px solid black", // Border around the entire table container when printing
+    boxShadow: "none", // Remove shadow when printing
+  },
+}));
+
+const PurchaseOrder = React.forwardRef((props, ref) => {
+  const {
+    poNumber,
+    setPoNumber,
+    vendorAddress,
+    setVendorAddress,
+    deliveryAddress,
+    setDeliveryAddress,
+    items,
+    handleItemChange,
+    handleAddRow,
+    handleDeleteRow,
+    subtotal,
+    setSubtotal,
+    gstType,
+    handleGstCalculation,
+    setTermsAndConditions,
+    termsAndConditions,
+    isPrintMode,
+    sgst,
+    cgst,
+    igst,
+    total,
+    companyAddress,
+    setCompanyAddress,
+    editMode,
+    poDate,
+    setPoDate,
+  } = props;
+
+  const formatIndianCurrency = (number) => {
+    if (number === 0) return "Zero";
+
+    const crore = Math.floor(number / 10000000);
+    const lakh = Math.floor((number % 10000000) / 100000);
+    const thousand = Math.floor((number % 100000) / 1000);
+    const remainder = number % 1000;
+
+    let formatted = "";
+
+    if (crore > 0) {
+      formatted += `${numberToWords.toWords(crore)} crore`;
     }
+
+    if (lakh > 0) {
+      if (formatted) formatted += " ";
+      formatted += `${numberToWords.toWords(lakh)} lakh`;
+    }
+
+    if (thousand > 0) {
+      if (formatted) formatted += " ";
+      formatted += `${numberToWords.toWords(thousand)} thousand`;
+    }
+
+    if (remainder > 0) {
+      if (formatted) formatted += " ";
+      formatted += `${numberToWords.toWords(remainder)}`;
+    }
+
+    // Convert to title case
+    const toTitleCase = (str) => {
+      return str.replace(/\w\S*/g, (txt) => {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
+    };
+
+    return toTitleCase(formatted.trim());
   };
-  const getAllDeclarationAndNotes = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getAllDeclarationAndNotes`
-      );
 
-      if (response.status === 200) {
-        setTerms(response.data.paramObjectsMap.declarationAndNotesVO[0]);
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+  // Example usage:
+  const totalInWordsIndianCurrency = formatIndianCurrency(total);
+
+  return (
+    <div>
+      <div>
+        <ToastContainer />
+      </div>
+      <Paper
+        ref={ref}
+        elevation={3}
+        sx={{ padding: 4, fontFamily: "Roboto, sans-serif" }}
+      >
+        <Container>
+          <Box sx={{ mb: 3 }}>
+            <Grid container spacing={2}>
+              {/* Left Box */}
+              <Grid item xs={2}>
+                <img src="/AI_Packs.png" style={{ width: "150px" }}></img>
+              </Grid>
+              <Grid item xs={5}>
+                <Box sx={{ textAlign: "left" }}>
+                  {/* <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                    SCM AI-PACKS Private Limited
+                  </Typography> */}
+                  {/* <Typography variant="subtitle1">
+                    #23/1, T C Palya Main road, Hoysala Nagar, Ramamurthy Nagar,
+                    Bangalore - 560010, Karnataka.
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    GSTIN: 29ABMCS1982P1ZA
+                  </Typography> */}
+                  <StyledTextField
+                    fullWidth
+                    sx={{ fontWeight: "bold", mb: 1 }}
+                    variant="outlined"
+                    multiline
+                    // disabled={editMode}
+                    value={companyAddress}
+                    onChange={(e) => setCompanyAddress(e.target.value)}
+                  />
+                </Box>
+                <Grid item xs={5}></Grid>
+              </Grid>
+
+              {/* Right Box */}
+              <Grid item xs={5} sx={{ textAlign: "right" }}>
+                <Typography variant="h6" sx={{ fontWeight: "bold" }}>
+                  PURCHASE ORDER
+                </Typography>
+                <StyledTextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  value={props.poNumber}
+                  placeholder="PO Number"
+                  onChange={(e) => props.setPoNumber(e.target.value)}
+                  sx={{
+                    maxWidth: 130,
+                    fontWeight: "bold",
+                  }}
+                />
+                <br></br>
+                <StyledTextField
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  placeholder="Po Date"
+                  value={poDate}
+                  onChange={(e) => setPoDate(e.target.value)}
+                  sx={{
+                    maxWidth: 130,
+                    fontWeight: "bold",
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Box>
+
+          <Grid container spacing={2} sx={{ mb: 1 }}>
+            <Grid item xs={6}>
+              <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                Vendor Address:
+              </Typography>
+              <StyledTextField
+                fullWidth
+                variant="outlined"
+                multiline
+                value={props.vendorAddress}
+                onChange={(e) => props.setVendorAddress(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                Deliver To:
+              </Typography>
+              <StyledTextField
+                fullWidth
+                variant="outlined"
+                multiline
+                value={props.deliveryAddress}
+                onChange={(e) => props.setDeliveryAddress(e.target.value)}
+                sx={{ mb: 1 }}
+              />
+            </Grid>
+          </Grid>
+
+          <TableContainer component={Paper} sx={{ mb: 2 }}>
+            <Table
+              sx={{ border: "1px solid black", borderCollapse: "collapse" }}
+            >
+              <TableHead>
+                <TableRow>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    S.No
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Item & Description
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Qty
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Rate
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Amount
+                  </TableCell>
+                  <StyledTableCellActions
+                    sx={{
+                      border: "1px solid black",
+                      fontWeight: "bold",
+                      color: "white",
+                      backgroundColor: "#7D797D", // Set your desired background color here
+                    }}
+                  >
+                    Actions
+                  </StyledTableCellActions>
+                </TableRow>
+              </TableHead>
+
+              <TableBody>
+                {props.items.map((item, index) => (
+                  <TableRow key={index}>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      {index + 1}
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <StyledTextField
+                        fullWidth
+                        size="small"
+                        variant="outlined"
+                        multiline
+                        value={item.description}
+                        onChange={(e) =>
+                          props.handleItemChange(
+                            index,
+                            "description",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <StyledTextField
+                        fullWidth
+                        sx={{ width: 100 }}
+                        size="small"
+                        variant="outlined"
+                        type="number"
+                        value={item.quantity}
+                        onChange={(e) =>
+                          props.handleItemChange(
+                            index,
+                            "quantity",
+                            e.target.value
+                          )
+                        }
+                      />
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      <StyledTextField
+                        fullWidth
+                        variant="outlined"
+                        type="number"
+                        sx={{ width: 100 }}
+                        size="small"
+                        value={item.rate}
+                        onChange={(e) =>
+                          props.handleItemChange(index, "rate", e.target.value)
+                        }
+                      />
+                    </TableCell>
+                    <TableCell sx={{ border: "1px solid black" }}>
+                      {item.amount.toFixed(2)}
+                    </TableCell>
+                    <StyledTableCellActions sx={{ border: "1px solid black" }}>
+                      <StyledIconButton
+                        onClick={() => props.handleDeleteRow(index)}
+                        color="error"
+                      >
+                        <DeleteIcon />
+                      </StyledIconButton>
+                    </StyledTableCellActions>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+
+          <StyledButton
+            variant="contained"
+            color="primary"
+            startIcon={<AddCircleOutlineIcon />}
+            onClick={props.handleAddRow}
+            sx={{ mb: 3 }}
+          >
+            Add Row
+          </StyledButton>
+
+          {/* Calculation Section */}
+          <Box sx={{ textAlign: "right", mb: 3 }}>
+            {/* <Box
+            sx={{
+              mb: 2,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <Typography>Sub Total:</Typography>
+            <Typography sx={{ fontWeight: "bold" }}>
+              ₹ {props.subTotal.toFixed(2)}
+            </Typography>
+          </Box> */}
+
+            {/* GST Type Selection */}
+
+            {/* GST Type Selection */}
+            <Box sx={{ mb: 2 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={gstType === "inter"}
+                    onChange={() => handleGstCalculation("inter")}
+                  />
+                }
+                label="Inter GST"
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={gstType === "intra"}
+                    onChange={() => handleGstCalculation("intra")}
+                  />
+                }
+                label="Intra GST"
+              />
+            </Box>
+
+            <Grid container spacing={2}>
+              <Grid item xs={8}>
+                <Box sx={{ textAlign: "left", maxWidth: 500 }}>
+                  <Typography sx={{ fontWeight: "bold", mt: 10 }}>
+                    Total in Words: ₹ {totalInWordsIndianCurrency} Only
+                  </Typography>
+                </Box>
+              </Grid>
+              <Grid item xs={4}>
+                <Box sx={{ textAlign: "right", mb: 3 }}>
+                  <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                    Subtotal: ₹ {subtotal.toFixed(2)}
+                  </Typography>
+                  {gstType === "intra" && (
+                    <>
+                      <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                        SGST (9%): ₹ {sgst.toFixed(2)}
+                      </Typography>
+                      <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                        CGST (9%): ₹ {cgst.toFixed(2)}
+                      </Typography>
+                    </>
+                  )}
+                  {gstType === "inter" && (
+                    <Typography sx={{ fontWeight: "bold", mb: 1 }}>
+                      IGST (18%): ₹ {igst.toFixed(2)}
+                    </Typography>
+                  )}
+                  <Typography sx={{ fontWeight: "bold", mt: 2 }}>
+                    Total: ₹ {total.toFixed(2)}
+                  </Typography>
+                </Box>
+              </Grid>
+            </Grid>
+
+            {/* GST Calculation Result */}
+          </Box>
+
+          <Box sx={{ mb: 3 }}>
+            <Typography variant="h6" sx={{ fontWeight: "bold", mb: 1 }}>
+              Terms & Conditions:
+            </Typography>
+
+            <StyledTextField
+              fullWidth
+              multiline
+              minRows={4}
+              variant="outlined"
+              value={termsAndConditions}
+              onChange={(e) => setTermsAndConditions(e.target.value)}
+              placeholder="Enter terms and conditions"
+            />
+          </Box>
+
+          <Box sx={{ textAlign: "left", mt: 10 }}>
+            <Typography variant="body1">
+              Authorized Signature: ________________________________
+            </Typography>
+          </Box>
+
+          {/* <Box
+            sx={{ mt: 4 }}
+            className="print-footer"
+            data-po-number={poNumber}
+          /> */}
+          {/* <div class="print-footer" data-po-number="12345"></div> */}
+        </Container>
+        {/* <div class="custom-footer">
+          <span class="po-number">PO Number: 12345</span>
+          <span class="page-number"></span>
+        </div> */}
+      </Paper>
+    </div>
+  );
+});
+
+const PurchaseOrderProvider = () => {
+  const componentRef = useRef();
+
+  // State for editable fields
+  const [vendorAddress, setVendorAddress] = useState(
+    // "XYZ Packaging Solutions\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore\nGSTIN: 29AACCU1713L1ZY"
+    ""
+  );
+  const [deliveryAddress, setDeliveryAddress] = useState(
+    // "SCM AI-PACKS Private Limited\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore - 560010"
+    ""
+  );
+
+  const [companyAddress, setCompanyAddress] = useState(
+    "SCM AI-PACKS Private Limited\n#23/1, T C Palya Main road, Hoysala Nagar, Bangalore\nGSTIN: 29ABMCS1982P1ZA"
+  );
+  const [poNumber, setPoNumber] = useState("");
+  const [poVo, setPoVo] = useState([]);
+  const [poDate, setPoDate] = useState("");
+  const [items, setItems] = useState([
+    {
+      description: "",
+      quantity: 0,
+      rate: 0,
+      amount: 0,
+    },
+  ]);
+
+  const [editMode, setEditMode] = useState(false);
+
+  const [termsAndConditions, setTermsAndConditions] =
+    useState(`1. Delivery Period: All the material must be delivered from your works within 1 week from the date of the purchase order.
+2. Payment Terms: 30 days from invoice submission through NEFT or check.
+3. Inspection & Testing: Inspection and quality check to be carried out by AI-PACKS designated executives during material dispatch.
+4. Statutory Requirements: NA`);
+  const [subtotal, setSubtotal] = useState(0);
+  const [sgst, setSgst] = useState(0);
+  const [cgst, setCgst] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [orgId, setOrgId] = useState(
+    parseInt(window.localStorage.getItem("orgId"))
+  );
+  const [gstType, setGstType] = useState(""); // "inter" or "intra"
+  const [igst, setIgst] = useState(0);
+  const [poData, setPoData] = useState([]);
+  const [listView, setListView] = useState(false);
+
+  // Function to handle GST calculation
+  const handleGstCalculation = (type) => {
+    setGstType(type);
+    const gstRate = 0.18;
+    const halfGstRate = gstRate / 2;
+
+    let calculatedIgst = 0;
+    let calculatedCgst = 0;
+    let calculatedSgst = 0;
+
+    if (type === "inter") {
+      calculatedIgst = subtotal * gstRate;
+      calculatedCgst = 0;
+      calculatedSgst = 0;
+    } else if (type === "intra") {
+      calculatedIgst = 0;
+      calculatedCgst = subtotal * halfGstRate;
+      calculatedSgst = subtotal * halfGstRate;
     }
+
+    setIgst(calculatedIgst);
+    setCgst(calculatedCgst);
+    setSgst(calculatedSgst);
+    setTotal(subtotal + calculatedIgst + calculatedCgst + calculatedSgst);
   };
 
   const handlePrint = useReactToPrint({
     content: () => componentRef.current,
+    documentTitle: `Purchase_Order-${poNumber}`,
     onBeforeGetContent: () => {
-      const printDateTimeElement = document.createElement("div");
-      printDateTimeElement.className = "print-datetime";
-      printDateTimeElement.innerHTML = `
-        <div class="d-flex justify-content-between mt-5 mb-5">
-          <div class="ms-5">
-            Printed By: ${pdfData.receiver}
-          </div>
-          <div class="me-5">
-            Printed On: ${new Date().toLocaleString()}
-          </div>
-        </div>
-      `;
-      componentRef.current.appendChild(printDateTimeElement);
-      return new Promise((resolve) => setTimeout(() => resolve(), 100));
-    },
-    onAfterPrint: () => {
-      const printDateTimeElement =
-        componentRef.current.querySelector(".print-datetime");
-      if (printDateTimeElement) {
-        componentRef.current.removeChild(printDateTimeElement);
+      if (!poNumber || poNumber.trim() === "") {
+        showErrorToast("PO Number is a mandatory field.");
+        return Promise.reject(); // Prevent the print if PO Number is empty
       }
+      return Promise.resolve();
     },
   });
 
-  const handlePrintWithWatermark = (watermarkText) => {
-    setWatermark(watermarkText);
-    setTimeout(() => {
-      handlePrint();
-    }, 100);
+  const handleSave = () => {
+    postInvoice();
   };
 
-  const handleDownloadClick = (row) => {
-    getRetrievalManifestProviderById(row.original.id);
-    setOpenDialog(true);
+  const handleAddRow = () => {
+    setItems([
+      ...items,
+      {
+        description: "",
+        quantity: 0,
+        rate: 0,
+        amount: 0,
+      },
+    ]);
   };
 
-  const handleEditRow = (row) => {
-    getRetrievalManifestProviderById(row.original.id);
-    setSelectedRowId(row.original.id);
-    setEditRim(true);
+  const handleDeleteRow = (index) => {
+    const newItems = items.filter((item, i) => i !== index);
+    setItems(newItems);
   };
 
-  const handleBack = () => {
-    setAddRim(false);
-    setEditRim(false);
-    getAllRetrievalManifestProvider();
+  const handleItemChange = (index, field, value) => {
+    const newItems = [...items];
+    newItems[index][field] = value;
+    if (field === "quantity" || field === "rate") {
+      newItems[index].amount = newItems[index].quantity * newItems[index].rate;
+    }
+    setItems(newItems);
   };
+  const [isPrintMode, setIsPrintMode] = useState(false);
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "actions",
-        header: "Actions",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-        enableSorting: false,
-        enableColumnOrdering: false,
-        enableEditing: false,
-        Cell: ({ row }) => (
-          <div>
-            <IconButton onClick={() => handleEditRow(row)}>
-              <EditIcon />
-            </IconButton>
-            <IconButton onClick={() => handleDownloadClick(row)}>
-              <GetAppIcon />
-            </IconButton>
-          </div>
-        ),
-      },
+  useEffect(() => {
+    const subtotal = items.reduce((acc, item) => acc + item.amount, 0);
+    setSubtotal(subtotal);
 
-      {
-        accessorKey: "sender",
-        header: "Sender",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "transactionNo",
-        header: "Transaction No",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-      {
-        accessorKey: "transactionDate",
-        header: "Transaction Date",
-        size: 50,
-        muiTableHeadCellProps: {
-          align: "center",
-        },
-        muiTableBodyCellProps: {
-          align: "center",
-        },
-      },
-    ],
-    []
-  );
+    if (gstType === "inter") {
+      const igst = subtotal * 0.18;
+      setIgst(igst);
+      setTotal(subtotal + igst);
+    } else if (gstType === "intra") {
+      const cgst = subtotal * 0.09;
+      const sgst = subtotal * 0.09;
+      setCgst(cgst);
+      setSgst(sgst);
+      setTotal(subtotal + cgst + sgst);
+    } else {
+      setIgst(0);
+      setCgst(0);
+      setSgst(0);
+      setTotal(subtotal);
+    }
+  }, [items, gstType]);
 
-  const table = useMaterialReactTable({
-    data,
-    columns,
-  });
+  useEffect(() => {
+    getInvoiceData();
+  }, []);
 
-  const transformProductDetails = (details) => {
-    const groupedDetails = details.reduce((acc, detail) => {
-      const existingKit = acc.find((kit) => kit.kitId === detail.kitId);
-      const asset = {
-        assetCode: detail.assetCode,
-        assetName: detail.asset,
-        assetQty: detail.assetQty,
-      };
+  const createFormData = () => {
+    const data = {
+      vendorAddress,
+      deliveryAddress,
+      companyAddress,
+      poNumber,
+      poDate,
+      items, // Items can remain as an array
+      termsAndConditions,
+      subtotal,
+      sgst,
+      cgst,
+      total,
+      gstType,
+      igst,
+      ...(editMode && { id: poVo?.id }),
+    };
 
-      if (existingKit) {
-        existingKit.assets.push(asset);
-      } else {
-        acc.push({
-          kitId: detail.kitId,
-          kitName: detail.kitName,
-          kitQty: detail.kitQty,
-          hsnCode: detail.hsnCode,
-          assets: [asset],
+    return data;
+  };
+  // Example usage:
+
+  // You can now use `formData` to make an API request
+
+  const postInvoice = () => {
+    const formData = createFormData();
+
+    // Validate the PO Number field
+    if (!formData.poNumber || formData.poNumber.trim() === "") {
+      showErrorToast("PO Number is a mandatory field.");
+      return Promise.reject(); // Prevent the API call if PO Number is empty
+    }
+
+    if (formData) {
+      const formDataWithOrgId = { ...formData, orgId };
+
+      axios
+        .put(
+          `${process.env.REACT_APP_API_URL}/api/master/createUpdateInvoice`,
+          formDataWithOrgId
+        )
+        .then((response) => {
+          console.log("Response:", response.data);
+
+          if (response.data.statusFlag === "Error") {
+            // showErrorToast(response.data.paramObjectsMap.errorMessage);
+          } else {
+            showSuccessToast(
+              editMode
+                ? "PO Updated Successfully"
+                : response.data.paramObjectsMap.message
+            );
+            getInvoiceData();
+          }
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+          showErrorToast("An error occurred while posting the invoice.");
         });
-      }
-
-      return acc;
-    }, []);
-
-    return groupedDetails;
+    } else {
+      showErrorToast("No invoice data to post.");
+    }
   };
 
-  const getRetrievalManifestProviderById = async (selectedRowId) => {
+  const getInvoiceData = async () => {
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/api/oem/getRetrievalManifestProviderById?id=${selectedRowId}`
+        `${process.env.REACT_APP_API_URL}/api/master/getAllInvoiceByOrgId?orgId=${orgId}`
       );
       if (response.status === 200) {
-        const rimData =
-          response.data.paramObjectsMap.retrievalManifestProviderVO;
-        setPdfData(rimData);
-        const transformedDetails = transformProductDetails(
-          rimData.retrievalManifestProviderDetailsVOs
-        );
-        setProductDetails(transformedDetails);
-        const concatenatedData = {
-          TransactionNo: rimData.transactionNo,
-          TransactionDate: rimData.transactionDate,
-          DispatchDate: rimData.dispatchDate,
-          Sender: rimData.sender,
-        };
-
-        const formattedData = `
-TransactionNo: ${concatenatedData.TransactionNo},
-TransactionDate: ${concatenatedData.TransactionDate},
-DispatchDate: ${concatenatedData.DispatchDate},
-Sender: ${concatenatedData.Sender}
-`;
-
-        setQrCodeValue(formattedData);
-        console.log("THE QRCODE DATA IS:", formattedData);
+        setPoData(response.data.paramObjectsMap.invoiceVO.reverse());
+      } else {
+        console.error("API Error:", response.data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
+  const handleListView = () => {
+    setListView(!listView);
+
+    handleNew();
+  };
+  useEffect(() => {
+    if (poVo && editMode) {
+      setVendorAddress(poVo.vendorAddress || "");
+      setDeliveryAddress(poVo.deliveryAddress || "");
+      setCompanyAddress(poVo.companyAddress || "");
+      setPoNumber(poVo.poNumber || "");
+      setPoDate(poVo.poDate || "");
+      setItems(poVo.productLines || []);
+      setTermsAndConditions(poVo.termsAndConditions || "");
+      setSubtotal(poVo.subtotal || 0);
+      setSgst(poVo.sgst || 0);
+      setCgst(poVo.cgst || 0);
+      setTotal(poVo.total || 0);
+      setGstType(poVo.gstType || "");
+      setIgst(poVo.igst || 0);
+    }
+  }, [poVo, editMode]);
+
+  const handleNew = () => {
+    setVendorAddress("");
+    setDeliveryAddress("");
+    setPoNumber("");
+    setPoDate("");
+    setItems([
+      {
+        description: "",
+        quantity: 0,
+        rate: 0,
+        amount: 0,
+      },
+    ]);
+    // setTermsAndConditions("");
+    setSubtotal(0);
+    setSgst(0);
+    setCgst(0);
+    setTotal(0);
+    setGstType("");
+    setIgst(0);
+    setEditMode(false);
+  };
+
   return (
-    <>
-      <div style={{ maxWidth: 1060 }} className="ml-auto me-auto">
-        <div>
-          {(addRim && <PurchaseOrderProvider addRim={handleBack} />) ||
-            (editRim && (
-              <PurchaseOrderProvider
-                addRim={handleBack}
-                rimId={selectedRowId}
-              />
-            )) || (
-              <div className="card w-full p-6 bg-base-100 shadow-xl">
-                {/* BULK UPLOAD AND ADD NEW BUTTON */}
-                <div className="">
-                  {userDetails === "ROLE_DOCUMENT" ? (
-                    <div className="d-flex justify-content-between mb-4">
-                      <div className="d-flex align-items-center ms-2">
-                        <Link to="/app/welcomedocumentuser">
-                          <FaArrowCircleLeft className="cursor-pointer w-8 h-8" />
-                        </Link>
-                        <p className="text-2xl">
-                          <strong className="ml-4">
-                            Retrieval Issue Manifest
-                          </strong>
-                        </p>
-                      </div>
-                      <div>
-                        <button
-                          className="btn btn-ghost btn-lg text-sm col-xs-1"
-                          style={{ color: "blue" }}
-                          onClick={() => setAddRim(true)}
-                        >
-                          <img
-                            src="/new.png"
-                            alt="pending-status-icon"
-                            title="add"
-                            style={{
-                              width: 30,
-                              height: 30,
-                              margin: "auto",
-                              hover: "pointer",
-                            }}
-                          />
-                          <span
-                            className="text-form text-base"
-                            style={{ marginLeft: "10px" }}
-                          >
-                            RIM
-                          </span>
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="d-flex justify-content-end mb-4">
-                      <button
-                        className="btn btn-ghost btn-lg text-sm col-xs-1"
-                        style={{ color: "blue" }}
-                        onClick={() => setAddRim(true)}
-                      >
-                        <img
-                          src="/new.png"
-                          alt="pending-status-icon"
-                          title="add"
-                          style={{
-                            width: 30,
-                            height: 30,
-                            margin: "auto",
-                            hover: "pointer",
-                          }}
-                        />
-                        <span
-                          className="text-form text-base"
-                          style={{ marginLeft: "10px" }}
-                        >
-                          Purchase Order
-                        </span>
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                {/* LISTVIEW TABLE */}
-                <div className="">
-                  <MaterialReactTable table={table} />
-                </div>
-              </div>
-            )}
-          <Dialog
-            open={openDialog}
-            onClose={() => setOpenDialog(false)}
-            fullWidth
-            maxWidth="xl"
+    <Container style={{ maxWidth: 1060 }}>
+      <Box sx={{ textAlign: "right", mb: 3, gap: 2 }}>
+        {!listView && (
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handlePrint}
+            startIcon={<PrintIcon />} // Add icon here
           >
-            <DialogContent>
-              <style>
-                {`
-              @media print {
-                /* Scale the table content down to fit on the screen */
-                .print-scale {
-              transform: scale(0.9);
-              transform-origin: top left;
-              width: calc(100% / 0.9);
-            }
-
-                .container-sm {
-                  width: 100%;
-                  max-width: 100%;
-                }
-                .card {
-                  box-shadow: none;
-                  border: none;
-                  width: 100%;
-                  page-break-inside: avoid;
-                }
-                .row {
-                  display: flex;
-                  flex-wrap: wrap;
-                }
-                .size {
-                  font-size: 12px;
-                }
-                .col-md-12 {
-                  font-size: 12px;
-                }
-                .col-md-6 {
-                  flex: 0 0 50%;
-                  max-width: 50%;
-                }
-                .col-md-5 {
-                  flex: 0 0 40%;
-                  max-width: 40%;
-                }
-                .col-md-4 {
-                  flex: 0 0 40%;
-                  max-width: 40%;
-                }
-                .col-md-3 {
-                  flex: 0 0 20%;
-                  max-width: 20%;
-                }
-                .text-xl {
-                  font-size: 20px;
-                  margin-top: 0;
-                  margin-bottom: 0.5rem;
-                }
-                .text-center {
-                  text-align: center;
-                }
-                .font-weight-bold {
-                  font-weight: bold;
-                }
-                .table {
-                  width: 100%;
-                  margin-bottom: 1rem;
-                  color: #212529;
-                  border-collapse: collapse;
-                }
-                .table-bordered {
-                  border-collapse: collapse;
-                }
-                .table-bordered th,
-                .table-bordered td {
-                  border: 1px solid #dee2e6;
-                  padding: 0.5rem;
-                  vertical-align: middle;
-                }
-                .mt-5 {
-                  margin-top: 3rem !important;
-                }
-                /* Reduce font size for table cells */
-                .table td,
-                .table th {
-                  font-size: 11px;
-                }
-
-                .watermark.cross {
-                  position: fixed;
-                  opacity: 0.4;
-                  font-size: 4em;
-                  color: #ccc;
-                  z-index: 9999;
-                  pointer-events: none;
-                  top: 50%;
-                  left: 50%;
-                  transform: translate(-50%, -50%) rotate(-45deg);
-                  transform-origin: center center;
-                  white-space: nowrap;
-                }
-
-                /* Hide non-print elements */
-                .non-print {
-                  display: none;
-                }
-              }
-            `}
-              </style>
-              <div className="d-flex justify-content-end">
-                <div className="mr-5">
-                  <button
-                    className="me-2 bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    onClick={() => handlePrintWithWatermark("Consignee Copy")}
-                    style={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    Consignee Copy
-                  </button>
-                  <button
-                    className="me-2 bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    onClick={() => handlePrintWithWatermark("Transporter Copy")}
-                    style={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    Transporter Copy
-                  </button>
-                  <button
-                    className="bg-blue inline-block rounded bg-primary h-fit px-6 pb-2 pt-2.5 text-xs font-medium leading-normal text-white shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] dark:shadow-[0_4px_9px_-4px_rgba(59,113,202,0.5)] dark:hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)] dark:active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.2),0_4px_18px_0_rgba(59,113,202,0.1)]"
-                    onClick={() => handlePrintWithWatermark("Consignor Copy")}
-                    style={{
-                      marginBottom: "20px",
-                    }}
-                  >
-                    Consignor Copy
-                  </button>
-                </div>
-
-                <div className="">
-                  <IoMdClose
-                    onClick={() => setOpenDialog(false)}
-                    className="cursor-pointer w-8 h-8 mb-3"
-                  />
-                </div>
-              </div>
-              <div className="print-scale" ref={componentRef}>
-                <div className="container-sm">
-                  <div className="card bg-base-100 shadow-xl p-4">
-                    <div className="d-flex justify-content-between">
-                      <div>
-                        <img
-                          src="/AI_Packs.png"
-                          alt="Your Image"
-                          style={{ width: "150px" }}
-                        />
-                      </div>
-
-                      <div className="text-center mt-5">
-                        <h1 className="text-xl">
-                          <strong>{pdfData.receiver}</strong>
-                        </h1>
-                        <br />
-                        <h3>
-                          <strong>Retrieval Issue Manifest</strong>
-                        </h3>
-                      </div>
-                      <div className="mr-3 mt-4">
-                        {qrCodeValue && (
-                          <QRCode value={qrCodeValue} size={120} />
-                        )}
-                      </div>
-                    </div>
-
-                    <hr />
-
-                    <div className="d-flex flex-column mt-2">
-                      <div className="d-flex flex-row me-5">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Transaction No:
-                        </div>
-                        <div>{pdfData.transactionNo}</div>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Transaction Date:
-                        </div>
-                        <div>{pdfData.transactionDate}</div>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Dispatch Date:
-                        </div>
-                        <div>{pdfData.dispatchDate}</div>
-                      </div>
-                      <div className="d-flex flex-row">
-                        <div
-                          className="font-semibold mb-2"
-                          style={{ width: 150 }}
-                        >
-                          Transaction Type:
-                        </div>
-                        <div>{pdfData.transactionType}</div>
-                      </div>
-                    </div>
-
-                    {/* Sender and Receiver details */}
-                    <div className="row mt-2">
-                      <div className="col-lg-6 col-md-6 col-sm-12">
-                        <div className="d-flex justify-content-start">
-                          <div className="d-flex flex-column justify-content-between ms-2 me-4">
-                            <div className="mb-2 font-semibold">Sender:</div>
-                            <div className="mb-2 font-semibold">Address:</div>
-                            <div className="mb-2 font-semibold">GST:</div>
-                          </div>
-                          <div className="d-flex flex-column">
-                            {/* <div className="mb-3">{headerData.senderName}</div> */}
-                            <div className="mb-2">{pdfData.sender}</div>
-                            <div className="mb-2">
-                              {pdfData.senderAddress}
-                              <br />
-                            </div>
-                            <div className="mb-2">{pdfData.senderGst}</div>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="col-lg-6 col-md-6 col-sm-12">
-                        <div className="d-flex">
-                          <div className="d-flex flex-column justify-content-between ms-2 me-4">
-                            <div className="mb-2 font-semibold">Receiver:</div>
-                            <div className="mb-2 font-semibold">Address:</div>
-                            <div className="mb-2 font-semibold"></div>
-                          </div>
-                          <div className="d-flex flex-column">
-                            <div className="mb-2">{pdfData.receiver}</div>
-                            <div className="mb-2">
-                              {pdfData.receiverAddress}
-                              <br />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="d-flex row mt-2">
-                      {/* Responsive table */}
-                      <div className="print-table-container">
-                        <div className="table-responsive">
-                          <table
-                            className="table table-bordered"
-                            style={{ borderCollapse: "collapse" }}
-                          >
-                            <thead>
-                              <tr>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Kit ID
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Kit Name
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  KIT QTY
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  HSN Code
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                    width: 30,
-                                  }}
-                                >
-                                  Product
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Product Code
-                                </th>
-                                <th
-                                  style={{
-                                    border: "2px solid black",
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  Product QTY
-                                </th>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              {productDetails.length > 0 &&
-                                productDetails.map((row) => {
-                                  const assetCount = row.assets.length;
-                                  return row.assets.map((asset, index) => (
-                                    <tr key={`${row.kitId}-${index}`}>
-                                      {index === 0 && (
-                                        <>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.kitId}
-                                          </td>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.kitName}
-                                          </td>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.kitQty}
-                                          </td>
-                                          <td
-                                            rowSpan={assetCount}
-                                            style={{
-                                              border: "2px solid black",
-                                              textAlign: "center",
-                                            }}
-                                          >
-                                            {row.hsnCode}
-                                          </td>
-                                        </>
-                                      )}
-                                      <td
-                                        style={{
-                                          border: "2px solid black",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        {asset.assetName}
-                                      </td>
-                                      <td
-                                        style={{
-                                          border: "2px solid black",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        {asset.assetCode}
-                                      </td>
-                                      <td
-                                        style={{
-                                          border: "2px solid black",
-                                          textAlign: "center",
-                                        }}
-                                      >
-                                        {asset.assetQty}
-                                      </td>
-                                    </tr>
-                                  ));
-                                })}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Other Details */}
-                    <div className="mt-2">
-                      <div className="d-flex justify-content-between">
-                        <div className="d-flex flex-justify-content-between me-4">
-                          <div
-                            className="d-flex flex-column"
-                            style={{ width: 150 }}
-                          >
-                            <div className="mb-2 font-semibold">
-                              Transporter:
-                            </div>
-                            <div className="mb-2 font-semibold">
-                              Vehicle No:
-                            </div>
-                            <div className="mb-2 font-semibold">Driver No:</div>
-                          </div>
-                          <div className="d-flex flex-column">
-                            <div className="mb-2 font-normal">
-                              {pdfData.transporterName}
-                            </div>
-                            <div className="mb-2 font-normal">
-                              {pdfData.vehicleeNo}
-                            </div>
-                            <div className="mb-2 font-normal">
-                              {pdfData.driverPhoneNo}
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <hr />
-
-                    {/* Declaration */}
-                    <div className="row mt-3 mb-2">
-                      <div className="col-lg-2">
-                        <strong style={{ width: 225 }}>Declaration:</strong>
-                      </div>
-                      <div className="col-lg-10">
-                        <p>
-                          {terms.declaration}
-                          {/* The packaging products given on hire shall always remain
-                      the property of SCM AI-PACKS Private Limited and shall not
-                      be used for the purpose otherwise agreed upon. The same
-                      shall be returned at the address notified by SCM AI-PACKS
-                      Private Limited. */}
-                        </p>
-                      </div>
-                    </div>
-                    {/* Note */}
-                    <div className="row mb-3">
-                      <div className="col-lg-2">
-                        <strong style={{ width: 225 }}>Note:</strong>
-                      </div>
-                      <div className="col-lg-10">
-                        <p>
-                          {terms.note1}
-                          {/* 1.The goods listed in the above manifest are used empty
-                      packaging issued to customer on a daily hire basis. The
-                      service is packaging on{" "}
-                      <strong>rental model and not sale to customer.</strong> */}
-                          <strong>{terms.note1Bold}</strong>
-                          <br />
-                          {terms.note2}
-                          {/* 2. No E-Way Bill is required for Empty Cargo Containers.
-                      Refer, Rule 14 of Central Goods and Services Tax (Second
-                      Amendment) Rules, 2018. */}
-                        </p>
-                      </div>
-                    </div>
-                    <hr />
-                    {/* Signatures */}
-                    <div className="d-flex justify-content-between mt-4 mb-5">
-                      <div className="ms-5">
-                        <strong className="size">For Sending Location:</strong>
-                      </div>
-                      <div className="me-5">
-                        <strong className="size">
-                          For Receiving Location :
-                        </strong>
-                      </div>
-                    </div>
-                    <div className="d-flex justify-content-between mt-5 mb-5">
-                      <div className="d-flex flex-column">
-                        <div className="ms-5">
-                          <strong className="size">
-                            Authorized Signature:
-                          </strong>
-                        </div>
-                        <div className="ms-4">(Company Seal & Signature)</div>
-                      </div>
-                      <div className="d-flex flex-column">
-                        <div className="ms-4">
-                          <strong className="size">
-                            Authorized Signature:
-                          </strong>
-                        </div>
-                        <div className="me-5">(Company Seal & Signature)</div>
-                      </div>
-                    </div>
-                    <div className={`watermark cross`}>{watermark}</div>
-                  </div>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+            Print
+          </Button>
+        )}
+        {!listView && (
+          <Button
+            sx={{ ml: 1 }}
+            variant="contained"
+            color="primary"
+            onClick={handleSave}
+            startIcon={<SaveIcon />} // Add icon here
+          >
+            Save
+          </Button>
+        )}
+        <Button
+          sx={{ ml: 1 }}
+          variant="contained"
+          color="primary"
+          onClick={handleListView}
+          startIcon={listView ? <AddIcon /> : <VisibilityIcon />} // Add icon here
+        >
+          {listView ? "New" : " View"}
+        </Button>
+        {!listView && (
+          <Button
+            sx={{ ml: 1 }}
+            variant="contained"
+            color="primary"
+            onClick={handleNew}
+            startIcon={<AddIcon />} // Add icon here
+          >
+            New
+          </Button>
+        )}
+      </Box>
+      {listView ? (
+        <PoList
+          poData={poData}
+          onListView={setListView}
+          setPoVo={setPoVo}
+          setEditMode={setEditMode}
+        />
+      ) : (
+        <div>
+          <PurchaseOrder
+            ref={componentRef}
+            vendorAddress={vendorAddress}
+            setVendorAddress={setVendorAddress}
+            deliveryAddress={deliveryAddress}
+            setDeliveryAddress={setDeliveryAddress}
+            poNumber={poNumber}
+            setPoDate={setPoDate}
+            poDate={poDate}
+            setPoNumber={setPoNumber}
+            items={items}
+            handleItemChange={handleItemChange}
+            handleAddRow={handleAddRow}
+            handleDeleteRow={handleDeleteRow}
+            subtotal={subtotal}
+            sgst={sgst}
+            cgst={cgst}
+            handleGstCalculation={handleGstCalculation}
+            igst={igst}
+            setSgst={setSgst}
+            setCgst={setCgst}
+            setIgst={setIgst}
+            gstType={gstType}
+            total={total}
+            subTotal={subtotal}
+            termsAndConditions={termsAndConditions}
+            setTermsAndConditions={setTermsAndConditions}
+            isPrintMode={isPrintMode}
+            companyAddress={companyAddress}
+            setCompanyAddress={setCompanyAddress}
+            editMode={editMode}
+          />
         </div>
-      </div>
-    </>
+      )}
+    </Container>
   );
 };
 
-export default PoManifest;
+export default PurchaseOrderProvider;

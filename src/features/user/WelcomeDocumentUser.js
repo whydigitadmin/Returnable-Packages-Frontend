@@ -9,7 +9,6 @@ import { Link } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import LastLogin from "../../utils/LastLogin";
-import DashboardStats from "../dashboard/components/DashboardStats";
 
 const statsData = [
   {
@@ -251,6 +250,38 @@ function WelcomeDocumentUser() {
                           }}
                         />
                         <h4 className="text-lg font-semibold">Invoice</h4>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+
+                <div className="col-lg-12">
+                  <Link to="/app/paymentAdvice">
+                    <div
+                      className="card bg-base-100 shadow-xl mb-2  pt-3 pb-3 pl-3 mt-2 transition duration-300 ease-in-out"
+                      style={{
+                        "--tw-bg-opacity": "1",
+                        "--tw-hover-bg-color": "#d2fbd0",
+                      }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.backgroundColor = "#d2fbd0")
+                      }
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.backgroundColor = "transparent")
+                      }
+                    >
+                      <div className="d-flex flex-row">
+                        <img
+                          src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+                          style={{
+                            width: "32px",
+                            height: "32px",
+                            marginRight: "6px",
+                          }}
+                        />
+                        <h4 className="text-lg font-semibold">
+                          Payment Advice
+                        </h4>
                       </div>
                     </div>
                   </Link>

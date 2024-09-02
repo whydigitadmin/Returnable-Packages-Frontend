@@ -728,6 +728,18 @@ const allRoutes = [
         ),
         name: <span style={{ marginLeft: "6px" }}>Invoice</span>,
       },
+      {
+        path: "/app/paymentAdvice",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="AssetTagging"
+            style={{ width: "36px", height: "auto" }}
+            className={`${iconClasses} inline`}
+          />
+        ),
+        name: <span style={{ marginLeft: "6px" }}>Payment Advice</span>,
+      },
     ],
   },
   {

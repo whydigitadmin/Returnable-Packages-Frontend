@@ -230,3 +230,77 @@ html {
 .mt-40 {
   margin-top: 40px;
 }
+
+/* @media print {
+  @page {
+    margin: 20mm;
+  }
+
+  .print-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    color: gray;
+    border-top: 1px solid #ddd;
+    padding-top: 5px;
+    content: "PO Number: " attr(data-po-number);
+  }
+} */
+/*@media print {
+  @page {
+    margin: 20mm;
+    size: auto;
+  }
+
+
+  .custom-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    font-size: 10px;
+    color: gray;
+    border-top: 1px solid #ddd;
+    padding-top: 5px;
+  }
+
+
+  .custom-footer .page-number::before {
+    content: "Page " counter(page);
+  }
+}
+*/
+
+/* Ensure footer appears on every page */
+/* .print-footer::after {
+    content: "PO Number: " attr(data-po-number);
+  }
+
+
+  /* @media print {
+    @page {
+      margin: 20mm;
+    }
+    
+    body::after {
+      content: "";
+      display: block;
+      height: 100%;
+    }
+  
+    .print-footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 12px;
+    }
+  
+    .print-footer .page-number::after {
+      content: counter(page);
+    }
+  } */
