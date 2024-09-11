@@ -356,6 +356,7 @@ const PurchaseOrder = React.forwardRef((props, ref) => {
                       <StyledTextField
                         fullWidth
                         size="small"
+                        multiline
                         variant="outlined"
                         value={item.description}
                         onChange={(e) =>
@@ -367,7 +368,9 @@ const PurchaseOrder = React.forwardRef((props, ref) => {
                         }
                       />
                     </TableCell>
-                    <TableCell sx={{ border: "1px solid black" }}>
+                    <TableCell
+                      sx={{ border: "1px solid black", width: "150px" }}
+                    >
                       <StyledTextField
                         fullWidth
                         size="small"
@@ -383,7 +386,9 @@ const PurchaseOrder = React.forwardRef((props, ref) => {
                         }
                       />
                     </TableCell>
-                    <TableCell sx={{ border: "1px solid black" }}>
+                    <TableCell
+                      sx={{ border: "1px solid black", width: "150px" }}
+                    >
                       <StyledTextField
                         fullWidth
                         variant="outlined"
@@ -752,14 +757,16 @@ const PurchaseOrder = React.forwardRef((props, ref) => {
                           }
                         />
                       </TableCell>
-                      <TableCell sx={{ border: "1px solid black" }}>
+                      <StyledTableCellActions
+                        sx={{ border: "1px solid black" }}
+                      >
                         <StyledIconButton
                           onClick={() => props.handleDeleteAnnexureRow(index)}
                           color="error"
                         >
                           <DeleteIcon />
                         </StyledIconButton>
-                      </TableCell>
+                      </StyledTableCellActions>
                     </TableRow>
                   ))}
                 </TableBody>
