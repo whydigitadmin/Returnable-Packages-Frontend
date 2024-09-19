@@ -239,7 +239,7 @@ function WelcomeOEM() {
                     </div>
                   </Link>
                 </div>
-                <div className="col-lg-12">
+                {/* <div className="col-lg-12">
                   <Link to="/app/BinOutwardOem">
                     <div
                       className="card bg-base-100 shadow-xl mb-2  pt-3 pb-3 pl-3 mt-2 transition duration-300 ease-in-out"
@@ -267,7 +267,7 @@ function WelcomeOEM() {
                       </div>
                     </div>
                   </Link>
-                </div>
+                </div> */}
                 <div className="col-lg-12">
                   <Link to="/app/retrivalmanifest">
                     <div
