@@ -444,8 +444,8 @@ export const RetrivalManifest = () => {
                               />
                               <span className="ps-2">Actions</span>
                             </th>
-                            <th className="text-center">Bin Outward Id</th>
-                            <th className="text-center">Outward Date</th>
+                            <th className="text-center">Gathered ID</th>
+                            <th className="text-center">Gathered Date</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -568,13 +568,13 @@ export const RetrivalManifest = () => {
                                     <thead>
                                       <tr>
                                         <th className="text-center">
-                                          Bin Out DocId
+                                          Gathered ID
                                         </th>
                                         <th className="text-center">
-                                          Bin OutDoc Date
+                                          Gathered Date
                                         </th>
                                         <th className="text-center">
-                                          Outward Stock Branch
+                                          Gathered Stock Branch
                                         </th>
                                       </tr>
                                     </thead>
