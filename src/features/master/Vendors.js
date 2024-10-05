@@ -24,7 +24,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { FaUser } from "react-icons/fa";
 import { FaDatabase } from "react-icons/fa6";
 import { MdGroups } from "react-icons/md";
-import sampleFile from "../../assets/sampleFiles/rp_user_sample_data.xlsx";
+import sampleFile from "../../assets/sampleFiles/vendor.xlsx";
 import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 import AddVendor from "./AddVendor";
 import DashBoardComponent from "./DashBoardComponent";
@@ -64,6 +64,7 @@ function Vendors() {
       description: "",
     },
   ]);
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/master/vendorUpload`;
 
   const handleEditRow = (row) => {
     setSelectedRowId(row.original.id);
@@ -277,7 +278,7 @@ function Vendors() {
               })}
             </div>
             <div className="">
-              <div className="flex justify-end mt-4">
+              <div className="flex justify-between mt-4">
                 {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -301,17 +302,20 @@ function Vendors() {
                     Bulk Upload
                   </span>
                 </button> */}
-                {/* <BulkUploadDialog
-                  open={open}
-                  onOpenClick={handleClickOpen}
-                  handleClose={handleClose}
-                  dialogTitle="Upload File"
-                  uploadText="Upload file"
-                  downloadText="Sample File"
-                  onSubmit={handleSubmit}
-                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
-                  handleFileUpload={handleFileUpload}
-                /> */}
+                <div className="mt-2">
+                  <BulkUploadDialog
+                    open={open}
+                    onOpenClick={handleClickOpen}
+                    handleClose={handleClose}
+                    dialogTitle="Upload File"
+                    uploadText="Upload file"
+                    downloadText="Sample File"
+                    onSubmit={handleSubmit}
+                    sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                    handleFileUpload={handleFileUpload}
+                    apiUrl={apiUrl}
+                  />
+                </div>
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}

@@ -276,7 +276,7 @@ function Asset() {
               })}
             </div>
             <div className="">
-              <div className="d-flex justify-content-end mt-4">
+              <div className="d-flex justify-content-between mt-4">
                 {/* <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
@@ -300,18 +300,19 @@ function Asset() {
                     Bulk Upload
                   </span>
                 </button> */}
-
-                {/* <BulkUploadDialog
-                  open={open}
-                  onOpenClick={handleClickOpen}
-                  handleClose={handleClose}
-                  dialogTitle="Upload File"
-                  uploadText="Upload file"
-                  downloadText="Sample File"
-                  onSubmit={handleSubmit}
-                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
-                  handleFileUpload={handleFileUpload}
-                /> */}
+                <div className="mt-2">
+                  <BulkUploadDialog
+                    open={open}
+                    onOpenClick={handleClickOpen}
+                    handleClose={handleClose}
+                    dialogTitle="Upload File"
+                    uploadText="Upload file"
+                    downloadText="Sample File"
+                    onSubmit={handleSubmit}
+                    sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                    handleFileUpload={handleFileUpload}
+                  />
+                </div>
                 <button
                   className="btn btn-ghost btn-lg text-sm col-xs-1"
                   style={{ color: "blue" }}
