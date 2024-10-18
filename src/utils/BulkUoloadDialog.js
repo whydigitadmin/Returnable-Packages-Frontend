@@ -30,6 +30,7 @@ const BulkUploadDialog = ({
   handleFileUpload,
   onOpenClick,
   apiUrl,
+  emitterId,
 }) => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [orgId, setOrgId] = useState(localStorage.getItem("orgId"));
@@ -67,10 +68,14 @@ const BulkUploadDialog = ({
     if (selectedFile) {
       const formData = new FormData();
       formData.append("files", selectedFile);
-
+      // Construct the URL
+      let requestUrl = `${apiUrl}?orgId=${orgId}&createdBy=${userDetail.firstName}`;
+      if (emitterId) {
+        requestUrl += `&emitterId=${emitterId}`;
+      }
       try {
         const response = await axios.post(
-          `${apiUrl}?orgId=${orgId}&createdBy=${userDetail.firstName}`,
+          requestUrl, // Use the constructed URL
           formData,
           {
             headers: {
