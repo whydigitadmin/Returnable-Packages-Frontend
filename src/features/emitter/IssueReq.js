@@ -22,9 +22,10 @@ import kit2 from "../../assets/motor.png";
 import kit4 from "../../assets/wire.jpeg";
 import ToastComponent from "../../utils/ToastComponent";
 import RequestSummaryTable from "./RequestSummaryTable";
-
+import sampleFile from "../../assets/sampleFiles/IssueRequest.xlsx";
 import { styled } from "@mui/material/styles";
 import { showErrorToast, showSuccessToast } from "../../utils/toastUtils";
+import BulkUploadDialog from "../../utils/BulkUoloadDialog";
 
 const ItemsPerPage = 10;
 
@@ -92,6 +93,7 @@ function IssueReq() {
   const [selectedKitId, setSelectedKitId] = React.useState("");
   const [demandDate, setSelectedDate] = React.useState(null);
   const [errors, setErrors] = React.useState("");
+  const [open, setOpen] = React.useState(false);
   const [orgId, setOrgId] = React.useState(localStorage.getItem("orgId"));
   const [userId, setUserId] = React.useState(localStorage.getItem("userId"));
   const [userName, setUserName] = React.useState(
@@ -127,6 +129,8 @@ function IssueReq() {
   const [partNoAndPartNames, setPartNoAndPartNames] = useState({});
   const [selectedParts, setSelectedParts] = useState({});
 
+  const apiUrl = `${process.env.REACT_APP_API_URL}/api/emitter/issueRequestUpload`;
+
   // const today = dayjs();
   // const maxDate = today.add(30, "day");
 
@@ -135,6 +139,17 @@ function IssueReq() {
   const handleDetailsClick = (issue) => {
     setSelectedIssue(issue);
     setIsDialogOpen(true);
+  };
+
+  const handleSubmit = () => {
+    // Handle submit
+    console.log("Submit clicked");
+    handleClose();
+  };
+
+  const handleFileUpload = (event) => {
+    // Handle file upload
+    console.log(event.target.files[0]);
   };
 
   // useEffect(() => {
@@ -196,6 +211,14 @@ function IssueReq() {
     const newMode = mode === "KIT" ? "PART" : "KIT";
     setMode(newMode);
     setValue(newMode === "PART" ? 1 : 0); // Reset tab value when mode changes
+  };
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   // const handleTabClick = (newValue) => {
@@ -1336,6 +1359,19 @@ function IssueReq() {
 
                     // onClick={() => handleTabClick(2)}
                   />
+                  <Tab
+                    label="BULK UPLOAD"
+                    icon={
+                      <img
+                        src="	https://cdn-icons-png.flaticon.com/512/5669/5669626.png"
+                        width={30}
+                        height={30}
+                      ></img>
+                    }
+                    {...a11yProps(3)}
+                    value={3}
+
+                  />
                 </Tabs>
               </Box>
               {/* KIT TAB */}
@@ -1649,6 +1685,23 @@ function IssueReq() {
                     </>
                   </CustomTabPanel>
                 </div>
+              )}
+              {value === 3 && (
+                <div className="mt-2">
+                <BulkUploadDialog
+                  open={open}
+                  onOpenClick={handleClickOpen}
+                  handleClose={handleClose}
+                  dialogTitle="Upload File"
+                  uploadText="Upload file"
+                  downloadText="Sample File"
+                  onSubmit={handleSubmit}
+                  sampleFileDownload={sampleFile} // Change this to the actual path of your sample file
+                  handleFileUpload={handleFileUpload}
+                  apiUrl={apiUrl}
+                  emitterId={emitterId}
+                />
+              </div>
               )}
             </div>
           </div>
