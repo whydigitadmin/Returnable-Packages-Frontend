@@ -636,7 +636,7 @@ function RetrievalManifestProvider({ addRim, rimId }) {
                 className="form-control form-sz mb-2"
                 style={{ height: 100 }}
                 name="receiverAddress"
-                value={receiverAddress}
+                value={senderAddress}
                 disabled
               />
             </div>
@@ -729,7 +729,7 @@ function RetrievalManifestProvider({ addRim, rimId }) {
                 className="form-control form-sz mb-2"
                 style={{ height: 100 }}
                 name="senderAddress"
-                value={senderAddress}
+                value={receiverAddress}
                 disabled
               />
             </div>
