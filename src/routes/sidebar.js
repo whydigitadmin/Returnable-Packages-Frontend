@@ -746,6 +746,56 @@ const allRoutes = [
     path: "", //no url needed as this has submenu
     icon: (
       <img
+        src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+        alt="PDF"
+        style={{ width: "29px", height: "auto" }}
+        className={`${iconClasses} inline`}
+      />
+    ),
+    name: <span style={{ marginLeft: "12px" }}>Reports</span>,
+    submenu: [
+      {
+        path: "/app/mimReport",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="MaterialIssueManifest"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">MIM Report</span>,
+      },
+      {
+        path: "/app/binAllotmentReport",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="MaterialIssueManifest"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">Bin Allotment Report</span>,
+      },
+      {
+        path: "/app/rimReport",
+        icon: (
+          <img
+            src="https://cdn-icons-png.flaticon.com/128/3143/3143218.png"
+            alt="MaterialIssueManifest"
+            style={{ width: "36px", height: "auto" }}
+            className={{ submenuIconClasses }}
+          />
+        ),
+        name: <span className="">RIM Report</span>,
+      },
+    ],
+  },
+  {
+    path: "", //no url needed as this has submenu
+    icon: (
+      <img
         src="	https://cdn-icons-png.flaticon.com/128/11392/11392546.png"
         alt="Inward"
         style={{ width: "29px", height: "auto" }}

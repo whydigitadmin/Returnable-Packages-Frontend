@@ -207,6 +207,15 @@ const InvoiceGenerator = lazy(
 const InvoiceGeneratorOriginal = lazy(
   () => import("../pages/protected/InvoiceGeneratorOrginal")
 );
+const mimReport = lazy(
+  () => import("../pages/protected/MimReport")
+);
+const BinAllotmentReport = lazy(
+  () => import("../pages/protected/BinAllotmentReport")
+);
+const rimReport = lazy(
+  () => import("../pages/protected/RimReport")
+);
 const routes = [
   {
     path: "/dashboard", // the url
@@ -697,6 +706,18 @@ const routes = [
   {
     path: "/paymentAdvice",
     component: PaymentAdvice,
+  },
+  {
+    path: "/mimReport",
+    component: mimReport,
+  },
+  {
+    path: "/binAllotmentReport",
+    component: BinAllotmentReport,
+  },
+  {
+    path: "/rimReport",
+    component: rimReport,
   },
 ];
 
